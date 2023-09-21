@@ -1,10 +1,12 @@
 //* Import the customers.routes file with all de methods
+import authRoutes from './routes/auth.routes';
 import customerRoutes from './routes/customers.routes';
 import userRoutes from './routes/users.routes';
 
 
 //* Here I defined the first endpoint
 const router = (app) => {
+    app.use('/auth', authRoutes);
     app.use('/customers', customerRoutes);
     app.use('/users', userRoutes);
 

@@ -1,9 +1,10 @@
 CREATE TABLE users ( 
     user_id int AUTO_INCREMENT,
     account_type int(1) NOT NULL,
-    username varchar(30) NOT NULL,
-    password varchar(30) NOT NULL,
+    username varchar(60) NOT NULL,
+    password varchar(100) NOT NULL,
     fullname varchar(80) NOT NULL,
+    avatar varchar(300),
     email varchar(60),
     birthday date,
     phone int(9),
@@ -11,6 +12,7 @@ CREATE TABLE users (
     role int(1) NOT NULL,
     PRIMARY KEY (user_id) 
 )
+ALTER TABLE users ADD CONSTRAINT unique_username UNIQUE (username)
 
 
 CREATE TABLE questions ( 

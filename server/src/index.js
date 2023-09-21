@@ -10,7 +10,7 @@ dotenv.config();
 
 //* Settings
 const port = process.env.NODE_PORT;
-console.log(port);
+// console.log(port);
 
 //* Middlewares
 app.use(morgan('dev'));
