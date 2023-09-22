@@ -33,17 +33,22 @@ function Home() {
     className: 'center',
     centerMode: true,
     infinite: true,
-    // centerPadding: '80px',
     slidesToShow: 3,
     slidesToScroll: 1,
+    centerPadding: '80px',
     initialSlide: 0,
     dots: false,
-    speed: 1000,
-    // autoplay: true,
-    // autoplaySpeed: 1200,
+    // speed: 1000,
+    autoplay: true,
+    autoplaySpeed: 4000,
     beforeChange: (current, next) => {
       setSlideIndex(next);
     },
+    responsive: [
+      {
+        centerPadding: '1px',
+      },
+    ],
   };
 
   return (
@@ -80,41 +85,44 @@ function Home() {
         </Question>
         {/* end banner question */}
       </BannerContainer>
+      <section className="container"></section>
     </div>
   );
 }
 
+//banner section
 const BannerContainer = styled.div`
   max-width: 100vw;
   margin: auto;
   overflow: hidden;
-  min-height: -webkit-calc(100vh - 120px);
-  min-height: -moz-calc(100vh - 120px);
-  min-height: calc(100vh - 120px);
+  height: calc(100vh - 120px);
+  -webkit-height: calc(100vh - 120px);
+  -moz-height: calc(100vh - 120px);
   background-color: #f4d03f;
-  background-image: linear-gradient(180deg, var(--primary-color) 0%, #16a085 100%);
+  background-image: linear-gradient(180deg, var(--primary-color) 0%, #041612 100%);
   .banner {
     .banner-container {
       width: 100vw;
-      /* overflow: hidden; */
-      padding: 40px 60px;
-      /* max-height: 500px; */
+      padding-top: 25px;
+
       .slide {
         opacity: 0.8;
-        transform: scale(0.7);
-        filter: blur(5px);
+        transform: scale(0.8);
+        /* filter: blur(5px); */
         overflow: hidden;
         border-radius: 20px;
-
-        img {
-          width: 100%;
-          object-fit: contain;
-          position: relative;
-        }
+        -webkit-box-reflect: below 5px linear-gradient(transparent 50%, rgba(0, 0, 0, 0.3));
+        transition: 0.7s ease-in;
         .slide-box {
           position: relative;
-          width: 100%;
-          height: 100%;
+          img {
+            width: 100%;
+            object-fit: cover;
+            position: relative;
+            height: calc(100vh - 320px);
+            -webkit-height: calc(100vh - 320px);
+            -moz-height: calc(100vh - 320px);
+          }
           .job-name {
             position: absolute;
             left: 50%;
@@ -123,6 +131,7 @@ const BannerContainer = styled.div`
             opacity: 0;
             text-align: center;
             visibility: hidden;
+            transition: 0s ease;
             span {
               padding-bottom: 20px;
               font-size: 2.5rem;
@@ -132,9 +141,10 @@ const BannerContainer = styled.div`
           }
           .job-name-active {
             visibility: visible;
-            opacity: 0.7;
+            opacity: 0.5;
             background-color: var(--text-hover-color);
             width: 101%;
+            transition: 0.7s ease;
           }
         }
       }
@@ -142,11 +152,11 @@ const BannerContainer = styled.div`
         opacity: 1;
         transform: scale(1);
         filter: blur(0);
-        transition: 0.5s ease-in;
       }
     }
   }
 `;
+//end banner section
 
 const Question = styled.div`
   /* display: flex; */
@@ -161,11 +171,11 @@ const Question = styled.div`
   }
 
   .explore-btn {
-    padding: 10px;
+    height: 60px;
     span {
       font-weight: 500;
       text-transform: capitalize;
-      font-size: 1.5rem;
+      font-size: 1.2rem;
     }
   }
 `;
