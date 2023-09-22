@@ -35,9 +35,12 @@ function Home() {
     infinite: true,
     // centerPadding: '80px',
     slidesToShow: 3,
+    slidesToScroll: 1,
+    initialSlide: 0,
+    dots: false,
     speed: 1000,
-    autoplay: true,
-    autoplaySpeed: 1200,
+    // autoplay: true,
+    // autoplaySpeed: 1200,
     beforeChange: (current, next) => {
       setSlideIndex(next);
     },
@@ -46,12 +49,15 @@ function Home() {
   return (
     <div>
       <BannerContainer>
+        {/* banner slide */}
         <div className="banner">
           <Slider {...settings} className="banner-container">
             {bannerImg.map((val, idx) => (
               <div className={idx === slideIndex ? 'slide slide-active' : 'slide'} key={idx}>
                 <div className="slide-box">
-                  <img src={'./images/banner/' + val.url} alt={Slide} />
+                  {/* slide image */}
+                  <img src={'./images/banner/' + val.url} alt="slide" />
+                  {/* slide name */}
                   <div className={idx === slideIndex ? 'job-name job-name-active' : 'job-name'}>
                     <span>{val.text}</span>
                   </div>
@@ -60,15 +66,19 @@ function Home() {
             ))}
           </Slider>
         </div>
+        {/* end banner slide */}
+
+        {/* banner question */}
         <Question>
           <div>
             <h3>bạn có muốn biết tính cách của mình là gì?</h3>
             <h3>và tính cách của bạn có liên quan đến nghề nghiệp nào?</h3>
           </div>
-          <Button type="primary" danger>
-            khám phá ngay
+          <Button type="primary" danger className="explore-btn">
+            <span> khám phá ngay</span>
           </Button>
         </Question>
+        {/* end banner question */}
       </BannerContainer>
     </div>
   );
@@ -78,22 +88,27 @@ const BannerContainer = styled.div`
   max-width: 100vw;
   margin: auto;
   overflow: hidden;
-  background-color: #0093e9;
-  background-image: linear-gradient(160deg, #0093e9 0%, #80d0c7 100%);
-
+  min-height: -webkit-calc(100vh - 120px);
+  min-height: -moz-calc(100vh - 120px);
+  min-height: calc(100vh - 120px);
+  background-color: #f4d03f;
+  background-image: linear-gradient(180deg, var(--primary-color) 0%, #16a085 100%);
   .banner {
     .banner-container {
       width: 100vw;
-      overflow: hidden;
+      /* overflow: hidden; */
       padding: 40px 60px;
+      /* max-height: 500px; */
       .slide {
         opacity: 0.8;
         transform: scale(0.7);
         filter: blur(5px);
         overflow: hidden;
         border-radius: 20px;
+
         img {
-          height: 100%;
+          width: 100%;
+          object-fit: contain;
           position: relative;
         }
         .slide-box {
@@ -133,84 +148,25 @@ const BannerContainer = styled.div`
   }
 `;
 
-const Slide = styled.div``;
-// const Banner = styled.section`
-//   height: 600px;
-//   width: 100%;
-//   /* background-color: black; */
-//   display: flex;
-//   align-items: center;
-//   justify-content: center;
-//   .banner-box {
-//     height: 500px;
-//     width: auto;
-//     box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px,
-//       rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px,
-//       rgba(0, 0, 0, 0.09) 0px -3px 5px;
-
-//     border-radius: 17px;
-//     overflow: hidden;
-//     position: relative;
-//     margin-left: 15px;
-//     margin-right: 15px;
-//     &:nth-child(2),
-//     &:nth-child(4) {
-//       margin-top: 60px;
-//     }
-//     &:hover {
-//       img {
-//         width: 300px;
-//         transition: 0.7s all ease-in;
-//       }
-//       .overlay-text {
-//         visibility: visible;
-//         opacity: 0.5;
-//         transition: 0.7s all ease-in;
-//         span {
-//           transition: 0.7s all ease-in;
-//         }
-//       }
-//     }
-//     img {
-//       width: 150px;
-//       height: 500px;
-//       object-fit: cover;
-//       transition: 0.5s all ease-in;
-//       position: relative;
-//     }
-//     .overlay-text {
-//       position: absolute;
-//       top: 0;
-//       bottom: 0;
-//       left: 0;
-//       /* background-color: black; */
-//       width: 300px;
-//       height: 500px;
-//       opacity: 0;
-//       display: flex;
-//       align-items: flex-end;
-//       text-align: center;
-//       overflow: hidden;
-//       visibility: hidden;
-//       span {
-//         width: 100%;
-//         position: absolute;
-//         background-color: var(--text-hover-color);
-//         padding-bottom: 20px;
-//         font-size: 2.5rem;
-//         font-weight: 800;
-//         text-transform: capitalize;
-//       }
-//     }
-//   }
-// `;
 const Question = styled.div`
   /* display: flex; */
   text-align: center;
-
   div {
     margin-top: 20px;
     margin-bottom: 20px;
+    h3 {
+      color: var(--text-hover-color);
+      text-transform: capitalize;
+    }
+  }
+
+  .explore-btn {
+    padding: 10px;
+    span {
+      font-weight: 500;
+      text-transform: capitalize;
+      font-size: 1.5rem;
+    }
   }
 `;
 
