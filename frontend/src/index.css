@@ -35,6 +35,8 @@ code {
   padding: 15px 30px;
   border-radius: 15px;
 }
+
+/* container */
 .container{
   --bs-gutter-x: 1.5rem;
   --bs-gutter-y: 0;
@@ -45,7 +47,7 @@ code {
   margin-left: auto;
 }
 
-
+/* responsive */
 @media (min-width: 640px) {
   .container {
     max-width: 610px;
@@ -71,3 +73,4 @@ code {
     max-width: 1450px;
   }
 }
+/* container */
