@@ -1,22 +1,6 @@
 import dbConnection from "../database/dbConnection";
 const bcrypt = require("bcrypt");
-
-// Middleware để xử lý kết quả của truy vấn và phản hồi
-function handleQueryResult(req, res, next) {
-  return function (err, rows) {
-    if (err) {
-      console.error(err);
-      res.status(500).json({ error: "Lỗi nội bộ" });
-    } else {
-      // Tùy chỉnh phản hồi dựa trên tài liệu cụ thể
-      const responseData = {
-        success: true,
-        data: rows,
-      };
-      res.json(responseData);
-    }
-  };
-}
+const handleQueryResult = require('../middleware/handleQueryResult'); // Điều hướng đến tệp middleware
 
 export const registerUser = async (req, res) => {
   try {
@@ -81,7 +65,8 @@ export const login = async (req, res) => {
       if (!validPassword) {
         res.status(401).json("Mật khẩu không đúng!");
       } else {
-        res.status(200).json("Đăng nhập thành công!");
+        handleQueryResult(err, data, 200, "Đăng nhập thành công!");
+        // res.status(200).json("Đăng nhập thành công!");
       }
     } else {
       res.status(401).json("Tài khoản không tồn tại!");
