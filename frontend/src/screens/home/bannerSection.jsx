@@ -36,16 +36,13 @@ function Banner() {
     slidesToShow: 3,
     initialSlide: 0,
     dots: false,
-    // autoplay: true,
-    // autoplaySpeed: 4000,
+    autoplay: true,
+    autoplaySpeed: 4000,
+    pauseOnHover: false,
+    focusOnSelect: true,
     beforeChange: (current, next) => {
       setSlideIndex(next);
     },
-    responsive: [
-      {
-        centerPadding: '1px',
-      },
-    ],
   };
   return (
     <BannerContainer>
@@ -91,7 +88,7 @@ const BannerContainer = styled.div`
   margin: auto;
   overflow: hidden;
   height: calc(100vh - 120px);
-  background-color: #f4d03f;
+  background-color: var(--primary-color);
   background-image: linear-gradient(180deg, var(--primary-color) 0%, #041612 100%);
   .banner {
     .banner-container {
@@ -108,7 +105,8 @@ const BannerContainer = styled.div`
         overflow: hidden;
         border-radius: 20px;
         -webkit-box-reflect: below 10px linear-gradient(transparent 50%, rgba(0, 0, 0, 0.3));
-        transition: 0.7s ease-in;
+        box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;
+        transition: 0.6s ease-in-out;
         .slide-box {
           position: relative;
           img {
@@ -138,7 +136,7 @@ const BannerContainer = styled.div`
             opacity: 0.5;
             background-color: var(--text-hover-color);
             width: 101%;
-            transition: 0.7s ease;
+            transition: 0.5s ease;
           }
         }
       }
@@ -146,6 +144,7 @@ const BannerContainer = styled.div`
         opacity: 1;
         transform: scale(1);
         filter: blur(0);
+        transition: 0.7s ease-in-out;
       }
     }
   }
