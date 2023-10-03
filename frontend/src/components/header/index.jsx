@@ -1,16 +1,17 @@
-import React, { useState } from "react";
-import styled from "styled-components";
-import { Button } from "antd";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import { Button } from 'antd';
+import { useNavigate } from 'react-router-dom';
 
 const linkMenu = [
-  { to: "/", title: "tran chủ" },
-  { to: "/tin-tuc", title: "tin tức" },
+  { to: '/', title: 'tran chủ' },
   {
-    to: "/thong-tin-cac-truong-dai-hoc",
-    title: "thông tin các trường đại học",
+    to: '/thong-tin-cac-truong-dai-hoc',
+    title: 'thông tin các trường đại học',
   },
-  { to: "/trach-nghiem-tinh-cach", title: "trắc nghiệm tính cách" },
+  { to: '/trach-nghiem-tinh-cach', title: 'trắc nghiệm tính cách' },
+  { to: '/dong-hanh', title: 'đồng hành' },
+  { to: '/tin-tuc', title: 'tin tức' },
 ];
 
 function Header() {
@@ -26,18 +27,14 @@ function Header() {
     <Nav>
       {/* logo image */}
       <div className="logo">
-        <img
-          src="./images/logo/logo2.webp"
-          alt="home"
-          onClick={() => navigate("/")}
-        />
+        <img src="./images/logo/logo2.webp" alt="home" onClick={() => navigate('/')} />
       </div>
       <div className="top-nav">
         <div className="topbar">
           {/* brand name and topbar button */}
           <h1 className="brand">Trung Tâm Hướng Nghiệp ĐBSCL</h1>
           <div className="topbar-btn">
-            <Button danger onClick={() => navigate("/dang-nhap")}>
+            <Button danger onClick={() => navigate('/dang-nhap')}>
               <span>đăng nhập</span>
               {/* <a href="/dang-nhap">login</a> */}
             </Button>
@@ -49,7 +46,7 @@ function Header() {
             {linkMenu.map((val, idx) => (
               <li key={idx}>
                 <span
-                  className={`${idxActive === idx ? "link-actived" : ""}`}
+                  className={`${idxActive === idx ? 'link-actived' : ''}`}
                   onClick={() => {
                     handleLink(idx, val.to);
                   }}
