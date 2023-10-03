@@ -53,7 +53,19 @@ function Banner() {
             <div className={idx === slideIndex ? 'slide slide-active' : 'slide'} key={idx}>
               <div className="slide-box">
                 {/* slide image */}
-                <img src={'./images/banner/' + val.url} alt="slide" />
+                {/* <img src={'./images/banner/' + val.url} alt="slide" /> */}
+                <div
+                  className="banner-image"
+                  style={{
+                    width: '100%',
+                    height: 'calc(100vh - 320px)',
+                    position: 'relative',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                    backgroundSize: 'cover',
+                    backgroundImage: `url(./images/banner/${val.url})`,
+                  }}
+                ></div>
                 {/* slide name */}
                 <div className={idx === slideIndex ? 'job-name job-name-active' : 'job-name'}>
                   <span>{val.text}</span>
@@ -114,6 +126,31 @@ const BannerContainer = styled.div`
             object-fit: cover;
             position: relative;
             height: calc(100vh - 320px);
+            /* &::before {
+              content: '';
+              position: absolute;
+              top: 100%;
+              left: 0;
+              right: 0;
+              height: inherit;
+              background-position: bottom;
+              transform: scaleY(-1);
+            } */
+            .banner-image {
+              &::before {
+                content: '';
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                height: inherit;
+                background-image: inherit;
+                background-size: cover;
+                background-position: bottom;
+                background-repeat: no-repeat;
+                transform: scaleY(-1);
+              }
+            }
           }
           .job-name {
             position: absolute;

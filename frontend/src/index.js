@@ -5,30 +5,40 @@ import './index.css';
 import App from './App';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import News from './screens/news';
-import Exam from './screens/exam';
 import Universities from './screens/university';
 import Login from './screens/login';
 import Signup from './screens/signup';
 import ForgotPassword from './screens/forgotpassword';
 import Dashboard from './screens/dashboard';
 import Home from './screens/home';
+import MBTI from './screens/mbti';
+import TestMbti from './screens/testMbti';
+import NotFound from './screens/404/notfound';
+import Companion from './screens/companion';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <BrowserRouter>
       <Routes>
+        {/* client */}
         <Route path="/" element={<App />}>
           <Route path="/" element={<Home />} />
           <Route path="tin-tuc" element={<News />} />
-          <Route path="trach-nghiem-tinh-cach" element={<Exam />} />
+          <Route path="trach-nghiem-tinh-cach" element={<MBTI />} />
+          <Route path="mbti-test" element={<TestMbti />} />
           <Route path="thong-tin-cac-truong-dai-hoc" element={<Universities />} />
+          <Route path="dong-hanh" element={<Companion />} />
           <Route path="dang-nhap" element={<Login />} />
           <Route path="dang-ky" element={<Signup />} />
           <Route path="quen-mat-khau" element={<ForgotPassword />} />
         </Route>
 
+        {/* admin  */}
         <Route path="/dashboard" element={<Dashboard />} />
+
+        {/* no other result match */}
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>,

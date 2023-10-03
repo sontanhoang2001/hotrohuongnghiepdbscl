@@ -23,9 +23,12 @@ function Footer() {
   );
 }
 const FooterContainer = styled.div`
+  max-width: 1900px;
   padding: 120px 0px 270px;
   position: relative;
   overflow-x: hidden;
+  margin-left: auto;
+  margin-right: auto;
   .footer-bg {
     position: absolute;
     bottom: 0;

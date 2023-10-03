@@ -5,10 +5,10 @@ import styled from 'styled-components';
 const { Meta } = Card;
 function ImageCard(props) {
   return (
-    <SimpleCard
-      cover={<img alt="example" src="./images/news/istockphoto-1402360271-612x612.jpg" />}
-    >
-      <Meta title={props.title} />
+    <SimpleCard>
+      <Card cover={<img alt="example" src={props.src} />}>
+        <Meta title={props.title} />
+      </Card>
     </SimpleCard>
   );
 }
@@ -24,6 +24,9 @@ const SimpleCard = styled.div`
     &:hover {
       opacity: 0.7;
       transform: scale(1.05);
+    }
+    .ant-card-meta {
+      text-transform: capitalize;
     }
   }
 `;
