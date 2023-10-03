@@ -4,7 +4,7 @@ import { Button } from 'antd';
 import { useNavigate } from 'react-router-dom';
 
 const linkMenu = [
-  { to: '/', title: 'tran chủ' },
+  { to: '/', title: 'trang chủ' },
   {
     to: '/thong-tin-cac-truong-dai-hoc',
     title: 'thông tin các trường đại học',
