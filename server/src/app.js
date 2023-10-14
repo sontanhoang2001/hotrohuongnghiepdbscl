@@ -1,8 +1,10 @@
-import express from 'express';
-import morgan from 'morgan';
-import dotenv from 'dotenv';
-import router from './router';
-import cors from 'cors';
+const express = require('express');
+const morgan = require('morgan');
+const dotenv = require('dotenv');
+const router = require('./router');
+const cors = require('cors');
+
+require('./database/connection_database');
 
 //* Initializations
 const app = express();

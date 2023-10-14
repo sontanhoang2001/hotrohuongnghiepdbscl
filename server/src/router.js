@@ -1,7 +1,11 @@
 //* Import the customers.routes file with all de methods
-import authRoutes from './routes/auth.routes';
-import customerRoutes from './routes/customers.routes';
-import userRoutes from './routes/users.routes';
+
+
+
+const authRoutes = require('./routes/auth.routes');
+const customerRoutes = require('./routes/customers.routes');
+const userRoutes = require('./routes/users.routes');
+
 
 
 //* Here I defined the first endpoint
@@ -12,4 +16,4 @@ const router = (app) => {
 
 };
 
-export default router;
+module.exports = router;

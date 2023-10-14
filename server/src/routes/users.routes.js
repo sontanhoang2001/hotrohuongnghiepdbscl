@@ -1,15 +1,15 @@
 //* Import express and initialize the routers
-import express from 'express';
+const express = require("express");
 const router = express.Router();
 
 //* Call the controller with the methods
-import { getUsers, getUsersById, createNewUser, updateUser, deleteOneUser} from '../controllers/usersController'
+const { getUsers, getUsersById, createUser, updateUser, deleteOneUser} = require( '../controllers/usersController');
 
 //* Here I defined the methods 
 router.get('/', getUsers); //localhost:3000/users/
 router.get('/id/:id', getUsersById); //localhost:3000/users/id/1
-router.post('/add', createNewUser); //localhost:3000/customers/add
+router.post('/add', createUser); //localhost:3000/customers/add
 router.patch('/edit/:id', updateUser); //localhost:3000/customers/edit/1
 router.delete('/delete/:id', deleteOneUser); //localhost:3000/customers/delete/1
 
-export default router;
+module.exports = router;
