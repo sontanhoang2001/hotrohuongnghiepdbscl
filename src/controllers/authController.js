@@ -1,77 +1,147 @@
-const dbConnection = require("../database/dbConnection");
+const User = require("../models").User;
+const jwt = require("jsonwebtoken");
 
+const authService = require("../services/authService");
+const responseHelper = require("../helpers/responseHelper");
+const generateToken = require("../helpers/generateToken");
 const bcrypt = require("bcrypt");
-const handleQueryResult = require("../middleware/handleQueryResult"); // Điều hướng đến tệp middleware
+
+
+let refreshTokens = [];
 
 module.exports = {
   registerUser: async (req, res) => {
-    try {
-      const user = req.body;
-      if (!user.username || !user.password || !user.fullname) {
+      try {
+        const user = req.body;
+        if (!user.username || !user.password || !user.fullname) {
+          return res.json({
+            ErrorCode: 204,
+            Message: "Fields cannot be empty",
+          });
+        }
+        const salt = await bcrypt.genSalt(10);
+        const hashed = await bcrypt.hash(user.password, salt);
+        const userObj = [
+          (user.account_type = 0),
+          user.username,
+          (user.password = hashed),
+          user.fullname,
+          (user.role = 5),
+        ];
+        // Create new user
+        let sqlQuery =
+          "INSERT INTO users (account_type, username, password, fullname, role) VALUES ( ?,?,?,?,?)";
+        dbConnection.query(sqlQuery, userObj, (err, data) => {
+          if (err) throw err;
+          res.status(201).json("User created with id: " + data.insertId);
+        });
+      } catch (error) {
         return res.json({
-          ErrorCode: 204,
-          Message: "Fields cannot be empty",
+          ErrorCode: 500,
+          Message: "",
         });
       }
-      const salt = await bcrypt.genSalt(10);
-      const hashed = await bcrypt.hash(user.password, salt);
 
-      const userObj = [
-        (user.account_type = 0),
-        user.username,
-        (user.password = hashed),
-        user.fullname,
-        (user.role = 5),
-      ];
-
-      // Create new user
-      let sqlQuery =
-        "INSERT INTO users (account_type, username, password, fullname, role) VALUES ( ?,?,?,?,?)";
-      dbConnection.query(sqlQuery, userObj, (err, data) => {
-        if (err) throw err;
-        res.status(201).json("User created with id: " + data.insertId);
-      });
-    } catch (error) {
-      return res.json({
-        ErrorCode: 500,
-        Message: "",
-      });
-    }
+    //   try {
+    //     const user = req.body;
+    //     if (!user.username || !user.password || !user.fullname) {
+    //       return res.json({
+    //         ErrorCode: 204,
+    //         Message: "Fields cannot be empty",
+    //       });
+    //     }
+    //     const salt = await bcrypt.genSalt(10);
+    //     const hashed = await bcrypt.hash(user.password, salt);
+    //     const userObj = [
+    //       (user.account_type = 0),
+    //       user.username,
+    //       (user.password = hashed),
+    //       user.fullname,
+    //       (user.role = 5),
+    //     ];
+    //     // Create new user
+    //     let sqlQuery =
+    //       "INSERT INTO users (account_type, username, password, fullname, role) VALUES ( ?,?,?,?,?)";
+    //     dbConnection.query(sqlQuery, userObj, (err, data) => {
+    //       if (err) throw err;
+    //       res.status(201).json("User created with id: " + data.insertId);
+    //     });
+    //   } catch (error) {
+    //     return res.json({
+    //       ErrorCode: 500,
+    //       Message: "",
+    //     });
+    //   }
   },
+
   login: async (req, res) => {
-    const user = req.body;
-    const userObj = [user.username];
+    try {
+      const user = req.body;
+      const username = user.username;
 
-    if (!user.username || !user.password) {
-      return res.status(400).json({
-        ErrorCode: 204,
-        Message: "Fields cannot be empty",
-      });
-    }
-
-    let sqlQuery = "SELECT * FROM users WHERE `username` = ?";
-    dbConnection.query(sqlQuery, userObj, async (err, data) => {
-      if (err) {
-        console.error(err);
-        return res.status(500).json("Database error");
+      if (!user.username || !user.password) {
+        responseHelper.sendResponse(res, 200, null, "Fields cannot be empty");
       }
 
-      if (data.length > 0) {
-        const userData = data[0];
+      const result = await authService.loginUser(username);
+
+      // Đúng 'username'
+      if (result) {
         const validPassword = await bcrypt.compare(
           user.password,
-          userData.password
+          result.password
         );
 
-        if (!validPassword) {
-          res.status(401).json("Mật khẩu không đúng!");
-        } else {
-          handleQueryResult(err, data, 200, "Đăng nhập thành công!");
-          // res.status(200).json("Đăng nhập thành công!");
+        // Đúng 'password'
+        if (validPassword) {
+          const { password, ...userData } = result;
+          const accessToken = generateToken.generateAccessToken(userData);
+          const refreshToken = generateToken.generateRefreshToken(userData);
+          refreshTokens.push(refreshToken);
+          res.cookie("refreshToken", refreshToken, {
+            httpOnly: true, secure: false, path: "/", sameSite: "strict"
+          })
+          responseHelper.sendResponse(res, 200,{ userData, accessToken}, "Đăng nhập thành công!");
+          return;
         }
-      } else {
-        res.status(401).json("Tài khoản không tồn tại!");
       }
-    });
+
+      responseHelper.sendResponse(res, 401, null, "Tên đăng nhập hoặc mật khẩu không đúng!");
+    } catch (error) {
+      responseHelper.sendResponse(res, 500, null);
+    }
   },
+  requestRefreshToken: async (req, res) => {
+    //Take refresh token from user
+    const refreshToken = req.cookies.refreshToken;
+    if(!refreshToken) return responseHelper.sendResponse(res, 401, null, "You're not authenticated");
+    if(!refreshTokens.includes(refreshToken)) {
+      return responseHelper.sendResponse(res, 403, null,"Refresh token is not valid");
+    }
+
+    jwt.verify(refreshToken, process.env.JWT_REFRESH_KEY, (err, user) => {
+      if(err) {
+        console.log(err);
+      }
+      refreshTokens = refreshTokens.filter((token) => token !== refreshToken);
+      //Create new accessToken, refresh token
+      const newAccessToken = generateToken.generateAccessToken(user);
+      const newRefreshToken = generateToken.generateRefreshToken(user);
+      refreshTokens.push(newRefreshToken);
+
+      res.cookie("refreshToken", newRefreshToken, {
+        httpOnly: true, secure: false, path: "/", sameSite: "strict"
+      })
+      responseHelper.sendResponse(res, 200, {accessToken: newAccessToken});
+    })
+  },
+
+  // LOG OUT
+  userLogout : (req, res) => {
+    res.clearCookie("refreshToken");
+    // Xóa refreshToken đã tồn tại trong cookie
+    refreshTokens = refreshTokens.filter((token) => token !== req.cookies.refreshToken);
+
+    // Bên client phải xóa "access Token" chứa trong redux
+  }
 };

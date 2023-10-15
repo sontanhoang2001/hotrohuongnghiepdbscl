@@ -1,36 +1,20 @@
-import dbConnection from "../database/dbConnection";
+const User = require("../models").User;
 const bcrypt = require("bcrypt");
+const { Op } = require("sequelize");
 
-export const createUser = async (user) => {
-  try {
-    if (!user.username || !user.password || !user.fullname) {
-      throw new Error("Fields cannot be empty");
-    }
-    const salt = await bcrypt.genSalt(10);
-    const hashed = await bcrypt.hash(user.password, salt);
-
-    const userObj = [
-      (user.account_type = 0),
-      user.username,
-      (user.password = hashed),
-      user.fullname,
-      (user.role = 5),
-    ];
-
-    // Create new user
-    const sqlQuery =
-      "INSERT INTO users (account_type, username, password, fullname, role) VALUES (?, ?, ?, ?, ?)";
-
-    return new Promise((resolve, reject) => {
-      dbConnection.query(sqlQuery, userObj, (err, data) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(data.insertId);
-        }
+module.exports = {
+  loginUser: async (username) => {
+    try {
+      const user = await User.findOne({
+        attributes: ["id", "account_type", "username", "password", "fullname", "avatar", "email", "birthday", "phone", "address", "role"],
+        limit: 1,
+        where: {
+          [Op.and]: [{ username: username }]
+        },
       });
-    });
-  } catch (error) {
-    throw error;
-  }
+      return user.get({ plain: true });
+    } catch (error) {
+      throw error;
+    }
+  },
 };

@@ -10,9 +10,9 @@ const userRoutes = require('./routes/users.routes');
 
 //* Here I defined the first endpoint
 const router = (app) => {
-    app.use('/auth', authRoutes);
-    app.use('/customers', customerRoutes);
-    app.use('/users', userRoutes);
+    app.use('/api/v1/auth', authRoutes);
+    app.use('/api/v1/customers', customerRoutes);
+    app.use('/api/v1/users', userRoutes);
 
 };
 

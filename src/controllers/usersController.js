@@ -1,8 +1,8 @@
 const User = require("../models").User;
-
-const { createNewUser, getAll } = require("../services/userService");
-
+const userService = require('../services/userService');
 const dbConnection = require("../database/dbConnection");
+const responseHelper = require('../helpers/responseHelper');
+
 
 module.exports = {
   createUser: async (req, res) => {
@@ -18,23 +18,15 @@ module.exports = {
     }
   },
 
-  getUsers: (req, res) => {
-    User.findAll({
-      attributes: ["id", "firstName", "lastName", "email"],
-      limit: 5,
-      order: [["id", "DESC"]],
-    })
-      .then((users) => {
-        return res.status(200).json({
-          users,
-        });
-      })
-      .catch((err) => {
-        return res.status(400).json({ err });
-      });
+  getUsers: async (req, res) => {
+    try {
+      const users = await userService.getAll(); // Gọi chức năng từ service
+      responseHelper.sendResponse(res, 200, users); // Trả về danh sách người dùng với mã lỗi 200 (OK)
+    } catch (error) {
+      responseHelper.sendResponse(res, 500, null); // Trả về mã lỗi 500 (Internal Server Error)
+    }
 
     //   let sqlQuery = "SELECT * FROM users";
-
     //   dbConnection.query(sqlQuery, (error, results) => {
     //     if (error) throw error;
     //     res.status(200).json(results);
