@@ -1,9 +1,21 @@
 {
-  "development": {
+  "development1": {
     "username": "root",
     "password": "",
     "database": "hotrotuvanhuongnghiepdbscl",
     "host": "localhost",
+    "dialect": "mysql",
+    "logging": false,
+    "timezone" : "+07:00",
+    "define" : {
+      "freezeTableName": true
+    }
+  },
+  "development": {
+    "username": "uhvw1fryxzxcqd64",
+    "password": "PuoC4DRLLQuGcyNV5NOX",
+    "database": "buevrkcydf6hnszatc4q",
+    "host": "buevrkcydf6hnszatc4q-mysql.services.clever-cloud.com",
     "dialect": "mysql",
     "logging": false,
     "timezone" : "+07:00",
@@ -24,7 +36,7 @@
     "database": "buevrkcydf6hnszatc4q",
     "host": "buevrkcydf6hnszatc4q-mysql.services.clever-cloud.com",
     "dialect": "mysql",
-    "logging": true,
+    "logging": false,
     "timezone" : "+07:00",
     "define" : {
       "freezeTableName": true

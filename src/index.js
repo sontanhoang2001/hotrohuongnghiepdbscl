@@ -5,7 +5,7 @@ const cookieParser = require('cookie-parser');
 const router = require('./router');
 const cors = require('cors');
 
-require('./database/connection_database');
+// require('./database/connection_database');
 
 //* Initializations
 const app = express();
