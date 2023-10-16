@@ -20,7 +20,10 @@ module.exports = {
 
   getUsers: async (req, res) => {
     try {
+      console.log(">>> go users.");
+
       const users = await userService.getAll(); // Gọi chức năng từ service
+      console.log("users: ", users);
       responseHelper.sendResponse(res, 200, users); // Trả về danh sách người dùng với mã lỗi 200 (OK)
     } catch (error) {
       responseHelper.sendResponse(res, 500, null); // Trả về mã lỗi 500 (Internal Server Error)
