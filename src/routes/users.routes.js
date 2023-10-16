@@ -7,7 +7,7 @@ const middleware = require('../middleware/verifyToken');
 const { getUsers, getUsersById, createUser, updateUser, deleteOneUser} = require( '../controllers/usersController');
 
 //* Here I defined the methods 
-router.get('/', middleware.verifyToken, getUsers); //localhost:3000/users/
+router.get('/',  getUsers); //localhost:3000/users/
 router.get('/id/:id', getUsersById); //localhost:3000/users/id/1
 router.post('/add', createUser); //localhost:3000/customers/add
 router.patch('/edit/:id', updateUser); //localhost:3000/customers/edit/1
