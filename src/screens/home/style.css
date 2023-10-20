@@ -1,0 +1,21 @@
+.swiper {
+  width: 100%;
+  height: calc(100vh - 120px);
+}
+
+.swiper-slide {
+  /* background-position: center; */
+  background-size: cover;
+  width: 300px;
+  height: calc(100vh - 400px);
+  position: relative;
+}
+
+.swiper-slide img {
+  display: block;
+  width: 100%;
+}
+.swiper-slide-shadow-left,
+.swiper-slide-shadow-right {
+  display: none;
+}
