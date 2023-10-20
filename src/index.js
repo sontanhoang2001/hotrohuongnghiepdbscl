@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import reportWebVitals from './reportWebVitals';
 import './index.css';
 import App from './App';
-import { BrowserRouter, HashRouter, Route, Routes } from 'react-router-dom';
+import { HashRouter, Route, Routes } from 'react-router-dom';
 import News from './screens/news';
 import Universities from './screens/university';
 import Login from './screens/login';
@@ -22,34 +22,32 @@ import AdminHome from './screens/adminHome';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <HashRouter>
-        <Routes>
-          {/* client */}
-          <Route path="/" element={<App />}>
-            <Route path="/" element={<Home />} />
-            <Route path="tin-tuc" element={<News />} />
-            <Route path="trach-nghiem-tinh-cach" element={<MBTI />} />
-            <Route path="mbti-test" element={<TestMbti />} />
-            <Route path="thong-tin-cac-truong-dai-hoc" element={<Universities />} />
-            <Route path="dong-hanh" element={<Companion />} />
-            <Route path="dang-nhap" element={<Login />} />
-            <Route path="dang-ky" element={<Signup />} />
-            <Route path="quen-mat-khau" element={<ForgotPassword />} />
-          </Route>
+    <HashRouter>
+      <Routes>
+        {/* client */}
+        <Route path="/" element={<App />}>
+          <Route path="/" element={<Home />} />
+          <Route path="tin-tuc" element={<News />} />
+          <Route path="trach-nghiem-tinh-cach" element={<MBTI />} />
+          <Route path="mbti-test" element={<TestMbti />} />
+          <Route path="thong-tin-cac-truong-dai-hoc" element={<Universities />} />
+          <Route path="dong-hanh" element={<Companion />} />
+          <Route path="dang-nhap" element={<Login />} />
+          <Route path="dang-ky" element={<Signup />} />
+          <Route path="quen-mat-khau" element={<ForgotPassword />} />
+        </Route>
 
-          {/* admin */}
-          <Route path="/dashboard" element={<Dashboard />}>
-            <Route path="" element={<AdminHome />} />
-            <Route path="nguoi-dung" element={<ManageUser />} />
-            <Route path="truong-hoc" element={<ManageUniversity />} />
-          </Route>
+        {/* admin */}
+        <Route path="/dashboard" element={<Dashboard />}>
+          <Route path="" element={<AdminHome />} />
+          <Route path="nguoi-dung" element={<ManageUser />} />
+          <Route path="truong-hoc" element={<ManageUniversity />} />
+        </Route>
 
-          {/* no other result match */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </HashRouter>
-    </BrowserRouter>
+        {/* no other result match */}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </HashRouter>
   </React.StrictMode>,
 );
 
