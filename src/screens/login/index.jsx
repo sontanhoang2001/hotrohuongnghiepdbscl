@@ -1,14 +1,40 @@
-import React from "react";
-import { Button, Checkbox, Form, Input } from "antd";
-import { LockOutlined, UserOutlined } from "@ant-design/icons";
-import styled from "styled-components";
-import { Link, useNavigate } from "react-router-dom";
-// import background from "./images/knowledge-1052013.jpg";
-
+import React from 'react';
+import { Button, Checkbox, Form, Input } from 'antd';
+import { LockOutlined, UserOutlined } from '@ant-design/icons';
+import styled from 'styled-components';
+import { Link, useNavigate } from 'react-router-dom';
+import authApi from '../../api/auth';
+import { useEffect } from 'react';
+import { useState } from 'react';
 function Login() {
   const onFinish = (values) => {
-    console.log("Received values of form: ", values);
+    console.log('Received values of form: ', values);
   };
+
+  //default value
+  const [account, setAccount] = useState({
+    username: '',
+    password: '',
+  });
+
+  useEffect(() => {
+    const fethApi = async () => {
+      try {
+        console.log('test');
+        const result = await authApi.login({
+          username: 'sontanhoang',
+          password: '123456',
+        });
+
+        console.log('result', result);
+        window.localStorage?.setItem('access_token', result.data.data.accessToken);
+      } catch (error) {
+        console.log('error', error);
+      }
+    };
+
+    fethApi();
+  }, []);
 
   return (
     <Background>
@@ -28,7 +54,7 @@ function Login() {
               rules={[
                 {
                   required: true,
-                  message: "Please input your Username!",
+                  message: 'Please input your Username!',
                 },
               ]}
             >
@@ -42,7 +68,7 @@ function Login() {
               rules={[
                 {
                   required: true,
-                  message: "Please input your Password!",
+                  message: 'Please input your Password!',
                 },
               ]}
             >
@@ -62,14 +88,9 @@ function Login() {
             </Form.Item>
 
             <Form.Item>
-              <Button
-                type="primary"
-                htmlType="submit"
-                className="login-form-button"
-                danger
-              >
+              <Button type="primary" htmlType="submit" className="login-form-button" danger>
                 Log in
-              </Button>{" "}
+              </Button>{' '}
               <Link className="f-link" to="/dang-ky">
                 Đăng Ký Ngay!
               </Link>

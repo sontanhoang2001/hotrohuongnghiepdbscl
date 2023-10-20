@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import reportWebVitals from './reportWebVitals';
 import './index.css';
 import App from './App';
-import { HashRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, HashRouter, Route, Routes } from 'react-router-dom';
 import News from './screens/news';
 import Universities from './screens/university';
 import Login from './screens/login';
@@ -22,7 +22,7 @@ import AdminHome from './screens/adminHome';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <HashRouter>
+    <BrowserRouter>
       <Routes>
         {/* client */}
         <Route path="/" element={<App />}>
@@ -47,7 +47,7 @@ root.render(
         {/* no other result match */}
         <Route path="*" element={<NotFound />} />
       </Routes>
-    </HashRouter>
+    </BrowserRouter>
   </React.StrictMode>,
 );
 

@@ -60,8 +60,6 @@ const mbtiQuestions = [
   },
 ];
 
-console.log(mbtiQuestions.options);
-
 function TestMbti() {
   return (
     <div>

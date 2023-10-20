@@ -89,15 +89,19 @@ const Quiz = ({ questions }) => {
     } else if (countExtraversionType === countIntroversionType) {
       answers.filter((val) => {
         if (val.id === 'E' && val.point === 1) {
-          countExtraversionType = countExtraversionType++;
+          countExtraversionType = countExtraversionType + 1;
         }
         if (val.id === 'I' && val.point === 1) {
-          countIntroversionType = countIntroversionType++;
+          countIntroversionType = countIntroversionType + 1;
         }
-        if (countExtraversionType > countIntroversionType) type.push('E');
-        else type.push('I');
+
+        console.log(val.id, 'test');
+        console.log(countExtraversionType, 'e');
+        console.log(countIntroversionType, 'i');
         return 0;
       });
+      if (countExtraversionType > countIntroversionType) type.push('E');
+      else type.push('I');
     } else {
       type.push('I');
     }
@@ -113,10 +117,11 @@ const Quiz = ({ questions }) => {
         if (val.id === 'N' && val.point === 1) {
           countiNtuitionType = countiNtuitionType++;
         }
-        if (countSensingType > countiNtuitionType) type.push('S');
-        else type.push('N');
+
         return 0;
       });
+      if (countSensingType > countiNtuitionType) type.push('S');
+      else type.push('N');
     } else {
       type.push('N');
     }
@@ -131,10 +136,11 @@ const Quiz = ({ questions }) => {
         if (val.id === 'F' && val.point === 1) {
           countFeelingType = countFeelingType++;
         }
-        if (countThinkingType > countFeelingType) type.push('T');
-        else type.push('F');
+
         return 0;
       });
+      if (countThinkingType > countFeelingType) type.push('T');
+      else type.push('F');
     } else {
       type.push('F');
     }
@@ -149,11 +155,12 @@ const Quiz = ({ questions }) => {
         if (val.id === 'P' && val.point === 1) {
           countPerceivingType = countPerceivingType++;
         }
-        if (countJudgingType > countPerceivingType) {
-          type.push('J');
-        } else type.push('P');
+
         return 0;
       });
+      if (countJudgingType > countPerceivingType) {
+        type.push('J');
+      } else type.push('P');
     } else {
       type.push('P');
     }
@@ -176,11 +183,11 @@ const Quiz = ({ questions }) => {
     const mbtiType = calculateMBTIType(answers);
     setMbtiResult(getTypeDetail(mbtiType));
     setCompleted(true);
+    console.log(mbtiType);
   }, [answers]);
 
   const confirm = (e) => {
     handleSubmit();
-    console.log(e);
     message.success('bạn hoàn thành bài kiểm tra');
   };
   const cancel = (e) => {};
