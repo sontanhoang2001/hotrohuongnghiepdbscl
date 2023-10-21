@@ -10,19 +10,30 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
     }
+
+     // Định nghĩa phương thức toJSON để loại bỏ trường password
+    toJSON() {
+      const values = { ...this.get() };
+      delete values.password;
+      return values;
+    }
   }
+
+  
   User.init(
     {
       account_type: DataTypes.INTEGER,
-      username: DataTypes.STRING,
+      email: DataTypes.STRING,
+      phone: DataTypes.STRING,
       password: DataTypes.STRING,
       fullname: DataTypes.STRING,
       avatar: DataTypes.STRING,
-      email: DataTypes.STRING,
       birthday: DataTypes.DATE,
-      phone: DataTypes.STRING,
+      gender:  DataTypes.INTEGER,
       address: DataTypes.STRING,
+      address_detail: DataTypes.STRING,
       role: DataTypes.INTEGER,
+      status: DataTypes.INTEGER,
     },
     {
       sequelize,
