@@ -1,4 +1,9 @@
 import React from 'react';
+//call redux
+import { useSelector, useDispatch } from 'react-redux';
+
+import { loginAsync, selectProfile } from '../../redux/authSlice';
+
 import { Button, Checkbox, Form, Input } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
@@ -7,35 +12,33 @@ import authApi from '../../api/auth';
 import { useEffect } from 'react';
 import { useState } from 'react';
 function Login() {
+  const userProfile = useSelector(selectProfile);
+  const dispatch = useDispatch();
+
+  // useEffect(() => {
+  //   const fethApi = async () => {
+  //     try {
+  //       console.log('test');
+  //       const result = await authApi.login({
+  //         username: 'huukiet@gmail.com',
+  //         password: '123456',
+  //       });
+
+  //       console.log('result', result);
+  //       window.localStorage?.setItem('access_token', result.data.data.accessToken);
+  //     } catch (error) {
+  //       console.log('error', error);
+  //     }
+  //   };
+
+  //   fethApi();
+  // }, []);
+
   const onFinish = (values) => {
-    console.log('Received values of form: ', values);
+    const { remember, ...inputedUserData } = values;
+    const payload = inputedUserData;
+    dispatch(loginAsync(payload));
   };
-
-  //default value
-  const [account, setAccount] = useState({
-    username: '',
-    password: '',
-  });
-
-  useEffect(() => {
-    const fethApi = async () => {
-      try {
-        console.log('test');
-        const result = await authApi.login({
-          username: 'sontanhoang',
-          password: '123456',
-        });
-
-        console.log('result', result);
-        window.localStorage?.setItem('access_token', result.data.data.accessToken);
-      } catch (error) {
-        console.log('error', error);
-      }
-    };
-
-    fethApi();
-  }, []);
-
   return (
     <Background>
       <LoginForm>
@@ -44,7 +47,10 @@ function Login() {
           <Form
             name="normal_login"
             className="login-form"
+            //giá trị mặt định
             initialValues={{
+              username: '',
+              password: '',
               remember: true,
             }}
             onFinish={onFinish}
@@ -90,7 +96,7 @@ function Login() {
             <Form.Item>
               <Button type="primary" htmlType="submit" className="login-form-button" danger>
                 Log in
-              </Button>{' '}
+              </Button>
               <Link className="f-link" to="/dang-ky">
                 Đăng Ký Ngay!
               </Link>

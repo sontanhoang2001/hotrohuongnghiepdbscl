@@ -1,5 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { Provider } from 'react-redux';
+import { store } from './app/store';
+
 import reportWebVitals from './reportWebVitals';
 import './index.css';
 import App from './App';
@@ -18,15 +21,19 @@ import Companion from './screens/companion';
 import ManageUser from './screens/manageUser';
 import ManageUniversity from './screens/manageUnivercity';
 import AdminHome from './screens/adminHome';
+import { Counter } from './redux/counter/Counter';
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
+       <Provider store={store}>
+       <BrowserRouter>
       <Routes>
         {/* client */}
         <Route path="/" element={<App />}>
           <Route path="/" element={<Home />} />
+          <Route path="/counter" element={<Counter />} />
           <Route path="tin-tuc" element={<News />} />
           <Route path="trach-nghiem-tinh-cach" element={<MBTI />} />
           <Route path="mbti-test" element={<TestMbti />} />
@@ -48,6 +55,10 @@ root.render(
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
+    </Provider>
+
+
+
   </React.StrictMode>,
 );
 
