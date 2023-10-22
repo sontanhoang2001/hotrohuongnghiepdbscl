@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import Header from "../../components/header";
+import React, { useState } from 'react';
+import Header from '../../components/header';
 import {
   AutoComplete,
   Button,
@@ -11,38 +11,38 @@ import {
   InputNumber,
   Row,
   Select,
-} from "antd";
-import { styled } from "styled-components";
+} from 'antd';
+import { styled } from 'styled-components';
 
 const { Option } = Select;
 const residences = [
   {
-    value: "zhejiang",
-    label: "Zhejiang",
+    value: 'zhejiang',
+    label: 'Zhejiang',
     children: [
       {
-        value: "hangzhou",
-        label: "Hangzhou",
+        value: 'hangzhou',
+        label: 'Hangzhou',
         children: [
           {
-            value: "xihu",
-            label: "West Lake",
+            value: 'xihu',
+            label: 'West Lake',
           },
         ],
       },
     ],
   },
   {
-    value: "jiangsu",
-    label: "Jiangsu",
+    value: 'jiangsu',
+    label: 'Jiangsu',
     children: [
       {
-        value: "nanjing",
-        label: "Nanjing",
+        value: 'nanjing',
+        label: 'Nanjing',
         children: [
           {
-            value: "zhonghuamen",
-            label: "Zhong Hua Men",
+            value: 'zhonghuamen',
+            label: 'Zhong Hua Men',
           },
         ],
       },
@@ -82,7 +82,7 @@ const tailFormItemLayout = {
 function Signup() {
   const [form] = Form.useForm();
   const onFinish = (values) => {
-    console.log("Received values of form: ", values);
+    console.log('Received values of form: ', values);
   };
   const prefixSelector = (
     <Form.Item name="prefix" noStyle>
@@ -119,9 +119,7 @@ function Signup() {
     if (!value) {
       setAutoCompleteResult([]);
     } else {
-      setAutoCompleteResult(
-        [".com", ".org", ".net"].map((domain) => `${value}${domain}`)
-      );
+      setAutoCompleteResult(['.com', '.org', '.net'].map((domain) => `${value}${domain}`));
     }
   };
   const websiteOptions = autoCompleteResult.map((website) => ({
@@ -139,8 +137,8 @@ function Signup() {
             name="register"
             onFinish={onFinish}
             initialValues={{
-              residence: ["zhejiang", "hangzhou", "xihu"],
-              prefix: "86",
+              residence: ['zhejiang', 'hangzhou', 'xihu'],
+              prefix: '86',
             }}
             style={{
               maxWidth: 600,
@@ -152,12 +150,12 @@ function Signup() {
               label="E-mail"
               rules={[
                 {
-                  type: "email",
-                  message: "mail của không hợp lệ",
+                  type: 'email',
+                  message: 'mail của không hợp lệ',
                 },
                 {
                   required: true,
-                  message: "bạn chưa nhập email",
+                  message: 'bạn chưa nhập email',
                 },
               ]}
             >
@@ -170,7 +168,7 @@ function Signup() {
               rules={[
                 {
                   required: true,
-                  message: "bạn chưa nhập mật khẩu",
+                  message: 'bạn chưa nhập mật khẩu',
                 },
               ]}
               hasFeedback
@@ -181,22 +179,20 @@ function Signup() {
             <Form.Item
               name="confirm"
               label="Confirm Password"
-              dependencies={["password"]}
+              dependencies={['password']}
               hasFeedback
               rules={[
                 {
                   required: true,
-                  message: "hãy nhập Xác nhận mật khẩu",
+                  message: 'hãy nhập Xác nhận mật khẩu',
                 },
                 ({ getFieldValue }) => ({
                   validator(_, value) {
-                    if (!value || getFieldValue("password") === value) {
+                    if (!value || getFieldValue('password') === value) {
                       return Promise.resolve();
                     }
                     return Promise.reject(
-                      new Error(
-                        "The new password that you entered do not match!"
-                      )
+                      new Error('The new password that you entered do not match!'),
                     );
                   },
                 }),
@@ -210,9 +206,9 @@ function Signup() {
               label="Địa chỉ"
               rules={[
                 {
-                  type: "array",
+                  type: 'array',
                   required: true,
-                  message: "hãy nhập địa chỉ của bạn",
+                  message: 'hãy nhập địa chỉ của bạn',
                 },
               ]}
             >
@@ -225,18 +221,18 @@ function Signup() {
               rules={[
                 {
                   required: true,
-                  message: "hãy nhập số điện thoại!",
+                  message: 'hãy nhập số điện thoại!',
                 },
                 {
-                  max: 9,
-                  message: "độ dài sdt không quá 9 số",
+                  max: 10,
+                  message: 'độ dài sdt không quá 10 số',
                 },
               ]}
             >
               <Input
                 addonBefore={prefixSelector}
                 style={{
-                  width: "100%",
+                  width: '100%',
                 }}
               />
             </Form.Item>
@@ -247,7 +243,7 @@ function Signup() {
               rules={[
                 {
                   required: true,
-                  message: "Please select gender!",
+                  message: 'Please select gender!',
                 },
               ]}
             >
@@ -266,7 +262,7 @@ function Signup() {
                   validator: (_, value) =>
                     value
                       ? Promise.resolve()
-                      : Promise.reject(new Error("Should accept agreement")),
+                      : Promise.reject(new Error('Should accept agreement')),
                 },
               ]}
               {...tailFormItemLayout}

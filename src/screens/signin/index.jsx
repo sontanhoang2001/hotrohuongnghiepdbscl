@@ -7,10 +7,8 @@ import { loginAsync, selectProfile } from '../../redux/authSlice';
 import { Button, Checkbox, Form, Input } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
-import { Link, useNavigate } from 'react-router-dom';
-import authApi from '../../api/auth';
-import { useEffect } from 'react';
-import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 function Login() {
   const userProfile = useSelector(selectProfile);
   const dispatch = useDispatch();
