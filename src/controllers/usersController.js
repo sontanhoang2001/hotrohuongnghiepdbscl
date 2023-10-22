@@ -21,9 +21,9 @@ module.exports = {
   getUsers: async (req, res) => {
     try {
       const users = await userService.getAll(); // Gọi chức năng từ service
-      responseHelper.sendResponse(res, 200, users); // Trả về danh sách người dùng với mã lỗi 200 (OK)
+      responseHelper.sendResponse.SUCCESS(res, users, "Email is invalid");
     } catch (error) {
-      responseHelper.sendResponse(res, 500, null); // Trả về mã lỗi 500 (Internal Server Error)
+      responseHelper.sendResponse.SERVER_ERROR(res, null);
     }
 
     //   let sqlQuery = "SELECT * FROM users";
