@@ -5,13 +5,11 @@ const morgan = require('morgan');
 const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser');
 const router = require('./router');
-const cors = require('cors');
 
 // require('./database/connection_database');
 
 //* Initializations
 const app = express();
-app.use(cors({ origin: 'http://localhost:3000' })); // Replace with the appropriate origin
 dotenv.config();
 
 //* Settings
@@ -22,7 +20,9 @@ const port = process.env.NODE_PORT;
 app.use(morgan('dev'));
 
 //* Enabling cors for all request by usiing cors middleware
-app.use(cors());
+// app.use(cors());
+// app.use(cors({ origin: 'http://localhost:3000' })); // Replace with the appropriate origin
+
 
 /**
  * * Parse request of content-type: application/json
