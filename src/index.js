@@ -21,15 +21,14 @@ app.use(morgan('dev'));
 
 //* Enabling cors for all request by usiing cors middleware
 // app.use(cors());
-// app.use(cors({ origin: 'http://localhost:3000' })); // Replace with the appropriate origin
-
+app.use(cors({ origin: 'http://localhost:3000' })); // Replace with the appropriate origin
 
 /**
  * * Parse request of content-type: application/json
  * * Parses inconming request with JSON payloads
  */
-app.use( express.json());
-app.use( express.urlencoded( { extended:true } ) );
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // Sử dụng middleware cookie-parser
 app.use(cookieParser());
@@ -38,6 +37,6 @@ app.use(cookieParser());
 router(app);
 
 //* Starting the server
-app.listen( port, () => {
-    console.log(`Server running in port ${port}`);
+app.listen(port, () => {
+  console.log(`Server running in port ${port}`);
 });
