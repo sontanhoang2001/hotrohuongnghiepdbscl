@@ -12,14 +12,28 @@ const initialState = {
   success: false,
 };
 
-export const loginAsync = createAsyncThunk(
-  'auth/login',
-  async (userLoginData) => {
-    const response = await authApi.login(userLoginData);
+export const loginAsync = createAsyncThunk('auth/login', async (userLoginData, rejectWithValue) => {
+  try {
+    const rs = await authApi.login(userLoginData);
     // The value we return becomes the `fulfilled` action payload
-    return response.data;
+    const dataUser = {
+      ...rs.data.data.userData,
+    };
+
+    console.log('>>> rs', rs);
+
+    localStorage.setItem('accessToken', rs.data.data.accessToken);
+    localStorage.setItem('userData', JSON.stringify(dataUser));
+
+    return rs.data.data;
+  } catch (error) {
+    if (error.response && error.response.data.message) {
+      return rejectWithValue(error.response.data.message);
+    } else {
+      return rejectWithValue(error.message);
+    }
   }
-);
+});
 
 export const counterSlice = createSlice({
   name: 'auth',
@@ -31,7 +45,6 @@ export const counterSlice = createSlice({
     // incrementByAmount: (state, action) => {
     //   state.value += action.payload;
     // },
-   
   },
 
   extraReducers: (builder) => {
@@ -49,15 +62,11 @@ export const counterSlice = createSlice({
       .addCase(loginAsync.rejected, (state, { payload }) => {
         state.loading = false;
         state.error = payload;
-      })
+      });
   },
 });
 
-
-
-
 // export const { decrement, incrementByAmount } = counterSlice.actions;
-
 
 export const selectProfile = (state) => state.auth.data;
 
