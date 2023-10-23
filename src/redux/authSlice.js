@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import authApi from '../api/auth';
-// import { toast } from "react-toastify"; // thông báo
+
 
 import { message } from 'antd';
 
@@ -58,10 +58,12 @@ export const counterSlice = createSlice({
         state.data = payload;
         state.authToken = payload.token;
         state.success = true;
+        message.success("Đăng nhập thành công", 3, onclose);
       })
       .addCase(loginAsync.rejected, (state, { payload }) => {
         state.loading = false;
         state.error = payload;
+        message.error("Đăng nhập thất bại", 3, onclose);
       });
   },
 });

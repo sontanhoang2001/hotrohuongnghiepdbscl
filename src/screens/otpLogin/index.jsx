@@ -3,7 +3,6 @@ import { useDispatch } from 'react-redux';
 import { Button, Form, message } from 'antd';
 import { InputOTP } from 'antd-input-otp';
 import styled from 'styled-components';
-import { addNotification, removeNotification } from '../../redux/notificationSlice';
 
 function OtpLogin() {
   const [form] = Form.useForm();
@@ -34,10 +33,8 @@ function OtpLogin() {
 
   const handleResend = () => {
     const key = Date.now();
-    dispatch(addNotification({ id: key }));
     message.success('mã xác nhận đã được gưi lại thành công', 3, () => {
       // Xóa thông báo sau khi đóng
-      dispatch(removeNotification(key));
     });
   };
 
