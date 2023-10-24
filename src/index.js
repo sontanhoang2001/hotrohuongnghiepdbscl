@@ -23,11 +23,13 @@ import ManageUniversity from './screens/manageUnivercity';
 import AdminHome from './screens/adminHome';
 import { Counter } from './redux/counter/Counter';
 import OtpLogin from './screens/otpLogin';
+import Redirection from './components/redirection';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <Provider store={store}>
+      <Redirection />
       <BrowserRouter>
         <Routes>
           {/* client */}

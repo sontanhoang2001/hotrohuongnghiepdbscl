@@ -3,7 +3,6 @@ import { useDispatch } from 'react-redux';
 import { Button, Form, message } from 'antd';
 import { InputOTP } from 'antd-input-otp';
 import styled from 'styled-components';
-import { addNotification, removeNotification } from '../../redux/notificationSlice';
 
 function OtpLogin() {
   const [form] = Form.useForm();
@@ -15,6 +14,7 @@ function OtpLogin() {
     // Check the field if there is no value, or value is undefined/empty string
     const otp_test = '1234';
     const { otp } = values;
+    let result;
     if (!otp || otp.includes(undefined) || otp.includes('')) {
       return form.setFields([
         {
@@ -23,22 +23,9 @@ function OtpLogin() {
         },
       ]);
     }
-    for (let i = 0; i < otp.length; i++) {
-      if (otp[i] === otp_test) {
-        console.log(`Phần tử thứ ${i} của mảng otp trùng với '${otp_test}'.`);
-      }
-    }
+    const otpString = values.otp.join('');
 
-    console.log(`OTP: ${otp}`);
-  };
-
-  const handleResend = () => {
-    const key = Date.now();
-    dispatch(addNotification({ id: key }));
-    message.success('mã xác nhận đã được gưi lại thành công', 3, () => {
-      // Xóa thông báo sau khi đóng
-      dispatch(removeNotification(key));
-    });
+    console.log(`OTP: ${otpString}`);
   };
 
   return (
@@ -62,7 +49,7 @@ function OtpLogin() {
             </Form.Item>
 
             <Form.Item noStyle>
-              <Button block className="otp-resend-btn" onClick={() => handleResend()}>
+              <Button block className="otp-resend-btn">
                 gửi lại mã xác thực
               </Button>
             </Form.Item>

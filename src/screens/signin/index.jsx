@@ -1,42 +1,22 @@
 import React from 'react';
 //call redux
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
-import { loginAsync, selectProfile } from '../../redux/authSlice';
+import { loginAsync } from '../../redux/authSlice';
 
 import { Button, Checkbox, Form, Input } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+
 function Login() {
-  const userProfile = useSelector(selectProfile);
   const dispatch = useDispatch();
-
-  // useEffect(() => {
-  //   const fethApi = async () => {
-  //     try {
-  //       console.log('test');
-  //       const result = await authApi.login({
-  //         username: 'huukiet@gmail.com',
-  //         password: '123456',
-  //       });
-
-  //       console.log('result', result);
-  //       window.localStorage?.setItem('access_token', result.data.data.accessToken);
-  //     } catch (error) {
-  //       console.log('error', error);
-  //     }
-  //   };
-
-  //   fethApi();
-  // }, []);
-
   const onFinish = (values) => {
     const { remember, ...inputedUserData } = values;
     const payload = inputedUserData;
     dispatch(loginAsync(payload));
   };
+
   return (
     <Background>
       <LoginForm>
@@ -141,6 +121,7 @@ const LoginForm = styled.div`
         color: blue;
         border-bottom: 1px solid blue;
         line-height: 10px;
+        margin-left: 10px;
         &:hover {
           color: var(--secondary-color);
           border-color: var(--secondary-color);

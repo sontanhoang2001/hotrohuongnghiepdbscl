@@ -1,13 +1,12 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import authApi from '../api/auth';
+import { useEffect } from 'react';
 // import { toast } from "react-toastify"; // thông báo
-
-import { message } from 'antd';
 
 const initialState = {
   authToken: null,
   data: null,
-  loading: false,
+  pending: false,
   error: null,
   success: false,
 };
@@ -17,13 +16,14 @@ export const loginAsync = createAsyncThunk('auth/login', async (userLoginData, r
     const rs = await authApi.login(userLoginData);
     // The value we return becomes the `fulfilled` action payload
     const dataUser = {
-      ...rs.data.data.userData,
+      ...rs.data.data,
     };
 
-    console.log('>>> rs', rs);
+    // console.log('>>> rs', rs);
+    // console.log('>>> role', dataUser.userData.role);
 
     localStorage.setItem('accessToken', rs.data.data.accessToken);
-    localStorage.setItem('userData', JSON.stringify(dataUser));
+    localStorage.setItem('userData', JSON.stringify(dataUser.userData));
 
     return rs.data.data;
   } catch (error) {
@@ -35,39 +35,39 @@ export const loginAsync = createAsyncThunk('auth/login', async (userLoginData, r
   }
 });
 
-export const counterSlice = createSlice({
+export const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    // decrement: (state) => {
-    //   state.value -= 1;
-    // },
-    // incrementByAmount: (state, action) => {
-    //   state.value += action.payload;
-    // },
+    logout: (state, action) => {
+      state.data = {};
+      localStorage.removeItem('auth_token');
+      localStorage.removeItem('data_user');
+      window.location.reload();
+    },
   },
 
   extraReducers: (builder) => {
     builder
       .addCase(loginAsync.pending, (state, { payload }) => {
-        state.loading = true;
+        state.pending = true;
         state.error = null;
       })
       .addCase(loginAsync.fulfilled, (state, { payload }) => {
-        state.loading = false;
+        state.pending = false;
         state.data = payload;
         state.authToken = payload.token;
         state.success = true;
       })
       .addCase(loginAsync.rejected, (state, { payload }) => {
-        state.loading = false;
+        state.pending = false;
         state.error = payload;
       });
   },
 });
 
-// export const { decrement, incrementByAmount } = counterSlice.actions;
-
+export const { logout } = authSlice.actions;
 export const selectProfile = (state) => state.auth.data;
+export const selectPending = (state) => state.auth.pending;
 
-export default counterSlice.reducer;
+export default authSlice.reducer;

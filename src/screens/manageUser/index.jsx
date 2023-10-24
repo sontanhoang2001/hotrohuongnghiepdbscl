@@ -4,40 +4,29 @@ import { useState } from 'react';
 import authApi from '../../api/auth';
 import { Avatar, Space, Typography } from 'antd';
 import Table from 'rc-table';
+import { useDispatch, useSelector } from 'react-redux';
+import { getUserAsync, selectUser } from '../../redux/userSlice.js';
+
+import {} from '../../redux/userSlice';
 
 function ManageUser() {
+  const user = useSelector(selectUser);
+  const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const [dataSource, setDataSource] = useState([]);
 
-  //giá trị mặc định của người dùng
-  // const [userData, setUserData] = useState({
-  //   id: 0,
-  //   account_type: 0,
-  //   username: '',
-  //   password: null,
-  //   fullname: 'unknow',
-  //   avatar:
-  //     'https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.pngwing.com%2Fen%2Fsearch%3Fq%3Duser&psig=AOvVaw0J1XTXtOJjRHEsOUcRLZz3&ust=1697902769888000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCNjnj-76hIIDFQAAAAAdAAAAABAE',
-  //   email: 'unknow.@gmail.com',
-  //   birthday: 'dd/mm/yyyy',
-  //   phone: '098765432',
-  //   address: null,
-  //   role: null,
-  //   createdAt: null,
-  //   updatedAt: null,
-  // });
-
   useEffect(() => {
+    // const testUser = async () => {
+    //   try {
+    //     //chưa khởi tạo getUser.js
+    //     const result = await authApi.getUser();
+    //     setDataSource(result.data);
+    //     console.log('result', result);
+    //   } catch (error) {}
+    // };
     setLoading(true);
-    const testUser = async () => {
-      try {
-        //chưa khởi tạo getUser.js
-        const result = await authApi.getUser();
-        setDataSource(result.data);
-        console.log('result', result);
-      } catch (error) {}
-    };
-  }, []);
+    dispatch(getUserAsync());
+  }, [dispatch]);
 
   return (
     <div>
