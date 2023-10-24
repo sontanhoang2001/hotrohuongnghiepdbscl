@@ -83,7 +83,7 @@ module.exports = {
     }
   },
   login: async (req, res) => {
-    try {
+    // try {
       const user = req.body;
       const username = user.username;
 
@@ -97,7 +97,7 @@ module.exports = {
       if (result) {
         const validPassword = await bcrypt.compare(
           user.password,
-          result.password
+          result?.password
         );
 
         // Đúng 'password'
@@ -121,9 +121,9 @@ module.exports = {
       }
 
       responseHelper.sendResponse.UNAUTHORIZED(res, null, "Tên đăng nhập hoặc mật khẩu không đúng!");
-    } catch (error) {
-      responseHelper.sendResponse.SERVER_ERROR(res, null);
-    }
+    // } catch (error) {
+    //   responseHelper.sendResponse.SERVER_ERROR(res, null);
+    // }
   },
   requestRefreshToken: async (req, res) => {
     try {

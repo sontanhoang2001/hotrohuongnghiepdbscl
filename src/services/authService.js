@@ -1,4 +1,7 @@
-const User = require("../models").User;
+const User  = require("../models").User;
+const Role = require("../models").Role;
+const UserDetail = require("../models").UserDetail;
+
 const bcrypt = require("bcrypt");
 const { Op } = require("sequelize");
 
@@ -32,14 +35,22 @@ module.exports = {
   loginUser: async (username) => {
     try {
       const user = await User.findOne({
-        attributes: ["id", "account_type", "password", "fullname", "avatar", "email", "birthday", "phone", "address", "role", "status"],
+        attributes: ["id", "account_type", "email",  "phone",  "password", "status"],
         limit: 1,
         where: {
           [Op.or]: [
             {email: username},  
             {phone: username}
           ]
-        }  
+        },
+        include: [{
+          model: UserDetail,
+          attributes: ['id', 'fullName', 'gender', 'avatar', 'birthday', 'address', 'addressDetail'] 
+        },
+        {
+          model: Role,
+          attributes: ['id', 'name'] 
+        }]
       });
       if (user) {
         return user.get({ plain: true });

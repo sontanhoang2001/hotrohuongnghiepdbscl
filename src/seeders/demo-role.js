@@ -6,16 +6,24 @@ module.exports = {
       "Role",
       [
         {
-          role: "ADMIN",
-          description: "Admin"
+          name: "ADMIN",
+          description: "Quyền cao nhất"
         },
         {
-          role: "CONPANY",
+          name: "CONPANY",
           description: "Doanh nghiệp"
         },
         {
-          role: "STUDENT",
-          description: "Học sinh"
+          name: "CONPANY2",
+          description: "Doanh nghiệp"
+        },
+        {
+          name: "CONPANY3",
+          description: "Giáo Viên"
+        },
+        {
+          name: "STUDENT",
+          description: "Quyền học sinh/ sinh viên/ người dùng bình thường"
         },
       ],
       {}

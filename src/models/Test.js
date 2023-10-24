@@ -13,7 +13,6 @@ module.exports = (sequelize, DataTypes) => {
   }
   Test.init(
     {
-      name: DataTypes.INTEGER,
     },
     {
       sequelize,

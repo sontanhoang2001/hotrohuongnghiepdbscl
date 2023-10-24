@@ -17,13 +17,16 @@ module.exports = {
       phone: {
         type: Sequelize.STRING(320)
       },
-      passWord: {
+      password: {
         type: Sequelize.STRING(100)
       },
       authCode: {
         type: Sequelize.STRING(4)
       },
-      active: {
+      roleId: {
+        type: Sequelize.INTEGER
+      },
+      status: {
         type: Sequelize.INTEGER
       },
     });

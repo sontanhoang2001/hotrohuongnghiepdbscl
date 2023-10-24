@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: 'BankQuestionAnsDetail',
-      tableName: 'BankQuestionAnsDetail',
+      tableName: 'Bank_QuestionAns_Detail',
     },
   );
   return BankQuestionAnsDetail;

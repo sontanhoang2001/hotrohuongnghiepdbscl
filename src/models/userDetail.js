@@ -9,6 +9,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      UserDetail.belongsTo(models.User)
     }
   }
   UserDetail.init(
@@ -19,11 +20,12 @@ module.exports = (sequelize, DataTypes) => {
       birthday: DataTypes.DATE,
       address: DataTypes.STRING,
       addressDetail: DataTypes.STRING,
+      userId: DataTypes.INTEGER,
     },
     {
       sequelize,
       modelName: 'UserDetail',
-      tableName: 'UserDetail',
+      tableName: 'User_Detail',
     },
   );
   return UserDetail;

@@ -7,10 +7,7 @@ module.exports = {
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
-      },
-      name: {
-        type: Sequelize.INTEGER,
-      },
+      }
     });
   },
   down: async (queryInterface, Sequelize) => {
