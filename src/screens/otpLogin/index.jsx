@@ -25,9 +25,6 @@ function OtpLogin() {
     }
     const otpString = values.otp.join('');
 
-    console.log(`OTP: ${otpString}`);
-  };
-
   return (
     <OtpContainer>
       <main className="app">
