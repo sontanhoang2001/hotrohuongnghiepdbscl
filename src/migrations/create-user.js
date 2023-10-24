@@ -12,46 +12,20 @@ module.exports = {
         type: Sequelize.INTEGER(1)
       },
       email: {
-        type: Sequelize.STRING(320)
+        type: Sequelize.STRING(100)
       },
       phone: {
-        type: Sequelize.STRING(10)
+        type: Sequelize.STRING(320)
       },
-      password: {
+      passWord: {
         type: Sequelize.STRING(100)
       },
-      fullname: {
-        type: Sequelize.STRING(100)
+      authCode: {
+        type: Sequelize.STRING(4)
       },
-      avatar: {
-        type: Sequelize.STRING(300)
+      active: {
+        type: Sequelize.INTEGER
       },
-      birthday: {
-        type: Sequelize.DATEONLY
-      },
-      gender: {
-        type: Sequelize.INTEGER(1)
-      },
-      address: {
-        type: Sequelize.STRING(255)
-      },
-      address_detail: {
-        type: Sequelize.STRING(255)
-      },
-      role: {
-        type: Sequelize.INTEGER(1)
-      },
-      status: {
-        type: Sequelize.INTEGER(1)
-      },
-      createdAt: {
-        allowNull: false,
-        type: Sequelize.DATE
-      },
-      updatedAt: {
-        allowNull: false,
-        type: Sequelize.DATE
-      }
     });
   },
   down: async (queryInterface, Sequelize) => {
