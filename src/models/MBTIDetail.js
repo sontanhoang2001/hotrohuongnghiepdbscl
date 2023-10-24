@@ -1,5 +1,5 @@
-"use strict";
-const { Model } = require("sequelize");
+'use strict';
+const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class MBTIDetail extends Model {
     /**
@@ -13,13 +13,14 @@ module.exports = (sequelize, DataTypes) => {
   }
   MBTIDetail.init(
     {
-      Name: DataTypes.STRING,
-      Description: DataTypes.STRING,
+      name: DataTypes.STRING,
+      description: DataTypes.STRING,
     },
     {
       sequelize,
-      modelName: "MBTIDetail",
-    }
+      modelName: 'MBTIDetail',
+      tableName: 'MBTIDetail',
+    },
   );
   return MBTIDetail;
 };
