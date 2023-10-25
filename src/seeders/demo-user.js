@@ -13,6 +13,8 @@ module.exports = {
           authCode: null,
           roleId: 1,
           status: 1,
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
         {
           account_type: 0,
@@ -22,6 +24,8 @@ module.exports = {
           authCode: null,
           roleId: 5,
           status: 1,
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
       ],
       {}

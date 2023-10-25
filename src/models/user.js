@@ -12,15 +12,22 @@ module.exports = (sequelize, DataTypes) => {
       User.hasOne(models.UserDetail);
       User.belongsTo(models.Role);
     }
+
+    // Định nghĩa phương thức toJSON để loại bỏ trường password
+    toJSON() {
+      const values = { ...this.get() };
+      delete values.password;
+      return values;
+    }
   }
   User.init(
     {
       account_type: DataTypes.INTEGER,
       email: DataTypes.STRING,
       phone: DataTypes.STRING,
-      passWord: DataTypes.STRING,
+      password: DataTypes.STRING,
       authCode: DataTypes.STRING,
-      role: DataTypes.INTEGER,
+      roleId: DataTypes.INTEGER,
       status: DataTypes.INTEGER,
     },
     {
