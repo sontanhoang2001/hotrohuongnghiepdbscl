@@ -49,7 +49,6 @@ function Signup() {
     //thiết lập giá trị loading page cho
     setloadinpage(pending && pending != null ? true : false);
     console.log(loadinpage);
-    //lấy role khi người dùng đăng nhập
   }, [pending, loadinpage]);
 
   const prefixSelector = (
@@ -202,10 +201,6 @@ function Signup() {
                 name="phone"
                 label="SĐT"
                 rules={[
-                  {
-                    required: true,
-                    message: 'hãy nhập số điện thoại!',
-                  },
                   {
                     max: 10,
                     message: 'độ dài sdt không quá 10 số',

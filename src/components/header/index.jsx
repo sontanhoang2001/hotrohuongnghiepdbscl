@@ -51,7 +51,15 @@ function Header() {
   const items = [
     {
       key: '1',
-      label: <span>profile</span>,
+      label: (
+        <span
+          onClick={() => {
+            navigate('thong-tin-ca-nhan');
+          }}
+        >
+          profile
+        </span>
+      ),
       icon: <AlignLeftOutlined />,
     },
     {
