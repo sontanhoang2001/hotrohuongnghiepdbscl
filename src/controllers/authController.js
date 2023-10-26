@@ -97,7 +97,7 @@ module.exports = {
         const info = await transporter.sendMail({
           from: `"Support Student 📩" <${sendTo}>`, // sender address
           to: sendTo, // list of receivers
-          subject: 'Mã xác thực đăng ký tài khoản ✔', // Subject line
+          subject: 'Mã xác thực OTP ✔', // Subject line
           text: `Mã OTP của bạn là: ${otpCode}`, // plain text body
           html: `
           <div style="font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2">
