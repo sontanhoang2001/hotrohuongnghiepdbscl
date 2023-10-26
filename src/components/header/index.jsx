@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { Button } from 'antd';
+import { AlignLeftOutlined, UserOutlined, LogoutOutlined } from '@ant-design/icons';
+import { Button, Dropdown, Space } from 'antd';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { selectIsLogin, selectProfile, logout } from '../../redux/authSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
 const linkMenu = [
   { to: '/', title: 'trang chủ' },
@@ -20,16 +23,51 @@ function Header() {
   const location = useLocation();
   const [selectedKeys, setSelectedKeys] = useState('/');
 
+  const dispatch = useDispatch();
+  const isLogin = useSelector(selectIsLogin);
+  const profile = useSelector(selectProfile);
+  const [fullname, setFullName] = useState('');
+  const [loginStatus, setLoginStatus] = useState(false);
+
   useEffect(() => {
+    setLoginStatus(isLogin ? true : false);
+
+    console.log(loginStatus);
+    if (isLogin) {
+      const getInfo = window.localStorage.getItem('userData');
+      setFullName(JSON.parse(getInfo)?.UserDetail.fullName);
+      console.log('getname', fullname);
+    }
+
     const pathName = location.pathname;
     setSelectedKeys(pathName);
     handleLink(idxActive, pathName);
-  }, [location.pathname, idxActive]);
+  }, [location.pathname, idxActive, isLogin, loginStatus]);
 
   const handleLink = (index, to) => {
     setIdxActive(index);
     navigate(to);
   };
+  const items = [
+    {
+      key: '1',
+      label: <span>profile</span>,
+      icon: <AlignLeftOutlined />,
+    },
+    {
+      key: '2',
+      label: (
+        <span
+          onClick={() => {
+            dispatch(logout());
+          }}
+        >
+          logout
+        </span>
+      ),
+      icon: <LogoutOutlined />,
+    },
+  ];
 
   return (
     <Nav>
@@ -41,11 +79,27 @@ function Header() {
         <div className="topbar">
           {/* brand name and topbar button */}
           <h1 className="brand">Trung Tâm Hướng Nghiệp ĐBSCL</h1>
+
           <div className="topbar-btn">
-            <Button danger onClick={() => navigate('/dang-nhap')}>
-              <span>đăng nhập</span>
-              {/* <a href="/dang-nhap">login</a> */}
-            </Button>
+            {loginStatus ? (
+              <Dropdown
+                menu={{
+                  items,
+                }}
+              >
+                <span onClick={(e) => e.preventDefault()}>
+                  <Space>
+                    {fullname}
+                    <UserOutlined className="user-icon" />
+                  </Space>
+                </span>
+              </Dropdown>
+            ) : (
+              <Button danger onClick={() => navigate('/dang-nhap')}>
+                <span>đăng nhập</span>
+                {/* <a href="/dang-nhap">login</a> */}
+              </Button>
+            )}
           </div>
         </div>
         {/*navigation bar */}
@@ -118,6 +172,12 @@ const Nav = styled.header`
           text-decoration: none;
           font-weight: 500;
           text-transform: capitalize;
+          .user-icon {
+            font-size: 1.5rem;
+            padding: 3px;
+            border: 2px solid;
+            border-radius: 50%;
+          }
         }
       }
     }

@@ -1,7 +1,7 @@
 import axiosClientLogin from './axiosClient';
 
 const userApi = {
-  getUser: (payload) => {
+  getAllUser: (payload) => {
     const url = `/users`;
     return axiosClientLogin.get(url, payload);
   },

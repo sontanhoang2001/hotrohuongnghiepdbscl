@@ -10,7 +10,7 @@ const initialState = {
 
 export const getUserAsync = createAsyncThunk('users', async (rejectWithValue) => {
   try {
-    const rs = await userApi.getUser();
+    const rs = await userApi.getAllUser();
     // The value we return becomes the `fulfilled` action payload
     const dataUser = {
       ...rs.data.data,

@@ -1,88 +1,113 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 //call redux
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { loginAsync } from '../../redux/authSlice';
+import { signinAsync, selectIsLogin, selectPending, selectProfile } from '../../redux/authSlice';
 
-import { Button, Checkbox, Form, Input } from 'antd';
+import { Button, Checkbox, Form, Input, Spin } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 function Login() {
   const dispatch = useDispatch();
+  const [loadinpage, setloadinpage] = useState(false);
+
+  let pending = useSelector(selectPending);
+  const profile = useSelector(selectProfile);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    //thiết lập giá trị loading page cho
+    setloadinpage(pending && pending != null ? true : false);
+    //lấy role khi người dùng đăng nhập
+    if (profile != null && profile !== undefined) {
+      const role = profile?.data.userData.Role.name;
+
+      if (role === 'STUDENT') {
+        navigate('/');
+      }
+      if (role === 'ADMIN') {
+        navigate('/admin');
+      }
+    }
+  }, [pending, profile, navigate]);
+
   const onFinish = (values) => {
     const { remember, ...inputedUserData } = values;
     const payload = inputedUserData;
-    dispatch(loginAsync(payload));
+    dispatch(signinAsync(payload));
   };
 
   return (
-    <Background>
-      <LoginForm>
-        <div className="box">
-          <h3>đăng nhập</h3>
-          <Form
-            name="normal_login"
-            className="login-form"
-            //giá trị mặt định
-            initialValues={{
-              username: '',
-              password: '',
-              remember: true,
-            }}
-            onFinish={onFinish}
-          >
-            <Form.Item
-              name="username"
-              rules={[
-                {
-                  required: true,
-                  message: 'Please input your Username!',
-                },
-              ]}
+    <Spin spinning={loadinpage}>
+      <Background>
+        <LoginForm>
+          <div className="box">
+            <h3>đăng nhập</h3>
+            <Form
+              name="normal_login"
+              className="login-form"
+              //giá trị mặt định
+              initialValues={{
+                username: '',
+                password: '',
+                remember: true,
+              }}
+              onFinish={onFinish}
             >
-              <Input
-                prefix={<UserOutlined className="site-form-item-icon" />}
-                placeholder="Tên Đăng Nhập"
-              />
-            </Form.Item>
-            <Form.Item
-              name="password"
-              rules={[
-                {
-                  required: true,
-                  message: 'Please input your Password!',
-                },
-              ]}
-            >
-              <Input
-                prefix={<LockOutlined className="site-form-item-icon" />}
-                type="password"
-                placeholder="Mật Khẩu"
-              />
-            </Form.Item>
-            <Form.Item>
-              <Form.Item name="remember" valuePropName="checked" noStyle>
-                <Checkbox>lưu đăng nhập</Checkbox>
+              <Form.Item
+                name="username"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please input your Username!',
+                  },
+                ]}
+              >
+                <Input
+                  prefix={<UserOutlined className="site-form-item-icon" />}
+                  placeholder="Tên Đăng Nhập"
+                />
               </Form.Item>
-              <Link className="login-form-forgot f-link" to="/quen-mat-khau">
-                Quên Mật Khẩu
-              </Link>
-            </Form.Item>
+              <Form.Item
+                name="password"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please input your Password!',
+                  },
+                ]}
+              >
+                <Input
+                  prefix={<LockOutlined className="site-form-item-icon" />}
+                  type="password"
+                  placeholder="Mật Khẩu"
+                />
+              </Form.Item>
+              <Form.Item>
+                <Form.Item name="remember" valuePropName="checked" noStyle>
+                  <Checkbox>lưu đăng nhập</Checkbox>
+                </Form.Item>
+                <Link className="login-form-forgot f-link" to="/quen-mat-khau">
+                  Quên Mật Khẩu
+                </Link>
+              </Form.Item>
 
-            <Form.Item>
-              <Button type="primary" htmlType="submit" className="login-form-button" danger>
-                Log in
-              </Button>
-              <Link className="f-link" to="/dang-ky">
-                Đăng Ký Ngay!
-              </Link>
-            </Form.Item>
-          </Form>
-        </div>
-      </LoginForm>
-    </Background>
+              <Form.Item>
+                <Button type="primary" htmlType="submit" className="login-form-button" danger>
+                  Log in
+                </Button>
+                <Link className="f-link" to="/dang-ky">
+                  Đăng Ký Ngay!
+                </Link>
+              </Form.Item>
+            </Form>
+          </div>
+        </LoginForm>
+      </Background>
+    </Spin>
   );
 }
 const Background = styled.div`

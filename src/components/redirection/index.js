@@ -12,11 +12,13 @@ const Redirection = () => {
     // console.log('MyUtilityComponent is mounted');
     // console.log('>>> lesting ... profile: ', profile?.userData.role);
     try {
-      if (profile?.userData.role === 1) {
+      if (profile?.userData.Role.id === 1) {
         window.location.href = '/dashboard';
+        console.log('role', profile?.userData.Role.name);
       }
-      if (profile?.userData.role === 5) {
+      if (profile?.userData.Role.id === 5) {
         window.location.href = '/';
+        console.log('role', profile?.userData.Role.name);
       }
     } catch (error) {
       console.log('err', error);

@@ -28,16 +28,16 @@ function SideMenu() {
           {
             label: 'Dashbaord',
             icon: <AppstoreOutlined />,
-            key: '/dashboard',
+            key: '/admin',
           },
           {
             label: 'Người Dùng',
-            key: '/dashboard/nguoi-dung',
+            key: '/admin/nguoi-dung',
             icon: <UserOutlined />,
           },
           {
             label: 'Trường Học',
-            key: '/dashboard/truong-hoc',
+            key: '/admin/truong-hoc',
             icon: <BankOutlined />,
           },
         ]}

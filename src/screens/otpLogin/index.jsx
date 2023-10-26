@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { Button, Form, message } from 'antd';
+import { Button, Form } from 'antd';
 import { InputOTP } from 'antd-input-otp';
 import styled from 'styled-components';
 
@@ -24,6 +24,7 @@ function OtpLogin() {
       ]);
     }
     const otpString = values.otp.join('');
+  };
 
   return (
     <OtpContainer>
