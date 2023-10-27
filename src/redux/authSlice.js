@@ -30,6 +30,7 @@ const initialState = {
   pending: false,
   error: null,
   isLogin: statusLogin,
+  isSignup: false,
   message: null,
 };
 
@@ -132,7 +133,6 @@ export const authSlice = createSlice({
         state.pending = false;
         state.data = payload;
         state.authToken = payload.token;
-        state.isLogin = true;
         message.success(payload.message, 3);
       })
       .addCase(signupAsync.rejected, (state, { payload }) => {
@@ -147,5 +147,6 @@ export const { logout } = authSlice.actions;
 export const selectProfile = (state) => state.auth.data;
 export const selectPending = (state) => state.auth.pending;
 export const selectIsLogin = (state) => state.auth.isLogin;
+export const selectRegister = (state) => state.isSignup;
 
 export default authSlice.reducer;
