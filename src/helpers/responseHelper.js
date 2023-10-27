@@ -15,7 +15,7 @@ const sendApiResponse = (res, status, data, message) => {
 // 200 OK: Yêu cầu đã thành công và trả về dữ liệu.
 // 201 Created: Tài nguyên đã được tạo thành công và thông tin về tài nguyên mới được trả về.
 // 204 No Content: Yêu cầu đã được xử lý thành công, nhưng không có dữ liệu phản hồi được gửi lại.
-// 400 Bad Request: Yêu cầu không hợp lệ hoặc không tuân thủ cú pháp.
+// 400 Bad Request: Yêu cầu không hợp lệ hoặc không tuân thủ cú pháp./ cập nhật thất bại
 // 401 Unauthorized: Truy cập bị từ chối do thiếu quyền hoặc cần xác thực.
 // 403 Forbidden: Có quyền truy cập, nhưng bị từ chối.
 // 404 Not Found: Tài nguyên không tồn tại trên máy chủ.

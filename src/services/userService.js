@@ -1,5 +1,9 @@
-const User = require("../models").User;
-const bcrypt = require("bcrypt");
+const User = require('../models').User;
+const UserDetail = require('../models').UserDetail;
+const Role = require('../models').Role;
+
+const bcrypt = require('bcrypt');
+const { where } = require('sequelize');
 
 module.exports = {
   createNew: async (userObj) => {
@@ -31,6 +35,78 @@ module.exports = {
     try {
       const users = await User.findAll();
       return users;
+    } catch (error) {
+      throw error;
+    }
+  },
+  getUserByUserId: async (userId) => {
+    try {
+      const user = await User.findByPk(userId, {
+        attributes: ['id', 'account_type', 'email', 'phone', 'password', 'status'],
+        include: [
+          {
+            model: UserDetail,
+            attributes: [
+              'id',
+              'fullName',
+              'gender',
+              'avatar',
+              'birthday',
+              'address',
+              'addressDetail',
+            ],
+          },
+          {
+            model: Role,
+            attributes: ['id', 'name'],
+          },
+        ],
+      });
+
+      if (user instanceof User) {
+        return user.get();
+      }
+
+      return user;
+    } catch (error) {
+      throw error;
+    }
+  },
+  updateUser: async (payload) => {
+    try {
+      const userId = payload.userId;
+      const payloadUserDetail = {
+        fullName: payload.fullName,
+        gender: payload.gender,
+        avatar: payload.avatar,
+        birthday: payload.birthday,
+        address: payload.address,
+        addressDetail: payload.addressDetail,
+      };
+
+      const user = await User.findByPk(userId, {
+        include: [
+          {
+            model: UserDetail,
+            attributes: ['id'],
+          },
+        ],
+      });
+
+      // Update user detail
+      if (user) {
+        const [numberOfAffectedRows] = await UserDetail.update(payloadUserDetail, {
+          where: { id: user.UserDetail.id },
+        });
+
+        let isUpdated = false;
+        if (numberOfAffectedRows > 0) {
+          isUpdated = true;
+        }
+        return isUpdated;
+      }
+
+      return user;
     } catch (error) {
       throw error;
     }

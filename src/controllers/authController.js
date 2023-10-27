@@ -12,7 +12,7 @@ let refreshTokens = [];
 
 module.exports = {
   registerUser: async (req, res) => {
-    // try {
+    try {
     const user = req.body;
     if (!user.email || !user.password || !user.fullName || !user.address || !user.gender) {
       return responseHelper.sendResponse.BAD_REQUEST(res, null, 'Fields cannot be empty');
@@ -48,7 +48,7 @@ module.exports = {
 
     // Nếu đăng nhập bằng email/phone thì account_type = 0
     const newUser = {
-      account_type: (user.account_type = 0),
+      account_type: 0,
       email: user.email,
       phone: user.phone,
       password: (user.password = hashed),
@@ -62,21 +62,15 @@ module.exports = {
     // Create new user
     const result = await authService.registerUser(newUser);
     return responseHelper.sendResponse.SUCCESS(res, result);
-    // } catch (error) {
-    //   return responseHelper.sendResponse.SERVER_ERROR(res, null);
-    // }
+    } catch (error) {
+      return responseHelper.sendResponse.SERVER_ERROR(res, null);
+    }
   },
   requestOTP: async (req, res) => {
     // try {
     const reqData = req.body;
     if (reqData.userId) {
-      if (reqData.type == 'phone') {
-        // Kiểm tra phone có tồn tại
-        const userPhone = await authService.getUserPhoneById(reqData.userId);
-        if (!userPhone) {
-          return responseHelper.sendResponse.NOT_FOUND(res, null);
-        }
-      } else if (reqData.type == 'email') {
+      if (reqData.type == 'email') {
         // Kiểm tra email có tồn tại
         const userEmail = await authService.getUserEmailById(reqData.userId);
         if (!userEmail) {
@@ -88,7 +82,7 @@ module.exports = {
 
         // Tạo mã OTP
         let otpCode = '';
-        for (let i = 0; i < 4; i++) {
+        for (let i = 0; i < 6; i++) {
           otpCode += Math.floor(Math.random() * 10);
         }
 
@@ -145,20 +139,29 @@ module.exports = {
   authOTP: async (req, res) => {
     try {
       const reqUser = req.body;
-      if (reqUser.userId == '' && reqUser.type == '' && reqUser.otpCode == '') {
-        return responseHelper.sendResponse.NOT_FOUND(res, null);
+      if (reqUser.userId == '' || reqUser.type == '') {
+        return responseHelper.sendResponse.BAD_REQUEST(res, null);
       }
 
-      // Kiểu xác thực 
-      if(reqUser.type == "email") {
-        const authOTP = await authService.authOTP(reqUser.userId, reqUser.otpCode);
-        if(authOTP) {
-          return responseHelper.sendResponse.SUCCESS(res, null, 'OTP has been verified successfully');
-        } else {
-          return responseHelper.sendResponse.BAD_REQUEST(res, null, 'OTP verification failed');
+      // Kiểu xác thực
+      if (reqUser.type == 'email') {
+        if (reqUser.otpCode == '') {
+          return responseHelper.sendResponse.BAD_REQUEST(res, null);
         }
-      } else if(reqUser.type == "phone") {
-          
+
+        const authOTP = await authService.authOTPByEmail(reqUser.userId, reqUser.otpCode);
+        if (authOTP) {
+          return responseHelper.sendResponse.SUCCESS(res, null, 'Xác thực OTP thành công');
+        } else {
+          return responseHelper.sendResponse.BAD_REQUEST(res, null, 'Xác thực OTP thất bại');
+        }
+      } else if (reqUser.type == 'phone') {
+        const authOTP = await authService.authOTPByPhone(reqUser.userId);
+        if (authOTP) {
+          return responseHelper.sendResponse.SUCCESS(res, null, 'Xác thực OTP thành công');
+        } else {
+          return responseHelper.sendResponse.BAD_REQUEST(res, null, 'Xác thực OTP thất bại');
+        }
       }
     } catch (error) {
       responseHelper.sendResponse.SERVER_ERROR(res, null);
@@ -199,11 +202,7 @@ module.exports = {
             // Account chưa active
             finalUserData = { userData };
           }
-          return responseHelper.sendResponse.SUCCESS(
-            res,
-            finalUserData,
-            'Bạn đã đăng nhập thành công',
-          );
+          return responseHelper.sendResponse.SUCCESS(res, finalUserData, 'Đăng nhập thành công');
         }
       }
 
@@ -212,6 +211,60 @@ module.exports = {
         null,
         'Tên đăng nhập hoặc mật khẩu không đúng!',
       );
+    } catch (error) {
+      responseHelper.sendResponse.SERVER_ERROR(res, null);
+    }
+  },
+  loginBySocialNetwork: async (req, res) => {
+    try {
+    const user = req.body;
+    if (!user.email && !user.phone) {
+      return responseHelper.sendResponse.BAD_REQUEST(res, null, 'Fields cannot be empty');
+    }
+
+    let result = await authService.loginUserBySocialNetwork(user);
+
+    console.log('>> ', result);
+
+    // Chưa đc đk
+    if (result == null) {
+      const newUser = {
+        account_type: 1,
+        email: user.email,
+        phone: user?.phoneNumber,
+        password: null,
+        fullName: user?.displayName,
+        gender: null,
+        address: null,
+        status: 1, // Trạng thái đã active account
+        roleId: 5, // Role = 5 là tài khoản người dùng bình thường/student
+        avatar: user?.photoURL,
+      };
+
+      // Create new user
+      result = await authService.registerUser(newUser);
+      if (!result) {
+        return responseHelper.sendResponse.UNAUTHORIZED(res, null, 'Đăng nhập không thành công');
+      }
+    }
+
+    if (result) {
+      // Account đã active
+      let finalUserData = {};
+      const { password, ...userData } = result;
+      const accessToken = generateToken.generateAccessToken(userData);
+      const refreshToken = generateToken.generateRefreshToken(userData);
+      refreshTokens.push(refreshToken);
+      res.cookie('refreshToken', refreshToken, {
+        httpOnly: true,
+        secure: false,
+        path: '/',
+        sameSite: 'strict',
+      });
+      finalUserData = { userData, accessToken };
+
+      return responseHelper.sendResponse.SUCCESS(res, finalUserData, 'Đăng nhập thành công');
+    }
     } catch (error) {
       responseHelper.sendResponse.SERVER_ERROR(res, null);
     }

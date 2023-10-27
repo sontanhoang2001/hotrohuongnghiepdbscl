@@ -3,13 +3,14 @@ const express = require("express");
 const router = express.Router();
 
 //* Call the controller with the methods
-const { registerUser, requestOTP, authOTP, login, requestRefreshToken, userLogout } = require("../controllers/authController");
+const { registerUser, requestOTP, authOTP, login, loginBySocialNetwork, requestRefreshToken, userLogout } = require("../controllers/authController");
 
 //* Here I defined the methods
 router.post("/registerUser", registerUser);
 router.post("/requestOTP", requestOTP);
 router.post("/authOTP", authOTP);
 router.post("/login", login);
+router.post("/loginBySocialNetwork", loginBySocialNetwork);
 router.post("/logout", userLogout);
 router.post("/refresh", requestRefreshToken);
 

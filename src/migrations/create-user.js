@@ -21,7 +21,7 @@ module.exports = {
         type: Sequelize.STRING(100)
       },
       authCode: {
-        type: Sequelize.STRING(4)
+        type: Sequelize.STRING(6)
       },
       roleId: {
         type: Sequelize.INTEGER
