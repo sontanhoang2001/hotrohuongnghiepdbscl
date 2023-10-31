@@ -32,7 +32,7 @@ module.exports = {
     //   });
   },
 
-  getUsersById: async (req, res) => {
+  getUserById: async (req, res) => {
     try {
       const userId = parseInt(req.params.id);
       const users = await userService.getUserByUserId(userId); // Gọi chức năng từ service
@@ -41,10 +41,18 @@ module.exports = {
       responseHelper.sendResponse.SERVER_ERROR(res, null);
     }
   },
-
+  getUserProfile: async (req, res) => {
+    try {
+      const userId = parseInt(req.user.id);
+      const users = await userService.getUserByUserId(userId); // Gọi chức năng từ service
+      responseHelper.sendResponse.SUCCESS(res, users);
+    } catch (error) {
+      responseHelper.sendResponse.SERVER_ERROR(res, null);
+    }
+  },
   updateUser: async (req, res) => {
     try {
-      const userId = parseInt(req.params.id);
+      const userId = parseInt(req.user.id);
       const user = req.body;
 
       if (isNaN(userId)) {

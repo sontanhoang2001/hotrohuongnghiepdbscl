@@ -88,6 +88,24 @@ module.exports = {
       throw error;
     }
   },
+  checkOldPassword: async (userId, oldPassword) => {
+    try {
+      // Kiểm tra oldPassword
+      const user = await User.findOne({
+        where: {
+          id: userId,
+        },
+      });
+
+      if (user) {
+        return user.get({ plain: true });
+      } else {
+        return user;
+      }
+    } catch (error) {
+      throw error;
+    }
+  },
   getUserEmailById: async (userId) => {
     try {
       // Kiểm tra email
@@ -239,6 +257,75 @@ module.exports = {
       } else {
         return user;
       }
+    } catch (error) {
+      throw error;
+    }
+  },
+  updatePassword: async (userId, newPassword) => {
+    try {
+      const [numberOfAffectedRows] = await User.update(
+        {
+          password: newPassword,
+        },
+        {
+          where: {
+            id: userId,
+          },
+        },
+      );
+
+      let isSuccess = false;
+      if (numberOfAffectedRows > 0) {
+        isSuccess = true;
+      }
+
+      return isSuccess;
+    } catch (error) {
+      throw error;
+    }
+  },
+  updateEmail: async (userId, newEmail) => {
+    try {
+      const [numberOfAffectedRows] = await User.update(
+        {
+          email: newEmail,
+        },
+        {
+          where: {
+            id: userId,
+          },
+        },
+      );
+
+      let isSuccess = false;
+      if (numberOfAffectedRows > 0) {
+        isSuccess = true;
+      }
+
+      return isSuccess;
+    } catch (error) {
+      throw error;
+    }
+  },
+  updatePhone: async (userId, newPhone) => {
+    try {
+      const [numberOfAffectedRows] = await User.update(
+        {
+          phone: newPhone,
+        },
+        {
+          where: {
+            id: userId,
+          },
+        },
+      );
+
+      let isSuccess = false;
+      if (numberOfAffectedRows > 0) {
+        isSuccess = true;
+      }
+
+      return isSuccess;
     } catch (error) {
       throw error;
     }

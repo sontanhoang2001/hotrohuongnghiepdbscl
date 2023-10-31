@@ -9,11 +9,13 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      University.hasOne(models.UniversityDetail);
+      University.belongsToMany(models.BankQuestionAnsDetail, {through: 'CollectionUniversity'})
     }
   }
   University.init(
     {
-      Content: DataTypes.STRING,
+      name: DataTypes.STRING,
     },
     {
       sequelize,

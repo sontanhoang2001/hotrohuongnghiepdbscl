@@ -9,15 +9,15 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      UniversityDetail.belongsTo(models.University);
     }
   }
   UniversityDetail.init(
     {
-      name: DataTypes.STRING,
       province: DataTypes.STRING,
       lat: DataTypes.STRING,
       long: DataTypes.STRING,
-      content: DataTypes.STRING,
+      description: DataTypes.STRING,
       url: DataTypes.STRING,
       rank: DataTypes.INTEGER,
     },

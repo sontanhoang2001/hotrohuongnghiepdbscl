@@ -8,9 +8,6 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      name: {
-        type: Sequelize.STRING(250)
-      },
       province: {
         type: Sequelize.STRING(255)
       },
@@ -20,7 +17,7 @@ module.exports = {
       long: {
         type: Sequelize.STRING(255)
       },
-      content: {
+      description: {
         type: Sequelize.STRING(255)
       },
       url: {

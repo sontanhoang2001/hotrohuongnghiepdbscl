@@ -1,0 +1,20 @@
+'use strict';
+
+module.exports = {
+  up: async (queryInterface, Sequelize) => {
+    await queryInterface.bulkInsert(
+      'QuestionGroup',
+      [
+        { name: 'Sensing (Giác quan) / iNtuition (Trực giác)', value: 'SN', description: "Trong các nhóm trắc nghiệm MBTI test. Cặp xu hướng Sensing (Giác quan) / iNtuition (Trực giác) chính là xu hướng đối lập nhau về cách mà con người tiếp nhận sự việc hiện tượng xung quanh họ. Thế giới được hiểu và nhận thức thông qua các giác quan cụ thể, ví dụ như màu sắc, hình ảnh thì sẽ thông qua mắt để nhận biết, mùi vị, âm thanh sẽ nhờ tai để cảm nhận, phân tích. Ngoài ra, 5 cơ quan sẽ cùng liên tục sắp xếp, phân loại các sự kiện thực tế đang diễn ra một cách đồng thời để cung cấp ngược lại những thông tin từng diễn ra trong quá khứ. Nếu tìm hiểu nhận thức thế giới thông qua trực giác, não bộ chính là đơn vị phải có trách nhiệm tìm hiểu, diễn dịch, phân tích, lí giải những mô hình thông tin để thu thậ các luồng dữ liệu, trước và sau đó đồng thời sắp xếp các mô hình, liên hệ chúng lại với nhau. Não bộ phải làm việc hết sức, suy đoán và phán đoán tương lai.", "" },
+        { name: 'Thinking (Lý trí) / Feeling (Cảm xúc)', value: 'SN', description: "Ở nhóm trắc nghiệm MBTI test. Thinking (Lý trí) / Feeling (Cảm xúc) là hai xu hướng đối lập về cách mà con người lựa chọn đáp án, câu trả lời cho từng vấn đề cụ thể. Trong não bộ của chúng ta, phần lí trí là phần được đánh giá cao nhất, nó có vai trò tìm hiểu các thông tin liên quan dựa trên các bộ phân tiêu chí đúng sai, trái hay phải. Sau đó, suy luận một cách logic mới trực tiếp cho đáp án cụ thể nhất, có căn cứ nhất, có khoa học nhất. Phần cảm xúc của não bộ sẽ xem xét sự việc trên tổng thế các vấn đề cảm tính, yêu hay ghét, hận hay thu đồng thời các yếu tố đó có sự tác động qua lại lẫn nhau, không có một sự rạch ròi, đó là bản chất của vấn đề cảm xúc do não quyết định.", "" },
+        { name: 'Sensing (Giác quan) / iNtuition (Trực giác)', value: 'SN', description: "Trong các nhóm trắc nghiệm MBTI test. Cặp xu hướng Sensing (Giác quan) / iNtuition (Trực giác) chính là xu hướng đối lập nhau về cách mà con người tiếp nhận sự việc hiện tượng xung quanh họ. Thế giới được hiểu và nhận thức thông qua các giác quan cụ thể, ví dụ như màu sắc, hình ảnh thì sẽ thông qua mắt để nhận biết, mùi vị, âm thanh sẽ nhờ tai để cảm nhận, phân tích. Ngoài ra, 5 cơ quan sẽ cùng liên tục sắp xếp, phân loại các sự kiện thực tế đang diễn ra một cách đồng thời để cung cấp ngược lại những thông tin từng diễn ra trong quá khứ. Nếu tìm hiểu nhận thức thế giới thông qua trực giác, não bộ chính là đơn vị phải có trách nhiệm tìm hiểu, diễn dịch, phân tích, lí giải những mô hình thông tin để thu thậ các luồng dữ liệu, trước và sau đó đồng thời sắp xếp các mô hình, liên hệ chúng lại với nhau. Não bộ phải làm việc hết sức, suy đoán và phán đoán tương lai.", "" },
+        { name: 'Sensing (Giác quan) / iNtuition (Trực giác)', value: 'SN', description: "Trong các nhóm trắc nghiệm MBTI test. Cặp xu hướng Sensing (Giác quan) / iNtuition (Trực giác) chính là xu hướng đối lập nhau về cách mà con người tiếp nhận sự việc hiện tượng xung quanh họ. Thế giới được hiểu và nhận thức thông qua các giác quan cụ thể, ví dụ như màu sắc, hình ảnh thì sẽ thông qua mắt để nhận biết, mùi vị, âm thanh sẽ nhờ tai để cảm nhận, phân tích. Ngoài ra, 5 cơ quan sẽ cùng liên tục sắp xếp, phân loại các sự kiện thực tế đang diễn ra một cách đồng thời để cung cấp ngược lại những thông tin từng diễn ra trong quá khứ. Nếu tìm hiểu nhận thức thế giới thông qua trực giác, não bộ chính là đơn vị phải có trách nhiệm tìm hiểu, diễn dịch, phân tích, lí giải những mô hình thông tin để thu thậ các luồng dữ liệu, trước và sau đó đồng thời sắp xếp các mô hình, liên hệ chúng lại với nhau. Não bộ phải làm việc hết sức, suy đoán và phán đoán tương lai.", "" },
+      ],
+      {},
+    );
+  },
+
+  down: async (queryInterface, Sequelize) => {
+    await queryInterface.bulkDelete('QuestionGroup', null, {});
+  },
+};

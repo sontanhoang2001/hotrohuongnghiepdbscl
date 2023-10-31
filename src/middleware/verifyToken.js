@@ -10,14 +10,17 @@ const middleware = {
       const accessToken = token.split(" ")[1];
       jwt.verify(accessToken, process.env.JWT_ACCESS_KEY, (err, user) => {
         if (err) {
-          responseHelper.sendResponse(res, 403, null, "Token is not valid");
-          return;
+          return responseHelper.sendResponse.FORBIDDEN(res, null, "Token is not valid");
         }
+        if (isNaN(user.id)) {
+          return responseHelper.sendResponse.FORBIDDEN(res, null, "Token is not valid");
+        }
+
         req.user = user;
         next();
       });
     } else {
-      responseHelper.sendResponse(res, 401, null, "You're not authenticated");
+      return responseHelper.sendResponse.UNAUTHORIZED(res, null, "You're not authenticated");
     }
   },
 };

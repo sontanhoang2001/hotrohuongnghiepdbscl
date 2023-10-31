@@ -9,12 +9,15 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      QuestionGroup.hasMany(models.Question);
     }
   }
   QuestionGroup.init(
     {
       name: DataTypes.STRING,
+      value: DataTypes.STRING,
       description: DataTypes.STRING,
+      image: DataTypes.STRING,
     },
     {
       sequelize,

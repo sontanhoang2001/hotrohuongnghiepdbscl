@@ -9,6 +9,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      BankQuestionAnsDetail.belongsTo(models.BankQuestionAns);
+      BankQuestionAnsDetail.belongsToMany(models.University, {through: 'CollectionUniversity'})
     }
   }
   BankQuestionAnsDetail.init(

@@ -1,7 +1,7 @@
 'use strict';
 const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Major extends Model {
+  class MajorMBTI extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -9,18 +9,19 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      MajorMBTI.belongsTo(models.MBTI);
     }
   }
-  Major.init(
+  MajorMBTI.init(
     {
       name: DataTypes.STRING,
       link: DataTypes.STRING,
     },
     {
       sequelize,
-      modelName: 'Major',
-      tableName: 'Major',
+      modelName: 'MajorMBTI',
+      tableName: 'Major_MBTI',
     },
   );
-  return Major;
+  return MajorMBTI;
 };
