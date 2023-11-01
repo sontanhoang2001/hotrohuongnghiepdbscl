@@ -2,18 +2,18 @@ import axios from 'axios';
 
 // Set up default config for http requests here
 
-const axiosClientLogin = axios.create({
-  baseURL: process.env.REACT_APP_API_URL
+const axiosService = axios.create({
+  baseURL: process.env.REACT_APP_API_URL,
 });
 
-axiosClientLogin.interceptors.request.use(async (config) => {
+axiosService.interceptors.request.use(async (config) => {
   config.headers = {
     Accept: 'application/json',
   };
   return config;
 });
 
-axiosClientLogin.interceptors.response.use(
+axiosService.interceptors.response.use(
   (response) => {
     if (response) {
       return response;
@@ -26,4 +26,4 @@ axiosClientLogin.interceptors.response.use(
   },
 );
 
-export default axiosClientLogin;
+export default axiosService;

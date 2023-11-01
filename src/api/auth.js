@@ -1,15 +1,23 @@
-import axiosClientLogin from './axiosClient';
+import axiosService from './axiosClient';
 
 const pathname = 'auth';
 
 const authApi = {
   signin: (payload) => {
     const url = `/${pathname}/login`;
-    return axiosClientLogin.post(url, payload);
+    return axiosService.post(url, payload);
   },
   signup: (payload) => {
     const url = `/${pathname}/registerUser`;
-    return axiosClientLogin.post(url, payload);
+    return axiosService.post(url, payload);
+  },
+  requestOTP: (payload) => {
+    const url = `/${pathname}/requestOTP`;
+    return axiosService.post(url, payload);
+  },
+  authOTP: (payload) => {
+    const url = `/${pathname}/authOTP`;
+    return axiosService.post(url, payload);
   },
 };
 

@@ -48,6 +48,11 @@ function Header() {
     setIdxActive(index);
     navigate(to);
   };
+
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate('/');
+  };
   const items = [
     {
       key: '1',
@@ -67,7 +72,7 @@ function Header() {
       label: (
         <span
           onClick={() => {
-            dispatch(logout());
+            handleLogout();
           }}
         >
           logout

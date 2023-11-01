@@ -72,7 +72,7 @@ export const signupAsync = createAsyncThunk(
 
       console.log(dataUser);
 
-      localStorage.setItem('userSignupData', JSON.stringify(dataUser.userData));
+      localStorage.setItem('userSignupData', JSON.stringify(dataUser));
       if (rs.data.status) {
       }
 

@@ -1,9 +1,9 @@
-import axiosClientLogin from './axiosClient';
+import axiosService from './axiosClient';
 
 const userApi = {
   getAllUser: (payload) => {
     const url = `/users`;
-    return axiosClientLogin.get(url, payload);
+    return axiosService.get(url, payload);
   },
 };
 
