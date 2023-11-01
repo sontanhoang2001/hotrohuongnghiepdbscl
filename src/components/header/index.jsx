@@ -50,8 +50,8 @@ function Header() {
   };
 
   const handleLogout = () => {
-    dispatch(logout());
     navigate('/');
+    dispatch(logout());
   };
   const items = [
     {

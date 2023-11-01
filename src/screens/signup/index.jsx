@@ -3,7 +3,7 @@ import { Button, Cascader, Checkbox, Form, Input, Select, Spin } from 'antd';
 import { styled } from 'styled-components';
 import ProvincesOpenApi from '../../api/province';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectPending, signupAsync } from '../../redux/authSlice';
+import { selectPending, selectRegister, setIsSignup, signupAsync } from '../../redux/authSlice';
 import { useNavigate } from 'react-router-dom';
 
 const { Option } = Select;
@@ -45,10 +45,14 @@ function Signup() {
 
   const dispatch = useDispatch();
   let pending = useSelector(selectPending);
+  const isSignup = useSelector(selectRegister);
+
   useEffect(() => {
-    //thiết lập giá trị loading page cho
     setloadinpage(pending && pending != null ? true : false);
-  }, [pending, loadinpage]);
+    if (isSignup === true) {
+      navigate('/xac-nhan-dang-nhap');
+    }
+  }, [isSignup, dispatch, pending, loadinpage, navigate]);
 
   const prefixSelector = (
     <Form.Item name="prefix" noStyle>
@@ -68,7 +72,6 @@ function Signup() {
     const addressString = inputedUserData.address.join(', ');
     inputedUserData.address = addressString;
     const payload = inputedUserData;
-    console.log(payload);
     dispatch(signupAsync(payload));
   };
   return (

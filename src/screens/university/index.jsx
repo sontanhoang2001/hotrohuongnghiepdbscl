@@ -2,7 +2,6 @@ import { List, Modal } from 'antd';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import ImageCard from '../../components/card/imageCard';
-
 const data = [
   {
     name: 'đại học cần thơ',

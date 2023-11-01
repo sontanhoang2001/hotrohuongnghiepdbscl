@@ -1,9 +1,10 @@
-import { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { Button } from 'antd';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Button, Spin } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
 import RequestOtp from '../../components/requestOtp';
+import { selectPending, selectRegister, setIsSignup } from '../../redux/authSlice';
 
 function OtpLogin() {
   const dispatch = useDispatch();
@@ -12,37 +13,57 @@ function OtpLogin() {
   const [phoneNumber, setPhoneNumer] = useState('');
   const [userId, setUserId] = useState('1');
   const [open, setOpen] = useState(false);
+  const [loadinpage, setloadinpage] = useState(false);
 
+  const getRegisterInfo = window.localStorage?.getItem(`userSignupData`);
+  const registerInfo = JSON.parse(getRegisterInfo);
+
+  let pending = useSelector(selectPending);
+  console.log(registerInfo);
   const handleOnclick = (type) => {
     setOtpType(type);
+    if (type === 'email') {
+    }
     setOpen(!open);
   };
 
+  const isSignup = useSelector(selectRegister);
+  useEffect(() => {
+    dispatch(setIsSignup(false));
+  }, [dispatch]);
+
   return (
-    <Container>
-      {open === false ? (
-        <div className="box">
-          <h3 className="">Lấy mã xác nhận</h3>
-          <div className="group-btn-send-otp">
-            <Button type="primary" onClick={() => handleOnclick('email')}>
-              Gửi qua mail
-            </Button>
-            <Button type="primary" danger onClick={() => handleOnclick('phone')}>
-              Gửi qua SĐT
-            </Button>
+    <Spin spinning={loadinpage}>
+      <Container>
+        {open === false ? (
+          <div className="box">
+            <h3 className="">Lấy mã xác nhận</h3>
+            <div className="group-btn-send-otp">
+              <Button type="primary" onClick={() => handleOnclick('email')}>
+                Gửi qua mail
+              </Button>
+              <Button type="primary" danger onClick={() => handleOnclick('phone')}>
+                Gửi qua SĐT
+              </Button>
+            </div>
           </div>
-        </div>
-      ) : (
-        <OtpRequestCard className="box">
-          <div className="box-header">
-            <Button type="link" shape="round" className="close-btn" onClick={() => setOpen(!open)}>
-              <CloseOutlined />
-            </Button>
-          </div>
-          <RequestOtp type={otpType} userId={userId} />
-        </OtpRequestCard>
-      )}
-    </Container>
+        ) : (
+          <OtpRequestCard className="box">
+            <div className="box-header">
+              <Button
+                type="link"
+                shape="round"
+                className="close-btn"
+                onClick={() => setOpen(!open)}
+              >
+                <CloseOutlined />
+              </Button>
+            </div>
+            <RequestOtp type={otpType} userId={userId} />
+          </OtpRequestCard>
+        )}
+      </Container>
+    </Spin>
   );
 }
 const Container = styled.div`

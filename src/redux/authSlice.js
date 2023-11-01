@@ -70,11 +70,7 @@ export const signupAsync = createAsyncThunk(
         ...rs.data.data,
       };
 
-      console.log(dataUser);
-
       localStorage.setItem('userSignupData', JSON.stringify(dataUser));
-      if (rs.data.status) {
-      }
 
       return rs.data.message;
     } catch (error) {
@@ -82,6 +78,53 @@ export const signupAsync = createAsyncThunk(
         //"rejectWithValue is not a function" nó báo về đây nè
         //có khi thằng này mình viết sai syntax
         //
+        return rejectWithValue(error.response.data.message);
+      } else {
+        return rejectWithValue(error.message);
+      }
+    }
+  },
+);
+
+export const requestOtp = createAsyncThunk(
+  'auth/requestOTP',
+  async (requestOtp, { rejectWithValue }) => {
+    try {
+      const rs = await authApi.signup(requestOtp);
+      // The value we return becomes the `fulfilled` action payload
+      const dataUser = {
+        ...rs.data.data,
+      };
+
+      return rs.data.message;
+    } catch (error) {
+      if (error.response && error.response.data.message) {
+        //"rejectWithValue is not a function" nó báo về đây nè
+        //có khi thằng này mình viết sai syntax
+        //
+        return rejectWithValue(error.response.data.message);
+      } else {
+        return rejectWithValue(error.message);
+      }
+    }
+  },
+);
+export const authOTP = createAsyncThunk(
+  'auth/authOTP ',
+  async (requestOtp, { rejectWithValue }) => {
+    try {
+      const rs = await authApi.signup(requestOtp);
+      // The value we return becomes the `fulfilled` action payload
+      const dataUser = {
+        ...rs.data.data,
+      };
+
+      return rs.data.message;
+    } catch (error) {
+      if (error.response && error.response.data.message) {
+        //"rejectWithValue is not a function" nó báo về đây nè
+        //có khi thằng này mình viết sai syntax
+
         return rejectWithValue(error.response.data.message);
       } else {
         return rejectWithValue(error.message);
@@ -101,6 +144,9 @@ export const authSlice = createSlice({
       window.localStorage.removeItem('userData');
       window.location.reload();
     },
+    setIsSignup: (state, action) => {
+      state.isSignup = action.payload; // Thay đổi giá trị isSignup dựa trên action.payload
+    },
   },
 
   extraReducers: (builder) => {
@@ -115,7 +161,6 @@ export const authSlice = createSlice({
         state.data = payload;
         state.authToken = payload.token;
         state.isLogin = true;
-        console.log(payload.message);
         message.success(payload.message, 3);
       })
 
@@ -132,10 +177,41 @@ export const authSlice = createSlice({
       .addCase(signupAsync.fulfilled, (state, { payload }) => {
         state.pending = false;
         state.data = payload;
+        state.isSignup = true;
         state.authToken = payload.token;
         message.success(payload.message, 3);
       })
       .addCase(signupAsync.rejected, (state, { payload }) => {
+        state.pending = false;
+        state.error = payload;
+        message.error(payload, 3);
+      })
+      //trạng thái của requestOtp pending - fulfilled - rejected
+      .addCase(requestOtp.pending, (state, { payload }) => {
+        state.pending = true;
+        state.error = null;
+      })
+      .addCase(requestOtp.fulfilled, (state, { payload }) => {
+        state.pending = false;
+        state.data = payload;
+        message.success(payload.message, 3);
+      })
+      .addCase(requestOtp.rejected, (state, { payload }) => {
+        state.pending = false;
+        state.error = payload;
+        message.error(payload, 3);
+      })
+      //trạng thái của authOTP pending - fulfilled - rejected
+      .addCase(authOTP.pending, (state, { payload }) => {
+        state.pending = true;
+        state.error = null;
+      })
+      .addCase(authOTP.fulfilled, (state, { payload }) => {
+        state.pending = false;
+        state.data = payload;
+        message.success(payload.message, 3);
+      })
+      .addCase(authOTP.rejected, (state, { payload }) => {
         state.pending = false;
         state.error = payload;
         message.error(payload, 3);
@@ -144,9 +220,10 @@ export const authSlice = createSlice({
 });
 
 export const { logout } = authSlice.actions;
+export const { setIsSignup } = authSlice.actions;
 export const selectProfile = (state) => state.auth.data;
 export const selectPending = (state) => state.auth.pending;
 export const selectIsLogin = (state) => state.auth.isLogin;
-export const selectRegister = (state) => state.isSignup;
+export const selectRegister = (state) => state.auth.isSignup;
 
 export default authSlice.reducer;
