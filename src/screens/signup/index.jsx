@@ -48,7 +48,6 @@ function Signup() {
   useEffect(() => {
     //thiết lập giá trị loading page cho
     setloadinpage(pending && pending != null ? true : false);
-    console.log(loadinpage);
   }, [pending, loadinpage]);
 
   const prefixSelector = (
