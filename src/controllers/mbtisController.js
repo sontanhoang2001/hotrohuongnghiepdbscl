@@ -92,4 +92,18 @@ module.exports = {
       responseHelper.sendResponse.SERVER_ERROR(res, null);
     }
   },
+
+
+  newDoTestMBTI: async (req, res) => {
+    try {
+      const mbti = await mbtiService.newDoTestMBTI();
+      if (mbti) {
+        return responseHelper.sendResponse.SUCCESS(res, mbti);
+      }
+
+      return responseHelper.sendResponse.BAD_REQUEST(res, null);
+    } catch (error) {
+      responseHelper.sendResponse.SERVER_ERROR(res, null);
+    }
+  },
 };

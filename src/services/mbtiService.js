@@ -3,6 +3,7 @@ const Answer = require('../models').Answer;
 const QuestionGroup = require('../models').QuestionGroup;
 
 const sequelize = require('../database/connection_database');
+const { Op } = require('sequelize');
 
 module.exports = {
   createNew: async (payload) => {
@@ -163,6 +164,36 @@ module.exports = {
         await transaction.rollback(); // Rollback transaction nếu có lỗi
       }
       throw error; // Sau đó ném lỗi để xử lý ở phần gọi hàm
+    }
+  },
+  newDoTestMBTI: async (page, size) => {
+    try {
+      const questionGroupIdValues = [1, 2, 3, 4];
+      const rowsPerGroup = 27;
+      
+      const question = await Question.findAll({
+        limit: rowsPerGroup,
+        attributes: ['question'],
+        include: [
+          {
+            model: Answer,
+            as: 'Answers', 
+            attributes: ['answer', 'value']
+          }
+        ],
+        where: {
+          questionGroupId: {
+            [Op.in]: questionGroupIdValues
+          }
+        },
+        // group: 'questionGroupId', 
+        // having: sequelize.literal(`COUNT(*) <= ${rowsPerGroup}`)
+      });
+
+      console.log("question", question)
+      return question;
+    } catch (error) {
+      throw error;
     }
   },
 };
