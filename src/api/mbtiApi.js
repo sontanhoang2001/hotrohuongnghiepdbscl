@@ -12,6 +12,10 @@ const mbtiApi = {
     const rs = axiosService.post(url, payload);
     return rs;
   },
+  newDoTestMbti: () => {
+    const url = `/${pathname}/newDoTestMbti`;
+    return axiosService.get(url);
+  },
 };
 
 export default mbtiApi;

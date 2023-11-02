@@ -16,7 +16,7 @@ const replaceAnswerImmutable = (index, answer, answers) => {
   return result;
 };
 
-const Quiz = ({ questions }) => {
+const Quiz = ({ questions, questions1 }) => {
   //giá trị nhỏ nhất và giới hạn của gói câu hỏi, nhỏ nhất là 0, lớn nhất là số câu hỏi truyền vào (questions.length)
   const MIN_ACTIVE_QUESTION_INDEX = 0;
   const MAX_ACTIVE_QUESTION_INDEX = questions.length;
