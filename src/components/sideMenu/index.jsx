@@ -1,4 +1,4 @@
-import { AppstoreOutlined, UserOutlined, BankOutlined } from '@ant-design/icons';
+import { AppstoreOutlined, UserOutlined, BankOutlined, InboxOutlined } from '@ant-design/icons';
 import { Menu } from 'antd';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -39,6 +39,11 @@ function SideMenu() {
             label: 'Trường Học',
             key: '/admin/truong-hoc',
             icon: <BankOutlined />,
+          },
+          {
+            label: 'Câu Hỏi',
+            key: '/admin/cau-hoi',
+            icon: <InboxOutlined />,
           },
         ]}
       ></Menu>

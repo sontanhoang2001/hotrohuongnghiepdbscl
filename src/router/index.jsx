@@ -22,6 +22,7 @@ import ProtectedLogin from '../components/protectedLogin';
 import UserProfile from '../screens/userProfile';
 import AuthSocial from '../components/authSocial';
 import OtpByPhone from '../components/otpByPhone';
+import ManageQuestion from '../screens/manageQuestion';
 
 const ROLES = {
   User: 5,
@@ -63,6 +64,7 @@ function Router() {
           <Route path="" element={<AdminHome />} />
           <Route path="nguoi-dung" element={<ManageUser />} />
           <Route path="truong-hoc" element={<ManageUniversity />} />
+          <Route path="cau-hoi" element={<ManageQuestion />} />
         </Route>
 
         <Route path="/xac-nhan-dang-nhap" element={<OtpLogin />} />
