@@ -6,7 +6,7 @@ module.exports = {
         id: userData.id,
         role: userData.role
       },
-      process.env.JWT_ACCESS_KEY, {expiresIn: "60s"}
+      process.env.JWT_ACCESS_KEY, {expiresIn: "360d"}
     );
   },
   generateRefreshToken: (userData) => {

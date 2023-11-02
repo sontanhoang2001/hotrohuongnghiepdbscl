@@ -4,8 +4,8 @@ const responseHelper = require("../helpers/responseHelper");
 const middleware = {
   //verifyToken
   verifyToken: (req, res, next) => {
-    console.log("header: ", req.headers.token)
-    const token = req.headers.token;
+    const token = req.headers.authorization;
+    // console.log("header: ", req.headers.authorization)
     if (token) {
       const accessToken = token.split(" ")[1];
       jwt.verify(accessToken, process.env.JWT_ACCESS_KEY, (err, user) => {

@@ -11,8 +11,11 @@ module.exports = {
       account_type: {
         type: Sequelize.INTEGER(1)
       },
-      username: {
-        type: Sequelize.STRING(30)
+      email: {
+        type: Sequelize.STRING(320)
+      },
+      phone: {
+        type: Sequelize.STRING(10)
       },
       password: {
         type: Sequelize.STRING(100)
@@ -23,19 +26,22 @@ module.exports = {
       avatar: {
         type: Sequelize.STRING(300)
       },
-      email: {
-        type: Sequelize.STRING(320)
-      },
       birthday: {
         type: Sequelize.DATEONLY
       },
-      phone: {
-        type: Sequelize.STRING(10)
+      gender: {
+        type: Sequelize.INTEGER(1)
       },
       address: {
         type: Sequelize.STRING(255)
       },
+      address_detail: {
+        type: Sequelize.STRING(255)
+      },
       role: {
+        type: Sequelize.INTEGER(1)
+      },
+      status: {
         type: Sequelize.INTEGER(1)
       },
       createdAt: {

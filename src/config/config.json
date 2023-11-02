@@ -1,4 +1,16 @@
 {
+  "development2": {
+    "username": "root",
+    "password": "",
+    "database": "hotrotuvanhuongnghiepdbscl",
+    "host": "localhost",
+    "dialect": "mysql",
+    "logging": false,
+    "timezone" : "+07:00",
+    "define" : {
+      "freezeTableName": true
+    }
+  },
   "development": {
     "username": "root",
     "password": "",

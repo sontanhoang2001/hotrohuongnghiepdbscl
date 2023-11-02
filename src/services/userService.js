@@ -21,7 +21,7 @@ module.exports = {
       throw error;
     }
   },
-  getAll: async (req, res) => {
+  getAll: async () => {
     // return User.findAll({
     //   attributes: ["id", "firstName", "lastName", "email"],
     //   limit: 5,
