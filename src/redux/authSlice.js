@@ -63,7 +63,7 @@ export const signinAsync = createAsyncThunk(
       localStorage.setItem('accessToken', rs.data.data.accessToken);
       localStorage.setItem('userData', JSON.stringify(dataUser.userData));
 
-      return rs.data;
+      return rs.data.data;
     } catch (err) {
       if (err.response && err.response.data.message) {
         throw rejectWithValue(err.response.data.message);
@@ -82,10 +82,11 @@ export const signupAsync = createAsyncThunk(
       const dataUser = {
         ...rs.data.data,
       };
+      console.log('signupData', rs.data.data);
 
       localStorage.setItem('userSignupData', JSON.stringify(dataUser));
 
-      return rs.data.message;
+      return rs.data.data;
     } catch (err) {
       if (err.response && err.response.data.message) {
         throw rejectWithValue(err.response.data.message);
@@ -194,6 +195,7 @@ export const authSlice = createSlice({
       .addCase(requestOtp.fulfilled, (state, { payload }) => {
         state.pending = false;
         state.data = payload;
+
         state.otp = true;
         message.success(payload.message, 3);
       })

@@ -62,17 +62,16 @@ function UserProfile() {
   const columns = [
     {
       dataIndex: 'icon',
-      key: 'name',
+      key: 'icon',
+      width: 60,
     },
     {
       dataIndex: 'text',
-      key: 'age',
+      key: 'text',
+      width: 150,
     },
     {
-      dataIndex: 'editor',
-      key: 'address',
-    },
-    {
+      width: 40,
       render: (record) => {
         if (record.key === '4') {
           return null;
@@ -90,7 +89,12 @@ function UserProfile() {
     <ProfileContainer className="container">
       <Card>
         <div className="avatar">
-          <img src={avatar} alt="avatar" />
+          {avatar && avatar != null ? (
+            <img src={avatar} alt="avatar" />
+          ) : (
+            <img src="./images/pngegg.png" alt="avatar" />
+          )}
+
           {/* <h4>{getInfo?.fullName}</h4> */}
 
           <h4>
@@ -121,7 +125,7 @@ const ProfileContainer = styled.div`
   padding: 30px;
   .ant-card {
     border-width: 3px;
-    width: 350px;
+    width: 400px;
     margin-left: auto;
     margin-right: auto;
     .ant-card-body {
@@ -141,6 +145,10 @@ const ProfileContainer = styled.div`
         img {
           width: 104px;
           margin-bottom: 20px;
+          cursor: pointer;
+          &:hover {
+            opacity: 0.8;
+          }
         }
         h4 {
           margin-bottom: 4px;

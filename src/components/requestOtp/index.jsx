@@ -7,27 +7,16 @@ import { authOTP, isOtp, selectIsOtp } from '../../redux/authSlice';
 import { useNavigate } from 'react-router-dom';
 
 function RequestOtp(props) {
-  const { type, userId } = props;
+  const { type, userId, sentOtp } = props;
   const [form] = Form.useForm();
   const dispatch = useDispatch();
-  const sentOtp = useSelector(selectIsOtp);
   const navigate = useNavigate();
 
   useEffect(() => {
     if (sentOtp) {
-      navigate('dang-nhap');
+      navigate('/dang-nhap');
     }
-    const timeoutId = setTimeout(() => {
-      if (sentOtp) {
-        dispatch(isOtp(false));
-      } // Thay đổi giá trị của biến thành false sau 1s
-    }, 1000);
-
-    // Trả về một hàm để xóa timeout khi component unmount hoặc khi giá trị đã thay đổi
-    return () => {
-      clearTimeout(timeoutId);
-    };
-  }, [sentOtp, navigate, dispatch]);
+  }, [sentOtp, navigate]);
   //hàm sử lý khi người dùng submit
   const handleFinish = (values) => {
     // The value will be array of string

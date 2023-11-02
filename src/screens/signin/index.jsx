@@ -23,7 +23,7 @@ function Login() {
     setloadinpage(pending && pending != null ? true : false);
     //lấy role khi người dùng đăng nhập
     if (profile != null && profile !== undefined) {
-      const role = profile?.data.userData.Role.name;
+      const role = profile?.userData?.Role?.name;
 
       if (role === 'STUDENT') {
         navigate('/');

@@ -50,16 +50,17 @@ function OtpLogin() {
     dispatch(setIsSignup(false)); // Chỉ dispatch khi chưa dispatch lần nào
     if (sentOtp) {
       setOpen(true);
+      dispatch(isOtp(false));
     }
 
-    const timeoutId = setTimeout(() => {
-      dispatch(isOtp(false)); // Thay đổi giá trị của biến thành false sau 5s
-    }, 5000); // 5s
+    // const timeoutId = setTimeout(() => {
+    //   dispatch(isOtp(false)); // Thay đổi giá trị của biến thành false sau 5s
+    // }, 2000); // 5s
 
-    // Trả về một hàm để xóa timeout khi component unmount hoặc khi giá trị đã thay đổi
-    return () => {
-      clearTimeout(timeoutId);
-    };
+    // // Trả về một hàm để xóa timeout khi component unmount hoặc khi giá trị đã thay đổi
+    // return () => {
+    //   clearTimeout(timeoutId);
+    // };
   }, [pending, loadinpage, open, sentOtp, dispatch]);
 
   return (
@@ -90,7 +91,7 @@ function OtpLogin() {
                 <CloseOutlined />
               </Button>
             </div>
-            <RequestOtp type={otpType} userId={getSignupData.id} />
+            <RequestOtp type={otpType} userId={getSignupData.id} sentOtp={sentOtp} />
           </OtpRequestCard>
         )}
       </Container>
