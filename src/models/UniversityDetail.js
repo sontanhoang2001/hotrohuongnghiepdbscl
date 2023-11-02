@@ -14,12 +14,17 @@ module.exports = (sequelize, DataTypes) => {
   }
   UniversityDetail.init(
     {
+      image: DataTypes.STRING,
+      address: DataTypes.STRING,
       province: DataTypes.STRING,
+      email : DataTypes.STRING,
+      phone : DataTypes.STRING,
       lat: DataTypes.STRING,
       long: DataTypes.STRING,
-      description: DataTypes.STRING,
+      description: DataTypes.TEXT,
       url: DataTypes.STRING,
       rank: DataTypes.INTEGER,
+      universityId: DataTypes.INTEGER,
     },
     {
       sequelize,

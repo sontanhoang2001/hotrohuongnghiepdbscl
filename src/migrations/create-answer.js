@@ -9,11 +9,22 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       answer: {
-        type: Sequelize.INTEGER
+        type: Sequelize.STRING(555)
       },
       value: {
-        type: Sequelize.STRING(255)
+        type: Sequelize.STRING(1)
       },
+      questionId: {
+        type: Sequelize.INTEGER
+      },
+      createdAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
+      },
+      updatedAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
+      }
     });
   },
   down: async (queryInterface, Sequelize) => {

@@ -4,23 +4,17 @@ const dbConnection = require('../database/dbConnection');
 const responseHelper = require('../helpers/responseHelper');
 
 module.exports = {
-  createUser: async (req, res) => {
-    try {
-      const user = req.body;
-      await createNewUser(user); // Chờ hoàn thành
-      res.status(201).json('User created successfully');
-    } catch (error) {
-      res.status(500).json({
-        ErrorCode: 500,
-        Message: error.message,
-      });
-    }
-  },
-
   getUsers: async (req, res) => {
     try {
-      const users = await userService.getAll(); // Gọi chức năng từ service
-      responseHelper.sendResponse.SUCCESS(res, users);
+      let size = Number.isInteger(req.query.size) ? parseInt(req.query.size) : 10;
+      let page = Number.isInteger(req.query.page) ? parseInt(req.query.page) : 1;
+
+      const users = await userService.getAll(page, size); // Gọi chức năng từ service
+      if (users) {
+        return responseHelper.sendResponse.SUCCESS(res, users);
+      }
+
+      return responseHelper.sendResponse.BAD_REQUEST(res, null);
     } catch (error) {
       responseHelper.sendResponse.SERVER_ERROR(res, null);
     }
@@ -31,7 +25,6 @@ module.exports = {
     //     res.status(200).json(results);
     //   });
   },
-
   getUserById: async (req, res) => {
     try {
       const userId = parseInt(req.params.id);

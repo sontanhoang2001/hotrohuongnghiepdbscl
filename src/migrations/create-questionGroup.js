@@ -9,13 +9,13 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       name: {
-        type: Sequelize.STRING(1)
+        type: Sequelize.STRING(255)
       },
       value: {
         type: Sequelize.STRING(2)
       },
       description: {
-        type: Sequelize.STRING(255)
+        type: Sequelize.TEXT()
       },
       image : {
         type: Sequelize.STRING(555)

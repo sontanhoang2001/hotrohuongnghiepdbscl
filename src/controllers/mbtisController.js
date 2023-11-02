@@ -1,0 +1,95 @@
+const mbtiService = require('../services/mbtiService');
+const dbConnection = require('../database/dbConnection');
+const responseHelper = require('../helpers/responseHelper');
+
+module.exports = {
+  createNewQuestion: async (req, res) => {
+    try {
+      // const userId = parseInt(req.user.id);
+      const mbti = req.body;
+
+      if (!mbti.question_group_id || !mbti.question || !mbti.answers || !Array.isArray(mbti.answers) || mbti.answers.length === 0) {
+        return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a full and valid parameter');
+      }
+
+      const createNew = await mbtiService.createNew(mbti);
+      if (createNew) {
+        return responseHelper.sendResponse.SUCCESS(res, createNew, 'Bạn đã tạo mới câu hỏi thành công');
+      }
+      return responseHelper.sendResponse.BAD_REQUEST(res, null);
+    } catch (error) {
+      responseHelper.sendResponse.SERVER_ERROR(res, null);
+    }
+  },
+  getAllQuestion: async (req, res) => {
+    try {
+      let size = Number.isInteger(req.query.size) ? parseInt(req.query.size) : 10;
+      let page = Number.isInteger(req.query.page) ? parseInt(req.query.page) : 1;
+
+      const mbti = await mbtiService.getAll(page, size); // Gọi chức năng từ service
+      if (mbti) {
+        return responseHelper.sendResponse.SUCCESS(res, mbti);
+      }
+
+      return responseHelper.sendResponse.BAD_REQUEST(res, null);
+    } catch (error) {
+      responseHelper.sendResponse.SERVER_ERROR(res, null);
+    }
+  },
+
+  getQuestionById: async (req, res) => {
+    try {
+      const questionId = parseInt(req.params.id);
+      const mbti = await mbtiService.getMBTIQuestionById(questionId); // Gọi chức năng từ service
+      if (mbti) {
+        return responseHelper.sendResponse.SUCCESS(res, mbti);
+      }
+
+      return responseHelper.sendResponse.NOT_FOUND(res, null);
+    } catch (error) {
+      responseHelper.sendResponse.SERVER_ERROR(res, null);
+    }
+  },
+
+  updateQuestion: async (req, res) => {
+    try {
+      const questionId = parseInt(req.params.id);
+      const mbti = req.body;
+
+      if (isNaN(questionId)) {
+        return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a valid questionId as a parameter');
+      }
+
+      if (!mbti.question_group_id || !mbti.question || !mbti.answers || !Array.isArray(mbti.answers) || mbti.answers.length === 0) {
+        return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a full and valid parameter');
+      }
+
+      const updateQuestion = await mbtiService.updateQuestion(questionId, mbti);
+      if (updateQuestion) {
+        return responseHelper.sendResponse.SUCCESS(res, null, 'Cập nhật thành công');
+      }
+
+      return responseHelper.sendResponse.BAD_REQUEST(res, null, 'Cập nhật thất bại');
+    } catch (error) {
+      responseHelper.sendResponse.SERVER_ERROR(res, null);
+    }
+  },
+
+  deleteOneQuestion: async (req, res) => {
+    try {
+      const questionId = parseInt(req.params.id);
+      if (isNaN(questionId)) {
+        return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a valid questionId as a parameter');
+      }
+
+      const deleteQuestion = await mbtiService.deleteQuestion(questionId);
+      if (deleteQuestion) {
+        return responseHelper.sendResponse.SUCCESS(res, null, "Thực hiện xóa thành công");
+      }
+
+      return responseHelper.sendResponse.BAD_REQUEST(res, null, "Thực hiện xóa thất bại");
+    } catch (error) {
+      responseHelper.sendResponse.SERVER_ERROR(res, null);
+    }
+  },
+};

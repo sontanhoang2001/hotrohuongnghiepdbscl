@@ -25,19 +25,35 @@ module.exports = {
       throw error;
     }
   },
-  getAll: async () => {
+  getAll: async (page, size) => {
     // return User.findAll({
     //   attributes: ["id", "firstName", "lastName", "email"],
     //   limit: 5,
     //   order: [["id", "DESC"]],
     // })
 
-    try {
-      const users = await User.findAll();
-      return users;
-    } catch (error) {
-      throw error;
-    }
+    // try {
+      // Tính offset
+      const offset = (page - 1) * size;
+
+      const { count, rows } = await User.findAndCountAll({
+        offset,
+        limit: size,
+      });
+
+      // Chuẩn bị dữ liệu phân trang
+      const pagination = {
+        total: count,
+        page,
+        size,
+        data: rows,
+      };
+
+      console.log("pagination", pagination);
+      return pagination;
+    // } catch (error) {
+    //   throw error;
+    // }
   },
   getUserByUserId: async (userId) => {
     try {
