@@ -10,8 +10,8 @@ const { getAllQuestion, getQuestionById, createNewQuestion, updateQuestion, dele
 router.get('/', getAllQuestion);
 router.get('/id/:id', getQuestionById);
 
-router.post('/add', middleware.verifyToken, createNewQuestion);
-router.patch('/edit/:id', middleware.verifyToken, updateQuestion);
+router.post('/add', createNewQuestion);
+router.patch('/edit/:id', updateQuestion);
 router.delete('/delete/:id', deleteOneQuestion);
 
 module.exports = router;
