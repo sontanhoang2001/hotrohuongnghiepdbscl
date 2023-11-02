@@ -7,6 +7,11 @@ const mbtiApi = {
     const url = `${pathname}?page=${page}&size=${size}`;
     return axiosService.get(url);
   },
+  createQuestion: (payload) => {
+    const url = `/${pathname}/add`;
+    const rs = axiosService.post(url, payload);
+    return rs;
+  },
 };
 
 export default mbtiApi;

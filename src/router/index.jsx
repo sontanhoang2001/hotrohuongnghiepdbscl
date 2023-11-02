@@ -23,6 +23,7 @@ import UserProfile from '../screens/userProfile';
 import AuthSocial from '../components/authSocial';
 import OtpByPhone from '../components/otpByPhone';
 import ManageQuestion from '../screens/manageQuestion';
+import PostMBTI from '../screens/postMBTI';
 
 const ROLES = {
   User: 5,
@@ -35,6 +36,7 @@ function Router() {
       <Routes>
         {/* client */}
         <Route path="/" element={<App />}>
+          <Route path="/postMBTI" element={<PostMBTI />} />
           <Route path="/" element={<Home />} />
           <Route path="/counter" element={<Counter />} />
           <Route path="tin-tuc" element={<News />} />

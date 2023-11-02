@@ -1,5 +1,6 @@
 import React from 'react';
 import Quiz from './quiz';
+import { useEffect } from 'react';
 
 const mbtiQuestions = [
   {
@@ -61,6 +62,11 @@ const mbtiQuestions = [
 ];
 
 function TestMbti() {
+
+useEffect(() => {
+  
+}, [])
+  
   return (
     <div>
       <Quiz questions={mbtiQuestions} />
