@@ -1,13 +1,33 @@
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { Button, Form } from 'antd';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Button, Form, Spin } from 'antd';
 import { InputOTP } from 'antd-input-otp';
 import styled from 'styled-components';
+import { authOTP, isOtp, selectIsOtp } from '../../redux/authSlice';
+import { useNavigate } from 'react-router-dom';
 
 function RequestOtp(props) {
   const { type, userId } = props;
   const [form] = Form.useForm();
   const dispatch = useDispatch();
+  const sentOtp = useSelector(selectIsOtp);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (sentOtp) {
+      navigate('dang-nhap');
+    }
+    const timeoutId = setTimeout(() => {
+      if (sentOtp) {
+        dispatch(isOtp(false));
+      } // Thay đổi giá trị của biến thành false sau 1s
+    }, 1000);
+
+    // Trả về một hàm để xóa timeout khi component unmount hoặc khi giá trị đã thay đổi
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [sentOtp, navigate, dispatch]);
   //hàm sử lý khi người dùng submit
   const handleFinish = (values) => {
     // The value will be array of string
@@ -30,13 +50,14 @@ function RequestOtp(props) {
     //chuyển đổi mảng otp sang chuỗi
     const otpString = otp.join('');
 
-    //tạo giá trị request cho api
+    // tạo giá trị request cho api
     const formData = {
       userId: props.userId,
       type: props.type,
       otpCode: otpString,
     };
     console.log(formData);
+    dispatch(authOTP(formData));
   };
   return (
     <OtpContainer>

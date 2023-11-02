@@ -4,37 +4,68 @@ import { Button, Spin } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
 import RequestOtp from '../../components/requestOtp';
-import { selectPending, selectRegister, setIsSignup } from '../../redux/authSlice';
+import {
+  isOtp,
+  requestOtp,
+  selectIsOtp,
+  selectPending,
+  selectSignupData,
+  setIsSignup,
+} from '../../redux/authSlice';
 
 function OtpLogin() {
   const dispatch = useDispatch();
 
   const [otpType, setOtpType] = useState('email');
   const [phoneNumber, setPhoneNumer] = useState('');
-  const [userId, setUserId] = useState('1');
-  const [open, setOpen] = useState(false);
+
+  const [open, setOpen] = useState(false); //thay đối giá trị đóng mở của của sổ
   const [loadinpage, setloadinpage] = useState(false);
 
-  const getRegisterInfo = window.localStorage?.getItem(`userSignupData`);
-  const registerInfo = JSON.parse(getRegisterInfo);
+  const getSignupData = useSelector(selectSignupData); //lấy thông tin người dùng đăng ký trong local storage
+  console.log(getSignupData);
+  // const registerInfo = JSON.parse(getSignupData); //chuyển đổi giá trị về dạng json
+
+  // const getRegisterInfo = window.localStorage?.getItem(`userSignupData`);
 
   let pending = useSelector(selectPending);
-  console.log(registerInfo);
+  const sentOtp = useSelector(selectIsOtp);
+
   const handleOnclick = (type) => {
     setOtpType(type);
+
+    const getUserID = getSignupData?.id;
+    const requestData = {
+      userId: getUserID,
+      type: type,
+    };
+    console.log(requestData);
     if (type === 'email') {
+      dispatch(requestOtp(requestData));
     }
-    setOpen(!open);
   };
 
-  const isSignup = useSelector(selectRegister);
   useEffect(() => {
-    dispatch(setIsSignup(false));
-  }, [dispatch]);
+    setloadinpage(pending && pending != null ? true : false);
+    dispatch(setIsSignup(false)); // Chỉ dispatch khi chưa dispatch lần nào
+    if (sentOtp) {
+      setOpen(true);
+    }
+
+    const timeoutId = setTimeout(() => {
+      dispatch(isOtp(false)); // Thay đổi giá trị của biến thành false sau 5s
+    }, 5000); // 5s
+
+    // Trả về một hàm để xóa timeout khi component unmount hoặc khi giá trị đã thay đổi
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [pending, loadinpage, open, sentOtp, dispatch]);
 
   return (
     <Spin spinning={loadinpage}>
       <Container>
+        {/* dùng toán tử 3 ngôi thay đổi của sổ khi giá trị open thây đổi */}
         {open === false ? (
           <div className="box">
             <h3 className="">Lấy mã xác nhận</h3>
@@ -59,7 +90,7 @@ function OtpLogin() {
                 <CloseOutlined />
               </Button>
             </div>
-            <RequestOtp type={otpType} userId={userId} />
+            <RequestOtp type={otpType} userId={getSignupData.id} />
           </OtpRequestCard>
         )}
       </Container>

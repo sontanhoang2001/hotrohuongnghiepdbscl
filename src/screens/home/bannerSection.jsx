@@ -6,9 +6,11 @@ import { mbtiDetail } from '../../components/mbtiDetail/mbtiDetail';
 
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import { useNavigate } from 'react-router-dom';
 
 function BannerSection() {
   const [slideIndex, setSlideIndex] = useState(0);
+  const navigate = useNavigate();
   const settings = {
     className: 'center',
     centerMode: true,
@@ -16,10 +18,11 @@ function BannerSection() {
     slidesToShow: 3,
     initialSlide: 0,
     dots: false,
-    autoplay: false,
+    autoplay: true,
     autoplaySpeed: 4000,
     pauseOnHover: false,
     focusOnSelect: true,
+    centerPadding: '0',
     beforeChange: (current, next) => {
       setSlideIndex(next);
     },
@@ -27,7 +30,7 @@ function BannerSection() {
   return (
     <BannerContainer>
       {/* banner slide */}
-      <div className="banner">
+      <div className="container">
         <Slider {...settings} className="banner-container">
           {mbtiDetail.details.map((val, idx) => (
             <div className={idx === slideIndex ? 'slide slide-active' : 'slide'} key={idx}>
@@ -66,7 +69,7 @@ function BannerSection() {
         </div>
         <div className="banner-row">
           <Button type="primary" danger className="explore-btn">
-            <span> khám phá ngay</span>
+            <span onClick={() => navigate('/trach-nghiem-tinh-cach')}> khám phá ngay</span>
           </Button>
         </div>
       </Question>
@@ -84,7 +87,7 @@ const BannerContainer = styled.div`
   .slick-arrow {
     display: none !important;
   }
-  .banner {
+  .container {
     .banner-container {
       width: 100%;
       padding-top: 25px;

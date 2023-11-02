@@ -10,7 +10,7 @@ function Footer() {
       <FooterContainer className="container">
         <div>
           <div className="footer-bg">
-            <div className="footer-container">
+            {/* <div className="footer-container">
               <Row>
                 <Col span={6}>
                   <Row className="footer-logo">
@@ -42,7 +42,7 @@ function Footer() {
                   <Row>mạng xã hội</Row>
                 </Col>
               </Row>
-            </div>
+            </div> */}
             <div className="footer-bg-car"></div>
             <div className="footer-bg-bike"></div>
           </div>

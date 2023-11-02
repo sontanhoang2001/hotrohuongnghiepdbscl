@@ -44,36 +44,10 @@ function Test() {
                     backgroundColor: 'var(--text-secondary-color)',
                     borderRadius: '20px',
                   }}
-                  className="banner-image"
                 ></div>
                 {/* job name name */}
                 <div className={idx === slideIndex ? 'job-name job-name-active' : 'job-name '}>
                   <span>{val.text}</span>
-                </div>
-              </div>
-
-              <div>
-                <div
-                  style={{
-                    width: '100%',
-                    height: '500px',
-                    position: 'relative',
-                    backgroundPosition: 'center',
-                    backgroundRepeat: 'no-repeat',
-                    backgroundSize: 'cover',
-                    backgroundImage: `url(./images/mbti/${val.image})`,
-                    backgroundColor: 'var(--text-secondary-color)',
-                    borderRadius: '20px',
-                  }}
-                  className="banner-image reverse-image"
-                ></div>
-                {/* job name name */}
-                <div
-                  className={
-                    idx === slideIndex ? 'reverse-job-name job-name-active' : 'reverse-job-name'
-                  }
-                >
-                  <span data-text={val.text}>{val.text}</span>
                 </div>
               </div>
             </div>
@@ -92,50 +66,67 @@ const Container_1 = styled.div`
     display: none !important;
   }
   .slide {
+    opacity: 0.8;
     transform: scale(0.8);
-    .banner-image {
-    }
-    .job-name {
-      position: absolute;
-      left: 50%;
-      bottom: 50%;
-      transform: translate(-50%, 0);
-      background-color: var(--black-line);
-      width: 101%;
-      height: 12%;
-      overflow: hidden;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      border-top-left-radius: 20px;
-      border-top-right-radius: 20px;
-
-      span {
-        color: var(--text-secondary-color);
-        font-size: 1.6rem;
-        font-weight: 800;
-        text-align: center;
+    overflow: hidden;
+    border-radius: 20px;
+    -webkit-box-reflect: below 10px linear-gradient(transparent 50%, rgba(0, 0, 0, 0.3));
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;
+    transition: 0.6s ease-in-out;
+    .slide-box {
+      position: relative;
+      .banner-image {
+        &:after {
+          content: '';
+          background-image: inherit;
+          background-repeat: no-repeat;
+          background-position: bottom;
+          background-size: cover;
+          width: inherit;
+          height: 40%;
+          position: absolute;
+          bottom: -41%;
+          transform: scaleY(-1);
+          opacity: 0.5;
+        }
+        &::before {
+          content: '';
+          width: inherit;
+          height: 42%;
+          position: absolute;
+          bottom: -42%;
+          background: linear-gradient(transparent 50%, rgba(0, 0, 0, 0.3));
+          z-index: 1;
+          opacity: 0.5;
+        }
       }
-    }
-    .reverse-image {
-      transform: scaleY(-1);
-      opacity: 0.5;
-    }
-    .reverse-job-name {
-      transform: scaleY(-1);
-      position: absolute;
-      left: 50%;
-      bottom: 40%;
-      transform: translate(-50%, 0);
-      background-color: var(--black-line);
-      width: 101%;
-      height: 12%;
-      overflow: hidden;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      border-bottom-left-radius: 20px;
-      border-bottom-right-radius: 20px;
+      .job-name {
+        position: absolute;
+        left: 50%;
+        bottom: 0;
+        transform: translate(-50%, 0);
+        text-align: center;
+        transition: 0s ease;
+        background-color: black;
+        width: 100%;
+        span {
+          visibility: hidden;
+          padding-bottom: 20px;
+          font-size: 2.5rem;
+          font-weight: 800;
+          text-transform: capitalize;
+          color: var(--text-secondary-color);
+        }
+      }
+      .job-name-active {
+        visibility: visible;
+        opacity: 1;
+        width: 101%;
+        transition: 0.5s ease;
+        span {
+          visibility: visible;
+        }
+      }
     }
   }
   .slide-active {

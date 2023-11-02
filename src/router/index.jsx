@@ -20,8 +20,8 @@ import NotFound from '../screens/404/notfound';
 import Dashboard from '../screens/dashboard';
 import ProtectedLogin from '../components/protectedLogin';
 import UserProfile from '../screens/userProfile';
-import Otp from '../screens/otp';
 import AuthSocial from '../components/authSocial';
+import OtpByPhone from '../components/otpByPhone';
 
 const ROLES = {
   User: 5,
@@ -32,25 +32,24 @@ function Router() {
   return (
     <BrowserRouter>
       <Routes>
-          {/* client */}
-          <Route path="/" element={<App />}>
-            <Route path="/" element={<Home />} />
-            <Route path="/counter" element={<Counter />} />
-            <Route path="tin-tuc" element={<News />} />
-            <Route path="trach-nghiem-tinh-cach" element={<MBTI />} />
-            <Route path="mbti-test" element={<TestMbti />} />
-            <Route path="thong-tin-cac-truong-dai-hoc" element={<Universities />} />
-            <Route path="dong-hanh" element={<Companion />} />
-            <Route path="quen-mat-khau" element={<ForgotPassword />} />
-            <Route path="thong-tin-ca-nhan" element={<UserProfile />} />
+        {/* client */}
+        <Route path="/" element={<App />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/counter" element={<Counter />} />
+          <Route path="tin-tuc" element={<News />} />
+          <Route path="trach-nghiem-tinh-cach" element={<MBTI />} />
+          <Route path="mbti-test" element={<TestMbti />} />
+          <Route path="thong-tin-cac-truong-dai-hoc" element={<Universities />} />
+          <Route path="dong-hanh" element={<Companion />} />
+          <Route path="quen-mat-khau" element={<ForgotPassword />} />
+          <Route path="thong-tin-ca-nhan" element={<UserProfile />} />
 
-            <Route path="otp" element={<Otp />} />
-            <Route path="authSocial" element={<AuthSocial />} />
+          <Route path="otp" element={<OtpByPhone />} />
+          <Route path="authSocial" element={<AuthSocial />} />
+        </Route>
 
-          </Route>
-
-          <Route path="dang-nhap" element={<Singin />} />
-          <Route path="dang-ky" element={<Signup />} />
+        <Route path="dang-nhap" element={<Singin />} />
+        <Route path="dang-ky" element={<Signup />} />
         {/* admin */}
 
         <Route

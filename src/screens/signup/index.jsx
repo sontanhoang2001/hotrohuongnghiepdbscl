@@ -3,7 +3,7 @@ import { Button, Cascader, Checkbox, Form, Input, Select, Spin } from 'antd';
 import { styled } from 'styled-components';
 import ProvincesOpenApi from '../../api/province';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectPending, selectRegister, setIsSignup, signupAsync } from '../../redux/authSlice';
+import { selectPending, selectIsSignup, setIsSignup, signupAsync } from '../../redux/authSlice';
 import { useNavigate } from 'react-router-dom';
 
 const { Option } = Select;
@@ -45,7 +45,7 @@ function Signup() {
 
   const dispatch = useDispatch();
   let pending = useSelector(selectPending);
-  const isSignup = useSelector(selectRegister);
+  const isSignup = useSelector(selectIsSignup);
 
   useEffect(() => {
     setloadinpage(pending && pending != null ? true : false);
@@ -125,6 +125,10 @@ function Signup() {
                     required: true,
                     message: 'bạn chưa nhập mật khẩu',
                   },
+                  {
+                    max: 40,
+                    message: 'mật khẩu không quá 40 ký tự',
+                  },
                 ]}
                 hasFeedback
               >
@@ -168,7 +172,7 @@ function Signup() {
                   },
                   {
                     max: 120,
-                    message: 'độ dài tên không quá 120 chữ',
+                    message: 'độ dài tên không quá 120 ký tự',
                   },
                   {
                     pattern: /^[a-zA-ZÀ-ỹ ]+$/,
@@ -251,7 +255,7 @@ function Signup() {
                 {...tailFormItemLayout}
               >
                 <Checkbox>
-                  I have read the <a href="">agreement</a>
+                  Bạn có chập nhận <a href="">thoả thuận</a>
                 </Checkbox>
               </Form.Item>
               <Form.Item {...tailFormItemLayout}>

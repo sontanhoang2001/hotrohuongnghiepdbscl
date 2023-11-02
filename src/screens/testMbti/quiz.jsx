@@ -77,7 +77,7 @@ const Quiz = ({ questions }) => {
 
     // In giá trị ra console
     console.log(filteredOptions);
-  }, []);
+  }, [questions]);
 
   //Extraversion (Hướng ngoại) / Introversion (Hướng nội)
   let countExtraversionType = answers.filter((id) => id === 'E').length;
@@ -95,98 +95,97 @@ const Quiz = ({ questions }) => {
   //dùn filter array để lọc giá trị tương ứng theo loại, và length để lấy độ dài mãng sau khi lọc tương ứng giá trị đếm được
   //tiếp theo so sách số lựa chọn theo cặp, loại nào lớn sẽ lấy kết quả đó và nối thành một chuỗi 4 ký tự (exp: ENFJ )
   //có tối đa 16 kết quả
-  // const calculateMBTIType = (answer) => {
+  const calculateMBTIType = (answer) => {
+    //   //khai báo mảng chứa giá trị
+    const type = [];
 
-  //   //khai báo mảng chứa giá trị
-  //   const type = [];
+    //   //so sánh các giá trị theo từng cặp thuộc phương thức MBTI
+    //   //Extraversion (Hướng ngoại) / Introversion (Hướng nội)
+    if (countExtraversionType > countIntroversionType) {
+      type.push('E');
+    } else if (countExtraversionType === countIntroversionType) {
+      // answers.filter((val) => {
+      //   if (val.id === 'E' && val.flag === 1) {
+      //     countExtraversionType = countExtraversionType + 1;
+      //   }
+      //   if (val.id === 'I' && val.flag === 1) {
+      //     countIntroversionType = countIntroversionType + 1;
+      //   }
+      //   console.log(answers, 'answer');
+      //   console.log(val.id, 'test');
+      //   console.log(countExtraversionType, 'e');
+      //   console.log(countIntroversionType, 'i');
+      //   return 0;
+      // });
 
-  //   //so sánh các giá trị theo từng cặp thuộc phương thức MBTI
-  //   //Extraversion (Hướng ngoại) / Introversion (Hướng nội)
-  //   if (countExtraversionType > countIntroversionType) {
-  //     type.push('E');
-  //   } else if (countExtraversionType === countIntroversionType) {
-  //     // answers.filter((val) => {
-  //     //   if (val.id === 'E' && val.flag === 1) {
-  //     //     countExtraversionType = countExtraversionType + 1;
-  //     //   }
-  //     //   if (val.id === 'I' && val.flag === 1) {
-  //     //     countIntroversionType = countIntroversionType + 1;
-  //     //   }
-  //     //   console.log(answers, 'answer');
-  //     //   console.log(val.id, 'test');
-  //     //   console.log(countExtraversionType, 'e');
-  //     //   console.log(countIntroversionType, 'i');
-  //     //   return 0;
-  //     // });
+      if (countExtraversionType > countIntroversionType) type.push('E');
+      else type.push('I');
+    } else {
+      type.push('I');
+    }
 
-  //     if (countExtraversionType > countIntroversionType) type.push('E');
-  //     else type.push('I');
-  //   } else {
-  //     type.push('I');
-  //   }
+    //Sensing (Giác quan) / iNtuition (Trực giác)
+    if (countSensingType > countiNtuitionType) {
+      type.push('S');
+    } else if (countSensingType === countiNtuitionType) {
+      answers.filter((val) => {
+        if (val.id === 'S' && val.flag === 1) {
+          countSensingType = countSensingType++;
+        }
+        if (val.id === 'N' && val.flag === 1) {
+          countiNtuitionType = countiNtuitionType++;
+        }
 
-  //   //Sensing (Giác quan) / iNtuition (Trực giác)
-  //   if (countSensingType > countiNtuitionType) {
-  //     type.push('S');
-  //   } else if (countSensingType === countiNtuitionType) {
-  //     answers.filter((val) => {
-  //       if (val.id === 'S' && val.flag === 1) {
-  //         countSensingType = countSensingType++;
-  //       }
-  //       if (val.id === 'N' && val.flag === 1) {
-  //         countiNtuitionType = countiNtuitionType++;
-  //       }
+        return 0;
+      });
+      if (countSensingType > countiNtuitionType) type.push('S');
+      else type.push('N');
+    } else {
+      type.push('N');
+    }
+    // Thinking (Lý trí) / Feeling (Cảm xúc)
+    if (countThinkingType > countFeelingType) {
+      type.push('T');
+    } else if (countThinkingType === countFeelingType) {
+      answers.filter((val) => {
+        if (val.id === 'T' && val.flag === 1) {
+          countThinkingType = countThinkingType++;
+        }
+        if (val.id === 'F' && val.flag === 1) {
+          countFeelingType = countFeelingType++;
+        }
 
-  //       return 0;
-  //     });
-  //     if (countSensingType > countiNtuitionType) type.push('S');
-  //     else type.push('N');
-  //   } else {
-  //     type.push('N');
-  //   }
-  //   // Thinking (Lý trí) / Feeling (Cảm xúc)
-  //   if (countThinkingType > countFeelingType) {
-  //     type.push('T');
-  //   } else if (countThinkingType === countFeelingType) {
-  //     answers.filter((val) => {
-  //       if (val.id === 'T' && val.flag === 1) {
-  //         countThinkingType = countThinkingType++;
-  //       }
-  //       if (val.id === 'F' && val.flag === 1) {
-  //         countFeelingType = countFeelingType++;
-  //       }
+        return 0;
+      });
+      if (countThinkingType > countFeelingType) type.push('T');
+      else type.push('F');
+    } else {
+      type.push('F');
+    }
+    //Judging (Nguyên tắc) / Perceiving (Linh hoạt)
+    if (countJudgingType > countPerceivingType) {
+      type.push('J');
+    } else if (countJudgingType === countPerceivingType) {
+      answers.filter((val) => {
+        if (val.id === 'J' && val.flag === 1) {
+          countJudgingType = countJudgingType++;
+        }
+        if (val.id === 'P' && val.point === 1) {
+          countPerceivingType = countPerceivingType++;
+        }
 
-  //       return 0;
-  //     });
-  //     if (countThinkingType > countFeelingType) type.push('T');
-  //     else type.push('F');
-  //   } else {
-  //     type.push('F');
-  //   }
-  //   //Judging (Nguyên tắc) / Perceiving (Linh hoạt)
-  //   if (countJudgingType > countPerceivingType) {
-  //     type.push('J');
-  //   } else if (countJudgingType === countPerceivingType) {
-  //     answers.filter((val) => {
-  //       if (val.id === 'J' && val.flag === 1) {
-  //         countJudgingType = countJudgingType++;
-  //       }
-  //       if (val.id === 'P' && val.point === 1) {
-  //         countPerceivingType = countPerceivingType++;
-  //       }
+        return 0;
+      });
+      if (countJudgingType > countPerceivingType) {
+        type.push('J');
+      } else type.push('P');
+    } else {
+      type.push('P');
+    }
+    // setResult(type.join(''));
 
-  //       return 0;
-  //     });
-  //     if (countJudgingType > countPerceivingType) {
-  //       type.push('J');
-  //     } else type.push('P');
-  //   } else {
-  //     type.push('P');
-  //   }
-  //   // setResult(type.join(''));
-
-  //   return type.join('');
-  // };
+    return type.join('');
+  };
 
   //hàm này dùng để lấy giá trị theo id của mbti detail vd: kiếm INTP id trong mbti detail
   const getTypeDetail = (mbtiType) => {
@@ -199,11 +198,11 @@ const Quiz = ({ questions }) => {
   };
 
   const handleSubmit = useCallback(() => {
-    // const mbtiType = calculateMBTIType(answers);
-    // setMbtiResult(getTypeDetail(mbtiType));
-    // setCompleted(true);
+    const mbtiType = calculateMBTIType(answers);
+    setMbtiResult(getTypeDetail(mbtiType));
+    setCompleted(true);
     // console.log(mbtiType);
-  }, [answers]);
+  }, [answers, calculateMBTIType]);
 
   const confirm = (e) => {
     handleSubmit();

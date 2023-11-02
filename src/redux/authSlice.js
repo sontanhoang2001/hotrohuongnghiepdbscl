@@ -4,12 +4,24 @@ import { message } from 'antd';
 
 //gia tri mat dinh
 const userDatalocalStorage = window.localStorage.getItem('userData');
+const signupDatalocalStorage = window.localStorage.getItem('userSignupData');
 let statusLogin = false;
 let parsedUserDatalocalStorage = null;
+let parsedSignupDatalocalStorage = null;
 
+//thông tin người dùng đăng nhập được lưu lại thông qua redux, và set lại giá trị khi người dùng thay đổi url mà chưa logout
 if (userDatalocalStorage) {
   try {
     parsedUserDatalocalStorage = JSON.parse(userDatalocalStorage);
+  } catch (error) {
+    // Xử lý lỗi nếu dữ liệu không phải là một chuỗi JSON hợp lệ
+    console.error('Error parsing JSON data from localStorage:', error);
+  }
+}
+//thông tin người dùng đăng ký được lưu lại thông qua redux, và set lại giá trị khi người dùng thay đổi url
+if (signupDatalocalStorage) {
+  try {
+    parsedSignupDatalocalStorage = JSON.parse(signupDatalocalStorage);
   } catch (error) {
     // Xử lý lỗi nếu dữ liệu không phải là một chuỗi JSON hợp lệ
     console.error('Error parsing JSON data from localStorage:', error);
@@ -27,10 +39,12 @@ if (
 const initialState = {
   authToken: null,
   data: parsedUserDatalocalStorage || null,
+  signupData: parsedSignupDatalocalStorage || null,
   pending: false,
   error: null,
   isLogin: statusLogin,
   isSignup: false,
+  otp: false,
   message: null,
 };
 
@@ -44,8 +58,7 @@ export const signinAsync = createAsyncThunk(
         ...rs.data.data,
       };
 
-      console.log('>>> rs', rs.data);
-      // console.log('>>> role', dataUser.userData.role);
+      // console.log('>>> rs', rs.data);
 
       localStorage.setItem('accessToken', rs.data.data.accessToken);
       localStorage.setItem('userData', JSON.stringify(dataUser.userData));
@@ -62,9 +75,9 @@ export const signinAsync = createAsyncThunk(
 );
 export const signupAsync = createAsyncThunk(
   'auth/registerUser',
-  async (userLoginData, { rejectWithValue }) => {
+  async (userSignupData, { rejectWithValue }) => {
     try {
-      const rs = await authApi.signup(userLoginData);
+      const rs = await authApi.signup(userSignupData);
       // The value we return becomes the `fulfilled` action payload
       const dataUser = {
         ...rs.data.data,
@@ -73,14 +86,11 @@ export const signupAsync = createAsyncThunk(
       localStorage.setItem('userSignupData', JSON.stringify(dataUser));
 
       return rs.data.message;
-    } catch (error) {
-      if (error.response && error.response.data.message) {
-        //"rejectWithValue is not a function" nó báo về đây nè
-        //có khi thằng này mình viết sai syntax
-        //
-        return rejectWithValue(error.response.data.message);
+    } catch (err) {
+      if (err.response && err.response.data.message) {
+        throw rejectWithValue(err.response.data.message);
       } else {
-        return rejectWithValue(error.message);
+        throw rejectWithValue(err.message);
       }
     }
   },
@@ -90,21 +100,16 @@ export const requestOtp = createAsyncThunk(
   'auth/requestOTP',
   async (requestOtp, { rejectWithValue }) => {
     try {
-      const rs = await authApi.signup(requestOtp);
-      // The value we return becomes the `fulfilled` action payload
-      const dataUser = {
-        ...rs.data.data,
-      };
+      const rs = await authApi.requestOTP(requestOtp);
+      // console.log(rs.data.message);
 
       return rs.data.message;
-    } catch (error) {
-      if (error.response && error.response.data.message) {
-        //"rejectWithValue is not a function" nó báo về đây nè
-        //có khi thằng này mình viết sai syntax
-        //
-        return rejectWithValue(error.response.data.message);
+    } catch (err) {
+      if (err.response && err.response.data.message) {
+        console.log(err.response.data.message);
+        throw rejectWithValue(err.response.data.message);
       } else {
-        return rejectWithValue(error.message);
+        throw rejectWithValue(err.message);
       }
     }
   },
@@ -113,21 +118,13 @@ export const authOTP = createAsyncThunk(
   'auth/authOTP ',
   async (requestOtp, { rejectWithValue }) => {
     try {
-      const rs = await authApi.signup(requestOtp);
-      // The value we return becomes the `fulfilled` action payload
-      const dataUser = {
-        ...rs.data.data,
-      };
-
+      const rs = await authApi.authOTP(requestOtp);
       return rs.data.message;
-    } catch (error) {
-      if (error.response && error.response.data.message) {
-        //"rejectWithValue is not a function" nó báo về đây nè
-        //có khi thằng này mình viết sai syntax
-
-        return rejectWithValue(error.response.data.message);
+    } catch (err) {
+      if (err.response && err.response.data.message) {
+        throw rejectWithValue(err.response);
       } else {
-        return rejectWithValue(error.message);
+        throw rejectWithValue(err.message);
       }
     }
   },
@@ -146,6 +143,9 @@ export const authSlice = createSlice({
     },
     setIsSignup: (state, action) => {
       state.isSignup = action.payload; // Thay đổi giá trị isSignup dựa trên action.payload
+    },
+    isOtp: (state, action) => {
+      state.otp = action.payload;
     },
   },
 
@@ -176,7 +176,7 @@ export const authSlice = createSlice({
       })
       .addCase(signupAsync.fulfilled, (state, { payload }) => {
         state.pending = false;
-        state.data = payload;
+        state.signupData = payload;
         state.isSignup = true;
         state.authToken = payload.token;
         message.success(payload.message, 3);
@@ -194,6 +194,7 @@ export const authSlice = createSlice({
       .addCase(requestOtp.fulfilled, (state, { payload }) => {
         state.pending = false;
         state.data = payload;
+        state.otp = true;
         message.success(payload.message, 3);
       })
       .addCase(requestOtp.rejected, (state, { payload }) => {
@@ -209,11 +210,13 @@ export const authSlice = createSlice({
       .addCase(authOTP.fulfilled, (state, { payload }) => {
         state.pending = false;
         state.data = payload;
+        state.otp = true;
         message.success(payload.message, 3);
       })
       .addCase(authOTP.rejected, (state, { payload }) => {
         state.pending = false;
         state.error = payload;
+        state.otp = false;
         message.error(payload, 3);
       });
   },
@@ -221,9 +224,12 @@ export const authSlice = createSlice({
 
 export const { logout } = authSlice.actions;
 export const { setIsSignup } = authSlice.actions;
+export const { isOtp } = authSlice.actions;
 export const selectProfile = (state) => state.auth.data;
+export const selectSignupData = (state) => state.auth.signupData;
 export const selectPending = (state) => state.auth.pending;
 export const selectIsLogin = (state) => state.auth.isLogin;
-export const selectRegister = (state) => state.auth.isSignup;
+export const selectIsSignup = (state) => state.auth.isSignup;
+export const selectIsOtp = (state) => state.auth.otp;
 
 export default authSlice.reducer;
