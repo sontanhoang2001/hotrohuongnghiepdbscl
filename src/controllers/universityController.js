@@ -54,18 +54,19 @@ module.exports = {
 
   updateUniversity: async (req, res) => {
     try {
-      const questionId = parseInt(req.params.id);
-      const mbti = req.body;
+      const universityId = parseInt(req.params.id);
+      const university = req.body;
 
-      if (isNaN(questionId)) {
-        return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a valid questionId as a parameter');
+      if (isNaN(universityId)) {
+        return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a valid universityId as a parameter');
       }
 
-      if (!mbti.question_group_id || !mbti.question || !mbti.answers || !Array.isArray(mbti.answers) || mbti.answers.length === 0) {
+      if (!university.name || !university.image || !university.address || !university.province || !university.email || !university.phone || !university.description || !university.url || !university.rank) {
         return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a full and valid parameter');
       }
 
-      const updateQuestion = await mbtiService.updateQuestion(questionId, mbti);
+      const updateQuestion = await universityService.updateUniversity(universityId, university);
+      console.log("updateQuestion", updateQuestion)
       if (updateQuestion) {
         return responseHelper.sendResponse.SUCCESS(res, null, 'Cập nhật thành công');
       }
@@ -78,12 +79,12 @@ module.exports = {
 
   deleteOneUniversity: async (req, res) => {
     try {
-      const questionId = parseInt(req.params.id);
-      if (isNaN(questionId)) {
-        return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a valid questionId as a parameter');
+      const universityId = parseInt(req.params.id);
+      if (isNaN(universityId)) {
+        return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a valid universityId as a parameter');
       }
 
-      const deleteQuestion = await mbtiService.deleteQuestion(questionId);
+      const deleteQuestion = await universityService.deleteUniversity(universityId);
       if (deleteQuestion) {
         return responseHelper.sendResponse.SUCCESS(res, null, "Thực hiện xóa thành công");
       }

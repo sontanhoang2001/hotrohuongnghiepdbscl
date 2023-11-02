@@ -9,8 +9,8 @@ const { getAll, getUniversityById, createUniversity, updateUniversity, deleteOne
 //* Here I defined the methods 
 router.get('/', getAll);
 router.get('/id/:id', getUniversityById);
-router.post('/add', middleware.verifyToken, createUniversity);
-router.patch('/edit', middleware.verifyToken, updateUniversity);
+router.post('/add', createUniversity);
+router.patch('/edit/:id', updateUniversity);
 router.delete('/delete/:id', deleteOneUniversity);
 
 module.exports = router;

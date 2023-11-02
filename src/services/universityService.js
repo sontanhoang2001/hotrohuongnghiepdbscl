@@ -40,7 +40,7 @@ module.exports = {
       // Tính offset
       const offset = (page - 1) * size;
 
-      const { count, rows } = await Question.findAndCountAll({
+      const { count, rows } = await University.findAndCountAll({
         offset,
         limit: size,
         attributes: ['name'],
@@ -86,37 +86,48 @@ module.exports = {
       throw error;
     }
   },
-  updateQuestion: async (questionId, payload) => {
+  updateUniversity: async (universityId, payload) => {
     let transaction;
     try {
       transaction = await sequelize.transaction();
 
       // Update question
-      const [numberOfAffectedRows] = await Question.update(
-        { question: payload.question },
+      const [numberOfAffectedRows1] = await University.update(
+        { name: payload.name },
         {
-          where: { id: questionId },
+          where: { id: universityId },
           transaction,
         },
       );
 
       // Kiểm tra số lượng dòng bị ảnh hưởng bởi câu lệnh update cho câu hỏi
-      if (numberOfAffectedRows === 0) {
+      if (numberOfAffectedRows1 === 0) {
         await transaction.rollback();
         return false; // Trả về false nếu không có câu hỏi nào được cập nhật
       }
 
-      // Update answers
-      for (const answer of payload.answers) {
-        const [numberOfAffectedRows] = await Answer.update(answer, {
-          where: { id: answer.id },
-          transaction,
-        });
+      const universityDetailPayload = {
+        image: payload.image,
+        address: payload.address,
+        province: payload.province,
+        email: payload.email,
+        phone: payload.phone,
+        lat: payload.phone,
+        long: payload.long,
+        description: payload.description,
+        url: payload.url,
+        rank: payload.rank,
+      };
 
-        if (numberOfAffectedRows === 0) {
-          await transaction.rollback();
-          return false; // Trả về false nếu có lỗi khi cập nhật một trong các câu trả lời
-        }
+      // Update answers
+      const [numberOfAffectedRows2] = await UniversityDetail.update(universityDetailPayload, {
+        where: { universityId	: universityId },
+        transaction,
+      });
+
+      if (numberOfAffectedRows2 === 0) {
+        await transaction.rollback();
+        return false; // Trả về false nếu có lỗi khi cập nhật một trong các câu trả lời
       }
 
       await transaction.commit();
@@ -129,14 +140,14 @@ module.exports = {
     }
   },
 
-  deleteQuestion: async (questionId) => {
+  deleteUniversity : async (universityId) => {
     let transaction;
     try {
       transaction = await sequelize.transaction();
 
       // Destroy question
-      const numberOfAffectedRows1 = await Question.destroy({
-        where: { id: questionId },
+      const numberOfAffectedRows1 = await University.destroy({
+        where: { id: universityId },
       });
 
       // Kiểm tra số lượng dòng bị ảnh hưởng bởi câu lệnh update cho câu hỏi
@@ -146,8 +157,8 @@ module.exports = {
       }
 
       // Destroy answers
-      const numberOfAffectedRows2 = await Answer.destroy({
-        where: { questionId: questionId },
+      const numberOfAffectedRows2 = await UniversityDetail.destroy({
+        where: { universityId: universityId },
       });
 
       if (numberOfAffectedRows2 === 0) {
