@@ -3,20 +3,23 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Button, Form, Spin } from 'antd';
 import { InputOTP } from 'antd-input-otp';
 import styled from 'styled-components';
-import { authOTP, isOtp, selectIsOtp } from '../../redux/authSlice';
-import { useNavigate } from 'react-router-dom';
+import { authOTP } from '../../redux/authSlice';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 function RequestOtp(props) {
   const { type, userId, sentOtp } = props;
   const [form] = Form.useForm();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
+  const location = useLocation();
   useEffect(() => {
     if (sentOtp) {
-      navigate('/dang-nhap');
+      localStorage.removeItem('userSignupData');
+      if (location.pathname === '/xac-nhan-dang-nhap') {
+        navigate('/dang-nhap');
+      }
     }
-  }, [sentOtp, navigate]);
+  }, [sentOtp, navigate, location]);
   //hàm sử lý khi người dùng submit
   const handleFinish = (values) => {
     // The value will be array of string

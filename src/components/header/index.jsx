@@ -32,11 +32,9 @@ function Header() {
   useEffect(() => {
     setLoginStatus(isLogin ? true : false);
 
-    console.log(loginStatus);
     if (isLogin) {
       const getInfo = window.localStorage.getItem('userData');
       setFullName(JSON.parse(getInfo)?.UserDetail.fullName);
-      console.log('getname', fullname);
     }
 
     const pathName = location.pathname;

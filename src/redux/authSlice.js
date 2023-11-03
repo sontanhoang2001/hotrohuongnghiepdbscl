@@ -47,7 +47,7 @@ const initialState = {
   otp: false,
   message: null,
 };
-
+// tạo một Redux Thunk, bất đồng bộ được sử dụng để đăng nhập người dùng
 export const signinAsync = createAsyncThunk(
   'auth/login',
   async (userLoginData, { rejectWithValue }) => {
@@ -73,6 +73,7 @@ export const signinAsync = createAsyncThunk(
     }
   },
 );
+// tạo một Redux Thunk, bất đồng bộ được sử dụng để đăng ký người dùng
 export const signupAsync = createAsyncThunk(
   'auth/registerUser',
   async (userSignupData, { rejectWithValue }) => {
@@ -96,7 +97,7 @@ export const signupAsync = createAsyncThunk(
     }
   },
 );
-
+// tạo một Redux Thunk, bất đồng bộ được sử dụng gửi yêu cầu otp người dùng
 export const requestOtp = createAsyncThunk(
   'auth/requestOTP',
   async (requestOtp, { rejectWithValue }) => {
@@ -115,6 +116,7 @@ export const requestOtp = createAsyncThunk(
     }
   },
 );
+// tạo một Redux Thunk, bất đồng bộ được sử dụng xác thực otp người dùng
 export const authOTP = createAsyncThunk(
   'auth/authOTP ',
   async (requestOtp, { rejectWithValue }) => {
@@ -124,6 +126,26 @@ export const authOTP = createAsyncThunk(
     } catch (err) {
       if (err.response && err.response.data.message) {
         throw rejectWithValue(err.response);
+      } else {
+        throw rejectWithValue(err.message);
+      }
+    }
+  },
+);
+// tạo một Redux Thunk, bất đồng bộ được sử dụng xác thực otp người dùng
+export const authChangeEmail = createAsyncThunk(
+  'auth/authChangeEmail',
+  async (data, { rejectWithValue }) => {
+    try {
+      const rs = await authApi.authChangeEmail(data);
+      // The value we return becomes the `fulfilled` action payload
+      const dataUser = {
+        ...rs.data.data,
+      };
+      return rs.data.data;
+    } catch (err) {
+      if (err.response && err.response.data.message) {
+        throw rejectWithValue(err.response.data.message);
       } else {
         throw rejectWithValue(err.message);
       }
@@ -162,7 +184,6 @@ export const authSlice = createSlice({
         state.data = payload;
         state.authToken = payload.token;
         state.isLogin = true;
-        message.success(payload.message, 3);
       })
 
       .addCase(signinAsync.rejected, (state, { payload }) => {
@@ -180,7 +201,7 @@ export const authSlice = createSlice({
         state.signupData = payload;
         state.isSignup = true;
         state.authToken = payload.token;
-        message.success(payload.message, 3);
+        message.success('Đăng ký thành công', 3);
       })
       .addCase(signupAsync.rejected, (state, { payload }) => {
         state.pending = false;
@@ -195,9 +216,8 @@ export const authSlice = createSlice({
       .addCase(requestOtp.fulfilled, (state, { payload }) => {
         state.pending = false;
         state.data = payload;
-
         state.otp = true;
-        message.success(payload.message, 3);
+        message.success('Mã otp đã gửi đến mail của bạn', 3);
       })
       .addCase(requestOtp.rejected, (state, { payload }) => {
         state.pending = false;
@@ -213,9 +233,24 @@ export const authSlice = createSlice({
         state.pending = false;
         state.data = payload;
         state.otp = true;
-        message.success(payload.message, 3);
       })
       .addCase(authOTP.rejected, (state, { payload }) => {
+        state.pending = false;
+        state.error = payload;
+        state.otp = false;
+        message.error(payload, 3);
+      })
+      //trạng thái của authEmtail pending - fulfilled - rejected
+      .addCase(authChangeEmail.pending, (state, { payload }) => {
+        state.pending = true;
+        state.error = null;
+      })
+      .addCase(authChangeEmail.fulfilled, (state, { payload }) => {
+        state.pending = false;
+        state.otp = true;
+        message.success('Mã otp đã gửi đến mail của bạn', 3);
+      })
+      .addCase(authChangeEmail.rejected, (state, { payload }) => {
         state.pending = false;
         state.error = payload;
         state.otp = false;

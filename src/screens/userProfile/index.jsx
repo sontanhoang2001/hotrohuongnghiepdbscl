@@ -1,4 +1,4 @@
-import { Card, Row, Table, Button } from 'antd';
+import { Card, Row, Table, Button, Modal, Spin } from 'antd';
 import {
   HomeOutlined,
   MailOutlined,
@@ -9,24 +9,43 @@ import {
   WomanOutlined,
 } from '@ant-design/icons';
 import { format } from 'date-fns';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import EditMail from './editMail';
+import { useDispatch, useSelector } from 'react-redux';
+import { isOtp, selectIsOtp, selectProfile } from '../../redux/authSlice';
+import RequestOtp from '../../components/requestOtp';
 
 function UserProfile() {
-  const getInfo = window.localStorage?.getItem('userData');
-  const userInfo = JSON.parse(getInfo);
-  const avatar = userInfo?.UserDetail.avatar;
-  const fullname = userInfo?.UserDetail.fullName;
-  const gender = userInfo?.UserDetail.gender;
-  const getBirthday = userInfo?.UserDetail.birthday;
+  //gọi redux
+  const dispatch = useDispatch();
+  const getProfile = useSelector(selectProfile);
+  const sentOtp = useSelector(selectIsOtp);
+
+  //lấy thông tin người dùng
+  // const getInfo = window.localStorage?.getItem('userData');
+  // const userInfo = JSON.parse(getInfo);
+  const id = getProfile?.UserDetail?.id;
+  const avatar = getProfile?.UserDetail?.avatar;
+  const fullname = getProfile?.UserDetail?.fullName;
+  const gender = getProfile?.UserDetail?.gender;
+  const getBirthday = getProfile?.UserDetail?.birthday;
+  //định dạng ngày sinh hiển thị
   const formattedDate =
     getBirthday != null && getBirthday !== undefined
       ? format(new Date(getBirthday), 'dd/MM/yyyy')
       : null;
-  const address = userInfo?.UserDetail.address;
-  const addressDetail = userInfo?.UserDetail.addressDetail;
-  const email = userInfo?.email;
-  const phone = userInfo?.phone;
+  const address = getProfile?.UserDetail?.address;
+  const addressDetail = getProfile?.UserDetail?.addressDetail;
+  const email = getProfile?.email;
+  const phone = getProfile?.phone;
+  //trạng thái đóng/ mở modal
+  const [open, setOpen] = useState(false);
+  const [openOtp, setOpenOtp] = useState(false);
+
+  const [otpType, setOtpType] = useState('email');
+
+  //khởi tạo cấu trúc hiển thị thông tin người dùng
   const dataSource = [
     {
       key: '1',
@@ -59,6 +78,7 @@ function UserProfile() {
     },
   ];
 
+  //định dạng cột hiển thị thông tin người dùng
   const columns = [
     {
       dataIndex: 'icon',
@@ -78,13 +98,20 @@ function UserProfile() {
         } else {
           return (
             <>
-              <EditOutlined />
+              <EditOutlined onClick={() => setOpen(true)} />
             </>
           );
         }
       },
     },
   ];
+  useEffect(() => {
+    if (sentOtp) {
+      setOpen(false);
+      dispatch(isOtp(false));
+      setOpenOtp(true);
+    }
+  }, [sentOtp, dispatch, getProfile]);
   return (
     <ProfileContainer className="container">
       <Card>
@@ -117,6 +144,20 @@ function UserProfile() {
         </div>
         <Table showHeader={false} pagination={false} dataSource={dataSource} columns={columns} />;
       </Card>
+      {/* modal edit */}
+      <Modal title="Đổi E-mail" centered open={open} onCancel={() => setOpen(false)} footer={null}>
+        <EditMail mail={email} />
+      </Modal>
+      {/* xác thực otp */}
+      <Modal
+        title="Xác Thực Otp"
+        centered
+        open={openOtp}
+        onCancel={() => setOpenOtp(false)}
+        footer={null}
+      >
+        {/* <RequestOtp type={otpType} userId={id} sentOtp={sentOtp} /> */}
+      </Modal>
     </ProfileContainer>
   );
 }

@@ -3,7 +3,7 @@ import { Button, Cascader, Checkbox, Form, Input, Select, Spin } from 'antd';
 import { styled } from 'styled-components';
 import ProvincesOpenApi from '../../api/province';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectPending, selectIsSignup, setIsSignup, signupAsync } from '../../redux/authSlice';
+import { selectPending, selectIsSignup, signupAsync } from '../../redux/authSlice';
 import { useNavigate } from 'react-router-dom';
 
 const { Option } = Select;
@@ -291,11 +291,6 @@ const SignupForm = styled.div`
       text-transform: capitalize;
       margin-top: 10px;
       margin-bottom: 15px;
-    }
-    .ant-form .no-star .ant-form-item-row .ant-form-item-label .ant-form-item-required {
-      &::before {
-        display: none;
-      }
     }
   }
 `;

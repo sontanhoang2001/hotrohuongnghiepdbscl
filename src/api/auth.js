@@ -19,6 +19,10 @@ const authApi = {
     const url = `/${pathname}/authOTP`;
     return axiosService.post(url, payload);
   },
+  authChangeEmail: (payload) => {
+    const url = `/${pathname}/authChangeEmail`;
+    return axiosService.post(url, payload);
+  },
 };
 
 export default authApi;

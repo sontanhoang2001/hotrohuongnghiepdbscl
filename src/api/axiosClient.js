@@ -5,10 +5,11 @@ import axios from 'axios';
 //config for the full list of configs
 
 const axiosClient = axios.create({
-  baseURL: process.env.REACT_APP_API_URL
+  baseURL: process.env.REACT_APP_API_URL,
 });
 
-const accessToken = window.localStorage?.getItem('access_token');
+const accessToken = window.localStorage?.getItem('accessToken');
+console.log(accessToken);
 
 axiosClient.interceptors.request.use(async (config) => {
   config.headers = {
