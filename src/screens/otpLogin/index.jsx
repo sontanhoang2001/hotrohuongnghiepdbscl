@@ -38,7 +38,7 @@ function OtpLogin() {
       userId: getUserID,
       type: type,
     };
-    console.log(requestData);
+
     if (type === 'email') {
       dispatch(requestOtp(requestData));
     }
@@ -48,7 +48,6 @@ function OtpLogin() {
     setloadinpage(pending && pending != null ? true : false);
     setMail(getSignupData?.email);
     setPhone(getSignupData?.phone);
-    console.log('phone-----', phone);
     if (phone != null && phone !== undefined && phone !== '') {
       setHasPhone(false);
     }

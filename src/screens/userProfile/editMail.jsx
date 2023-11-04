@@ -1,7 +1,7 @@
 import { Button, Form, Input, Spin } from 'antd';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { authChangeEmail, selectPending } from '../../redux/authSlice';
+import { authChangeEmailAsync, selectPending } from '../../redux/authSlice';
 import { useDispatch, useSelector } from 'react-redux';
 
 const formItemLayout = {
@@ -31,7 +31,7 @@ function EditMail({ mail }) {
   const dispatch = useDispatch();
 
   const onFinish = (values) => {
-    dispatch(authChangeEmail(values));
+    dispatch(authChangeEmailAsync(values));
   };
 
   useEffect(() => {
@@ -61,7 +61,7 @@ function EditMail({ mail }) {
           {/* ----------------begin mail---------------- */}
           <Form.Item
             name="newEmail"
-            label="E-mail mới"
+            label="E-mail Mới"
             rules={[
               {
                 type: 'email',

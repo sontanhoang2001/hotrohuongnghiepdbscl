@@ -23,6 +23,10 @@ const authApi = {
     const url = `/${pathname}/authChangeEmail`;
     return axiosService.post(url, payload);
   },
+  changePassword: (payload) => {
+    const url = `/${pathname}/changePassword`;
+    return axiosService.post(url, payload);
+  },
 };
 
 export default authApi;

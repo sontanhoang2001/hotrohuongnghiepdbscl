@@ -27,7 +27,7 @@ function ManageQuestion() {
     //     setDataSource(res.users);
     //     setLoading(false);
     //   });
-  }, [dataSource, dispatch, getMbtiData, page, size]);
+  }, [dataSource, page, size]);
 
   const columns = [
     {
@@ -52,7 +52,6 @@ function ManageQuestion() {
 
   return (
     <div>
-      <div>{dataSource.data}</div>
       <Space size={20} direction="vertical">
         <Typography.Title level={4}>Customers</Typography.Title>
         <Table

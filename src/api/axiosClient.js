@@ -9,7 +9,6 @@ const axiosClient = axios.create({
 });
 
 const accessToken = window.localStorage?.getItem('accessToken');
-console.log(accessToken);
 
 axiosClient.interceptors.request.use(async (config) => {
   config.headers = {

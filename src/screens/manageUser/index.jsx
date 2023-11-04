@@ -1,101 +1,108 @@
 import React from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
-import authApi from '../../api/auth';
 import { Avatar, Space, Typography } from 'antd';
 import Table from 'rc-table';
 import { useDispatch, useSelector } from 'react-redux';
-import { getUserAsync, selectUser } from '../../redux/userSlice.js';
+import { getAllUserAsync, selectUser } from '../../redux/userSlice.js';
 
-import {} from '../../redux/userSlice';
+const columns = [
+  {
+    title: 'STT',
+    dataIndex: 'id',
+    width: 50,
+  },
+  {
+    title: 'account_type',
+    dataIndex: 'account_type',
+    width: 100,
+  },
+  {
+    title: 'trạng thái',
+    dataIndex: 'status',
+    width: 100,
+  },
+  {
+    title: 'Mã xác thực',
+    dataIndex: 'authCode',
+    width: 200,
+  },
+
+  {
+    title: 'Loại tk',
+    dataIndex: 'RoleId',
+    width: 100,
+  },
+  {
+    title: 'email',
+    dataIndex: 'email',
+    width: 100,
+  },
+  {
+    title: 'SĐT',
+    dataIndex: 'phone',
+    width: 100,
+  },
+  {
+    title: 'Ngày khởi tạo',
+    dataIndex: 'createdAt',
+    width: 150,
+  },
+  {
+    title: 'Ngày cập nhật',
+    dataIndex: 'updatedAt',
+    width: 150,
+  },
+];
 
 function ManageUser() {
-  const user = useSelector(selectUser);
-  const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
-  const [dataSource, setDataSource] = useState([]);
+  const [page, setPage] = useState('1');
+  const [size, setSize] = useState('10');
+  const [data, setData] = useState();
 
+  //gọi redux
+  const dispatch = useDispatch();
+  // const getAllUser = useSelector(
+  //   (state) => selectUser(state),
+  //   (prev, next) => {
+  //     return prev === next; // Bảo đảm rằng component chỉ re-render khi giá trị thực sự thay đổi
+  //   },
+  // );
+  const getAllUser = useSelector(selectUser);
   useEffect(() => {
-    // const testUser = async () => {
-    //   try {
-    //     //chưa khởi tạo getUser.js
-    //     const result = await authApi.getUser();
-    //     setDataSource(result.data);
-    //     console.log('result', result);
-    //   } catch (error) {}
-    // };
-    setLoading(true);
-    dispatch(getUserAsync());
-  }, [dispatch]);
+    dispatch(getAllUserAsync(page, size));
+
+    // console.log(getAllUser);
+  }, []);
+  console.log(getAllUser);
+  const dataSource = getAllUser?.map((item) => {
+    return {
+      key: item.id.toString(),
+      id: item.id,
+      account_type: item.account_type,
+      email: item.email,
+      phone: item.phone,
+      authCode: item.authCode,
+      roleId: item.roleId,
+      status: item.status, // Thay thế giá trị tương ứng với account_type
+      createdAt: item.phocreatedAtne,
+      updatedAt: item.updatedAt,
+    };
+  });
+  console.log(dataSource);
 
   return (
     <div>
       <Space size={20} direction="vertical">
-        <Typography.Title level={4}>Customers</Typography.Title>
+        <Typography.Title level={4}>Quản Lý Người Dùng</Typography.Title>
         <Table
           loading={loading}
-          columns={[
-            {
-              title: 'STT',
-              dataIndex: 'id',
-            },
-            {
-              title: 'Avatar',
-              dataIndex: 'image',
-              render: (link) => {
-                return <Avatar src={link} />;
-              },
-            },
-            {
-              title: 'Loại TK',
-              dataIndex: 'account_type',
-            },
-            {
-              title: 'Họ và tên',
-              dataIndex: 'fullname',
-            },
-            {
-              title: 'Username',
-              dataIndex: 'username',
-            },
-            {
-              title: 'Password',
-              dataIndex: 'password',
-            },
-            {
-              title: 'Ngày sinh',
-              dataIndex: 'email',
-            },
-            {
-              title: 'email',
-              dataIndex: 'email',
-            },
-            {
-              title: 'Phone',
-              dataIndex: 'phone',
-            },
-            {
-              title: 'Địa chỉ',
-              dataIndex: 'address',
-            },
-
-            {
-              title: 'role',
-              dataIndex: 'role',
-            },
-            {
-              title: 'Ngày khởi tạo',
-              dataIndex: 'createdAt',
-            },
-            {
-              title: 'Ngày cập nhật',
-              dataIndex: 'updatedAt',
-            },
-          ]}
+          columns={columns}
           dataSource={dataSource}
-          pagination={{
-            pageSize: 5,
-          }}
+          // pagination={{
+          //   pageSize: 5,
+          // }}
         ></Table>
       </Space>
     </div>

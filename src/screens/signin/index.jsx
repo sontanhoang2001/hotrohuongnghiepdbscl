@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 //call redux
 import { useDispatch, useSelector } from 'react-redux';
 
-import { signinAsync, selectIsLogin, selectPending, selectProfile } from '../../redux/authSlice';
+import { signinAsync, selectIsLogin, selectPending, selectLoginData } from '../../redux/authSlice';
 
 import { Button, Checkbox, Form, Input, Spin } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
@@ -14,7 +14,7 @@ function Login() {
   const [loadinpage, setloadinpage] = useState(false);
 
   let pending = useSelector(selectPending);
-  const profile = useSelector(selectProfile);
+  const profile = useSelector(selectLoginData);
 
   const navigate = useNavigate();
 
