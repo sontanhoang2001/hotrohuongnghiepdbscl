@@ -70,5 +70,6 @@ export const selectUser = (state) => state.user.data;
 export const selectUserPage = (state) => state.user.page;
 export const selectUserSizePage = (state) => state.user.size;
 export const selectUserTotalRow = (state) => state.user.total;
+export const selectPending = (state) => state.mbti.pending;
 
 export default userSlice.reducer;

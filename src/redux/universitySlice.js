@@ -1,22 +1,20 @@
-import { message } from 'antd';
-import mbtiApi from '../api/mbtiApi';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import university from '../api/universityApi';
 
 // Tạo initialState cho slice
 const initialState = {
-  data: null, // Danh sách câu hỏi MBTI
-  pending: false, // Trạng thái tải (pending, fulfilled, rejected)
+  data: null,
+  pending: false,
   page: null,
   size: null,
   total: null,
 };
-
-// Tạo một async thunk để lấy danh sách câu hỏi MBTI
-export const getMbtiQuestion = createAsyncThunk(
-  'mbti/fetchMBTIQuestions',
+// Tạo một async thunk để lấy danh sách cac truong
+export const getAllUniversity = createAsyncThunk(
+  'university/getAllUniversity',
   async ({ page, size }) => {
     try {
-      const rs = await mbtiApi.getAllQuestion(page, size);
+      const rs = await university.getAllUniversity(page, size);
       return rs.data.data; // Đảm bảo kiểm tra API response và chọn dữ liệu cần thiết
     } catch (error) {
       // Xử lý lỗi và trả về thông báo hoặc giá trị mặc định
@@ -31,15 +29,15 @@ export const getMbtiQuestion = createAsyncThunk(
 
 // Tạo slice
 const mbtiSlice = createSlice({
-  name: 'mbti',
+  name: 'university',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(getMbtiQuestion.pending, (state) => {
+      .addCase(getAllUniversity.pending, (state) => {
         state.pending = true;
       })
-      .addCase(getMbtiQuestion.fulfilled, (state, { payload }) => {
+      .addCase(getAllUniversity.fulfilled, (state, { payload }) => {
         state.pending = false;
         const formatData = payload.data.map((item, idx) => {
           return {
@@ -57,13 +55,11 @@ const mbtiSlice = createSlice({
         state.page = payload.page;
         state.size = payload.size;
       })
-      .addCase(getMbtiQuestion.rejected, (state, action) => {
+      .addCase(getAllUniversity.rejected, (state, action) => {
         state.pending = false;
       });
   },
 });
-
-export const selectMBTIQuestions = (state) => state.mbti.data;
-export const selectPending = (state) => state.mbti.pending;
-
+export const selectUniversity = (state) => state.university.data;
+export const selectPending = (state) => state.university.pending;
 export default mbtiSlice.reducer;

@@ -1,4 +1,4 @@
-import { Card, Row, Table, Button, Modal, Spin } from 'antd';
+import { Card, Table, Button, Modal } from 'antd';
 import {
   HomeOutlined,
   MailOutlined,
@@ -112,10 +112,12 @@ function UserProfile() {
       case 'email':
         setContent(<EditMail mail={email} />);
         setSeletedKey('email');
+        setOtpType('email');
         break;
       case 'phone':
         setContent('chua lam');
         setSeletedKey('SĐT');
+        setOtpType('phone');
 
         break;
       case 'address':
