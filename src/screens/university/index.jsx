@@ -61,6 +61,7 @@ function Universities() {
             onOk={() => setOpen(false)}
             onCancel={() => setOpen(false)}
             width={1000}
+            footer={null}
           >
             <div style={{ display: 'flex', justifyContent: 'center' }}>
               <img
