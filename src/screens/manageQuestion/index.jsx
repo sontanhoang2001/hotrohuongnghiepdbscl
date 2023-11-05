@@ -66,6 +66,7 @@ function ManageQuestion() {
     total: 0, // Tổng số dòng dữ liệu
   });
 
+  //goi redux
   const dispatch = useDispatch();
 
   const getMbtiData = useSelector(selectMBTIQuestions);

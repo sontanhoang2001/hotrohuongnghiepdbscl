@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import university from '../api/universityApi';
+import universityApi from '../api/universityApi';
 
 // Tạo initialState cho slice
 const initialState = {
@@ -12,16 +12,15 @@ const initialState = {
 // Tạo một async thunk để lấy danh sách cac truong
 export const getAllUniversity = createAsyncThunk(
   'university/getAllUniversity',
-  async ({ page, size }) => {
+  async ({ page, size }, { rejectWithValue }) => {
     try {
-      const rs = await university.getAllUniversity(page, size);
-      return rs.data.data; // Đảm bảo kiểm tra API response và chọn dữ liệu cần thiết
+      const rs = await universityApi.getAllUniversity(page, size);
+      return rs.data.data;
     } catch (error) {
-      // Xử lý lỗi và trả về thông báo hoặc giá trị mặc định
-      if (error.response && error.response.data) {
-        throw console.log(error.response.data.message);
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
       } else {
-        throw console.log(error.message);
+        return rejectWithValue(error.message);
       }
     }
   },
@@ -42,15 +41,23 @@ const mbtiSlice = createSlice({
         const formatData = payload.data.map((item, idx) => {
           return {
             key: idx.toString(),
-            question: item.question,
-            // Answers1: Object.values(item.Answers[0]),
-            Answers1: item.Answers[0].answer,
-            vaule1: item.Answers[0].value,
-            Answers2: item.Answers[1].answer,
-            vaule2: item.Answers[1].value,
+            id: item.UniversityDetail.id,
+            name: item.name,
+            image: item.UniversityDetail.image,
+            address: item.UniversityDetail.address,
+            province: item.UniversityDetail.province,
+            email: item.UniversityDetail.email,
+            phone: item.UniversityDetail.phone,
+            lat: item.UniversityDetail.lat,
+            long: item.UniversityDetail.long,
+            description: item.UniversityDetail.description,
+            url: item.UniversityDetail.url,
+            rank: item.UniversityDetail.rank,
+            // UniversityDetail: Object.values(item.UniversityDetail),
           };
         });
-        state.data = formatData; // Lưu danh sách câu hỏi MBTI
+        // console.log(formatData);
+        state.data = formatData;
         state.total = payload.total;
         state.page = payload.page;
         state.size = payload.size;

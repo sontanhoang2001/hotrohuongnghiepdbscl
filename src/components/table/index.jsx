@@ -1,7 +1,7 @@
 import React from 'react';
 import { Table } from 'antd';
 
-const TableFormat = ({ data, columns, loading }) => {
+const TableFormat = ({ data, columns, loading, scroll }) => {
   if (!Array.isArray(data)) {
     data = []; // Ensure data is an array
   }
@@ -13,6 +13,7 @@ const TableFormat = ({ data, columns, loading }) => {
       columns={columns}
       dataSource={data}
       pagination={false}
+      scroll={scroll}
     />
   );
 };
