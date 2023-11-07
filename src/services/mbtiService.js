@@ -44,7 +44,7 @@ module.exports = {
       const { count, rows } = await Question.findAndCountAll({
         offset,
         limit: size,
-        attributes: ['question'],
+        attributes: ['id','question'],
         include: [
           {
             model: Answer,
@@ -70,7 +70,7 @@ module.exports = {
   getMBTIQuestionById: async (questionId) => {
     try {
       const question = await Question.findByPk(questionId, {
-        attributes: ['question'],
+        attributes: ['id','question'],
         include: [
           {
             model: Answer,
