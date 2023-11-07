@@ -12,9 +12,13 @@ const mbtiApi = {
     const rs = axiosService.post(url, payload);
     return rs;
   },
-  newDoTestMbti: () => {
-    const url = `/${pathname}/newDoTestMbti`;
-    return axiosService.get(url);
+  addNewMbti: () => {
+    const url = `/${pathname}/add`;
+    return axiosService.post(url);
+  },
+  deleteMbti: (id) => {
+    const url = `/${pathname}/newDoTestMbti/${id}`;
+    return axiosService.delete(url);
   },
 };
 

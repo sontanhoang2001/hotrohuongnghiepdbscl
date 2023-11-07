@@ -5,8 +5,8 @@ import universityApi from '../api/universityApi';
 const initialState = {
   data: null,
   pending: false,
-  page: null,
-  size: null,
+  page: 1,
+  size: 10,
   total: null,
 };
 // Tạo một async thunk để lấy danh sách cac truong
@@ -56,17 +56,19 @@ const mbtiSlice = createSlice({
             // UniversityDetail: Object.values(item.UniversityDetail),
           };
         });
-        // console.log(formatData);
         state.data = formatData;
         state.total = payload.total;
         state.page = payload.page;
         state.size = payload.size;
       })
-      .addCase(getAllUniversity.rejected, (state, action) => {
+      .addCase(getAllUniversity.rejected, (state, { payload }) => {
         state.pending = false;
       });
   },
 });
 export const selectUniversity = (state) => state.university.data;
-export const selectPending = (state) => state.university.pending;
+export const selectUniversityPending = (state) => state.university.pending;
+export const selectUniversityToalRow = (state) => state.university.total;
+export const selectUniversityPage = (state) => state.university.page;
+export const selectUniversityPagesize = (state) => state.university.size;
 export default mbtiSlice.reducer;

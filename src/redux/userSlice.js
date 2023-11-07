@@ -5,9 +5,8 @@ import { format } from 'date-fns';
 const initialState = {
   data: null,
   pending: false,
-  error: null,
-  page: null,
-  size: null,
+  page: 1,
+  size: 10,
   total: null,
 };
 
@@ -34,32 +33,30 @@ export const userSlice = createSlice({
     builder
       .addCase(getAllUserAsync.pending, (state, { payload }) => {
         state.pending = true;
-        state.error = null;
       })
       .addCase(getAllUserAsync.fulfilled, (state, { payload }) => {
-        state.pending = false;
         const formatData = payload.data.map((item) => {
           return {
             key: item.id.toString(),
             id: item.id,
             account_type: item.account_type,
             status: item.status, // Thay thế giá trị tương ứng với account_type
-            authCode: item.authCode,
             RoleId: item.RoleId,
             email: item.email,
             phone: item.phone,
+            authCode: item.authCode,
             createdAt: format(new Date(item.createdAt), 'dd/MM/yyyy'),
             updatedAt: format(new Date(item.updatedAt), 'dd/MM/yyyy'),
           };
         });
         state.data = formatData;
+        state.pending = false;
         state.total = payload.total;
         state.page = payload.page;
         state.size = payload.size;
       })
       .addCase(getAllUserAsync.rejected, (state, { payload }) => {
         state.pending = false;
-        state.error = payload;
       });
   },
 });
@@ -70,6 +67,6 @@ export const selectUser = (state) => state.user.data;
 export const selectUserPage = (state) => state.user.page;
 export const selectUserSizePage = (state) => state.user.size;
 export const selectUserTotalRow = (state) => state.user.total;
-export const selectPending = (state) => state.mbti.pending;
+export const selectUserPending = (state) => state.mbti.pending;
 
 export default userSlice.reducer;

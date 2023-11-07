@@ -162,9 +162,6 @@ function UserProfile() {
       dispatch(isOtp(false));
       setOpenOtp(true);
     }
-    if (sentOtp === false) {
-      dispatch(isOtp(false));
-    }
   }, [
     sentOtp,
     dispatch,

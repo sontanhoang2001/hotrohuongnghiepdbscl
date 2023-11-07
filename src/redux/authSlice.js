@@ -288,9 +288,7 @@ export const authSlice = createSlice({
   },
 });
 
-export const { logout } = authSlice.actions;
-export const { setIsSignup } = authSlice.actions;
-export const { isOtp } = authSlice.actions;
+export const { logout, setIsSignup, isOtp } = authSlice.actions;
 export const selectLoginData = (state) => state.auth.data;
 export const selectProfile = (state) => state.auth.profile;
 export const selectSignupData = (state) => state.auth.signupData;
