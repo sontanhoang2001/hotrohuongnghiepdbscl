@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      University.hasOne(models.UniversityDetail);
+      University.hasOne(models.UniversityDetail, {onDelete: 'CASCADE'});
       University.belongsToMany(models.BankQuestionAnsDetail, {through: 'CollectionUniversity'})
     }
   }

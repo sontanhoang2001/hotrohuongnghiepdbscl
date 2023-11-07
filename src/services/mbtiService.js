@@ -41,7 +41,13 @@ module.exports = {
       // Tính offset
       const offset = (page - 1) * size;
 
-      const { count, rows } = await Question.findAndCountAll({
+      const { count } = await Question.findAndCountAll({
+        offset,
+        limit: size
+      });
+
+
+      const { rows } = await Question.findAndCountAll({
         offset,
         limit: size,
         attributes: ['id','question'],

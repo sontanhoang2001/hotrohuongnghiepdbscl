@@ -43,7 +43,7 @@ module.exports = {
       const { count, rows } = await University.findAndCountAll({
         offset,
         limit: size,
-        attributes: ['name'],
+        attributes: ['id', 'name'],
         include: [
           {
             model: UniversityDetail,
@@ -68,7 +68,7 @@ module.exports = {
   getUniversityById: async (universityId) => {
     try {
       const university = await University.findByPk(universityId, {
-        attributes: ['name'],
+        attributes: ['id', 'name'],
         include: [
           {
             model: UniversityDetail,
@@ -148,5 +148,6 @@ module.exports = {
     } catch (error) {
       throw error;
     }
+    
   },
 };

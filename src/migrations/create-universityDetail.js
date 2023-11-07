@@ -43,8 +43,8 @@ module.exports = {
         references: {
           model: 'University',
           key: 'id',
-          onDelete: 'cascade',
-          onUpdate: 'cascade'
+          onDelete: 'NO ACTION',
+          onUpdate: 'NO ACTION'
         },
       },
       createdAt: {

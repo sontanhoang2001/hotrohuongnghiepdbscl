@@ -71,7 +71,7 @@ module.exports = {
     const userId = parseInt(req.params.id);
 
     if (isNaN(userId)) {
-      return res.json('You must enter a valid userId as a parameter');
+      return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a valid userId as a parameter');
     }
 
     const resultDeleteUser = await userService.deleteOneUser(userId);

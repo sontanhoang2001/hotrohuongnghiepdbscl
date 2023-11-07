@@ -38,6 +38,7 @@ module.exports = {
       let size = parseInt(req.query.size) || 10;
 
       const listUniversity = await universityService.getAll(page, size); // Gọi chức năng từ service
+      console.log("listUniversity: ", listUniversity)
       if (listUniversity) {
         return responseHelper.sendResponse.SUCCESS(res, listUniversity);
       }
@@ -100,6 +101,7 @@ module.exports = {
   deleteOneUniversity: async (req, res) => {
     // try {
     const universityId = parseInt(req.params.id);
+
     if (isNaN(universityId)) {
       return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a valid universityId as a parameter');
     }
