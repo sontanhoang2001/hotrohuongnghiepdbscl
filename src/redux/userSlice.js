@@ -35,6 +35,7 @@ export const userSlice = createSlice({
         state.pending = true;
       })
       .addCase(getAllUserAsync.fulfilled, (state, { payload }) => {
+        state.pending = false;
         const formatData = payload.data.map((item) => {
           return {
             key: item.id.toString(),
@@ -50,7 +51,7 @@ export const userSlice = createSlice({
           };
         });
         state.data = formatData;
-        state.pending = false;
+
         state.total = payload.total;
         state.page = payload.page;
         state.size = payload.size;
