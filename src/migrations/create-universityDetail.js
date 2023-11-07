@@ -18,10 +18,10 @@ module.exports = {
         type: Sequelize.STRING(255),
       },
       email: {
-        type: Sequelize.STRING(100)
+        type: Sequelize.STRING(100),
       },
       phone: {
-        type: Sequelize.STRING(15)
+        type: Sequelize.STRING(15),
       },
       lat: {
         type: Sequelize.STRING(255),
@@ -40,6 +40,12 @@ module.exports = {
       },
       universityId: {
         type: Sequelize.INTEGER,
+        references: {
+          model: 'University',
+          key: 'id',
+          onDelete: 'cascade',
+          onUpdate: 'cascade'
+        },
       },
       createdAt: {
         allowNull: false,

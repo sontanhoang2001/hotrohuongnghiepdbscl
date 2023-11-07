@@ -23,8 +23,8 @@ module.exports = {
   },
   getAllQuestion: async (req, res) => {
     try {
-      let size = Number.isInteger(req.query.size) ? parseInt(req.query.size) : 10;
-      let page = Number.isInteger(req.query.page) ? parseInt(req.query.page) : 1;
+      let page = parseInt(req.query.page) || 1;
+      let size = parseInt(req.query.size) || 10;
 
       const mbti = await mbtiService.getAll(page, size); // Gọi chức năng từ service
       if (mbti) {

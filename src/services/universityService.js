@@ -121,7 +121,7 @@ module.exports = {
 
       // Update answers
       const [numberOfAffectedRows2] = await UniversityDetail.update(universityDetailPayload, {
-        where: { universityId	: universityId },
+        where: { universityId: universityId },
         transaction,
       });
 
@@ -140,38 +140,13 @@ module.exports = {
     }
   },
 
-  deleteUniversity : async (universityId) => {
-    let transaction;
+  deleteUniversity: async (universityId) => {
     try {
-      transaction = await sequelize.transaction();
-
-      // Destroy question
-      const numberOfAffectedRows1 = await University.destroy({
-        where: { id: universityId },
-      });
-
-      // Kiểm tra số lượng dòng bị ảnh hưởng bởi câu lệnh update cho câu hỏi
-      if (numberOfAffectedRows1 === 0) {
-        await transaction.rollback();
-        return false; // Trả về false nếu không có câu hỏi nào được cập nhật
-      }
-
-      // Destroy answers
-      const numberOfAffectedRows2 = await UniversityDetail.destroy({
-        where: { universityId: universityId },
-      });
-
-      if (numberOfAffectedRows2 === 0) {
-        await transaction.rollback();
-        return false; // Trả về false nếu có lỗi khi cập nhật một trong các câu trả lời
-      }
-      transaction.commit();
+      const university = await University.findByPk(universityId);
+      await university.destroy();
       return true;
     } catch (error) {
-      if (transaction) {
-        await transaction.rollback(); // Rollback transaction nếu có lỗi
-      }
-      throw error; // Sau đó ném lỗi để xử lý ở phần gọi hàm
+      throw error;
     }
   },
 };

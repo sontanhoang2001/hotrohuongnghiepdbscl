@@ -15,6 +15,8 @@ module.exports = (sequelize, DataTypes) => {
   }
   TestDetail.init(
     {
+      testId: DataTypes.INTEGER,
+      questionId: DataTypes.INTEGER,
       chooseAnswer: DataTypes.INTEGER,
     },
     {

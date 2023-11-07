@@ -4,6 +4,7 @@ const Role = require('../models').Role;
 
 const bcrypt = require('bcrypt');
 const { where } = require('sequelize');
+const sequelize = require('../database/connection_database');
 
 module.exports = {
   createNew: async (userObj) => {
@@ -125,6 +126,41 @@ module.exports = {
       return user;
     } catch (error) {
       throw error;
+    }
+  },
+
+  deleteOneUser : async (userId) => {
+    let transaction;
+    try {
+      transaction = await sequelize.transaction();
+
+      // Destroy question
+      const numberOfAffectedRows1 = await User.destroy({
+        where: { id: userId },
+      });
+
+      // Kiểm tra số lượng dòng bị ảnh hưởng bởi câu lệnh update cho câu hỏi
+      if (numberOfAffectedRows1 === 0) {
+        await transaction.rollback();
+        return false; // Trả về false nếu không có câu hỏi nào được cập nhật
+      }
+
+      // Destroy answers
+      const numberOfAffectedRows2 = await UserDetail.destroy({
+        where: { userId: userId },
+      });
+
+      if (numberOfAffectedRows2 === 0) {
+        await transaction.rollback();
+        return false; // Trả về false nếu có lỗi khi cập nhật một trong các câu trả lời
+      }
+      transaction.commit();
+      return true;
+    } catch (error) {
+      if (transaction) {
+        await transaction.rollback(); // Rollback transaction nếu có lỗi
+      }
+      throw error; // Sau đó ném lỗi để xử lý ở phần gọi hàm
     }
   },
 };

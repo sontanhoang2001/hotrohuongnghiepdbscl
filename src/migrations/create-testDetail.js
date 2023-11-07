@@ -8,6 +8,12 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      testId: {
+        type: Sequelize.INTEGER
+      },
+      questionId: {
+        type: Sequelize.INTEGER
+      },
       chooseAnswer: {
         type: Sequelize.INTEGER
       }

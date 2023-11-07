@@ -16,6 +16,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   Test.init(
     {
+      userId: DataTypes.INTEGER
     },
     {
       sequelize,

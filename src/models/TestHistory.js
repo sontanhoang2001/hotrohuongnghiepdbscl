@@ -9,7 +9,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      TestHistory.belongsTo(models.MBTI)
+      TestHistory.belongsTo(models.MBTI);
+      TestHistory.belongsTo(models.Test);
     }
   }
   TestHistory.init(
@@ -17,6 +18,7 @@ module.exports = (sequelize, DataTypes) => {
       startTime: DataTypes.DATE,
       endTime: DataTypes.DATE,
       complete: DataTypes.INTEGER,
+      testId: DataTypes.INTEGER,
     },
     {
       sequelize,

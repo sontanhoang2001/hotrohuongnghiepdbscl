@@ -25,6 +25,9 @@ module.exports = {
       complete: {
         type: Sequelize.INTEGER,
       },
+      testId: {
+        type: Sequelize.INTEGER,
+      }
     });
   },
   down: async (queryInterface, Sequelize) => {
