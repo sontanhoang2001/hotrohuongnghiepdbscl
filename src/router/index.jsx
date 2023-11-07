@@ -13,7 +13,7 @@ import Singin from '../screens/signin';
 import Signup from '../screens/signup';
 import AdminHome from '../screens/adminHome';
 import ManageUser from '../screens/manageUser';
-import ManageUniversity from '../screens/manageUnivercity';
+import ManageUniversity from '../screens/manageUniversity';
 import OtpLogin from '../screens/otpLogin';
 import NotFound from '../screens/404/notfound';
 
@@ -53,6 +53,7 @@ function Router() {
 
         <Route path="dang-nhap" element={<Singin />} />
         <Route path="dang-ky" element={<Signup />} />
+
         {/* admin */}
 
         <Route

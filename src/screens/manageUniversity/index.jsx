@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import TableFormat from '../../components/table';
 import { useDispatch, useSelector } from 'react-redux';
+import CommonModal from '../../components/CommonModal';
+
 import {
   getAllUniversity,
   selectUniversityPage,
@@ -9,10 +11,26 @@ import {
   selectUniversityToalRow,
   selectUniversity,
 } from '../../redux/universitySlice';
-import { Button, Pagination, Space, Typography } from 'antd';
+import { Button, Input, Pagination, Space, Typography } from 'antd';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import { Form } from 'react-router-dom';
 
 function ManageUniversity() {
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleOk = () => {
+    // Thực hiện logic khi ấn OK
+    setIsModalVisible(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+
   const handleEdit = (record) => {
     console.log(record);
   };
@@ -134,6 +152,18 @@ function ManageUniversity() {
     <div>
       <Space size={20} direction="vertical">
         <Typography.Title level={4}>Danh sách các trường</Typography.Title>
+        <Button type="primary" onClick={showModal}>
+          Tạo mới
+        </Button>
+        <CommonModal visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
+          <Form.Item
+            name="url"
+            label="URL"
+          >
+            <Input placeholder="input placeholder" />
+          </Form.Item>
+        </CommonModal>
+
         <TableFormat loading={pendingState} columns={columns} data={getUniversity} />
 
         <Pagination
