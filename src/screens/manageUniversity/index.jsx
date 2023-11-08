@@ -11,15 +11,20 @@ import {
 } from '../../redux/universitySlice';
 import { Button, Pagination, Space, Typography } from 'antd';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import Modals from './modal';
+import { openModal } from '../../redux/modalSlice';
 
 function ManageUniversity() {
-  const handleEdit = (record) => {
-    console.log(record);
+  const handleEdit = (id) => {
+    const payload = { actionName: 'edit', id };
+    dispatch(openModal(payload));
   };
 
-  const handleDelete = (record) => {
-    console.log(record);
+  const handleDelete = (id) => {
+    const payload = { actionName: 'delete', id };
+    dispatch(openModal(payload));
   };
+
   const columns = [
     {
       title: 'STT',
@@ -113,6 +118,7 @@ function ManageUniversity() {
       },
     },
   ];
+
   //goi redux
   const dispatch = useDispatch();
   const page = useSelector(selectUniversityPage);
@@ -130,10 +136,18 @@ function ManageUniversity() {
     const payload = { page, pageSize };
     dispatch(getAllUniversity(payload));
   };
+
+  const handleOnNew = () => {
+    const payload = { actionName: 'create' };
+    dispatch(openModal(payload));
+  };
   return (
     <div>
       <Space size={20} direction="vertical">
         <Typography.Title level={4}>Danh sách các trường</Typography.Title>
+        <Button type="primary" onClick={handleOnNew}>
+          Thêm mới
+        </Button>
         <TableFormat loading={pendingState} columns={columns} data={getUniversity} />
 
         <Pagination
@@ -146,6 +160,8 @@ function ManageUniversity() {
           onShowSizeChange={handlePageChange}
         />
       </Space>
+
+      <Modals />
     </div>
   );
 }
