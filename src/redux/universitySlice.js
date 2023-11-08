@@ -7,7 +7,7 @@ const initialState = {
   pending: false,
   page: 1,
   size: 10,
-  total: null,
+  total: 0,
 };
 // Tạo một async thunk để lấy danh sách cac truong
 export const getAllUniversity = createAsyncThunk(
