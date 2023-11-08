@@ -22,10 +22,9 @@ function Header() {
   const [idxActive, setIdxActive] = useState(0);
   const location = useLocation();
   const [selectedKeys, setSelectedKeys] = useState('/');
-
+  //gọi redux
   const dispatch = useDispatch();
   const isLogin = useSelector(selectIsLogin);
-  const profile = useSelector(selectProfile);
   const [fullname, setFullName] = useState('');
   const [loginStatus, setLoginStatus] = useState(false);
 

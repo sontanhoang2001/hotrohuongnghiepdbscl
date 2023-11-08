@@ -73,32 +73,10 @@ const mbtiSlice = createSlice({
       })
       .addCase(getMbtiQuestion.fulfilled, (state, { payload }) => {
         state.pending = false;
-        // const formatData = payload.data.map((item, idx) => {
-        //   var answers = item.Answers.map(function (item) {
-        //     return {
-        //       label: item.answer,
-        //       value: item.answer,
-        //     };
-        //   });
-        //   var vaule = item.Answers.map(function (item) {
-        //     return {
-        //       label: item.value,
-        //       value: item.value,
-        //     };
-        //   });
-        //   return {
-        //     key: idx.toString(),
-        //     id: item.id,
-        //     question: item.question,
-        //     answers: answers,
-        //     value: vaule,
-        //   };
-        // });
         state.data = payload; // Lưu danh sách câu hỏi MBTI
         state.total = payload.total;
         state.page = payload.page;
         state.size = payload.size;
-        console.log(payload);
       })
       .addCase(getMbtiQuestion.rejected, (state, { payload }) => {
         state.pending = false;

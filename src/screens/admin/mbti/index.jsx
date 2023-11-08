@@ -1,6 +1,6 @@
-import { Row, Col, Card, Radio, Table, Button, Avatar, Typography, Pagination, Tag } from 'antd';
+import { Row, Col, Card, Table, Button, Typography, Pagination, List } from 'antd';
 
-import { DeleteOutlined, EditOutlined, GoogleOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, CaretRightOutlined } from '@ant-design/icons';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
@@ -27,7 +27,7 @@ function Mbti() {
   //định dạng cột hiển thị
   const columns = [
     {
-      title: 'Câu hỏi',
+      title: 'STT',
       dataIndex: 'id',
       key: 'id',
       width: 50,
@@ -51,18 +51,7 @@ function Mbti() {
 
     {
       key: 'action',
-      render: (record) => {
-        return (
-          <>
-            <Button type="text">
-              <EditOutlined onClick={() => handleEdit(record.id)} style={{ color: 'green' }} />
-            </Button>
-            <Button type="text" danger onClick={() => handleDelete(record.id)}>
-              <DeleteOutlined />
-            </Button>
-          </>
-        );
-      },
+      dataIndex: 'action',
     },
   ];
 
@@ -79,16 +68,47 @@ function Mbti() {
     //gọi api thông qua redux
     dispatch(getMbtiQuestion(payload));
   }, []);
-  console.log(getMbtiData);
-  console.log('123123 getpending', pendingState);
 
-  const convertedData = getMbtiData?.data.map((user, index) => {
+  const convertedData = getMbtiData?.data.map((mbti, index) => {
     return {
       key: index.toString(),
-      id: (
+
+      question: (
         <>
           <div className="author-info">
-            <Title level={5}>{user.id}</Title>
+            <Title level={5}>{mbti.question}</Title>
+          </div>
+        </>
+      ),
+      answers: (
+        <>
+          <div className="author-info">
+            <List
+              size="small"
+              bordered
+              dataSource={mbti.Answers}
+              renderItem={(item, idx) => (
+                <List.Item>
+                  {idx + 1}. {item.answer}
+                </List.Item>
+              )}
+            />
+          </div>
+        </>
+      ),
+      value: (
+        <>
+          <div className="author-info">
+            <List
+              size="small"
+              bordered
+              dataSource={mbti.Answers}
+              renderItem={(item, idx) => (
+                <List.Item>
+                  <CaretRightOutlined /> {item.value}
+                </List.Item>
+              )}
+            />
           </div>
         </>
       ),
@@ -96,9 +116,9 @@ function Mbti() {
         <>
           <div className="author-info">
             <Button type="text">
-              <EditOutlined onClick={() => handleEdit(user.id)} style={{ color: 'green' }} />
+              <EditOutlined style={{ color: 'green' }} onClick={() => handleEdit(mbti.id)} />
             </Button>
-            <Button type="text" danger onClick={() => handleDelete(user.id)}>
+            <Button type="text" danger onClick={() => handleDelete(mbti.id)}>
               <DeleteOutlined />
             </Button>
           </div>
@@ -112,33 +132,18 @@ function Mbti() {
     dispatch(getMbtiQuestion(payload));
   };
 
-  //thay đổi trang thái table với fillter
-  const onChange = (e) => console.log(`radio checked:${e.target.value}`);
-
   return (
     <>
       <div className="tabled">
         <Row gutter={[24, 0]}>
           <Col xs="24" xl={24}>
-            <Card
-              bordered={false}
-              className="criclebox tablespace mb-24"
-              title="Danh sách câu hỏi"
-              extra={
-                <>
-                  <Radio.Group onChange={onChange} defaultValue="a">
-                    <Radio.Button value="a">All</Radio.Button>
-                    <Radio.Button value="b">ONLINE</Radio.Button>
-                  </Radio.Group>
-                </>
-              }
-            >
+            <Card bordered={false} className="criclebox tablespace mb-24" title="Danh sách câu hỏi">
               <div className="table-responsive">
                 <Table
                   bordered={true}
                   columns={columns}
                   loading={pendingState}
-                  dataSource={''}
+                  dataSource={convertedData}
                   pagination={false}
                   className="ant-border-space"
                 />

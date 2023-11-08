@@ -21,9 +21,6 @@ import AuthSocial from '../components/authSocial';
 import OtpByPhone from '../components/otpByPhone';
 
 import PostMBTI from '../screens/postMBTI';
-import Tables from '../screens/admin/table';
-import Billing from '../screens/admin/billing';
-import Rtl from '../screens/admin/rtl';
 import Profile from '../screens/admin/profile';
 import Admin from '../screens/admin/home';
 import Dashboard from '../screens/admin/dashboard/index';
@@ -66,17 +63,14 @@ function Router() {
           path="/admin"
           element={
             <ProtectedLogin>
-              <Dashboard />
+              <Admin />
             </ProtectedLogin>
           }
         >
-          <Route path="" element={<Admin />} />
-          <Route path="tables" element={<Tables />} />
+          <Route path="" element={<Dashboard />} />
           <Route path="danh-sach-truong-hoc" element={<University />} />
           <Route path="danh-sach-nguoi-dung" element={<User />} />
           <Route path="danh-sach-cau-hoi" element={<Mbti />} />
-          <Route path="billing" element={<Billing />} />
-          <Route path="rtl" element={<Rtl />} />
           <Route path="profile" element={<Profile />} />
         </Route>
         <Route path="/xac-nhan-dang-nhap" element={<OtpLogin />} />

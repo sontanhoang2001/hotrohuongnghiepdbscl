@@ -27,11 +27,6 @@ function University() {
   //định dạng cột hiển thị
   const columns = [
     {
-      title: 'STT',
-      dataIndex: 'id',
-      key: 'id',
-    },
-    {
       title: 'Tên',
       dataIndex: 'name',
       key: 'name',
@@ -203,9 +198,6 @@ function University() {
     dispatch(getAllUniversity(payload));
   };
 
-  //thay đổi trang thái table với fillter
-  const onChange = (e) => console.log(`radio checked:${e.target.value}`);
-
   return (
     <>
       <div className="tabled">
@@ -215,14 +207,6 @@ function University() {
               bordered={false}
               className="criclebox tablespace mb-24"
               title="Danh sách trường học"
-              extra={
-                <>
-                  <Radio.Group onChange={onChange} defaultValue="a">
-                    <Radio.Button value="a">All</Radio.Button>
-                    <Radio.Button value="b">ONLINE</Radio.Button>
-                  </Radio.Group>
-                </>
-              }
             >
               <div className="table-responsive">
                 <Table

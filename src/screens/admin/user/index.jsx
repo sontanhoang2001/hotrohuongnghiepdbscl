@@ -92,17 +92,9 @@ function User() {
     //gọi api thông qua redux
     dispatch(getAllUserAsync(payload));
   }, []);
-
   const convertedData = getAllUser?.data.map((user, index) => {
     return {
       key: index.toString(),
-      id: (
-        <>
-          <div className="author-info">
-            <Title level={5}>{user.id}</Title>
-          </div>
-        </>
-      ),
       account_type: (
         <>
           {user.account_type === 1 ? (
@@ -215,9 +207,6 @@ function User() {
     dispatch(getAllUserAsync(payload));
   };
 
-  //thay đổi trang thái table với fillter
-  const onChange = (e) => console.log(`radio checked:${e.target.value}`);
-
   return (
     <>
       <div className="tabled">
@@ -227,14 +216,6 @@ function User() {
               bordered={false}
               className="criclebox tablespace mb-24"
               title="Danh sách người dùng"
-              extra={
-                <>
-                  <Radio.Group onChange={onChange} defaultValue="a">
-                    <Radio.Button value="a">All</Radio.Button>
-                    <Radio.Button value="b">ONLINE</Radio.Button>
-                  </Radio.Group>
-                </>
-              }
             >
               <div className="table-responsive">
                 <Table
