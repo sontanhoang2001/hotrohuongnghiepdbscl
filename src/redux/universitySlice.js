@@ -38,25 +38,7 @@ const mbtiSlice = createSlice({
       })
       .addCase(getAllUniversity.fulfilled, (state, { payload }) => {
         state.pending = false;
-        const formatData = payload.data.map((item, idx) => {
-          return {
-            key: idx.toString(),
-            id: item.UniversityDetail.id,
-            name: item.name,
-            image: item.UniversityDetail.image,
-            address: item.UniversityDetail.address,
-            province: item.UniversityDetail.province,
-            email: item.UniversityDetail.email,
-            phone: item.UniversityDetail.phone,
-            lat: item.UniversityDetail.lat,
-            long: item.UniversityDetail.long,
-            description: item.UniversityDetail.description,
-            url: item.UniversityDetail.url,
-            rank: item.UniversityDetail.rank,
-            // UniversityDetail: Object.values(item.UniversityDetail),
-          };
-        });
-        state.data = formatData;
+        state.data = payload;
         state.total = payload.total;
         state.page = payload.page;
         state.size = payload.size;

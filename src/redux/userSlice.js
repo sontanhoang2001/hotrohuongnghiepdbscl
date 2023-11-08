@@ -36,22 +36,7 @@ export const userSlice = createSlice({
       })
       .addCase(getAllUserAsync.fulfilled, (state, { payload }) => {
         state.pending = false;
-        const formatData = payload.data.map((item) => {
-          return {
-            key: item.id.toString(),
-            id: item.id,
-            account_type: item.account_type,
-            status: item.status, // Thay thế giá trị tương ứng với account_type
-            RoleId: item.RoleId,
-            email: item.email,
-            phone: item.phone,
-            authCode: item.authCode,
-            createdAt: format(new Date(item.createdAt), 'dd/MM/yyyy'),
-            updatedAt: format(new Date(item.updatedAt), 'dd/MM/yyyy'),
-          };
-        });
-        state.data = formatData;
-
+        state.data = payload;
         state.total = payload.total;
         state.page = payload.page;
         state.size = payload.size;
@@ -68,6 +53,6 @@ export const selectUser = (state) => state.user.data;
 export const selectUserPage = (state) => state.user.page;
 export const selectUserSizePage = (state) => state.user.size;
 export const selectUserTotalRow = (state) => state.user.total;
-export const selectUserPending = (state) => state.mbti.pending;
+export const selectUserPending = (state) => state.user.pending;
 
 export default userSlice.reducer;

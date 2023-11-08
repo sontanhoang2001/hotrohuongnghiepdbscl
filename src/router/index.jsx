@@ -11,19 +11,25 @@ import Companion from '../screens/companion';
 import ForgotPassword from '../screens/forgotpassword';
 import Singin from '../screens/signin';
 import Signup from '../screens/signup';
-import AdminHome from '../screens/adminHome';
-import ManageUser from '../screens/manageUser';
-import ManageUniversity from '../screens/manageUniversity';
 import OtpLogin from '../screens/otpLogin';
 import NotFound from '../screens/404/notfound';
 
-import Dashboard from '../screens/dashboard';
+// import Dashboard from '../screens/dashboard';
 import ProtectedLogin from '../components/protectedLogin';
 import UserProfile from '../screens/userProfile';
 import AuthSocial from '../components/authSocial';
 import OtpByPhone from '../components/otpByPhone';
-import ManageMBTI from '../screens/manageMBTI';
+
 import PostMBTI from '../screens/postMBTI';
+import Tables from '../screens/admin/table';
+import Billing from '../screens/admin/billing';
+import Rtl from '../screens/admin/rtl';
+import Profile from '../screens/admin/profile';
+import Admin from '../screens/admin/home';
+import Dashboard from '../screens/admin/dashboard/index';
+import University from '../screens/admin/university';
+import User from '../screens/admin/user';
+import Mbti from '../screens/admin/mbti';
 
 const ROLES = {
   User: 5,
@@ -64,12 +70,15 @@ function Router() {
             </ProtectedLogin>
           }
         >
-          <Route path="" element={<AdminHome />} />
-          <Route path="nguoi-dung" element={<ManageUser />} />
-          <Route path="truong-hoc" element={<ManageUniversity />} />
-          <Route path="cau-hoi" element={<ManageMBTI />} />
+          <Route path="" element={<Admin />} />
+          <Route path="tables" element={<Tables />} />
+          <Route path="danh-sach-truong-hoc" element={<University />} />
+          <Route path="danh-sach-nguoi-dung" element={<User />} />
+          <Route path="danh-sach-cau-hoi" element={<Mbti />} />
+          <Route path="billing" element={<Billing />} />
+          <Route path="rtl" element={<Rtl />} />
+          <Route path="profile" element={<Profile />} />
         </Route>
-
         <Route path="/xac-nhan-dang-nhap" element={<OtpLogin />} />
         {/* no other result match */}
         <Route path="*" element={<NotFound />} />
