@@ -1,12 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import {
-  FacebookOutlined,
-  InstagramOutlined,
-  YoutubeOutlined,
-  LinkedinOutlined,
-} from '@ant-design/icons';
 
 function Footer() {
   const navigate = useNavigate();
@@ -122,7 +116,7 @@ function Footer() {
         <img src="../images/logo/logo2.webp" alt="Trung Tâm Hướng Nghiệp ĐBSCL" />
         <h1
           style={{
-            color: 'var(--text-secondary-color)',
+            color: 'var(--text-white-color)',
             textAlign: 'center',
             marginLeft: 10,
           }}
@@ -165,6 +159,7 @@ const Box = styled.div`
   // position: absolute;
   bottom: 0;
   width: 100%;
+  margin-top: 60px;
 
   @media (max-width: 1000px) {
     // padding: 70px 30px;
@@ -206,14 +201,14 @@ const Row = styled.div`
 `;
 
 const FooterLink = styled.a`
-  color: #fff;
+  color: var(--text-white-color);
   margin-bottom: 20px;
   font-size: 18px;
   text-decoration: none;
   text-transform: capitalize;
 
   &:hover {
-    color: green;
+    opacity: 0.5;
     transition: 200ms ease-in;
   }
 `;
@@ -225,9 +220,9 @@ const FooterLinkIcon = styled.div`
   font-size: 30px;
   svg {
     margin: 8px;
+    cursor: pointer;
     &:hover {
-      color: green;
-      transition: 200ms ease-in;
+      transform: scale(1.2);
     }
   }
 `;

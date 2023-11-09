@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { AlignLeftOutlined, UserOutlined, LogoutOutlined } from '@ant-design/icons';
 import { Button, Dropdown, Space } from 'antd';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { selectIsLogin, selectProfile, logout } from '../../redux/authSlice';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -117,14 +117,9 @@ function Header() {
           <ul>
             {linkMenu.map((val, idx) => (
               <li key={idx}>
-                <span
-                  className={`${idxActive === idx ? 'link-actived' : ''}`}
-                  onClick={() => {
-                    handleLink(idx, val.to);
-                  }}
-                >
+                <NavLink to={val.to} className={({ isActive }) => (isActive ? 'link-actived' : '')}>
                   {val.title}
-                </span>
+                </NavLink>
               </li>
             ))}
           </ul>
@@ -140,11 +135,6 @@ const Nav = styled.header`
   height: 120px;
   position: relative;
   margin-top: 0;
-  /* .link-actived {
-    color: var(--text-hover-color);
-    border-bottom: 1px solid var(--text-hover-color);
-    line-height: 10px;
-  } */
   .logo {
     display: flex;
     align-items: center;
@@ -203,12 +193,14 @@ const Nav = styled.header`
         li {
           display: inline-block;
           text-transform: capitalize;
+          text-decoration: none;
           text-align: center;
           font-weight: 600;
           font-size: 1.2rem;
           cursor: pointer;
           padding: 12px 20px;
-          span {
+          a {
+            text-decoration: none;
             color: var(--text-color);
             transition: 0.2s ease-in-out;
             &:hover {
@@ -217,6 +209,7 @@ const Nav = styled.header`
               line-height: 10px;
             }
           }
+
           .link-actived {
             color: var(--text-hover-color);
             border-bottom: 1px solid var(--text-hover-color);

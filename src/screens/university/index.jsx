@@ -2,7 +2,6 @@ import { Button, List, Modal, Pagination } from 'antd';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import ImageCard from '../../components/card/imageCard';
-import universityApi from '../../api/universityApi';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   getAllUniversity,
@@ -12,6 +11,7 @@ import {
   selectUniversityPending,
   selectUniversityToalRow,
 } from '../../redux/universitySlice';
+import { HeadingTitle, MarginTopContent, Title } from '../../globalStyles';
 
 function Universities() {
   const [open, setOpen] = useState(false);
@@ -39,10 +39,10 @@ function Universities() {
   return (
     <div className="container">
       <Title>
-        <h2>các trường đại học ĐBSCL</h2>
+        <HeadingTitle>các trường đại học ĐBSCL</HeadingTitle>
         <div className="underline"></div>
       </Title>
-      <UniversityContent>
+      <MarginTopContent>
         <List
           loading={pendingState}
           grid={{ column: 3 }}
@@ -96,26 +96,9 @@ function Universities() {
             </Button>
           </p>
         </Modal>
-      </UniversityContent>
+      </MarginTopContent>
     </div>
   );
 }
-const Title = styled.div`
-  margin-top: 60px;
-  h2 {
-    text-transform: uppercase;
-    border-left: 10px solid var(--primary-color);
-    margin-bottom: 10px;
-    padding-left: 10px;
-    font-size: 1.6rem;
-    font-weight: 800;
-  }
-  .underline {
-    border-bottom: 4px solid var(--primary-color);
-  }
-`;
 
-const UniversityContent = styled.div`
-  margin-top: 3%;
-`;
 export default Universities;

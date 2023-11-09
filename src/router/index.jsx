@@ -27,6 +27,8 @@ import Dashboard from '../screens/admin/dashboard/index';
 import University from '../screens/admin/university';
 import User from '../screens/admin/user';
 import Mbti from '../screens/admin/mbti';
+import SignInV1 from '../screens/signInV1';
+import SignUpV1 from '../screens/signupV1';
 
 const ROLES = {
   User: 5,
@@ -54,9 +56,12 @@ function Router() {
           <Route path="authSocial" element={<AuthSocial />} />
         </Route>
 
-        <Route path="dang-nhap" element={<Singin />} />
-        <Route path="dang-ky" element={<Signup />} />
+        <Route path="dang-nhap" element={<SignInV1 />} />
+        <Route path="dang-ky" element={<SignUpV1 />} />
 
+        {/* <Route path="dang-nhap" element={<Singin />} />
+        <Route path="dang-ky" element={<Signup />} /> */}
+        <Route path="/xac-nhan-dang-nhap" element={<OtpLogin />} />
         {/* admin */}
 
         <Route
@@ -73,7 +78,7 @@ function Router() {
           <Route path="danh-sach-cau-hoi" element={<Mbti />} />
           <Route path="profile" element={<Profile />} />
         </Route>
-        <Route path="/xac-nhan-dang-nhap" element={<OtpLogin />} />
+
         {/* no other result match */}
         <Route path="*" element={<NotFound />} />
       </Routes>
