@@ -16,13 +16,15 @@ module.exports = (sequelize, DataTypes) => {
     {
       answer: DataTypes.STRING,
       value: DataTypes.STRING,
-      questionId: DataTypes.INTEGER
+      questionId: DataTypes.INTEGER,
+      deletedAt: DataTypes.DATE
     },
     {
       sequelize,
       modelName: 'Answer',
       tableName: 'Answer',
       enableBulkUpdate: true,
+      paranoid: true
     },
   );
   return Answer;

@@ -39,13 +39,7 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       universityId: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: 'University',
-          key: 'id',
-          onDelete: 'NO ACTION',
-          onUpdate: 'NO ACTION'
-        },
+        type: Sequelize.INTEGER
       },
       createdAt: {
         allowNull: false,
@@ -55,6 +49,11 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE,
       },
+      deletedAt:  {
+        allowNull: true,
+        type: Sequelize.DATE,
+        defaultValue: null
+      }
     });
   },
   down: async (queryInterface, Sequelize) => {

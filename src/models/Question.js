@@ -18,11 +18,13 @@ module.exports = (sequelize, DataTypes) => {
     {
       question: DataTypes.STRING,
       questionGroupId: DataTypes.INTEGER,
+      deletedAt: DataTypes.DATE
     },
     {
       sequelize,
       modelName: 'Question',
       tableName: 'Question',
+      paranoid: true
     },
   );
   return Question;

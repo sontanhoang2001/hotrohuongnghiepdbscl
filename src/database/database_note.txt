@@ -67,3 +67,17 @@ CREATE TABLE bank_question_ans (
 
 
 
+
+
+
+
+
+
+
+## ADD CONSTRAINT ##
+ALTER TABLE university_detail 
+ADD CONSTRAINT universityDetail_universityId_fkey 
+FOREIGN KEY (universityId) 
+REFERENCES university(id)
+ON DELETE CASCADE 
+ON UPDATE CASCADE;

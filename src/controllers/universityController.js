@@ -33,7 +33,7 @@ module.exports = {
   },
 
   getAll: async (req, res) => {
-    try {
+    // try {
       let page = parseInt(req.query.page) || 1;
       let size = parseInt(req.query.size) || 10;
 
@@ -44,9 +44,9 @@ module.exports = {
       }
 
       return responseHelper.sendResponse.BAD_REQUEST(res, null);
-    } catch (error) {
-      responseHelper.sendResponse.SERVER_ERROR(res, null);
-    }
+    // } catch (error) {
+    //   responseHelper.sendResponse.SERVER_ERROR(res, null);
+    // }
   },
 
   getUniversityById: async (req, res) => {
@@ -99,7 +99,7 @@ module.exports = {
   },
 
   deleteOneUniversity: async (req, res) => {
-    // try {
+    try {
     const universityId = parseInt(req.params.id);
 
     if (isNaN(universityId)) {
@@ -110,10 +110,9 @@ module.exports = {
     if (deleteQuestion) {
       return responseHelper.sendResponse.SUCCESS(res, null, 'Thực hiện xóa thành công');
     }
-
     return responseHelper.sendResponse.BAD_REQUEST(res, null, 'Thực hiện xóa thất bại');
-    // } catch (error) {
-    //   responseHelper.sendResponse.SERVER_ERROR(res, null);
-    // }
+    } catch (error) {
+      responseHelper.sendResponse.SERVER_ERROR(res, null);
+    }
   },
 };

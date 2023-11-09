@@ -141,13 +141,36 @@ module.exports = {
   },
 
   deleteUniversity: async (universityId) => {
+    let transaction;
     try {
-      const university = await University.findByPk(universityId);
-      await university.destroy();
+      transaction = await sequelize.transaction();
+
+      const numberOfAffectedRows1 = await University.destroy({
+        where: { id: universityId },
+      });
+
+      if (numberOfAffectedRows1 === 0) {
+        await transaction.rollback();
+        return false;
+      }
+
+      const numberOfAffectedRows2 = await UniversityDetail.destroy({
+        where: { universityId: universityId },
+      });
+
+      if (numberOfAffectedRows2 === 0) {
+        await transaction.rollback();
+        return false; 
+      }
+      transaction.commit();
       return true;
     } catch (error) {
+      if (transaction) {
+        await transaction.rollback();
+      }
       throw error;
     }
-    
   },
+
+
 };
