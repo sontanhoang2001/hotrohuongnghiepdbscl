@@ -25,7 +25,8 @@
     "pg": "^8.5.1",
     "sequelize": "^5.22.5",
     "sequelize-cli": "^6.6.2",
-    "swagger-ui-express": "^5.0.0"
+    "swagger-ui-express": "^5.0.0",
+    "nodemon": "^2.0.6"
   },
   "devDependencies": {
     "nodemon": "^2.0.6"
