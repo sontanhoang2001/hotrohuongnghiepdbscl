@@ -22,11 +22,11 @@
     "mysql": "^2.18.1",
     "mysql2": "^3.6.1",
     "nodemailer": "^6.9.7",
+    "nodemon": "^2.0.6",
     "pg": "^8.5.1",
-    "sequelize": "^5.22.5",
+    "sequelize": "^6.34.0",
     "sequelize-cli": "^6.6.2",
-    "swagger-ui-express": "^5.0.0",
-    "nodemon": "^2.0.6"
+    "swagger-ui-express": "^5.0.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.6"
