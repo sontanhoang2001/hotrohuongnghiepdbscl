@@ -1,0 +1,6 @@
+node_modules_temp
+node_modules
+.env
+.env.production
+.env.temp
+dist
