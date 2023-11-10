@@ -36,21 +36,27 @@ module.exports = {
       throw error; // Sau đó ném lỗi để xử lý ở phần gọi hàm
     }
   },
-  getAll: async (page, size) => {
+  getAll: async (page, size, search) => {
     try {
+      const where = {};
+      if (search) {
+        where.question = { [Op.like]: `%${search}%` };
+      }
+
       // Tính offset
       const offset = (page - 1) * size;
 
       const { count } = await Question.findAndCountAll({
-        offset,
-        limit: size
-      });
-
-
-      const { rows } = await Question.findAndCountAll({
+        where,
         offset,
         limit: size,
-        attributes: ['id','question'],
+      });
+
+      const { rows } = await Question.findAndCountAll({
+        where,
+        offset,
+        limit: size,
+        attributes: ['id', 'question'],
         include: [
           {
             model: Answer,
@@ -76,7 +82,7 @@ module.exports = {
   getMBTIQuestionById: async (questionId) => {
     try {
       const question = await Question.findByPk(questionId, {
-        attributes: ['id','question'],
+        attributes: ['id', 'question'],
         include: [
           {
             model: Answer,
@@ -176,27 +182,27 @@ module.exports = {
     try {
       const questionGroupIdValues = [1, 2, 3, 4];
       const rowsPerGroup = 27;
-      
+
       const question = await Question.findAll({
         limit: rowsPerGroup,
         attributes: ['question'],
         include: [
           {
             model: Answer,
-            as: 'Answers', 
-            attributes: ['answer', 'value']
-          }
+            as: 'Answers',
+            attributes: ['answer', 'value'],
+          },
         ],
         where: {
           questionGroupId: {
-            [Op.in]: questionGroupIdValues
-          }
+            [Op.in]: questionGroupIdValues,
+          },
         },
-        // group: 'questionGroupId', 
+        // group: 'questionGroupId',
         // having: sequelize.literal(`COUNT(*) <= ${rowsPerGroup}`)
       });
 
-      console.log("question", question)
+      console.log('question', question);
       return question;
     } catch (error) {
       throw error;

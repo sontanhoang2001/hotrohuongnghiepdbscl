@@ -3,7 +3,7 @@ const UserDetail = require('../models').UserDetail;
 const Role = require('../models').Role;
 
 const bcrypt = require('bcrypt');
-const { where } = require('sequelize');
+const { where, Op } = require('sequelize');
 const sequelize = require('../database/connection_database');
 
 module.exports = {
@@ -26,18 +26,21 @@ module.exports = {
       throw error;
     }
   },
-  getAll: async (page, size) => {
-    // return User.findAll({
-    //   attributes: ["id", "firstName", "lastName", "email"],
-    //   limit: 5,
-    //   order: [["id", "DESC"]],
-    // })
+  getAll: async (page, size, search) => {
+    try {
+      const where = {};
+      if (search) {
+        where[Op.or] = [
+          { email: { [Op.like]: `%${search}%` }}, 
+          { phone: { [Op.like]: `%${search}%` }}
+        ];
+      }
 
-    // try {
       // Tính offset
       const offset = (page - 1) * size;
 
       const { count, rows } = await User.findAndCountAll({
+        where,
         offset,
         limit: size,
       });
@@ -50,11 +53,10 @@ module.exports = {
         data: rows,
       };
 
-      console.log("pagination", pagination);
       return pagination;
-    // } catch (error) {
-    //   throw error;
-    // }
+    } catch (error) {
+      throw error;
+    }
   },
   getUserByUserId: async (userId) => {
     try {

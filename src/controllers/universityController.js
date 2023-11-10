@@ -36,9 +36,9 @@ module.exports = {
     // try {
       let page = parseInt(req.query.page) || 1;
       let size = parseInt(req.query.size) || 10;
+      let search = req.query.search;
 
-      const listUniversity = await universityService.getAll(page, size); // Gọi chức năng từ service
-      console.log("listUniversity: ", listUniversity)
+      const listUniversity = await universityService.getAll(page, size, search); // Gọi chức năng từ service
       if (listUniversity) {
         return responseHelper.sendResponse.SUCCESS(res, listUniversity);
       }

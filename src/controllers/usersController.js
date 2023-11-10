@@ -5,19 +5,20 @@ const responseHelper = require('../helpers/responseHelper');
 
 module.exports = {
   getUsers: async (req, res) => {
-    try {
+    // try {
       let page = parseInt(req.query.page) || 1;
       let size = parseInt(req.query.size) || 10;
+      let search = req.query.search;
 
-      const users = await userService.getAll(page, size); // Gọi chức năng từ service
+      const users = await userService.getAll(page, size, search); // Gọi chức năng từ service
       if (users) {
         return responseHelper.sendResponse.SUCCESS(res, users);
       }
 
       return responseHelper.sendResponse.BAD_REQUEST(res, null);
-    } catch (error) {
-      responseHelper.sendResponse.SERVER_ERROR(res, null);
-    }
+    // } catch (error) {
+    //   responseHelper.sendResponse.SERVER_ERROR(res, null);
+    // }
 
     //   let sqlQuery = "SELECT * FROM users";
     //   dbConnection.query(sqlQuery, (error, results) => {

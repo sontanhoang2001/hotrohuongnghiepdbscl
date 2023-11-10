@@ -1,6 +1,7 @@
 const University = require('../models').University;
 const UniversityDetail = require('../models').UniversityDetail;
 
+const { Op } = require('sequelize');
 const sequelize = require('../database/connection_database');
 
 module.exports = {
@@ -35,12 +36,18 @@ module.exports = {
       throw error; // Sau đó ném lỗi để xử lý ở phần gọi hàm
     }
   },
-  getAll: async (page, size) => {
+  getAll: async (page, size, search) => {
     try {
+      const where = {};
+      if (search) {
+        where.name = { [Op.like]: `%${search}%` };
+      }
+
       // Tính offset
       const offset = (page - 1) * size;
 
       const { count, rows } = await University.findAndCountAll({
+        where,
         offset,
         limit: size,
         attributes: ['id', 'name'],

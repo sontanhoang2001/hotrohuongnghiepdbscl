@@ -1,4 +1,0 @@
-services:
-  - type: web
-    name: my-app
-    nodeVersion: 16.14
