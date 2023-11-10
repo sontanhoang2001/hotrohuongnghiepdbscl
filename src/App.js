@@ -1,10 +1,11 @@
 import { Outlet } from 'react-router-dom';
 import Header from './components/header';
 import CLientFooter from './components/footer';
-import { Button, Drawer, FloatButton, Input, Popover, Select, Space, Switch } from 'antd';
-import { CommentOutlined, CustomerServiceOutlined, InfoCircleOutlined } from '@ant-design/icons';
+import { Button, Drawer, FloatButton, Input, List, Select } from 'antd';
+import { CommentOutlined, MessageOutlined } from '@ant-design/icons';
 import { useState } from 'react';
 import styled from 'styled-components';
+import { MessageContent, YourMessageContent } from './globalStyles';
 
 function App() {
   const [openSelect, setOpenSelect] = useState(true);
@@ -53,22 +54,28 @@ function App() {
             value: item,
             label: item,
           }))}
-          style={{ width: '100%' }}
+          allowClear
+          style={{ width: '100%', marginBottom: 20 }}
         />
+
         <ChatBox>
-          <InputMessage>
-            <Input
-              placeholder="Enter your username"
-              suffix={
-                <InfoCircleOutlined
-                  style={{
-                    color: 'rgba(0,0,0,.45)',
-                  }}
-                />
-              }
-            />
-          </InputMessage>
+          <Messages>
+            <MessageContent>Hey, man! What's up, Mr Stark?👋</MessageContent>
+            <YourMessageContent>Kid, where'd you come from?</YourMessageContent>
+            <MessageContent>Hey, man! What's up, Mr Stark?👋</MessageContent>
+            <YourMessageContent>Kid, where'd you come from?</YourMessageContent>
+            <MessageContent>Hey, man! What's up, Mr Stark?👋</MessageContent>
+            <YourMessageContent>Kid, where'd you come from?</YourMessageContent>
+            <MessageContent>Hey, man! What's up, Mr Stark?👋</MessageContent>
+            <YourMessageContent>Kid, where'd you come from?</YourMessageContent>
+            <ChatInput></ChatInput>
+          </Messages>
         </ChatBox>
+        <Input
+          placeholder="Nhập nội dung..."
+          suffix={<MessageOutlined style={{ fontSize: 25, color: `#d9d9d9` }} />}
+          style={{ height: 50 }}
+        />
       </Drawer>
 
       <CLientFooter />
@@ -76,16 +83,27 @@ function App() {
   );
 }
 const ChatBox = styled.div`
-  height: 80%;
-  width: 100%;
-  background-color: red;
-  position: relative;
-`;
-const InputMessage = styled.div`
-  width: 90%;
-  position: absolute;
   display: flex;
-  justify-content: center;
-  bottom: 0;
+  height: 90%;
+  flex-direction: column;
+  justify-content: space-between;
+  z-index: 2;
+  box-sizing: border-box;
+  border-radius: 1rem;
+  /* background: white; */
+  box-shadow: 0 0 8rem 0 rgba(0, 0, 0, 0.1), 0rem 2rem 4rem -3rem rgba(0, 0, 0, 0.5);
+`;
+const Messages = styled.div`
+  /* background: #f7f7f7; */
+  flex-shrink: 2;
+  overflow-y: auto;
+`;
+const ChatInput = styled.div`
+  box-sizing: border-box;
+  flex-basis: 4rem;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  padding: 0 0.5rem 0 1.5rem;
 `;
 export default App;
