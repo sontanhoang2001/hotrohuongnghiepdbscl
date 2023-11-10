@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
-function Footer() {
+function CLientFooter() {
   const navigate = useNavigate();
   const facebook = [
     <svg
@@ -11,6 +11,7 @@ function Footer() {
       id="facebook"
       width="30"
       height="30"
+      key={0}
     >
       <path
         fill="#1976D2"
@@ -18,9 +19,9 @@ function Footer() {
       ></path>
       <path
         fill="#FAFAFA"
-        fill-rule="evenodd"
+        fillRule="evenodd"
         d="M13.5 8H11V6c0-.552.448-.5 1-.5h1V3h-2a3 3 0 0 0-3 3v2H6v2.5h2V16h3v-5.5h1.5l1-2.5z"
-        clip-rule="evenodd"
+        clipRule="evenodd"
       ></path>
     </svg>,
   ];
@@ -31,15 +32,16 @@ function Footer() {
       height="30"
       viewBox="0 0 102 102"
       id="instagram"
+      key={1}
     >
       <defs>
         <radialGradient id="a" cx="6.601" cy="99.766" r="129.502" gradientUnits="userSpaceOnUse">
-          <stop offset=".09" stop-color="#fa8f21"></stop>
-          <stop offset=".78" stop-color="#d82d7e"></stop>
+          <stop offset=".09" stopColor="#fa8f21"></stop>
+          <stop offset=".78" stopColor="#d82d7e"></stop>
         </radialGradient>
         <radialGradient id="b" cx="70.652" cy="96.49" r="113.963" gradientUnits="userSpaceOnUse">
-          <stop offset=".64" stop-color="#8c3aaa" stop-opacity="0"></stop>
-          <stop offset="1" stop-color="#8c3aaa"></stop>
+          <stop offset=".64" stopColor="#8c3aaa" stopOpacity="0"></stop>
+          <stop offset="1" stopColor="#8c3aaa"></stop>
         </radialGradient>
       </defs>
       <path
@@ -67,13 +69,14 @@ function Footer() {
       id="youtube"
       width="30"
       height="30"
+      key={2}
     >
       <g data-name="Layer 2">
         <g data-name="Layer 1">
           <rect width="28.87" height="28.87" fill="#fd3832" rx="6.48" ry="6.48"></rect>
           <path
             fill="#fff"
-            fill-rule="evenodd"
+            fillRule="evenodd"
             d="M8 19.77a1.88 1.88 0 0 1-1.24-1.21c-.54-1.48-.7-7.66.34-8.88A2 2 0 0 1 8.46 9c2.79-.3 11.41-.26 12.4.1a1.94 1.94 0 0 1 1.22 1.17c.59 1.53.61 7.09-.08 8.56a1.89 1.89 0 0 1-.87.88c-1.04.52-11.75.51-13.13.06zm4.43-2.9l5-2.6-5-2.62z"
           ></path>
         </g>
@@ -89,6 +92,7 @@ function Footer() {
       id="linkedin"
       width="30"
       height="30"
+      key={3}
     >
       <rect width="128" height="128" fill="#0177b5" rx="24" ry="24"></rect>
       <path
@@ -105,6 +109,7 @@ function Footer() {
       width="30"
       height="30"
       style={{ background: '#fff' }}
+      key={4}
     >
       <path d="M21 2H3a1 1 0 0 0-1 1v18a1 1 0 0 0 1 1h18a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1Zm-3.281 8.725a3.602 3.602 0 0 1-.328.017A3.571 3.571 0 0 1 14.4 9.129v5.493a4.061 4.061 0 1 1-4.06-4.06c.085 0 .167.008.251.013v2a2.067 2.067 0 1 0-.251 4.119 2.123 2.123 0 0 0 2.16-2.045l.02-9.331h1.914A3.564 3.564 0 0 0 17.719 8.5Z"></path>
     </svg>,
@@ -137,13 +142,10 @@ function Footer() {
           </Column>
           <Column>
             <Heading>Social Media</Heading>
-            <FooterLinkIcon href="#">
+            <FooterLinkIcon>
               {facebook}
-
               {instagram}
-
               {youtube}
-
               {linkedin}
               {tiktok}
             </FooterLinkIcon>
@@ -235,4 +237,4 @@ const Heading = styled.p`
   text-transform: uppercase;
 `;
 
-export default Footer;
+export default CLientFooter;

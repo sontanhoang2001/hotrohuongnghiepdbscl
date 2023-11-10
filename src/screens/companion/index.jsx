@@ -88,7 +88,7 @@ function Companion() {
 const SearchBar = styled.div`
   height: 300px;
   width: 100%;
-  background: url('../images/istockphoto-1192265107-1024x1024.webp') no-repeat bottom;
+  background: url('../images/istockphoto-1192265107-1024x1024.webp') no-repeat top;
 `;
 const SearchBarContent = styled.div`
   display: flex;
