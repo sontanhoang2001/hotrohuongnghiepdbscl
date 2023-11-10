@@ -1,7 +1,5 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
+const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     /**
@@ -11,15 +9,32 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      User.hasOne(models.UserDetail);
+      User.belongsTo(models.Role);
     }
-  };
-  User.init({
-    firstName: DataTypes.STRING,
-    lastName: DataTypes.STRING,
-    email: DataTypes.STRING
-  }, {
-    sequelize,
-    modelName: 'User',
-  });
+
+    // Định nghĩa phương thức toJSON để loại bỏ trường password
+    toJSON() {
+      const values = { ...this.get() };
+      delete values.password;
+      return values;
+    }
+  }
+  User.init(
+    {
+      account_type: DataTypes.INTEGER,
+      email: DataTypes.STRING,
+      phone: DataTypes.STRING,
+      password: DataTypes.STRING,
+      authCode: DataTypes.STRING,
+      roleId: DataTypes.INTEGER,
+      status: DataTypes.INTEGER,
+    },
+    {
+      sequelize,
+      modelName: 'User',
+      tableName: 'User',
+    },
+  );
   return User;
 };
