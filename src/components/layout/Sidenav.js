@@ -1,23 +1,22 @@
 import { Menu } from 'antd';
-import { NavLink, Navigate, useLocation } from 'react-router-dom';
-import logo from '../../assets/images/logo.png';
+import { NavLink, useNavigate } from 'react-router-dom';
 import {
   LogoutOutlined,
-  InboxOutlined,
   BankOutlined,
   UserOutlined,
   CopyOutlined,
+  CommentOutlined,
 } from '@ant-design/icons';
 import { useDispatch } from 'react-redux';
 import { logout } from '../../redux/authSlice';
+import styled from 'styled-components';
 
 function Sidenav({ color }) {
-  const { pathname } = useLocation();
-  const page = pathname.replace('/', '');
-
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const handleLogout = () => {
     dispatch(logout());
+    navigate('/');
   };
   const dashboard = [
     <svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" key={0}>
@@ -54,113 +53,108 @@ function Sidenav({ color }) {
     </svg>,
   ];
 
+  function getItem(label, key, icon, children, type) {
+    return {
+      key,
+      icon,
+      children,
+      label,
+      type,
+    };
+  }
+
+  const items = [
+    getItem(
+      <NavLink to="/admin/dashboard">
+        <span className="icon">{dashboard}</span>
+        <span className="label">Dashboard</span>
+      </NavLink>,
+      '1',
+    ),
+    getItem(
+      <NavLink to="/admin/danh-sach-truong-hoc">
+        <span className="icon">
+          <BankOutlined />
+        </span>
+        <span className="label">Trường học</span>
+      </NavLink>,
+      '2',
+    ),
+    getItem(
+      <NavLink to="/admin/danh-sach-nguoi-dung">
+        <span className="icon">
+          <UserOutlined />
+        </span>
+        <span className="label">Người dùng</span>
+      </NavLink>,
+      '3',
+    ),
+    getItem(
+      <NavLink to="/admin/danh-sach-tin-tuc">
+        <span className="icon">
+          <CopyOutlined />
+        </span>
+        <span className="label">Tin tức</span>
+      </NavLink>,
+      '4',
+    ),
+    getItem(
+      <MeunuItem>
+        <span className="label sidenav-title-content">Tài Khoản</span>
+      </MeunuItem>,
+      '5',
+    ),
+    getItem(
+      <NavLink to="/admin/profile">
+        <span className="icon">{profile}</span>
+        <span className="label">Profile</span>
+      </NavLink>,
+      '6',
+    ),
+    getItem(
+      <NavLink to="/admin/tin-nhan">
+        <span className="icon">
+          <CommentOutlined />
+        </span>
+        <span className="label">Tin Nhắn</span>
+      </NavLink>,
+      '7',
+    ),
+    getItem(
+      <MeunuItem>
+        <span className="icon">
+          <LogoutOutlined />
+        </span>
+        <span className="label" onClick={() => handleLogout()}>
+          Đăng xuất
+        </span>
+      </MeunuItem>,
+      '8',
+    ),
+  ];
   return (
     <>
       <div className="brand">
-        <img src={logo} alt="" />
-        <span>Muse Dashboard</span>
+        <p>Trung Tâm Hướng Nghiệp</p>
+        <p>ĐBSCL</p>
       </div>
       <hr />
-      <Menu theme="light" mode="inline">
-        <Menu.Item key="1">
-          <NavLink to="/admin">
-            <span
-              className="icon"
-              style={{
-                background: page === 'dashboard' ? color : '',
-              }}
-            >
-              {dashboard}
-            </span>
-            <span className="label">Dashboard</span>
-          </NavLink>
-        </Menu.Item>
-        <Menu.Item key="2">
-          <NavLink to="/admin/danh-sach-truong-hoc">
-            <span
-              className="icon"
-              style={{
-                background: page === 'tables' ? color : '',
-              }}
-            >
-              <BankOutlined />
-            </span>
-            <span className="label">Trường học</span>
-          </NavLink>
-        </Menu.Item>
-        <Menu.Item key="3">
-          <NavLink to="/admin/danh-sach-nguoi-dung">
-            <span
-              className="icon"
-              style={{
-                background: page === 'tables' ? color : '',
-              }}
-            >
-              <UserOutlined />
-            </span>
-            <span className="label">Người dùng</span>
-          </NavLink>
-        </Menu.Item>
-        <Menu.Item key="4">
-          <NavLink to="/admin/danh-sach-cau-hoi">
-            <span
-              className="icon"
-              style={{
-                background: page === 'tables' ? color : '',
-              }}
-            >
-              <InboxOutlined />
-            </span>
-            <span className="label">Câu hỏi</span>
-          </NavLink>
-        </Menu.Item>
-        <Menu.Item key="5">
-          <NavLink to="/admin/danh-sach-tin-tuc">
-            <span
-              className="icon"
-              style={{
-                background: page === 'tables' ? color : '',
-              }}
-            >
-              <CopyOutlined />
-            </span>
-            <span className="label">Tin tức</span>
-          </NavLink>
-        </Menu.Item>
-        <Menu.Item className="menu-item-header" key="6">
-          Account Pages
-        </Menu.Item>
-        <Menu.Item key="7">
-          <NavLink to="/admin/profile">
-            <span
-              className="icon"
-              style={{
-                background: page === 'profile' ? color : '',
-              }}
-            >
-              {profile}
-            </span>
-            <span className="label">Profile</span>
-          </NavLink>
-        </Menu.Item>
-        <Menu.Item key="8">
-          <NavLink to="/">
-            <span className="icon">
-              <LogoutOutlined />
-            </span>
-            <span
-              className="label"
-              onClick={() => {
-                handleLogout();
-              }}
-            >
-              Logout
-            </span>
-          </NavLink>
-        </Menu.Item>
-      </Menu>
+      <Menu defaultSelectedKeys={['1']} mode="inline" items={items} />
     </>
   );
 }
-
+const MeunuItem = styled.div`
+  padding: 10px 16px;
+  color: #141414;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  .sidenav-title-content {
+    color: #8c8c8c;
+    font-weight: 700;
+    font-size: 13px;
+    text-transform: uppercase;
+  }
+`;
 export default Sidenav;

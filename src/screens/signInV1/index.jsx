@@ -82,7 +82,7 @@ function SignInV1() {
         navigate('/');
       }
       if (role === 'ADMIN') {
-        navigate('/admin');
+        navigate('/admin/dashboard');
       }
     }
   }, [pending, profile, navigate]);

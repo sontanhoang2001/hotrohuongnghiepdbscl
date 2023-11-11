@@ -1,8 +1,8 @@
 import { Outlet } from 'react-router-dom';
 import Header from './components/header';
 import CLientFooter from './components/footer';
-import { Button, Drawer, FloatButton, Input, List, Select } from 'antd';
-import { CommentOutlined, MessageOutlined } from '@ant-design/icons';
+import { Drawer, FloatButton, Input, Select } from 'antd';
+import { CommentOutlined } from '@ant-design/icons';
 import { useState } from 'react';
 import styled from 'styled-components';
 import { MessageContent, YourMessageContent } from './globalStyles';

@@ -246,15 +246,16 @@ function Header({
       </div>
       <Row gutter={[24, 0]}>
         <Col span={24} md={6}>
-          <Breadcrumb>
-            <Breadcrumb.Item>
-              <NavLink to="/">Pages</NavLink>
-            </Breadcrumb.Item>
-            <Breadcrumb.Item style={{ textTransform: 'capitalize' }}>
-              {/* {name.replace('/', ' ')} */}
-              {name}
-            </Breadcrumb.Item>
-          </Breadcrumb>
+          <Breadcrumb
+            items={[
+              {
+                title: 'Pages',
+              },
+              {
+                title: `${name}`,
+              },
+            ]}
+          />
           <div className="ant-page-header-heading">
             <span className="ant-page-header-heading-title" style={{ textTransform: 'capitalize' }}>
               {/* {subName.replace('/', ' ')} */}
@@ -264,7 +265,7 @@ function Header({
         </Col>
         <Col span={24} md={18} className="header-control">
           <Badge size="small" count={4}>
-            <Dropdown overlay={menu} trigger={['click']}>
+            <Dropdown menu={menu} trigger={['click']}>
               <a href="#pablo" className="ant-dropdown-link" onClick={(e) => e.preventDefault()}>
                 {bell}
               </a>

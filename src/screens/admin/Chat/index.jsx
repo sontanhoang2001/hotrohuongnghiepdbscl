@@ -63,7 +63,6 @@ const paperPlane = [
     strokeLinecap="round"
     strokeLinejoin="round"
     aria-hidden="true"
-    dataReactid="1036"
     key={1}
   >
     <line x1="22" y1="2" x2="11" y2="13"></line>

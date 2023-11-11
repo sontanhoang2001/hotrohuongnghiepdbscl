@@ -9,8 +9,7 @@ import TestMbti from '../screens/testMbti';
 import Universities from '../screens/university';
 import Companion from '../screens/companion';
 import ForgotPassword from '../screens/forgotpassword';
-import Singin from '../screens/signin';
-import Signup from '../screens/signup';
+
 import OtpLogin from '../screens/otpLogin';
 import NotFound from '../screens/404/notfound';
 
@@ -30,6 +29,7 @@ import Mbti from '../screens/admin/mbti';
 import SignInV1 from '../screens/signInV1';
 import SignUpV1 from '../screens/signupV1';
 import Chat from '../screens/admin/Chat';
+import ManageNews from '../screens/admin/news';
 
 const ROLES = {
   User: 5,
@@ -74,12 +74,14 @@ function Router() {
           }
         > */}
         <Route path="/admin" element={<Admin />}>
-          <Route path="" element={<Dashboard />} />
+          <Route path="dashboard" element={<Dashboard />} />
+          {/* <Route index element={<Dashboard />} /> */}
           <Route path="danh-sach-truong-hoc" element={<University />} />
           <Route path="danh-sach-nguoi-dung" element={<User />} />
           <Route path="danh-sach-cau-hoi" element={<Mbti />} />
           <Route path="profile" element={<Profile />} />
           <Route path="tin-nhan" element={<Chat />} />
+          <Route path="danh-sach-tin-tuc" element={<ManageNews />} />
         </Route>
 
         {/* no other result match */}
