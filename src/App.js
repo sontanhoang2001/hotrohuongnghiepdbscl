@@ -7,6 +7,46 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import { MessageContent, YourMessageContent } from './globalStyles';
 
+const smileFace = [
+  <svg
+    class="feather feather-smile sc-dnqmqq jxshSx"
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    ariaHidden="true"
+    key={0}
+  >
+    <circle cx="12" cy="12" r="10"></circle>
+    <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+    <line x1="9" y1="9" x2="9.01" y2="9"></line>
+    <line x1="15" y1="9" x2="15.01" y2="9"></line>
+  </svg>,
+];
+const paperPlane = [
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    ariaHidden="true"
+    dataReactid="1036"
+    key={1}
+  >
+    <line x1="22" y1="2" x2="11" y2="13"></line>
+    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+  </svg>,
+];
 function App() {
   const [openSelect, setOpenSelect] = useState(true);
   const [open, setOpen] = useState(false);
@@ -59,6 +99,12 @@ function App() {
         />
 
         <ChatBox>
+          <ContactBar>
+            <div className="contact-pic">
+              <img src="./images/4939493.png" alt="Nguyen Thi B"></img>
+            </div>
+            <div className="contact-name">Nguyen Thi B</div>
+          </ContactBar>
           <Messages>
             <MessageContent>Hey, man! What's up, Mr Stark?👋</MessageContent>
             <YourMessageContent>Kid, where'd you come from?</YourMessageContent>
@@ -68,14 +114,34 @@ function App() {
             <YourMessageContent>Kid, where'd you come from?</YourMessageContent>
             <MessageContent>Hey, man! What's up, Mr Stark?👋</MessageContent>
             <YourMessageContent>Kid, where'd you come from?</YourMessageContent>
-            <ChatInput></ChatInput>
+            <YourMessageContent>Kid, where'd you come from?</YourMessageContent>
+            <MessageContent>Hey, man! What's up, Mr Stark?👋</MessageContent>
+            <YourMessageContent>Kid, where'd you come from?</YourMessageContent>{' '}
+            <YourMessageContent>Kid, where'd you come from?</YourMessageContent>
+            <MessageContent>Hey, man! What's up, Mr Stark?👋</MessageContent>
+            <YourMessageContent>Kid, where'd you come from?</YourMessageContent>{' '}
+            <YourMessageContent>Kid, where'd you come from?</YourMessageContent>
+            <MessageContent>Hey, man! What's up, Mr Stark?👋</MessageContent>
+            <YourMessageContent>Kid, where'd you come from?</YourMessageContent>{' '}
+            <YourMessageContent>Kid, where'd you come from?</YourMessageContent>
+            <MessageContent>Hey, man! What's up, Mr Stark?👋</MessageContent>
+            <YourMessageContent>Kid, where'd you come from?</YourMessageContent>
           </Messages>
+          {/* <Input
+            placeholder="Nhập nội dung..."
+            suffix={<MessageOutlined style={{ fontSize: 25, color: `#d9d9d9` }} />}
+            style={{ height: 50 }}
+          /> */}
+          <FooterChat>
+            <Button>{smileFace}</Button>
+            <Input
+              placeholder="Nhập nội dung..."
+              suffix={<MessageOutlined style={{ fontSize: 25, color: `#d9d9d9` }} />}
+              style={{ height: 50 }}
+            />
+            <Button> {paperPlane}</Button>
+          </FooterChat>
         </ChatBox>
-        <Input
-          placeholder="Nhập nội dung..."
-          suffix={<MessageOutlined style={{ fontSize: 25, color: `#d9d9d9` }} />}
-          style={{ height: 50 }}
-        />
       </Drawer>
 
       <CLientFooter />
@@ -89,21 +155,55 @@ const ChatBox = styled.div`
   justify-content: space-between;
   z-index: 2;
   box-sizing: border-box;
-  border-radius: 1rem;
-  /* background: white; */
-  box-shadow: 0 0 8rem 0 rgba(0, 0, 0, 0.1), 0rem 2rem 4rem -3rem rgba(0, 0, 0, 0.5);
+  border-radius: 20px;
+
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  background: #f7f7f7;
+`;
+
+const ContactBar = styled.div`
+  flex-basis: 3.5rem rem;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  position: relative;
+  padding-left: 5rem;
+  height: 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: white;
+  border-top-right-radius: 20px;
+  border-top-left-radius: 20px;
+  .contact-pic {
+    position: absolute;
+    left: 10px;
+    width: 4rem;
+    height: 4rem;
+    background-size: cover;
+    background-position: center;
+    border-radius: 50%;
+  }
+  .contact-name {
+    font-family: Red hat Display, sans-serif;
+    font-weight: 400;
+    line-height: 1.25em;
+    letter-spacing: 0.025em;
+    color: #333;
+  }
 `;
 const Messages = styled.div`
-  /* background: #f7f7f7; */
   flex-shrink: 2;
   overflow-y: auto;
 `;
-const ChatInput = styled.div`
-  box-sizing: border-box;
-  flex-basis: 4rem;
-  flex-shrink: 0;
+const FooterChat = styled.div`
+  width: 100%;
+  height: 100px;
   display: flex;
   align-items: center;
-  padding: 0 0.5rem 0 1.5rem;
+  border-top: 2px solid #eee;
+  justify-content: space-between;
+  background: white;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
 `;
 export default App;

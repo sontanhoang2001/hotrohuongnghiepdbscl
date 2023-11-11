@@ -1827,7 +1827,7 @@ body {
   line-height: 40px;
 }
 .ant-btn {
-  box-shadow: 0 2px 4px rgb(0 0 0 / 7%);
+  /* box-shadow: 0 2px 4px rgb(0 0 0 / 7%); */
   border-radius: 6px;
 }
 .layout-sign-up .ant-layout-footer {
