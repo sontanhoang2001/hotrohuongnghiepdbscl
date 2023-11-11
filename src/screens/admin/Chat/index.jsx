@@ -1,11 +1,38 @@
 import { MessageOutlined, SearchOutlined } from '@ant-design/icons';
 import { Input } from 'antd';
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { MessageContent, YourMessageContent } from '../../../globalStyles';
+
+const data = [
+  {
+    name: 'Nguyen thi b',
+    image:
+      'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80',
+    lastMessage: 'Excepteur est magna est non ex elit.',
+  },
+  {
+    name: 'Nguyen van b',
+    image:
+      'http://e0.365dm.com/16/08/16-9/20/theirry-henry-sky-sports-pundit_3766131.jpg?20161212144602',
+    lastMessage: 'Excepteur est magna est non ex elit.',
+  },
+  {
+    name: 'Nguyen thi c',
+    image:
+      'https://images.unsplash.com/photo-1497551060073-4c…x8&ixlib=rb-1.2.1&auto=format&fit=crop&w=667&q=80',
+    lastMessage: 'Excepteur est magna est non ex elit.',
+  },
+  {
+    name: 'Nguyen thi d',
+    image:
+      'https://images.unsplash.com/photo-1553514029-1318c9127859?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=700&q=80',
+    lastMessage: 'Excepteur est magna est non ex elit.',
+  },
+];
 const smileFace = [
   <svg
-    class="feather feather-smile sc-dnqmqq jxshSx"
+    className="feather feather-smile sc-dnqmqq jxshSx"
     xmlns="http://www.w3.org/2000/svg"
     width="24"
     height="24"
@@ -15,7 +42,7 @@ const smileFace = [
     strokeWidth="2"
     strokeLinecap="round"
     strokeLinejoin="round"
-    ariaHidden="true"
+    aria-hidden="true"
     key={0}
   >
     <circle cx="12" cy="12" r="10"></circle>
@@ -35,7 +62,7 @@ const paperPlane = [
     strokeWidth="2"
     strokeLinecap="round"
     strokeLinejoin="round"
-    ariaHidden="true"
+    aria-hidden="true"
     dataReactid="1036"
     key={1}
   >
@@ -44,8 +71,12 @@ const paperPlane = [
   </svg>,
 ];
 function Chat() {
+  const [selected, setSelected] = useState(null);
+  const handleActive = (idx) => {
+    setSelected(idx);
+  };
   return (
-    <div style={{ display: 'flex' }}>
+    <ChatContainer>
       {/* ===========Bắt đầu leftcontent========== */}
       <LeftContent>
         <LeftContentHeader>
@@ -57,67 +88,27 @@ function Chat() {
           />
         </LeftContentHeader>
         <LeftContentList>
-          {/* người dùng đang được chọn */}
-          <DiscussionActive>
-            <ChatAvatar
-              style={{
-                backgroundImage:
-                  'url(https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80)',
-              }}
+          {/* test in bằng mảng dữ liệu*/}
+          {data.map((val, idx) => (
+            <Discussion
+              key={idx}
+              className={selected != null && selected === idx ? 'discussion-active' : ''}
+              onClick={() => handleActive(idx)}
             >
-              <OnlineStatus></OnlineStatus>
-            </ChatAvatar>
-            <ChatStatus>
-              <ChatStatusName>Tôn Không Ngộ</ChatStatusName>
-              <LastMessage>Excepteur est magna est non ex elit.</LastMessage>
-            </ChatStatus>
-            <LeftTimer>12s</LeftTimer>
-          </DiscussionActive>
-          {/* Người dùng chưa được chọn */}
-          <Discussion>
-            <ChatAvatar
-              style={{
-                backgroundImage:
-                  'url(http://e0.365dm.com/16/08/16-9/20/theirry-henry-sky-sports-pundit_3766131.jpg?20161212144602)',
-              }}
-            >
-              <OnlineStatus></OnlineStatus>
-            </ChatAvatar>
-            <ChatStatus>
-              <ChatStatusName>Tôn Ngộ Không</ChatStatusName>
-              <LastMessage>Excepteur est magna est non ex elit.</LastMessage>
-            </ChatStatus>
-            <LeftTimer>1 tiếng</LeftTimer>
-          </Discussion>
-          {/* Người dùng chưa được chọn */}
-          <Discussion>
-            <ChatAvatar
-              style={{
-                backgroundImage:
-                  'url(https://images.unsplash.com/photo-1497551060073-4c…x8&ixlib=rb-1.2.1&auto=format&fit=crop&w=667&q=80)',
-              }}
-            ></ChatAvatar>
-            <ChatStatus>
-              <ChatStatusName>Tôn Ngộ Không</ChatStatusName>
-              <LastMessage>Excepteur est magna est non ex elit.</LastMessage>
-            </ChatStatus>
-          </Discussion>
-          {/* Người dùng chưa được chọn */}
-          <Discussion>
-            <ChatAvatar
-              style={{
-                backgroundImage:
-                  'url(https://images.unsplash.com/photo-1553514029-1318c9127859?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=700&q=80)',
-              }}
-            >
-              <OnlineStatus></OnlineStatus>
-            </ChatAvatar>
-            <ChatStatus>
-              <ChatStatusName>Tôn Ngộ Không</ChatStatusName>
-              <LastMessage>Excepteur est magna est non ex elit.</LastMessage>
-            </ChatStatus>
-            <LeftTimer>1 tiếng</LeftTimer>
-          </Discussion>
+              <ChatAvatar
+                style={{
+                  backgroundImage: `url(${val.image})`,
+                }}
+              >
+                <OnlineStatus></OnlineStatus>
+              </ChatAvatar>
+              <ChatStatus>
+                <ChatStatusName>{val.name}</ChatStatusName>
+                <LastMessage>{val.lastMessage}</LastMessage>
+              </ChatStatus>
+              <LeftTimer>1 tiếng</LeftTimer>
+            </Discussion>
+          ))}
         </LeftContentList>
       </LeftContent>
       {/* ===========Kết Thúc leftcontent========== */}
@@ -157,19 +148,31 @@ function Chat() {
           <MessageContent>Hey, man! What's up, Mr Stark?👋</MessageContent>
           <YourMessageContent>Kid, where'd you come from?</YourMessageContent>
         </ChatBox>
+        <FooterChat>
+          <span className="smile-face">{smileFace}</span>
+          <Input placeholder="Nhập nội dung..." style={{ height: 50 }} />
+          <span className="paper-plane"> {paperPlane}</span>
+        </FooterChat>
       </RightContent>
       {/* ===========Kết Thúc RightContent========== */}
-    </div>
+    </ChatContainer>
   );
 }
 const heightOfHeader = '90';
+const heightOfFooter = '80';
+
+const ChatContainer = styled.div`
+  display: flex;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  border-radius: 15px;
+`;
 //===========Bắt đầu leftcontent==========
 const LeftContent = styled.div`
   width: 35%;
   height: 700px;
-  box-shadow: 0px 8px 10px rgba(0, 0, 0, 0.2);
   overflow: hidden;
   display: inline-block;
+  box-shadow: 0px 8px 10px rgba(0, 0, 0, 0.2);
 `;
 
 const LeftContentHeader = styled.div`
@@ -181,10 +184,15 @@ const LeftContentHeader = styled.div`
   height: ${heightOfHeader}px;
   background-color: #fafafa;
   border-bottom: solid 1px #e0e0e0;
+  border-top-left-radius: 15px;
 `;
 const LeftContentList = styled.div`
   height: calc(100% - ${heightOfHeader}px);
   overflow-y: auto;
+  border-bottom-left-radius: 15px;
+  .discussion-active {
+    background-color: #e5efff;
+  }
 `;
 //người dùng chưa active
 const Discussion = styled.div`
@@ -198,13 +206,6 @@ const Discussion = styled.div`
   &:hover {
     background-color: #e5efff;
   }
-`;
-
-//dùng cho người dùng đang được chọn khi nhắn tin
-const DiscussionActive = styled(Discussion)`
-  /* width: 98.5%; */
-  height: 90px;
-  background-color: #e5efff;
 `;
 //hình ảnh người dùng
 const ChatAvatar = styled.div`
@@ -267,7 +268,7 @@ const LeftTimer = styled.div`
 
 //=========Bắt Đầu RightContent===========
 const RightContent = styled.div`
-  width: calc(65% - 80px);
+  width: 65%;
   height: 700px;
 `;
 const RightContentHeader = styled.div`
@@ -276,6 +277,7 @@ const RightContentHeader = styled.div`
   box-shadow: 0px 3px 2px rgba(0, 0, 0, 0.1);
   display: flex;
   align-items: center;
+  border-top-right-radius: 15px;
 `;
 
 const RightChatAvatar = styled.div`
@@ -310,11 +312,39 @@ const RightTimer = styled.p`
 `;
 
 const ChatBox = styled.div`
-  height: calc(100% - ${heightOfHeader}px);
+  height: calc(100% - ${heightOfHeader}px - ${heightOfFooter}px);
   padding: 25px 35px;
   overflow-y: auto;
 `;
 
-const FooterChat = styled.div``;
+const FooterChat = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  border-top: 2px solid #eee;
+  border-left: 1px solid #e0e0e0;
+  border-bottom-right-radius: 15px;
+  height: ${heightOfFooter}px;
+  span {
+    height: 40px;
+    padding: 0 15px;
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 40px;
+    display: flex;
+    align-items: center;
+  }
+  .smile-face {
+    &:hover {
+      color: orange;
+    }
+  }
+  .paper-plane {
+    &:hover {
+      color: var(--primary-color);
+    }
+  }
+`;
 //=========Kết Thúc RightContent===========
 export default Chat;

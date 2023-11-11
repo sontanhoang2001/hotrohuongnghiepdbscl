@@ -130,11 +130,7 @@ function App() {
 
           <FooterChat>
             <span className="smile-face">{smileFace}</span>
-            <Input
-              placeholder="Nhập nội dung..."
-              suffix={<MessageOutlined style={{ fontSize: 25, color: `#d9d9d9` }} />}
-              style={{ height: 50 }}
-            />
+            <Input placeholder="Nhập nội dung..." style={{ height: 50 }} />
             <span className="paper-plane"> {paperPlane}</span>
           </FooterChat>
         </ChatBox>
