@@ -10,7 +10,6 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Question.belongsTo(models.QuestionGroup);
-      Question.hasMany(models.TestDetail);
       Question.hasMany(models.Answer);
     }
   }

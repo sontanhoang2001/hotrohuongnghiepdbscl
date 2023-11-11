@@ -1,30 +1,30 @@
-const universityService = require('../services/universityService');
-const dbConnection = require('../database/dbConnection');
+const organizationService = require('../services/organizationService');
 const responseHelper = require('../helpers/responseHelper');
 
 module.exports = {
-  createUniversity: async (req, res) => {
+  createOrganization: async (req, res) => {
     // try {
     // const userId = parseInt(req.user.id);
-    const university = req.body;
+    const organization = req.body;
 
     if (
-      !university.name ||
-      !university.image ||
-      !university.address ||
-      !university.province ||
-      !university.email ||
-      !university.phone ||
-      !university.description ||
-      !university.url ||
-      !university.rank
+      !organization.organizationTypeId ||
+      !organization.name ||
+      !organization.image ||
+      !organization.address ||
+      !organization.province ||
+      !organization.email ||
+      !organization.phone ||
+      !organization.description ||
+      !organization.url ||
+      !organization.rank
     ) {
       return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a full and valid parameter');
     }
 
-    const createNew = await universityService.createNew(university);
+    const createNew = await organizationService.createNew(organization);
     if (createNew) {
-      return responseHelper.sendResponse.SUCCESS(res, createNew, 'Bạn đã tạo mới câu hỏi thành công');
+      return responseHelper.sendResponse.SUCCESS(res, createNew, 'Bạn đã tạo tổ chức thành công');
     }
     return responseHelper.sendResponse.BAD_REQUEST(res, null);
     // } catch (error) {
@@ -38,7 +38,7 @@ module.exports = {
       let size = parseInt(req.query.size) || 10;
       let search = req.query.search;
 
-      const listUniversity = await universityService.getAll(page, size, search); // Gọi chức năng từ service
+      const listUniversity = await organizationService.getAll(page, size, search); // Gọi chức năng từ service
       if (listUniversity) {
         return responseHelper.sendResponse.SUCCESS(res, listUniversity);
       }
@@ -49,10 +49,10 @@ module.exports = {
     // }
   },
 
-  getUniversityById: async (req, res) => {
+  getOrganizationById: async (req, res) => {
     try {
       const universityId = parseInt(req.params.id);
-      const universityData = await universityService.getUniversityById(universityId); // Gọi chức năng từ service
+      const universityData = await organizationService.getUniversityById(universityId); // Gọi chức năng từ service
       if (universityData) {
         return responseHelper.sendResponse.SUCCESS(res, universityData);
       }
@@ -63,7 +63,7 @@ module.exports = {
     }
   },
 
-  updateUniversity: async (req, res) => {
+  updateOrganization: async (req, res) => {
     try {
       const universityId = parseInt(req.params.id);
       const university = req.body;
@@ -86,7 +86,7 @@ module.exports = {
         return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a full and valid parameter');
       }
 
-      const updateQuestion = await universityService.updateUniversity(universityId, university);
+      const updateQuestion = await organizationService.updateUniversity(universityId, university);
       console.log('updateQuestion', updateQuestion);
       if (updateQuestion) {
         return responseHelper.sendResponse.SUCCESS(res, null, 'Cập nhật thành công');
@@ -98,7 +98,7 @@ module.exports = {
     }
   },
 
-  deleteOneUniversity: async (req, res) => {
+  deleteOneOrganization: async (req, res) => {
     try {
     const universityId = parseInt(req.params.id);
 
@@ -106,7 +106,7 @@ module.exports = {
       return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a valid universityId as a parameter');
     }
 
-    const deleteQuestion = await universityService.deleteUniversity(universityId);
+    const deleteQuestion = await organizationService.deleteUniversity(universityId);
     if (deleteQuestion) {
       return responseHelper.sendResponse.SUCCESS(res, null, 'Thực hiện xóa thành công');
     }

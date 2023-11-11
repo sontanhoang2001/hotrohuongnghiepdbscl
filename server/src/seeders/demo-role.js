@@ -10,20 +10,20 @@ module.exports = {
           description: "Quyền cao nhất"
         },
         {
+          name: "UNIVERSITY",
+          description: "Trường học"
+        },
+        {
           name: "CONPANY",
-          description: "Doanh nghiệp"
+          description: "Doanh nghiệp - Công ty"
         },
         {
-          name: "CONPANY2",
-          description: "Doanh nghiệp"
-        },
-        {
-          name: "CONPANY3",
+          name: "TEACHER",
           description: "Giáo Viên"
         },
         {
           name: "STUDENT",
-          description: "Quyền học sinh/ sinh viên/ người dùng bình thường"
+          description: "Quyền học sinh - inh viên - người dùng bình thường"
         },
       ],
       {}

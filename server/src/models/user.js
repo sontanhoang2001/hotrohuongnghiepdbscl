@@ -11,6 +11,10 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       User.hasOne(models.UserDetail);
       User.belongsTo(models.Role);
+      User.hasMany(models.Messages);
+      User.hasMany(models.Channel);
+      User.hasMany(models.UserChannel);
+      User.hasOne(models.VerifyOrganization);
     }
 
     // Định nghĩa phương thức toJSON để loại bỏ trường password

@@ -1,5 +1,6 @@
-const University = require('../models').University;
-const UniversityDetail = require('../models').UniversityDetail;
+const Organization = require('../models').Organization;
+const OrganizationDetail = require('../models').OrganizationDetail;
+const VerifyOrganization = require('../models').VerifyOrganization;
 
 const { Op } = require('sequelize');
 const sequelize = require('../database/connection_database');
@@ -8,7 +9,7 @@ module.exports = {
   createNew: async (payload) => {
     let transaction;
     try {
-      const universityDetailPayload = {
+      const organizationDetailPayload = {
         image: payload.image,
         address: payload.address,
         province: payload.province,
@@ -22,13 +23,26 @@ module.exports = {
       };
 
       transaction = await sequelize.transaction();
-      // Tạo mới University
-      const university = await University.create({ name: payload.name }, { transaction });
-      const universityId = university?.dataValues.id;
+      // Tạo mới verify_organization
+      const verifyOrganization = await VerifyOrganization.create({status : 0}, { transaction });
+      const verifyOrganizationId = verifyOrganization?.dataValues.id;
 
-      await UniversityDetail.create({ ...universityDetailPayload, universityId: universityId }, { transaction });
+      console.log("verifyOrganizationId", verifyOrganizationId)
+
+      // Tạo mới organization
+      const organizationPayload = {
+        name: payload.name,
+        userId: payload.userId,
+        organizationTypeId: payload.organizationTypeId,
+        verifyOrganizationId: verifyOrganizationId
+      };
+      const organization = await Organization.create(organizationPayload, { transaction });
+      const organizationId = organization?.dataValues.id;
+
+      // Tạo mới organizationDetail
+      await OrganizationDetail.create({ ...organizationDetailPayload, organizationId: organizationId }, { transaction });
       await transaction.commit();
-      return university;
+      return organization;
     } catch (error) {
       if (transaction) {
         await transaction.rollback(); // Rollback transaction nếu có lỗi
@@ -46,14 +60,14 @@ module.exports = {
       // Tính offset
       const offset = (page - 1) * size;
 
-      const { count, rows } = await University.findAndCountAll({
+      const { count, rows } = await Organization.findAndCountAll({
         where,
         offset,
         limit: size,
         attributes: ['id', 'name'],
         include: [
           {
-            model: UniversityDetail,
+            model: OrganizationDetail,
             attributes: ['id', 'image', 'address', 'province', 'email', 'phone', 'lat', 'long', 'description', 'url', 'rank'],
           },
         ],
@@ -167,7 +181,7 @@ module.exports = {
 
       if (numberOfAffectedRows2 === 0) {
         await transaction.rollback();
-        return false; 
+        return false;
       }
       transaction.commit();
       return true;
@@ -178,6 +192,4 @@ module.exports = {
       throw error;
     }
   },
-
-
 };
