@@ -251,12 +251,14 @@ function Header({
               <NavLink to="/">Pages</NavLink>
             </Breadcrumb.Item>
             <Breadcrumb.Item style={{ textTransform: 'capitalize' }}>
-              {name.replace('/', '')}
+              {/* {name.replace('/', ' ')} */}
+              {name}
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="ant-page-header-heading">
             <span className="ant-page-header-heading-title" style={{ textTransform: 'capitalize' }}>
-              {subName.replace('/', '')}
+              {/* {subName.replace('/', ' ')} */}
+              {subName}
             </span>
           </div>
         </Col>
@@ -367,7 +369,7 @@ function Header({
             </div>
           </Drawer>
 
-          <Input className="header-search" placeholder="Type here..." prefix={<SearchOutlined />} />
+          <Input className="header-search" placeholder="Tìm Kiếm..." prefix={<SearchOutlined />} />
         </Col>
       </Row>
     </>

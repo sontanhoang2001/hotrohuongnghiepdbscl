@@ -29,6 +29,7 @@ import User from '../screens/admin/user';
 import Mbti from '../screens/admin/mbti';
 import SignInV1 from '../screens/signInV1';
 import SignUpV1 from '../screens/signupV1';
+import Chat from '../screens/admin/Chat';
 
 const ROLES = {
   User: 5,
@@ -64,19 +65,21 @@ function Router() {
         <Route path="/xac-nhan-dang-nhap" element={<OtpLogin />} />
         {/* admin */}
 
-        <Route
+        {/* <Route
           path="/admin"
           element={
             <ProtectedLogin>
               <Admin />
             </ProtectedLogin>
           }
-        >
+        > */}
+        <Route path="/admin" element={<Admin />}>
           <Route path="" element={<Dashboard />} />
           <Route path="danh-sach-truong-hoc" element={<University />} />
           <Route path="danh-sach-nguoi-dung" element={<User />} />
           <Route path="danh-sach-cau-hoi" element={<Mbti />} />
           <Route path="profile" element={<Profile />} />
+          <Route path="tin-nhan" element={<Chat />} />
         </Route>
 
         {/* no other result match */}

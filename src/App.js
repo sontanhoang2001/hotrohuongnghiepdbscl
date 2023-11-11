@@ -116,30 +116,26 @@ function App() {
             <YourMessageContent>Kid, where'd you come from?</YourMessageContent>
             <YourMessageContent>Kid, where'd you come from?</YourMessageContent>
             <MessageContent>Hey, man! What's up, Mr Stark?👋</MessageContent>
-            <YourMessageContent>Kid, where'd you come from?</YourMessageContent>{' '}
+            <YourMessageContent>Kid, where'd you come from?</YourMessageContent>
             <YourMessageContent>Kid, where'd you come from?</YourMessageContent>
             <MessageContent>Hey, man! What's up, Mr Stark?👋</MessageContent>
-            <YourMessageContent>Kid, where'd you come from?</YourMessageContent>{' '}
+            <YourMessageContent>Kid, where'd you come from?</YourMessageContent>
             <YourMessageContent>Kid, where'd you come from?</YourMessageContent>
             <MessageContent>Hey, man! What's up, Mr Stark?👋</MessageContent>
-            <YourMessageContent>Kid, where'd you come from?</YourMessageContent>{' '}
+            <YourMessageContent>Kid, where'd you come from?</YourMessageContent>
             <YourMessageContent>Kid, where'd you come from?</YourMessageContent>
             <MessageContent>Hey, man! What's up, Mr Stark?👋</MessageContent>
             <YourMessageContent>Kid, where'd you come from?</YourMessageContent>
           </Messages>
-          {/* <Input
-            placeholder="Nhập nội dung..."
-            suffix={<MessageOutlined style={{ fontSize: 25, color: `#d9d9d9` }} />}
-            style={{ height: 50 }}
-          /> */}
+
           <FooterChat>
-            <Button>{smileFace}</Button>
+            <span className="smile-face">{smileFace}</span>
             <Input
               placeholder="Nhập nội dung..."
               suffix={<MessageOutlined style={{ fontSize: 25, color: `#d9d9d9` }} />}
               style={{ height: 50 }}
             />
-            <Button> {paperPlane}</Button>
+            <span className="paper-plane"> {paperPlane}</span>
           </FooterChat>
         </ChatBox>
       </Drawer>
@@ -205,5 +201,24 @@ const FooterChat = styled.div`
   background: white;
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;
+  span {
+    height: 40px;
+    padding: 0 15px;
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 40px;
+    display: flex;
+    align-items: center;
+  }
+  .smile-face {
+    &:hover {
+      color: orange;
+    }
+  }
+  .paper-plane {
+    &:hover {
+      color: var(--primary-color);
+    }
+  }
 `;
 export default App;
