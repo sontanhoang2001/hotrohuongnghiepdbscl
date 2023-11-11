@@ -166,6 +166,16 @@ const ChatContainer = styled.div`
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
   border-radius: 15px;
 `;
+
+const Avatar = styled.div`
+  display: block;
+  background: #e6e7ed;
+  -moz-border-radius: 50px;
+  -webkit-border-radius: 50px;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+`;
 //===========Bắt đầu leftcontent==========
 const LeftContent = styled.div`
   width: 35%;
@@ -208,17 +218,10 @@ const Discussion = styled.div`
   }
 `;
 //hình ảnh người dùng
-const ChatAvatar = styled.div`
+const ChatAvatar = styled(Avatar)`
   margin-left: 20px;
-  display: block;
   width: 45px;
   height: 45px;
-  background: #e6e7ed;
-  -moz-border-radius: 50px;
-  -webkit-border-radius: 50px;
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
 `;
 //trạng thái hoạt động của người dùng hiển thị ở góc dưới phải avatar
 const OnlineStatus = styled.div`
@@ -280,17 +283,10 @@ const RightContentHeader = styled.div`
   border-top-right-radius: 15px;
 `;
 
-const RightChatAvatar = styled.div`
+const RightChatAvatar = styled(Avatar)`
   margin-left: 20px;
-  display: block;
   width: 60px;
   height: 60px;
-  background: #e6e7ed;
-  -moz-border-radius: 50px;
-  -webkit-border-radius: 50px;
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
 `;
 const Rightinfo = styled.div`
   display: flex;
