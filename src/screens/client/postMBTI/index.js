@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import mbtiApi from '../../api/mbtiApi';
+import mbtiApi from '../../../api/mbtiApi';
 
 class PostMBTI extends Component {
   // Hàm để gửi yêu cầu POST
   async sendPOSTRequests() {
-
     // Lặp qua mảng các dữ liệu JSON bạn muốn gửi
     const dataToPost = [
       {

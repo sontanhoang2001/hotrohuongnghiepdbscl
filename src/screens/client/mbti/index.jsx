@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Button } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import { HeadingTitle, MarginTopContent, Title } from '../../globalStyles';
+import { HeadingTitle, MarginTopContent, Title } from '../../../globalStyles';
 
 function MBTI() {
   const navigate = useNavigate();

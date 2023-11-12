@@ -1,7 +1,7 @@
 import { Button, List, Modal, Pagination } from 'antd';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import ImageCard from '../../components/card/imageCard';
+import ImageCard from '../../../components/card/imageCard';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   getAllUniversity,
@@ -10,8 +10,8 @@ import {
   selectUniversityPagesize,
   selectUniversityPending,
   selectUniversityToalRow,
-} from '../../redux/universitySlice';
-import { HeadingTitle, MarginTopContent, Title } from '../../globalStyles';
+} from '../../../redux/universitySlice';
+import { HeadingTitle, MarginTopContent, Title } from '../../../globalStyles';
 
 function Universities() {
   const [open, setOpen] = useState(false);

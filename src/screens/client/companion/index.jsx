@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { HeadingTitle, MarginTopContent, Title } from '../../globalStyles';
+import { HeadingTitle, Title } from '../../../globalStyles';
 import { Button, Card, Input } from 'antd';
 
 import { SearchOutlined } from '@ant-design/icons';

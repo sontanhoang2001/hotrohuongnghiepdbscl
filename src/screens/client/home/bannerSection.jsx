@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import Slider from 'react-slick';
 import { Button } from 'antd';
-import { mbtiDetail } from '../../components/mbtiDetail/mbtiDetail';
+import { mbtiDetail } from '../../../components/mbtiDetail/mbtiDetail';
 
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';

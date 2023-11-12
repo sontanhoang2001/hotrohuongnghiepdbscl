@@ -1,7 +1,7 @@
 import { Button, Popconfirm, message } from 'antd';
 import { useState, useCallback } from 'react';
 import styled from 'styled-components';
-import { mbtiDetail } from '../../components/mbtiDetail/mbtiDetail';
+import { mbtiDetail } from '../../../components/mbtiDetail/mbtiDetail';
 import { useEffect } from 'react';
 
 // change value of question increase 1 or decrease 1, when click prev or next button

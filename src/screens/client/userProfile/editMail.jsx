@@ -1,7 +1,7 @@
 import { Button, Form, Input, Spin } from 'antd';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { authChangeEmailAsync, selectPending } from '../../redux/authSlice';
+import { authChangeEmailAsync, selectPending } from '../../../redux/authSlice';
 import { useDispatch, useSelector } from 'react-redux';
 
 const formItemLayout = {

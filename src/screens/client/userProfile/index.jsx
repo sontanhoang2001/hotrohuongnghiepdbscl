@@ -13,9 +13,9 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import EditMail from './editMail';
 import { useDispatch, useSelector } from 'react-redux';
-import { isOtp, selectIsOtp, selectProfile } from '../../redux/authSlice';
-import RequestOtp from '../../components/requestOtp';
-import ChangePassword from '../../components/changePassword';
+import { isOtp, selectIsOtp, selectProfile } from '../../../redux/authSlice';
+import RequestOtp from '../../../components/requestOtp';
+import ChangePassword from '../../../components/changePassword';
 
 function UserProfile() {
   const sentOtp = useSelector(selectIsOtp);

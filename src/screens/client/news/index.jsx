@@ -5,8 +5,8 @@ import { Button, Card, List, Modal, Pagination } from 'antd';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { useDispatch } from 'react-redux';
-import ImageCard from '../../components/card/imageCard';
-import { HeadingTitle, MarginTopContent } from '../../globalStyles';
+import ImageCard from '../../../components/card/imageCard';
+import { HeadingTitle, MarginTopContent } from '../../../globalStyles';
 
 const data = [
   {

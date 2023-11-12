@@ -1,7 +1,7 @@
 import React from 'react';
 import Slider from 'react-slick';
 import styled from 'styled-components';
-import ImageCard from '../../components/card/imageCard';
+import ImageCard from '../../../components/card/imageCard';
 
 const data = [
   { image: 'istockphoto-1402360271-612x612.jpg', title: 'abc' },

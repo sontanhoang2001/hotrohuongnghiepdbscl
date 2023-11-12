@@ -1,33 +1,36 @@
 import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import App from '../App';
-import Home from '../screens/home';
 import { Counter } from '../redux/counter/Counter';
-import News from '../screens/news';
-import MBTI from '../screens/mbti';
-import TestMbti from '../screens/testMbti';
-import Universities from '../screens/university';
-import Companion from '../screens/companion';
-import ForgotPassword from '../screens/forgotpassword';
-
-import OtpLogin from '../screens/otpLogin';
+import App from '../App';
 import NotFound from '../screens/404/notfound';
+import OtpLogin from '../screens/otpLogin';
+//đăng ký và đăng nhập
+import SignInV1 from '../screens/signInV1';
+import SignUpV1 from '../screens/signupV1';
+//client's pages
+import Home from '../screens/client/home';
+import News from '../screens/client/news';
+import MBTI from '../screens/client/mbti';
+import TestMbti from '../screens/client/testMbti';
+import Universities from '../screens/client/university';
+import Companion from '../screens/client/companion';
+import UserProfile from '../screens/client/userProfile';
+import ForgotPassword from '../screens/client/forgotpassword';
+import PostMBTI from '../screens/client/postMBTI';
 
+//test chức năng otp phone
 // import Dashboard from '../screens/dashboard';
 import ProtectedLogin from '../components/protectedLogin';
-import UserProfile from '../screens/userProfile';
 import AuthSocial from '../components/authSocial';
 import OtpByPhone from '../components/otpByPhone';
 
-import PostMBTI from '../screens/postMBTI';
+//admin's pages
 import Profile from '../screens/admin/profile';
 import Admin from '../screens/admin/home';
 import Dashboard from '../screens/admin/dashboard/index';
 import University from '../screens/admin/university';
 import User from '../screens/admin/user';
 import Mbti from '../screens/admin/mbti';
-import SignInV1 from '../screens/signInV1';
-import SignUpV1 from '../screens/signupV1';
 import Chat from '../screens/admin/Chat';
 import ManageNews from '../screens/admin/news';
 
