@@ -10,6 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Organization.belongsTo(models.User);
+      Organization.belongsTo(models.Channel);
       Organization.belongsTo(models.VerifyOrganization);
       Organization.belongsTo(models.OrganizationType);
       Organization.hasOne(models.OrganizationDetail);
@@ -28,6 +29,7 @@ module.exports = (sequelize, DataTypes) => {
       sequelize,
       modelName: 'Organization',
       tableName: 'Organization',
+      paranoid: true
     },
   );
   return Organization;

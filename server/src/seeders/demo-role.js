@@ -18,12 +18,12 @@ module.exports = {
           description: "Doanh nghiệp - Công ty"
         },
         {
-          name: "TEACHER",
-          description: "Giáo Viên"
+          name: "ADVISER",
+          description: "Tư vấn viên - Cố vấn"
         },
         {
           name: "STUDENT",
-          description: "Quyền học sinh - inh viên - người dùng bình thường"
+          description: "Quyền học sinh - sinh viên - người dùng bình thường"
         },
       ],
       {}

@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Channel.belongsTo(models.User);
-      Channel.belongsTo(models.OrganizationType);
+      Channel.hasMany(models.Organization);
       Channel.hasMany(models.UserChannel);
     }
   }
@@ -27,6 +27,7 @@ module.exports = (sequelize, DataTypes) => {
       sequelize,
       modelName: 'Channel',
       tableName: 'Channel',
+      paranoid: true
     },
   );
   return Channel;

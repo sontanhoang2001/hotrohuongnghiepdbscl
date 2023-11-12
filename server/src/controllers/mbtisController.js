@@ -1,4 +1,5 @@
 const mbtiService = require('../services/mbtiService');
+
 const dbConnection = require('../database/dbConnection');
 const responseHelper = require('../helpers/responseHelper');
 
@@ -107,4 +108,32 @@ module.exports = {
       responseHelper.sendResponse.SERVER_ERROR(res, null);
     }
   },
+
+  getAllQuestionGroup: async (req, res) => {
+    try {
+      const listQuestionGroup = await mbtiService.getAllQuestionGroup(); // Gọi chức năng từ service
+      if (listQuestionGroup) {
+        return responseHelper.sendResponse.SUCCESS(res, listQuestionGroup);
+      }
+
+      return responseHelper.sendResponse.BAD_REQUEST(res, null);
+    } catch (error) {
+      responseHelper.sendResponse.SERVER_ERROR(res, null);
+    }
+  },
+
+  getQuestionGroupById: async (req, res) => {
+    try {
+      const questionGroupId = parseInt(req.params.id);
+      const questionGroup = await mbtiService.getQuestionGroupById(questionGroupId); // Gọi chức năng từ service
+      if (questionGroup) {
+        return responseHelper.sendResponse.SUCCESS(res, questionGroup);
+      }
+
+      return responseHelper.sendResponse.NOT_FOUND(res, null);
+    } catch (error) {
+      responseHelper.sendResponse.SERVER_ERROR(res, null);
+    }
+  },
+
 };

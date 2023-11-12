@@ -1,6 +1,7 @@
 const Organization = require('../models').Organization;
 const OrganizationDetail = require('../models').OrganizationDetail;
 const VerifyOrganization = require('../models').VerifyOrganization;
+const OrganizationType = require('../models').OrganizationType;
 
 const { Op } = require('sequelize');
 const sequelize = require('../database/connection_database');
@@ -24,17 +25,17 @@ module.exports = {
 
       transaction = await sequelize.transaction();
       // Tạo mới verify_organization
-      const verifyOrganization = await VerifyOrganization.create({status : 0}, { transaction });
+      const verifyOrganization = await VerifyOrganization.create({ status: 0 }, { transaction });
       const verifyOrganizationId = verifyOrganization?.dataValues.id;
 
-      console.log("verifyOrganizationId", verifyOrganizationId)
+      console.log('verifyOrganizationId', verifyOrganizationId);
 
       // Tạo mới organization
       const organizationPayload = {
         name: payload.name,
         userId: payload.userId,
         organizationTypeId: payload.organizationTypeId,
-        verifyOrganizationId: verifyOrganizationId
+        verifyOrganizationId: verifyOrganizationId,
       };
       const organization = await Organization.create(organizationPayload, { transaction });
       const organizationId = organization?.dataValues.id;
@@ -107,16 +108,16 @@ module.exports = {
       throw error;
     }
   },
-  updateUniversity: async (universityId, payload) => {
+  updateOrganization: async (organizationId, payload) => {
     let transaction;
     try {
       transaction = await sequelize.transaction();
 
       // Update question
-      const [numberOfAffectedRows1] = await University.update(
+      const [numberOfAffectedRows1] = await Organization.update(
         { name: payload.name },
         {
-          where: { id: universityId },
+          where: { id: organizationId },
           transaction,
         },
       );
@@ -141,8 +142,8 @@ module.exports = {
       };
 
       // Update answers
-      const [numberOfAffectedRows2] = await UniversityDetail.update(universityDetailPayload, {
-        where: { universityId: universityId },
+      const [numberOfAffectedRows2] = await OrganizationDetail.update(universityDetailPayload, {
+        where: { organizationId: organizationId },
         transaction,
       });
 
@@ -189,6 +190,66 @@ module.exports = {
       if (transaction) {
         await transaction.rollback();
       }
+      throw error;
+    }
+  },
+
+  getAllOrganizationType: async () => {
+    try {
+      const listOrganizationType = await OrganizationType.findAll({
+        attributes: ['id', 'description'],
+      });
+
+      return listOrganizationType;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  reqToVerifyOrganization: async (userId, fileAttached) => {
+    try {
+      const verifyOrganization = await Organization.findOne({ where: { userId }, attributes: ['verifyOrganizationId'] });
+      const verifyOrganizationId = verifyOrganization.dataValues.verifyOrganizationId;
+
+      // Update fileAttached for VerifyOrganization
+      const [numberOfAffectedRows1] = await VerifyOrganization.update(
+        { fileAttached },
+        {
+          where: { id: verifyOrganizationId },
+        },
+      );
+
+      if (numberOfAffectedRows1 === 0) {
+        return false;
+      }
+
+      return true;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  updateStatusVerifyOrganization: async (verifyOrganizationId, status) => {
+    try {
+      // Update fileAttached for VerifyOrganization
+      const [numberOfAffectedRows1] = await VerifyOrganization.update(
+        { status },
+        {
+          where: { id: verifyOrganizationId },
+        },
+      );
+
+      if (numberOfAffectedRows1 === 0) {
+        return false
+      }
+      
+      const result = {
+        verifyOrganizationId,
+        status
+      };
+      
+      return result;
+    } catch (error) {
       throw error;
     }
   },

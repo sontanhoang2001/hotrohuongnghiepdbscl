@@ -208,4 +208,28 @@ module.exports = {
       throw error;
     }
   },
+
+  getAllQuestionGroup: async () => {
+    try {
+      const listQuestionGroup = await QuestionGroup.findAll({
+        attributes: ['id', 'name', 'value', 'description', 'image']
+      });
+
+      return listQuestionGroup;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  getQuestionGroupById: async (question_group_id) => {
+    try {
+      const questionGroup = await QuestionGroup.findByPk(question_group_id, {
+        attributes: ['id', 'name', 'value', 'description', 'image']
+      });
+
+      return questionGroup;
+    } catch (error) {
+      throw error;
+    }
+  },
 };
