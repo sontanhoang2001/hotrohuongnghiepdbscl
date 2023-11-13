@@ -105,10 +105,23 @@ function Header() {
                 </span>
               </Dropdown>
             ) : (
-              <Button danger onClick={() => navigate('/dang-nhap')}>
-                <span>đăng nhập</span>
-                {/* <a href="/dang-nhap">login</a> */}
-              </Button>
+              <>
+                <NavLink
+                  to="/dang-nhap"
+                  className="client-signin-btn"
+                  // onClick={() => navigate('/dang-nhap')}
+                >
+                  đăng nhập
+                </NavLink>
+                /
+                <NavLink
+                  to="/dang-ky"
+                  className="client-signup-btn"
+                  // onClick={() => navigate('/dang-ky')}
+                >
+                  đăng ký
+                </NavLink>
+              </>
             )}
           </div>
         </div>
@@ -168,6 +181,18 @@ const Nav = styled.header`
       }
       .topbar-btn {
         margin-right: 20px;
+        .client-signin-btn,
+        .client-signup-btn {
+          cursor: pointer;
+          text-transform: capitalize;
+          padding: 0 5px;
+          text-decoration: none;
+          color: inherit;
+          font-weight: 600;
+          &:hover {
+            color: var(--secondary-color);
+          }
+        }
         span {
           text-decoration: none;
           font-weight: 500;

@@ -9,7 +9,7 @@ import { MessageContent, YourMessageContent } from './globalStyles';
 
 const smileFace = [
   <svg
-    class="feather feather-smile sc-dnqmqq jxshSx"
+    className="feather feather-smile sc-dnqmqq jxshSx"
     xmlns="http://www.w3.org/2000/svg"
     width="24"
     height="24"
@@ -19,7 +19,7 @@ const smileFace = [
     strokeWidth="2"
     strokeLinecap="round"
     strokeLinejoin="round"
-    ariaHidden="true"
+    aria-hidden="true"
     key={0}
   >
     <circle cx="12" cy="12" r="10"></circle>
@@ -38,9 +38,7 @@ const paperPlane = [
     stroke="currentColor"
     strokeWidth="2"
     strokeLinecap="round"
-    strokeLinejoin="round"
-    ariaHidden="true"
-    dataReactid="1036"
+    aria-hidden="true"
     key={1}
   >
     <line x1="22" y1="2" x2="11" y2="13"></line>
@@ -58,9 +56,7 @@ function App() {
   const onChange = (checked) => {
     setOpenSelect(checked);
   };
-  const onSearch = (value) => {
-    console.log('search:', value);
-  };
+
   const onClose = () => {
     setOpen(false);
   };
@@ -88,14 +84,13 @@ function App() {
           placeholder="Chọn trường cần tư vấn"
           optionFilterProp="children"
           onChange={onChange}
-          onSearch={onSearch}
           filterOption={filterOption}
           options={OPTIONS.map((item) => ({
             value: item,
             label: item,
           }))}
           allowClear
-          style={{ width: '100%', marginBottom: 20 }}
+          style={{ width: '100%', height: 50, marginBottom: 20 }}
         />
 
         <ChatBox>

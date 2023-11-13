@@ -1687,9 +1687,9 @@ body {
   border: 0px;
 }
 
-.layout-default.ant-layout.layout-sign-up {
+/* .layout-default.ant-layout.layout-sign-up {
   padding: 11px;
-}
+} */
 .header-col.header-nav li:after {
   display: none;
 }

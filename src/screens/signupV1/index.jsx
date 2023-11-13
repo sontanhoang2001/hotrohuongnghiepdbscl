@@ -26,9 +26,10 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { selectIsSignup, selectPending, signupAsync } from '../../redux/authSlice';
 import ProvincesOpenApi from '../../api/province';
+import Header from '../../components/header';
 
 const { Title } = Typography;
-const { Header, Footer, Content } = Layout;
+const { Footer, Content } = Layout;
 const template = [
   <svg
     data-v-4ebdc598=""
@@ -81,17 +82,6 @@ function SignUpV1() {
       navigate('/xac-nhan-dang-nhap');
     }
   }, [isSignup, dispatch, pendingState, navigate]);
-  const prefixSelector = (
-    <Form.Item name="prefix" noStyle>
-      <span
-        style={{
-          width: 70,
-        }}
-      >
-        84
-      </span>
-    </Form.Item>
-  );
 
   const onFinish = (values) => {
     const { agreement, prefix, confirm, ...inputedUserData } = values;
@@ -105,24 +95,7 @@ function SignUpV1() {
   return (
     <>
       <div className="layout-default ant-layout layout-sign-up">
-        <Header>
-          <div className="header-col header-nav">
-            <Menu mode="horizontal" defaultSelectedKeys={['1']}>
-              <Menu.Item key="1">
-                <Link to="/">
-                  {template}
-                  <span> Trang Chủ</span>
-                </Link>
-              </Menu.Item>
-              <Menu.Item key="2">
-                <Link to="/dang-nhap">
-                  {signin}
-                  <span> Đăng Nhập</span>
-                </Link>
-              </Menu.Item>
-            </Menu>
-          </div>
-        </Header>
+        <Header />
 
         <Content className="p-0">
           <div className="sign-up-header">
@@ -175,7 +148,7 @@ function SignUpV1() {
                     },
                   ]}
                 >
-                  <Input placeholder="Email" />
+                  <Input placeholder="Email" style={{ height: 50 }} />
                 </Form.Item>
                 {/* ----------------end mail---------------- */}
                 {/* ----------------begin password---------------- */}
@@ -239,7 +212,7 @@ function SignUpV1() {
                     },
                   ]}
                 >
-                  <Input placeholder="Họ và Tên" />
+                  <Input placeholder="Họ và Tên" style={{ height: 50 }} />
                 </Form.Item>
                 {/* ----------------end fullName---------------- */}
                 {/* ----------------begin address---------------- */}
@@ -253,7 +226,11 @@ function SignUpV1() {
                     },
                   ]}
                 >
-                  <Cascader placeholder="Chọn Địa Chỉ" options={residences} />
+                  <Cascader
+                    placeholder="Chọn Địa Chỉ"
+                    options={residences}
+                    style={{ height: 50 }}
+                  />
                 </Form.Item>
                 {/* ----------------end address---------------- */}
                 {/* ----------------begin phone---------------- */}
@@ -261,13 +238,17 @@ function SignUpV1() {
                   name="phone"
                   rules={[
                     {
+                      min: 10,
+                      message: 'sđt chưa đủ 10 số',
+                    },
+                    {
                       max: 10,
                       message: 'Độ dài sdt không quá 10 số',
                     },
                   ]}
                   className="no-star"
                 >
-                  <Input addonBefore={prefixSelector} placeholder="Số Điện Thoại" />
+                  <Input placeholder="Số Điện Thoại" style={{ height: 50 }} />
                 </Form.Item>
                 {/* ----------------end phone---------------- */}
                 {/* ----------------begin gender---------------- */}
@@ -280,11 +261,24 @@ function SignUpV1() {
                     },
                   ]}
                 >
-                  <Select placeholder="Chọn Giới Tính">
-                    <Option value="1">Male</Option>
-                    <Option value="2">Female</Option>
-                    <Option value="0">Other</Option>
-                  </Select>
+                  <Select
+                    placeholder="Chọn Giới Tính"
+                    options={[
+                      {
+                        value: '1',
+                        label: 'Male',
+                      },
+                      {
+                        value: '2',
+                        label: 'Female',
+                      },
+                      {
+                        value: '0',
+                        label: 'Other',
+                      },
+                    ]}
+                    style={{ height: 50 }}
+                  />
                 </Form.Item>
                 {/* ----------------end gender---------------- */}
 

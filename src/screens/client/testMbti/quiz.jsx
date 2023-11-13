@@ -3,6 +3,7 @@ import { useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { mbtiDetail } from '../../../components/mbtiDetail/mbtiDetail';
 import { useEffect } from 'react';
+import SuggestMajor from './suggest';
 
 // change value of question increase 1 or decrease 1, when click prev or next button
 const DIRECTION_PREV = -1;
@@ -16,7 +17,7 @@ const replaceAnswerImmutable = (index, answer, answers) => {
   return result;
 };
 
-const Quiz = ({ questions, questions1 }) => {
+const Quiz = ({ questions }) => {
   //giá trị nhỏ nhất và giới hạn của gói câu hỏi, nhỏ nhất là 0, lớn nhất là số câu hỏi truyền vào (questions.length)
   const MIN_ACTIVE_QUESTION_INDEX = 0;
   const MAX_ACTIVE_QUESTION_INDEX = questions.length;
@@ -38,6 +39,7 @@ const Quiz = ({ questions, questions1 }) => {
   // const { type, image, text, description } = mbtiDetail;
   //khai báo biến lưu trữ các lựa chọn
   const selectedAnswer = answers[selectedQuestionIndex];
+  const [currentSelectedAnswer, setCurrentSelectedAnswer] = useState();
   //khai báo tiến độ hoàn thành mặt định là fasle
   const [completed, setCompleted] = useState(false);
 
@@ -266,7 +268,9 @@ const Quiz = ({ questions, questions1 }) => {
             ) : (
               <div>
                 <Button
-                  disabled={selectedQuestionIndex === questions.length}
+                  disabled={
+                    selectedQuestionIndex === questions.length || selectedAnswer === undefined
+                  }
                   onClick={() => onNavigationButtonClick(DIRECTION_NEXT)}
                 >
                   tiếp tục
@@ -277,15 +281,18 @@ const Quiz = ({ questions, questions1 }) => {
         </MbtiBox>
       ) : (
         // điều kiện else
-        <ShowResult className="container">
-          <h3 className="result-title">kết quả của bạn</h3>
-          <img src={`./images/mbti/${mbtiResult.image}`} alt="mbtitype" />
-          <div className="mbti-description">
-            <h3>{mbtiResult.id}</h3>
-            <h3 style={{ color: 'var(--primary-color)' }}>{mbtiResult.text}</h3>
-            <p>{mbtiResult.description}</p>
-          </div>
-        </ShowResult>
+        <>
+          <ShowResult className="container">
+            <h3 className="result-title">kết quả của bạn</h3>
+            <img src={`./images/mbti/${mbtiResult.image}`} alt="mbtitype" />
+            <div className="mbti-description">
+              <h3>{mbtiResult.id}</h3>
+              <h3 style={{ color: 'var(--primary-color)' }}>{mbtiResult.text}</h3>
+              <p>{mbtiResult.description}</p>
+            </div>
+          </ShowResult>
+          <SuggestMajor />
+        </>
       )}
     </>
   );
@@ -322,6 +329,11 @@ const Question = styled.div`
       border-radius: 20px;
       width: fit-content;
       cursor: pointer;
+      &:hover {
+        background-color: var(--primary-color);
+        color: var(--text-hover-color);
+        border-color: var(--primary-color);
+      }
     }
   }
 `;

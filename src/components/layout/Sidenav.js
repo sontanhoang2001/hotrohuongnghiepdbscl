@@ -6,6 +6,8 @@ import {
   UserOutlined,
   CopyOutlined,
   CommentOutlined,
+  InboxOutlined,
+  BookOutlined,
 } from '@ant-design/icons';
 import { useDispatch } from 'react-redux';
 import { logout } from '../../redux/authSlice';
@@ -81,13 +83,31 @@ function Sidenav({ color }) {
       '2',
     ),
     getItem(
+      <NavLink to="/admin/danh-sach-cau-hoi">
+        <span className="icon">
+          <InboxOutlined />
+        </span>
+        <span className="label">Câu hỏi</span>
+      </NavLink>,
+      '3',
+    ),
+    getItem(
+      <NavLink to="/admin/danh-cau-hoi-dong-hanh">
+        <span className="icon">
+          <BookOutlined />
+        </span>
+        <span className="label">Đồng hành</span>
+      </NavLink>,
+      '4',
+    ),
+    getItem(
       <NavLink to="/admin/danh-sach-nguoi-dung">
         <span className="icon">
           <UserOutlined />
         </span>
         <span className="label">Người dùng</span>
       </NavLink>,
-      '3',
+      '5',
     ),
     getItem(
       <NavLink to="/admin/danh-sach-tin-tuc">
@@ -96,20 +116,20 @@ function Sidenav({ color }) {
         </span>
         <span className="label">Tin tức</span>
       </NavLink>,
-      '4',
+      '6',
     ),
     getItem(
       <MeunuItem>
         <span className="label sidenav-title-content">Tài Khoản</span>
       </MeunuItem>,
-      '5',
+      '7',
     ),
     getItem(
       <NavLink to="/admin/profile">
         <span className="icon">{profile}</span>
         <span className="label">Profile</span>
       </NavLink>,
-      '6',
+      '8',
     ),
     getItem(
       <NavLink to="/admin/tin-nhan">
@@ -118,7 +138,7 @@ function Sidenav({ color }) {
         </span>
         <span className="label">Tin Nhắn</span>
       </NavLink>,
-      '7',
+      '9',
     ),
     getItem(
       <MeunuItem>
@@ -129,7 +149,7 @@ function Sidenav({ color }) {
           Đăng xuất
         </span>
       </MeunuItem>,
-      '8',
+      '10',
     ),
   ];
   return (

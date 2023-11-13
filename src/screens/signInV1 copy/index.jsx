@@ -139,7 +139,7 @@ function SignInV1() {
                     },
                   ]}
                 >
-                  <Input placeholder="Tên Đăng nhập" style={{ height: 50 }} />
+                  <Input placeholder="Tên Đăng nhập" />
                 </Form.Item>
 
                 <Form.Item

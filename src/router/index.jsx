@@ -33,6 +33,7 @@ import User from '../screens/admin/user';
 import Mbti from '../screens/admin/mbti';
 import Chat from '../screens/admin/Chat';
 import ManageNews from '../screens/admin/news';
+import ManageCompanion from '../screens/admin/companion';
 
 const ROLES = {
   User: 5,
@@ -82,6 +83,7 @@ function Router() {
           <Route path="danh-sach-truong-hoc" element={<University />} />
           <Route path="danh-sach-nguoi-dung" element={<User />} />
           <Route path="danh-sach-cau-hoi" element={<Mbti />} />
+          <Route path="danh-cau-hoi-dong-hanh" element={<ManageCompanion />} />
           <Route path="profile" element={<Profile />} />
           <Route path="tin-nhan" element={<Chat />} />
           <Route path="danh-sach-tin-tuc" element={<ManageNews />} />

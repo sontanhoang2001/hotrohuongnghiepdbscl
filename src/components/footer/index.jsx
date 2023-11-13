@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 function CLientFooter() {
@@ -133,12 +133,22 @@ function CLientFooter() {
         <Row>
           <Column>
             <Heading>Thông Tin</Heading>
-            <FooterLink href="#">Các Trường Đại Học</FooterLink>
-            <FooterLink href="#">Phương Pháp trác nghiệm</FooterLink>
+            <FooterLink>
+              <NavLink to="thong-tin-cac-truong-dai-hoc">Các Trường Đại Học</NavLink>
+            </FooterLink>
+            <FooterLink>
+              <NavLink to="trach-nghiem-tinh-cach">Phương Pháp trác nghiệm</NavLink>
+            </FooterLink>
+            <FooterLink>
+              <NavLink to="dong-hanh">Đồng Hành</NavLink>
+            </FooterLink>
           </Column>
           <Column>
             <Heading>Dịch vụ</Heading>
-            <FooterLink href="#">chuyên viên tư vấn</FooterLink>
+
+            <FooterLink>
+              <NavLink>chuyên viên tư vấn</NavLink>
+            </FooterLink>
           </Column>
           <Column>
             <Heading>Social Media</Heading>
@@ -202,16 +212,17 @@ const Row = styled.div`
   }
 `;
 
-const FooterLink = styled.a`
-  color: var(--text-white-color);
+const FooterLink = styled.div`
   margin-bottom: 20px;
-  font-size: 18px;
-  text-decoration: none;
-  text-transform: capitalize;
-
-  &:hover {
-    opacity: 0.5;
-    transition: 200ms ease-in;
+  a {
+    font-size: 18px;
+    color: var(--text-white-color);
+    text-decoration: none;
+    text-transform: capitalize;
+    &:hover {
+      opacity: 0.5;
+      transition: 200ms ease-in;
+    }
   }
 `;
 const FooterLinkIcon = styled.div`
