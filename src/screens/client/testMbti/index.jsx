@@ -801,6 +801,7 @@ const ShowResult = styled.div`
 `;
 
 const SuggestContent = styled.div`
+  margin-top: 10px;
   div {
     filter: drop-shadow(2px 2px 2px);
     display: flex;
