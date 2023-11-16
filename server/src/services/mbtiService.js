@@ -63,6 +63,11 @@ module.exports = {
             as: 'Answers',
             attributes: ['answer', 'value'],
           },
+          {
+            model: QuestionGroup,
+            as: 'QuestionGroup',
+            attributes: ['id', 'name', 'value'],
+          },
         ],
       });
 
@@ -89,6 +94,11 @@ module.exports = {
             as: 'Answers',
             attributes: ['id', 'answer', 'value'],
           },
+          {
+            model: QuestionGroup,
+            as: 'QuestionGroup',
+            attributes: ['id', 'name', 'value'],
+          }
         ],
       });
 
