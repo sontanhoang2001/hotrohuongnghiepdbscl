@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: 'MajorMBTI',
-      tableName: 'Major_MBTI',
+      tableName: 'major_mbti',
     },
   );
   return MajorMBTI;

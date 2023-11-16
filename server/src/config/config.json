@@ -11,11 +11,11 @@
       "freezeTableName": true
     }
   },
-  "development2": {
-    "username": "uhvw1fryxzxcqd64",
-    "password": "PuoC4DRLLQuGcyNV5NOX",
-    "database": "buevrkcydf6hnszatc4q",
-    "host": "buevrkcydf6hnszatc4q-mysql.services.clever-cloud.com",
+  "development": {
+    "username": "freedb_quanly",
+    "password": "rjm?ZyFQNM@&?7F",
+    "database": "freedb_hotrotuvanhuongnghiepdbscl",
+    "host": "sql.freedb.tech",
     "dialect": "mysql",
     "logging": false,
     "timezone": "+07:00",

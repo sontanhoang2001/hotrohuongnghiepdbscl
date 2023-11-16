@@ -23,12 +23,13 @@ module.exports = (sequelize, DataTypes) => {
       name: DataTypes.STRING,
       userId: DataTypes.INTEGER,
       organizationTypeId: DataTypes.INTEGER,
-      verifyOrganizationId: DataTypes.INTEGER
+      verifyOrganizationId: DataTypes.INTEGER,
+      channelId: DataTypes.INTEGER
     },
     {
       sequelize,
       modelName: 'Organization',
-      tableName: 'Organization',
+      tableName: 'organization',
       paranoid: true
     },
   );
