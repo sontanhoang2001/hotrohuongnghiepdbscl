@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: 'Answer',
-      tableName: 'Answer',
+      tableName: 'answer',
       enableBulkUpdate: true,
       paranoid: true
     },

@@ -13,6 +13,7 @@ const {
   getAllOrganizationType,
   reqToVerifyOrganization,
   updateStatusVerifyOrganization,
+  getAllReqVerifyOrganization
 } = require('../controllers/organizationController');
 
 //* Here I defined the methods

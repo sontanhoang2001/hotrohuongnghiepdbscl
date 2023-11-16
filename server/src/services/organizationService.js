@@ -2,6 +2,7 @@ const Organization = require('../models').Organization;
 const OrganizationDetail = require('../models').OrganizationDetail;
 const VerifyOrganization = require('../models').VerifyOrganization;
 const OrganizationType = require('../models').OrganizationType;
+const User = require('../models').User;
 
 const { Op } = require('sequelize');
 const sequelize = require('../database/connection_database');
@@ -51,11 +52,22 @@ module.exports = {
       throw error; // Sau đó ném lỗi để xử lý ở phần gọi hàm
     }
   },
-  getAll: async (page, size, search) => {
+  getAll: async (page, size, search, organizationTypeId, status) => {
     try {
       const where = {};
       if (search) {
         where.name = { [Op.like]: `%${search}%` };
+      }
+
+      if (organizationTypeId) {
+        where.organizationTypeId = organizationTypeId;
+      }
+
+      let whereVerifyOrganization = {};
+      if (!isNaN(status)) {
+        whereVerifyOrganization = {
+          [Op.and]: [{ status: { [Op.eq]: status } }],
+        };
       }
 
       // Tính offset
@@ -70,6 +82,15 @@ module.exports = {
           {
             model: OrganizationDetail,
             attributes: ['id', 'image', 'address', 'province', 'email', 'phone', 'lat', 'long', 'description', 'url', 'rank'],
+          },
+          {
+            model: VerifyOrganization,
+            attributes: ['status'],
+            where: whereVerifyOrganization,
+          },
+          {
+            model: OrganizationType,
+            attributes: ['id', 'name', 'description'],
           },
         ],
       });
@@ -87,23 +108,32 @@ module.exports = {
       throw error;
     }
   },
-  getUniversityById: async (universityId) => {
+  getOrganizationById: async (organizationId) => {
     try {
-      const university = await University.findByPk(universityId, {
+      const organization = await Organization.findOne({
+        where: { id: organizationId },
         attributes: ['id', 'name'],
         include: [
           {
-            model: UniversityDetail,
+            model: OrganizationDetail,
             attributes: ['id', 'image', 'address', 'province', 'email', 'phone', 'lat', 'long', 'description', 'url', 'rank'],
+          },
+          {
+            model: VerifyOrganization,
+            attributes: ['status'],
+          },
+          {
+            model: OrganizationType,
+            attributes: ['id', 'name', 'description'],
           },
         ],
       });
 
-      if (university instanceof University) {
-        return university.get();
+      if (organization instanceof Organization) {
+        return organization.get();
       }
 
-      return university;
+      return organization;
     } catch (error) {
       throw error;
     }
@@ -229,8 +259,19 @@ module.exports = {
     }
   },
 
-  updateStatusVerifyOrganization: async (verifyOrganizationId, status) => {
+  updateStatusVerifyOrganization: async (organizationId, status) => {
     try {
+      // organizationId
+      const organization = await Organization.findByPk(organizationId, {
+        include: [
+          {
+            model: User,
+            attributes: ['email'],
+          },
+        ],
+      });
+      const verifyOrganizationId = organization.dataValues.verifyOrganizationId;
+
       // Update fileAttached for VerifyOrganization
       const [numberOfAffectedRows1] = await VerifyOrganization.update(
         { status },
@@ -240,15 +281,62 @@ module.exports = {
       );
 
       if (numberOfAffectedRows1 === 0) {
-        return false
+        return false;
       }
-      
+
       const result = {
         verifyOrganizationId,
-        status
+        status,
+        userEmail: organization.dataValues.User.dataValues.email,
       };
-      
+
       return result;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  getAllReqVerifyOrganization: async (page, size, search, organizationTypeId) => {
+    try {
+      const where = {};
+      if (search) {
+        where.name = { [Op.like]: `%${search}%` };
+      }
+
+      const verify_organization = await VerifyOrganization.findAll({
+        where: { status: 0 },
+      });
+
+      console.log('verify_organization', verify_organization);
+
+      // Tính offset
+      const offset = (page - 1) * size;
+      const { count, rows } = await Organization.findAndCountAll({
+        where,
+        offset,
+        limit: size,
+        attributes: ['id', 'name'],
+        include: [
+          {
+            model: OrganizationDetail,
+            attributes: ['id', 'image', 'address', 'province', 'email', 'phone', 'lat', 'long', 'description', 'url', 'rank'],
+          },
+          {
+            model: VerifyOrganization,
+            attributes: ['status'],
+          },
+        ],
+      });
+
+      // Chuẩn bị dữ liệu phân trang
+      const pagination = {
+        total: count,
+        page,
+        size,
+        data: rows,
+      };
+
+      return pagination;
     } catch (error) {
       throw error;
     }

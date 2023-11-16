@@ -20,6 +20,10 @@ module.exports = {
       verifyOrganizationId: {
         type: Sequelize.INTEGER
       },
+      channelId: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

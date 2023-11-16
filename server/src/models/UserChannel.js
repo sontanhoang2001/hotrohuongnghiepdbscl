@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: 'UserChannel',
-      tableName: 'User_Channel',
+      tableName: 'user_channel',
     },
   );
   return UserChannel;

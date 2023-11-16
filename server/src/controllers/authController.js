@@ -16,9 +16,13 @@ module.exports = {
   registerUser: async (req, res) => {
     try {
       const user = req.body;
-      if (!user.email || !user.password || !user.fullName || !user.address || !user.gender) {
+      if (!user.email || !user.password || !user.fullName || !user.address || !user.gender || !user.roleId) {
         return responseHelper.sendResponse.BAD_REQUEST(res, null, 'Fields cannot be empty');
       }
+      if (user.roleId == 1) {
+        return responseHelper.sendResponse.BAD_REQUEST(res, null);
+      }
+
 
       // Kiểm tra email đúng định dạng
       const checkEmailValid = await validateHelper.validateEmail(user.email);
@@ -58,7 +62,7 @@ module.exports = {
         gender: user.gender,
         address: user.address,
         status: 0, // Trạng thái đợi active account
-        roleId: 5, // Role = 5 là tài khoản người dùng bình thường/student
+        roleId: user.roleId, // Role = 5 là tài khoản người dùng bình thường/student
       };
 
       // Create new user
@@ -72,7 +76,6 @@ module.exports = {
     // try {
       const reqData = req.body;
       const userId = parseInt(reqData.userId);
-      console.log("userId", userId)
       if (userId) {
         if (reqData.type == 'email') {
           // Kiểm tra email có tồn tại
