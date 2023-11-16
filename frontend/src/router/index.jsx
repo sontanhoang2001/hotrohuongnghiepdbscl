@@ -87,18 +87,6 @@ function Router() {
           <Route path="danh-sach-tin-tuc" element={<ManageNews />} />
         </Route>
 
-        {/* Organization */}
-        <Route path="/to-chuc" element={<OrganizationHome />}>
-          <Route path="dashboard" element={<OrganizationDashboard />} />
-          {/* <Route index element={<Dashboard />} /> */}
-          <Route path="danh-sach-to-chuc" element={<Organization />} />
-          <Route path="danh-cau-hoi-dong-hanh" element={<ManageCompanion />} />
-          <Route path="profile" element={<OrganizationProfile />} />
-          <Route path="tin-nhan" element={<OrganizationChat />} />
-          <Route path="danh-sach-tin-tuc" element={<OrganizationNews />} />
-        </Route>
-        <Route path="xac-minh" element={<VerifyOrganization />} />
-
         {/* no other result match */}
         <Route path="*" element={<NotFound />} />
       </Routes>

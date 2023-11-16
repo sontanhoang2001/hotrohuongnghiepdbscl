@@ -72,14 +72,10 @@ function SignInV1() {
     //lấy role khi người dùng đăng nhập
     if (profile != null && profile !== undefined) {
       const role = profile?.userData?.Role?.name;
-
-      switch (role) {
-        case 'ADMIN':
-          navigate('/admin/dashboard');
-          break;
-        default:
-          navigate('/');
-          break;
+      if (role === 'ADMIN' || role === 'UNIVERSITY' || role === 'CONPANY') {
+        navigate('/admin/dashboard');
+      } else {
+        navigate('/');
       }
     }
   }, [pending, profile, navigate]);
