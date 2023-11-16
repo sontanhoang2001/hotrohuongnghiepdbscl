@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { Counter } from '../redux/counter/Counter';
 import App from '../App';
 import NotFound from '../screens/404/notfound';
@@ -20,13 +20,11 @@ import PostMBTI from '../screens/client/postMBTI';
 
 //test chức năng otp phone
 // import Dashboard from '../screens/dashboard';
-import ProtectedLogin from '../components/protectedLogin';
 import AuthSocial from '../components/authSocial';
 import OtpByPhone from '../components/otpByPhone';
 
 //admin's pages
 import Profile from '../screens/admin/profile';
-import Admin from '../screens/admin/home';
 import Dashboard from '../screens/admin/dashboard/index';
 import University from '../screens/admin/university';
 import User from '../screens/admin/user';
@@ -35,12 +33,6 @@ import Chat from '../screens/admin/Chat';
 import ManageNews from '../screens/admin/news';
 import ManageCompanion from '../screens/admin/companion';
 import PrivateRoute from './PrivateRoute';
-import OrganizationHome from '../screens/organization/home';
-import Organization from '../screens/organization/organization';
-import OrganizationDashboard from '../screens/organization/dashboard';
-import OrganizationChat from '../screens/organization/Chat';
-import OrganizationProfile from '../screens/organization/profile';
-import OrganizationNews from '../screens/organization/news';
 import VerifyOrganization from '../screens/verifyQrganization';
 
 function Router() {
@@ -62,7 +54,6 @@ function Router() {
           <Route path="dong-hanh" element={<Companion />} />
           <Route path="quen-mat-khau" element={<ForgotPassword />} />
           <Route path="thong-tin-ca-nhan" element={<UserProfile />} />
-
           <Route path="otp" element={<OtpByPhone />} />
           <Route path="authSocial" element={<AuthSocial />} />
         </Route>
