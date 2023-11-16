@@ -56,7 +56,7 @@ function Universities() {
                 setOpen(true);
               }}
             >
-              <ImageCard key={idx} title={val.name} src={`${val.UniversityDetail.image}`} />
+              <ImageCard key={idx} title={val.name} src={`${val.OrganizationDetail.image}`} />
             </div>
           )}
         ></List>
@@ -83,14 +83,14 @@ function Universities() {
           <div style={{ display: 'flex', justifyContent: 'center' }}>
             <img
               style={{ width: '80%', objectFit: 'cover' }}
-              src={`${getUniversity?.data[cardSelected].UniversityDetail.image}`}
+              src={`${getUniversity?.data[cardSelected].OrganizationDetail.image}`}
               alt=""
             />
           </div>
           <p style={{ marginTop: '3%' }}>
-            {getUniversity?.data[cardSelected].UniversityDetail.description}{' '}
+            {getUniversity?.data[cardSelected].OrganizationDetail.description}{' '}
             <Button type="link">
-              <a target="_blank" href={getUniversity?.data[cardSelected].UniversityDetail.url}>
+              <a target="_blank" href={getUniversity?.data[cardSelected].OrganizationDetail.url}>
                 Xem thêm
               </a>
             </Button>

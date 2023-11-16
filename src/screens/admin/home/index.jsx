@@ -9,7 +9,7 @@ import '../../../assets/styles/responsive.css';
 
 const { Header: AntHeader, Content, Sider } = Layout;
 
-function DashBoard() {
+function Home() {
   const [visible, setVisible] = useState(false);
   const [placement, setPlacement] = useState('right');
   const [sidenavColor, setSidenavColor] = useState('#1890ff');
@@ -113,4 +113,4 @@ function DashBoard() {
   );
 }
 
-export default DashBoard;
+export default Home;

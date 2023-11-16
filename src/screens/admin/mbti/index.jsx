@@ -27,31 +27,68 @@ function Mbti() {
   //định dạng cột hiển thị
   const columns = [
     {
-      title: 'STT',
-      dataIndex: 'id',
-      key: 'id',
-      width: 50,
-    },
-    {
       title: 'Câu hỏi',
       dataIndex: 'question',
       key: 'question',
-      width: 300,
+      reder: (record) => (
+        <div className="author-info">
+          <Title level={5}>{record}</Title>
+        </div>
+      ),
     },
     {
       title: 'Đáp án',
       dataIndex: 'answers',
       key: 'answers',
+      render: (record) => (
+        <div className="author-info">
+          <List
+            size="small"
+            bordered
+            dataSource={record}
+            renderItem={(item, idx) => (
+              <List.Item>
+                {idx + 1}. {item.answer}
+              </List.Item>
+            )}
+          />
+        </div>
+      ),
     },
     {
       title: 'Giá trị',
       dataIndex: 'value',
       key: 'value',
+      render: (record) => (
+        <div className="author-info">
+          <List
+            size="small"
+            bordered
+            dataSource={record}
+            renderItem={(item, idx) => (
+              <List.Item>
+                <CaretRightOutlined /> {item.value}
+              </List.Item>
+            )}
+          />
+        </div>
+      ),
     },
 
     {
       key: 'action',
-      dataIndex: 'action',
+      render: (record) => (
+        <>
+          <div className="author-info">
+            <Button type="text">
+              <EditOutlined onClick={() => handleEdit(record.id)} style={{ color: 'green' }} />
+            </Button>
+            <Button type="text" danger onClick={() => handleDelete(record.id)}>
+              <DeleteOutlined />
+            </Button>
+          </div>
+        </>
+      ),
     },
   ];
 
@@ -72,60 +109,13 @@ function Mbti() {
   const convertedData = getMbtiData?.data.map((mbti, index) => {
     return {
       key: index.toString(),
-
-      question: (
-        <>
-          <div className="author-info">
-            <Title level={5}>{mbti.question}</Title>
-          </div>
-        </>
-      ),
-      answers: (
-        <>
-          <div className="author-info">
-            <List
-              size="small"
-              bordered
-              dataSource={mbti.Answers}
-              renderItem={(item, idx) => (
-                <List.Item>
-                  {idx + 1}. {item.answer}
-                </List.Item>
-              )}
-            />
-          </div>
-        </>
-      ),
-      value: (
-        <>
-          <div className="author-info">
-            <List
-              size="small"
-              bordered
-              dataSource={mbti.Answers}
-              renderItem={(item, idx) => (
-                <List.Item>
-                  <CaretRightOutlined /> {item.value}
-                </List.Item>
-              )}
-            />
-          </div>
-        </>
-      ),
-      action: (
-        <>
-          <div className="author-info">
-            <Button type="text">
-              <EditOutlined style={{ color: 'green' }} onClick={() => handleEdit(mbti.id)} />
-            </Button>
-            <Button type="text" danger onClick={() => handleDelete(mbti.id)}>
-              <DeleteOutlined />
-            </Button>
-          </div>
-        </>
-      ),
+      id: mbti.id,
+      question: mbti.question,
+      answers: mbti.Answers,
+      value: mbti.Answers,
     };
   });
+
   //hàm phan trang
   const handlePageChange = (page, pageSize) => {
     const payload = { page, pageSize };

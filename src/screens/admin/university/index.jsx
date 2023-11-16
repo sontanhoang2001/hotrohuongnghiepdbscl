@@ -30,52 +30,122 @@ function University() {
       title: 'Tên',
       dataIndex: 'name',
       key: 'name',
+      render: (record) => (
+        <Avatar.Group>
+          <Avatar
+            className="shape-avatar"
+            shape="square"
+            size={40}
+            src={record.OrganizationDetail.image}
+          ></Avatar>
+          <div className="avatar-info">
+            {/* <Title level={5}>{university.name}</Title> */}
+            <Title level={5}>{record.name}</Title>
+            <p>{record.OrganizationDetail.email}</p>
+            {/* <p>{university.OrganizationDetail.email}</p> */}
+          </div>
+        </Avatar.Group>
+      ),
     },
     {
       title: 'Rank',
       dataIndex: 'rank',
       key: 'rank',
+      render: (record) => (
+        <div className="author-info">
+          <Title level={5}>{record}</Title>
+        </div>
+      ),
     },
     {
       title: 'Địa chỉ',
       dataIndex: 'address',
       key: 'address',
+      render: (record) => (
+        <div className="author-info">
+          <Title level={5}>{record}</Title>
+        </div>
+      ),
     },
     {
       title: 'Tỉnh',
       dataIndex: 'province',
       key: 'province',
+      render: (record) => (
+        <div className="author-info">
+          <Title level={5}>{record}</Title>
+        </div>
+      ),
     },
 
     {
       title: 'SĐT',
       dataIndex: 'phone',
       key: 'phone',
+      render: (record) => (
+        <div className="author-info">
+          <Title level={5}>{record}</Title>
+        </div>
+      ),
     },
     {
       title: 'Năm',
       dataIndex: 'lat',
       key: 'lat',
+      render: (record) => (
+        <div className="author-info">
+          <Title level={5}>{record}</Title>
+        </div>
+      ),
     },
     {
       title: 'Ngày cập nhật',
       dataIndex: 'long',
       key: 'long',
+      render: (record) => (
+        <div className="author-info">
+          <Title level={5}>{record}</Title>
+        </div>
+      ),
     },
     {
       title: 'Mô tả',
       dataIndex: 'description',
       key: 'description',
+      render: (record) => (
+        <div className="author-info">
+          <Title level={5}>{record}</Title>
+        </div>
+      ),
     },
     {
       title: 'Link',
       dataIndex: 'url',
       key: 'url',
+      render: (record) => (
+        <div className="author-info">
+          <Title level={5}>
+            <a href={record} rel="noopener noreferrer" target="_blank">
+              {record}
+            </a>
+          </Title>
+        </div>
+      ),
     },
-
     {
       key: 'action',
-      dataIndex: 'action',
+      render: (record) => (
+        <>
+          <div className="author-info">
+            <Button type="text">
+              <EditOutlined onClick={() => handleEdit(record.id)} style={{ color: 'green' }} />
+            </Button>
+            <Button type="text" danger onClick={() => handleDelete(record.id)}>
+              <DeleteOutlined />
+            </Button>
+          </div>
+        </>
+      ),
     },
   ];
 
@@ -96,100 +166,16 @@ function University() {
   const convertedData = getUniversity?.data.map((university, index) => {
     return {
       key: index.toString(),
-      id: (
-        <>
-          <div className="author-info">
-            <Title level={5}>{university.UniversityDetail.id}</Title>
-          </div>
-        </>
-      ),
-      name: (
-        <>
-          <Avatar.Group>
-            <Avatar
-              className="shape-avatar"
-              shape="square"
-              size={40}
-              src={university.UniversityDetail.image}
-            ></Avatar>
-            <div className="avatar-info">
-              <Title level={5}>{university.name}</Title>
-              <p>{university.UniversityDetail.email}</p>
-            </div>
-          </Avatar.Group>
-        </>
-      ),
-      rank: (
-        <>
-          <div className="author-info">
-            <Title level={5}>{university.UniversityDetail.rank}</Title>
-          </div>
-        </>
-      ),
-      url: (
-        <>
-          <div className="author-info">
-            <Title level={5}>{university.UniversityDetail.url}</Title>
-          </div>
-        </>
-      ),
-      address: (
-        <>
-          <div className="author-info">
-            <Title level={5}>{university.UniversityDetail.address}</Title>
-          </div>
-        </>
-      ),
-      province: (
-        <>
-          <div className="author-info">
-            <Title level={5}>{university.UniversityDetail.province}</Title>
-          </div>
-        </>
-      ),
-      phone: (
-        <>
-          <div className="author-info">
-            <Title level={5}>{university.UniversityDetail.phone}</Title>
-          </div>
-        </>
-      ),
-      lat: (
-        <>
-          <div className="author-info">
-            <Title level={5}>{university.UniversityDetail.lat}</Title>
-          </div>
-        </>
-      ),
-      long: (
-        <>
-          <div className="author-info">
-            <Title level={5}>{university.UniversityDetail.long}</Title>
-          </div>
-        </>
-      ),
-      description: (
-        <>
-          <div className="author-info">
-            <Title level={5}>{university.UniversityDetail.description}</Title>
-          </div>
-        </>
-      ),
-      action: (
-        <>
-          <div className="author-info">
-            <Button type="text">
-              <EditOutlined
-                onClick={() => handleEdit(university.UniversityDetail.id)}
-                style={{ color: 'green' }}
-              />
-            </Button>
-            <Button type="text" danger onClick={() => handleDelete(university.UniversityDetail.id)}>
-              <DeleteOutlined />
-            </Button>
-          </div>
-        </>
-      ),
+      id: university.OrganizationDetail.id,
+      name: university,
+      rank: university.OrganizationDetail.rank,
+      url: university.OrganizationDetail.url,
+      address: university.OrganizationDetail.address,
+      province: university.OrganizationDetail.province,
+      phone: university.OrganizationDetail.phone,
+      lat: university.OrganizationDetail.lat,
+      long: university.OrganizationDetail.long,
+      description: university.OrganizationDetail.description,
     };
   });
   //hàm phan trang

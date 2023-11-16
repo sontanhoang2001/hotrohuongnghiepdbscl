@@ -291,62 +291,6 @@ function Profile() {
           </Card>
         </Col>
       </Row>
-      <Card
-        bordered={false}
-        className="header-solid mb-24"
-        title={
-          <>
-            <h6 className="font-semibold">Projects</h6>
-            <p>Architects design houses</p>
-          </>
-        }
-      >
-        <Row gutter={[24, 24]}>
-          {project.map((p, index) => (
-            <Col span={24} md={12} xl={6} key={index}>
-              <Card
-                bordered={false}
-                className="card-project"
-                cover={<img alt="example" src={p.img} />}
-              >
-                <div className="card-tag">{p.titlesub}</div>
-                <h5>{p.titile}</h5>
-                <p>{p.disciption}</p>
-                <Row gutter={[6, 0]} className="card-footer">
-                  <Col span={12}>
-                    <Button type="button">VIEW PROJECT</Button>
-                  </Col>
-                  <Col span={12} className="text-right">
-                    <Avatar.Group className="avatar-chips">
-                      <Avatar size="small" src={profilavatar} />
-                      <Avatar size="small" src={convesionImg} />
-                      <Avatar size="small" src={convesionImg2} />
-                      <Avatar size="small" src={convesionImg3} />
-                    </Avatar.Group>
-                  </Col>
-                </Row>
-              </Card>
-            </Col>
-          ))}
-          <Col span={24} md={12} xl={6}>
-            <Upload
-              name="avatar"
-              listType="picture-card"
-              className="avatar-uploader projects-uploader"
-              showUploadList={false}
-              action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-              beforeUpload={beforeUpload}
-              onChange={handleChange}
-            >
-              {imageURL ? (
-                <img src={imageURL} alt="avatar" style={{ width: '100%' }} />
-              ) : (
-                uploadButton
-              )}
-            </Upload>
-          </Col>
-        </Row>
-      </Card>
     </>
   );
 }

@@ -27,55 +27,157 @@ function User() {
   //định dạng cột hiển thị
   const columns = [
     {
-      title: 'STT',
-      dataIndex: 'id',
-      key: 'id',
-    },
-    {
       title: 'account_type',
       dataIndex: 'account_type',
       key: 'account_type',
+      render: (record) => (
+        <>
+          {record === 1 ? (
+            <div className="author-info">
+              <Tag color={'Orange'} key={record}>
+                <GoogleOutlined /> Google
+              </Tag>
+            </div>
+          ) : (
+            <div className="author-info">
+              <Tag color={'green'} key={record}>
+                Bình thường
+              </Tag>
+            </div>
+          )}
+        </>
+      ),
     },
     {
       title: 'trạng thái',
       dataIndex: 'status',
       key: 'status',
+      render: (record) => (
+        <>
+          {record === 1 ? (
+            <div className="author-info">
+              <Tag color={'geekblue'} key={record}>
+                Hoạt động
+              </Tag>
+            </div>
+          ) : (
+            <div className="author-info">
+              <Tag color={'volcano'} key={record}>
+                Không hoạt động
+              </Tag>
+            </div>
+          )}
+        </>
+      ),
     },
 
     {
       title: 'Loại tk',
       dataIndex: 'RoleId',
       key: 'RoleId',
+      render: (record) => {
+        let tagColor, tagContent;
+
+        switch (record) {
+          case 1:
+            tagColor = 'geekblue';
+            tagContent = 'Admin';
+            break;
+          case 2:
+            tagColor = 'blue';
+            tagContent = 'Trường học';
+            break;
+          case 3:
+            tagColor = 'green';
+            tagContent = 'Doanh nghiệp - Công ty';
+            break;
+          case 4:
+            tagColor = 'violet';
+            tagContent = 'Tư vấn viên - Cố vấn';
+            break;
+          case 5:
+            tagColor = 'yellow';
+            tagContent = 'Học Sinh';
+            break;
+          default:
+            tagColor = 'volcano';
+            tagContent = 'Không xác định';
+        }
+
+        return (
+          <div className="author-info">
+            <Tag color={tagColor} key={record}>
+              {tagContent}
+            </Tag>
+          </div>
+        );
+      },
     },
     {
       title: 'email',
       dataIndex: 'email',
       key: 'email',
+      render: (record) => (
+        <div className="author-info">
+          <Title level={5}>{record}</Title>
+        </div>
+      ),
     },
     {
       title: 'SĐT',
       dataIndex: 'phone',
       key: 'phone',
+      render: (record) => (
+        <div className="author-info">
+          <Title level={5}>{record}</Title>
+        </div>
+      ),
     },
     {
       title: 'Mã xác thực',
       dataIndex: 'authCode',
       key: 'authCode',
+      render: (record) => (
+        <div className="author-info">
+          <Title level={5}>{record}</Title>
+        </div>
+      ),
     },
     {
       title: 'Ngày khởi tạo',
       dataIndex: 'createdAt',
       key: 'createdAt',
+      render: (record) => (
+        <div className="author-info">
+          <Title level={5}>{record}</Title>
+        </div>
+      ),
     },
     {
       title: 'Ngày cập nhật',
       dataIndex: 'updatedAt',
       key: 'updatedAt',
+      render: (record) => (
+        <div className="author-info">
+          <Title level={5}>{record}</Title>
+        </div>
+      ),
     },
 
     {
       key: 'action',
-      dataIndex: 'action',
+      render: (record) => (
+        <>
+          <div className="author-info">
+            <Button type="text">
+              <EditOutlined onClick={() => handleEdit(record.id)} style={{ color: 'green' }} />
+            </Button>
+            <Button type="text" danger onClick={() => handleDelete(record.id)}>
+              <DeleteOutlined />
+            </Button>
+          </div>
+        </>
+      ),
     },
   ];
 
@@ -95,110 +197,14 @@ function User() {
   const convertedData = getAllUser?.data.map((user, index) => {
     return {
       key: index.toString(),
-      account_type: (
-        <>
-          {user.account_type === 1 ? (
-            <div className="author-info">
-              <Tag color={'Orange'} key={user.account_type}>
-                <GoogleOutlined /> Google
-              </Tag>
-            </div>
-          ) : (
-            <div className="author-info">
-              <Tag color={'green'} key={user.account_type}>
-                Bình thường
-              </Tag>
-            </div>
-          )}
-        </>
-      ),
-      status: (
-        <>
-          {user.status === 1 ? (
-            <div className="author-info">
-              <Tag color={'geekblue'} key={user.status}>
-                Hoạt động
-              </Tag>
-            </div>
-          ) : (
-            <div className="author-info">
-              <Tag color={'volcano'} key={user.status}>
-                Không hoạt động
-              </Tag>
-            </div>
-          )}
-        </>
-      ),
-      RoleId: (
-        <>
-          {user.RoleId === 1 ? (
-            <div className="author-info">
-              <Tag color={'geekblue'} key={user.RoleId}>
-                Admin
-              </Tag>
-            </div>
-          ) : user.RoleId === 5 ? (
-            <div className="author-info">
-              <Tag color={'green'} key={user.RoleId}>
-                Học Sinh
-              </Tag>
-            </div>
-          ) : (
-            <div className="author-info">
-              <Tag color={'volcano'} key={user.RoleId}>
-                Không xác định
-              </Tag>
-            </div>
-          )}
-        </>
-      ),
-      email: (
-        <>
-          <div className="author-info">
-            <Title level={5}>{user.email}</Title>
-          </div>
-        </>
-      ),
-      phone: (
-        <>
-          <div className="author-info">
-            <Title level={5}>{user.phone}</Title>
-          </div>
-        </>
-      ),
-      authCode: (
-        <>
-          <div className="author-info">
-            <Title level={5}>{user.authCode}</Title>
-          </div>
-        </>
-      ),
-      createdAt: (
-        <>
-          <div className="author-info">
-            <Title level={5}>{user.createdAt}</Title>
-          </div>
-        </>
-      ),
-      updatedAt: (
-        <>
-          <div className="author-info">
-            <Title level={5}>{user.updatedAt}</Title>
-          </div>
-        </>
-      ),
-      action: (
-        <>
-          <div className="author-info">
-            <Button type="text">
-              <EditOutlined onClick={() => handleEdit(user.id)} style={{ color: 'green' }} />
-            </Button>
-            <Button type="text" danger onClick={() => handleDelete(user.id)}>
-              <DeleteOutlined />
-            </Button>
-          </div>
-        </>
-      ),
+      account_type: user.account_type,
+      status: user.status,
+      RoleId: user.RoleId,
+      email: user.email,
+      phone: user.phone,
+      authCode: user.authCode,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
     };
   });
   //hàm phan trang

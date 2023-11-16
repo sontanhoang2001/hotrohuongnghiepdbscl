@@ -72,12 +72,10 @@ function SignInV1() {
     //lấy role khi người dùng đăng nhập
     if (profile != null && profile !== undefined) {
       const role = profile?.userData?.Role?.name;
-
-      if (role === 'STUDENT') {
-        navigate('/');
-      }
-      if (role === 'ADMIN') {
+      if (role === 'ADMIN' || role === 'UNIVERSITY' || role === 'CONPANY') {
         navigate('/admin/dashboard');
+      } else {
+        navigate('/');
       }
     }
   }, [pending, profile, navigate]);
@@ -157,8 +155,10 @@ function SignInV1() {
                 </Form.Item>
 
                 <Form.Item name="remember" className="aligin-center" valuePropName="checked">
-                  <Switch defaultChecked onChange={onChange} />
-                  Lưu Đăng Nhập
+                  <div>
+                    <Switch defaultChecked onChange={onChange} />
+                    <span style={{ marginLeft: 8 }}>Lưu Đăng Nhập</span>
+                  </div>
                 </Form.Item>
 
                 <Form.Item>

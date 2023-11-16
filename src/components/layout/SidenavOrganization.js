@@ -67,14 +67,14 @@ function Sidenav({ color }) {
 
   const items = [
     getItem(
-      <NavLink to="/admin/dashboard">
+      <NavLink to="/to-chuc/dashboard">
         <span className="icon">{dashboard}</span>
         <span className="label">Dashboard</span>
       </NavLink>,
       '1',
     ),
     getItem(
-      <NavLink to="/admin/danh-sach-truong-hoc">
+      <NavLink to="/to-chuc/danh-sach-to-chuc">
         <span className="icon">
           <BankOutlined />
         </span>
@@ -83,62 +83,44 @@ function Sidenav({ color }) {
       '2',
     ),
     getItem(
-      <NavLink to="/admin/danh-sach-cau-hoi">
-        <span className="icon">
-          <InboxOutlined />
-        </span>
-        <span className="label">Câu hỏi</span>
-      </NavLink>,
-      '3',
-    ),
-    getItem(
-      <NavLink to="/admin/danh-cau-hoi-dong-hanh">
+      <NavLink to="/to-chuc/danh-cau-hoi-dong-hanh">
         <span className="icon">
           <BookOutlined />
         </span>
         <span className="label">Đồng hành</span>
       </NavLink>,
-      '4',
+      '3',
     ),
     getItem(
-      <NavLink to="/admin/danh-sach-nguoi-dung">
-        <span className="icon">
-          <UserOutlined />
-        </span>
-        <span className="label">Người dùng</span>
-      </NavLink>,
-      '5',
-    ),
-    getItem(
-      <NavLink to="/admin/danh-sach-tin-tuc">
+      <NavLink to="/to-chuc/danh-sach-tin-tuc">
         <span className="icon">
           <CopyOutlined />
         </span>
         <span className="label">Tin tức</span>
       </NavLink>,
-      '6',
+      '4',
     ),
     getItem(
       <MeunuItem>
         <span className="label sidenav-title-content">Tài Khoản</span>
       </MeunuItem>,
-      '7',
+      '5',
     ),
     getItem(
-      <NavLink to="/admin/profile">
+      <NavLink to="/to-chuc/profile">
         <span className="icon">{profile}</span>
         <span className="label">Profile</span>
       </NavLink>,
-      '8',
+      '6',
     ),
     getItem(
-      <NavLink to="/admin/tin-nhan">
+      <NavLink to="/to-chuc/tin-nhan">
         <span className="icon">
           <CommentOutlined />
         </span>
         <span className="label">Tin Nhắn</span>
       </NavLink>,
-      '9',
+      '7',
     ),
     getItem(
       <MeunuItem>
@@ -149,7 +131,7 @@ function Sidenav({ color }) {
           Đăng xuất
         </span>
       </MeunuItem>,
-      '10',
+      '8',
     ),
   ];
   return (

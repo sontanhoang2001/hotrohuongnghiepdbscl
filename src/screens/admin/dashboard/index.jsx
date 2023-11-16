@@ -31,7 +31,7 @@ import team3 from '../../../assets/images/team-3.jpg';
 import team4 from '../../../assets/images/team-4.jpg';
 import card from '../../../assets/images/info-card-1.jpg';
 
-function Home() {
+function Dashboard() {
   const { Title, Text } = Typography;
 
   const onChange = (e) => console.log(`radio checked:${e.target.value}`);
@@ -495,4 +495,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default Dashboard;

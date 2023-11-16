@@ -47,6 +47,7 @@ const initialState = {
   isSignup: false,
   otp: false,
   message: null,
+  role: parsedUserDatalocalStorage?.Role.name,
 };
 // tạo một Redux Thunk, bất đồng bộ được sử dụng để đăng nhập người dùng
 export const signinAsync = createAsyncThunk(
@@ -174,6 +175,7 @@ export const authSlice = createSlice({
     logout: (state, action) => {
       state.data = {};
       state.isLogin = false;
+      state.role = null;
       window.localStorage.removeItem('accessToken');
       window.localStorage.removeItem('userData');
       window.location.reload();
@@ -199,6 +201,7 @@ export const authSlice = createSlice({
         state.profile = payload?.userData;
         state.authToken = payload.token;
         state.isLogin = true;
+        state.role = payload?.userData.Role.name;
       })
 
       .addCase(signinAsync.rejected, (state, { payload }) => {
@@ -296,5 +299,6 @@ export const selectPending = (state) => state.auth.pending;
 export const selectIsLogin = (state) => state.auth.isLogin;
 export const selectIsSignup = (state) => state.auth.isSignup;
 export const selectIsOtp = (state) => state.auth.otp;
+export const selectRole = (state) => state.auth.role;
 
 export default authSlice.reducer;

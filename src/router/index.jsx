@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { Counter } from '../redux/counter/Counter';
 import App from '../App';
 import NotFound from '../screens/404/notfound';
@@ -34,16 +34,22 @@ import Mbti from '../screens/admin/mbti';
 import Chat from '../screens/admin/Chat';
 import ManageNews from '../screens/admin/news';
 import ManageCompanion from '../screens/admin/companion';
-
-const ROLES = {
-  User: 5,
-  Admin: 1,
-};
+import PrivateRoute from './PrivateRoute';
+import OrganizationHome from '../screens/organization/home';
+import Organization from '../screens/organization/organization';
+import OrganizationDashboard from '../screens/organization/dashboard';
+import OrganizationChat from '../screens/organization/Chat';
+import OrganizationProfile from '../screens/organization/profile';
+import OrganizationNews from '../screens/organization/news';
+import VerifyOrganization from '../screens/verifyQrganization';
 
 function Router() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="dang-nhap" element={<SignInV1 />} />
+        <Route path="dang-ky" element={<SignUpV1 />} />
+        <Route path="/xac-nhan-dang-nhap" element={<OtpLogin />} />
         {/* client */}
         <Route path="/" element={<App />}>
           <Route path="/postMBTI" element={<PostMBTI />} />
@@ -60,15 +66,7 @@ function Router() {
           <Route path="otp" element={<OtpByPhone />} />
           <Route path="authSocial" element={<AuthSocial />} />
         </Route>
-
-        <Route path="dang-nhap" element={<SignInV1 />} />
-        <Route path="dang-ky" element={<SignUpV1 />} />
-
-        {/* <Route path="dang-nhap" element={<Singin />} />
-        <Route path="dang-ky" element={<Signup />} /> */}
-        <Route path="/xac-nhan-dang-nhap" element={<OtpLogin />} />
         {/* admin */}
-
         {/* <Route
           path="/admin"
           element={
@@ -77,8 +75,9 @@ function Router() {
             </ProtectedLogin>
           }
         > */}
-        <Route path="/admin" element={<Admin />}>
+        <Route path="/admin" element={<PrivateRoute />}>
           <Route path="dashboard" element={<Dashboard />} />
+          <Route path="xac-minh" element={<VerifyOrganization />} />
           {/* <Route index element={<Dashboard />} /> */}
           <Route path="danh-sach-truong-hoc" element={<University />} />
           <Route path="danh-sach-nguoi-dung" element={<User />} />
