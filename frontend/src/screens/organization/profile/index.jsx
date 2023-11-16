@@ -163,21 +163,6 @@ function OrganizationProfile() {
                 </div>
               </Avatar.Group>
             </Col>
-            <Col
-              span={24}
-              md={12}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'flex-end',
-              }}
-            >
-              <Radio.Group defaultValue="a">
-                <Radio.Button value="a">OVERVIEW</Radio.Button>
-                <Radio.Button value="b">TEAMS</Radio.Button>
-                <Radio.Button value="c">PROJECTS</Radio.Button>
-              </Radio.Group>
-            </Col>
           </Row>
         }
       ></Card>

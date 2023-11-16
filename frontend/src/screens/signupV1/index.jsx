@@ -82,7 +82,8 @@ function SignUpV1() {
       navigate('/xac-nhan-dang-nhap');
     }
   }, [isSignup, dispatch, pendingState, navigate]);
-
+  const filter = (inputValue, path) =>
+    path.some((option) => option.label.toLowerCase().indexOf(inputValue.toLowerCase()) > -1);
   const onFinish = (values) => {
     const { agreement, prefix, confirm, ...inputedUserData } = values;
     //chuyển đổi giá trị submit from tại address từ mảng sang chuổi
@@ -127,7 +128,7 @@ function SignUpV1() {
                   password: '',
                   fullName: '',
                   gender: '',
-                  residence: ['Tỉnh/Tp', 'Quận/Huyện', 'Phường/Thị Trấn'],
+                  address: '',
                   agreement: true,
                 }}
                 onFinish={onFinish}
@@ -229,6 +230,9 @@ function SignUpV1() {
                   <Cascader
                     placeholder="Chọn Địa Chỉ"
                     options={residences}
+                    showSearch={{
+                      filter,
+                    }}
                     style={{ height: 50 }}
                   />
                 </Form.Item>
@@ -324,7 +328,7 @@ function SignUpV1() {
                       validator: (_, value) =>
                         value
                           ? Promise.resolve()
-                          : Promise.reject(new Error('Should accept agreement')),
+                          : Promise.reject(new Error('Hãy chấp nhận thoả thuận')),
                     },
                   ]}
                 >

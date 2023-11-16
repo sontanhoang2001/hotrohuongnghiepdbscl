@@ -41,6 +41,7 @@ import OrganizationDashboard from '../screens/organization/dashboard';
 import OrganizationChat from '../screens/organization/Chat';
 import OrganizationProfile from '../screens/organization/profile';
 import OrganizationNews from '../screens/organization/news';
+import VerifyOrganization from '../screens/verifyQrganization';
 
 function Router() {
   return (
@@ -96,6 +97,7 @@ function Router() {
           <Route path="tin-nhan" element={<OrganizationChat />} />
           <Route path="danh-sach-tin-tuc" element={<OrganizationNews />} />
         </Route>
+        <Route path="xac-minh" element={<VerifyOrganization />} />
 
         {/* no other result match */}
         <Route path="*" element={<NotFound />} />
