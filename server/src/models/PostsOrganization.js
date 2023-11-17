@@ -10,6 +10,8 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       PostsOrganization.belongsTo(models.Organization);
+      PostsOrganization.belongsTo(models.User);
+      PostsOrganization.belongsTo(models.PostsCategory);
     }
   }
   PostsOrganization.init(
@@ -17,7 +19,11 @@ module.exports = (sequelize, DataTypes) => {
       title: DataTypes.STRING,
       thumbnail: DataTypes.STRING,
       content: DataTypes.STRING,
-      organizationId: DataTypes.INTEGER
+      status: DataTypes.INTEGER,
+      displayDate: DataTypes.DATE,
+      organizationId: DataTypes.INTEGER,
+      authorId: DataTypes.INTEGER,
+      postsCategoryId: DataTypes.INTEGER
     },
     {
       sequelize,
