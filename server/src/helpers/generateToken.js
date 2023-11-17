@@ -16,7 +16,6 @@ module.exports = {
       {
         id: userData.id,
         roleId: userData?.Role.id,
-        organizationId: userData?.Organization.id,
       },
       process.env.JWT_REFRESH_KEY,
       { expiresIn: '360d' },
