@@ -16,12 +16,19 @@ dotenv.config();
 const port = process.env.NODE_PORT;
 // console.log(port);
 
+
 //* Middlewares
 app.use(morgan('dev'));
 
 //* Enabling cors for all request by usiing cors middleware
 // app.use(cors());
 app.use(cors({ origin: 'http://localhost:3000' })); // Replace with the appropriate origin
+
+
+app.use((req, res, next) => {
+  res.setHeader('Cache-Control', 'no-store');
+  next();
+});
 
 /**
  * * Parse request of content-type: application/json
