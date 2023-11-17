@@ -66,6 +66,21 @@ module.exports = {
     }
   },
 
+  
+  getOrganizationProfile: async (req, res) => {
+    try {
+      const organizationId = parseInt(req.user.organizationId);
+      const organizationData = await organizationService.getOrganizationById(organizationId); // Gọi chức năng từ service
+      if (organizationData) {
+        return responseHelper.sendResponse.SUCCESS(res, organizationData);
+      }
+
+      return responseHelper.sendResponse.NOT_FOUND(res, null);
+    } catch (error) {
+      responseHelper.sendResponse.SERVER_ERROR(res, null);
+    }
+  },
+
   updateOrganization: async (req, res) => {
     // try {
     const organizationId = parseInt(req.params.id);
