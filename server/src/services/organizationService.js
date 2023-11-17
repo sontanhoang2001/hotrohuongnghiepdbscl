@@ -2,6 +2,7 @@ const Organization = require('../models').Organization;
 const OrganizationDetail = require('../models').OrganizationDetail;
 const VerifyOrganization = require('../models').VerifyOrganization;
 const OrganizationType = require('../models').OrganizationType;
+const UserOrganization = require('../models').UserOrganization;
 const User = require('../models').User;
 
 const { Op } = require('sequelize');
@@ -337,6 +338,20 @@ module.exports = {
       };
 
       return pagination;
+    } catch (error) {
+      throw error;
+    }
+  },
+  getOrganizationByUserId: async (userId) => {
+    try {
+      const userOrganization = await UserOrganization.findByPk(userId, {
+        attributes: ['id']
+      });
+      if (userOrganization) {
+        return {"id": userOrganization.dataValues.id};
+      } else {
+        return {"id": null};;
+      }
     } catch (error) {
       throw error;
     }

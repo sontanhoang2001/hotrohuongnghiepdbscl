@@ -15,6 +15,7 @@ module.exports = (sequelize, DataTypes) => {
       User.hasMany(models.Channel);
       User.hasMany(models.UserChannel);
       User.hasOne(models.VerifyOrganization);
+      User.belongsToMany(models.Organization, { through: models.UserOrganization });
     }
 
     // Định nghĩa phương thức toJSON để loại bỏ trường password

@@ -1,22 +1,21 @@
-const postsOrganizationService = require('../services/PostsOrganizationService');
+const postsOrganizationService = require('../services/postsOrganizationService');
 
 const responseHelper = require('../helpers/responseHelper');
 
 module.exports = {
   createNewPosts: async (req, res) => {
     try {
-      // const userId = parseInt(req.user.id);
+      const userId = parseInt(req.user.id);
+      const organizationId = parseInt(req.user.organizationId);
+
       const posts = req.body;
 
-      if (isNaN(posts.organizationId)) {
-        return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a valid organizationId as a parameter');
-      }
-
-      if (!posts.title || !posts.thumbnail || !posts.content) {
+      if (!posts.title || !posts.thumbnail || !posts.content || !posts.thumbnail || !posts.content || !posts.status || !posts.displayDate || !posts.postsCategoryId) {
         return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a full and valid parameter');
       }
 
-      const createNew = await postsOrganizationService.createNew(posts);
+      const postsNewData = {...posts, authorId : userId, organizationId};
+      const createNew = await postsOrganizationService.createNew(postsNewData);
       if (createNew) {
         return responseHelper.sendResponse.SUCCESS(res, createNew, 'Bạn đã tạo bài viết thành công');
       }
@@ -26,26 +25,29 @@ module.exports = {
     }
   },
   getAllPosts: async (req, res) => {
-    try {
+    // try {
+      const organizationId = parseInt(req.user.organizationId);
       let page = parseInt(req.query.page) || 1;
       let size = parseInt(req.query.size) || 10;
       let search = req.query.search;
+      let postsCategoryId = req.query.category && parseInt(req.query.category);
 
-      const posts = await postsOrganizationService.getAll(page, size, search); // Gọi chức năng từ service
+      const posts = await postsOrganizationService.getAll(organizationId, page, size, search, postsCategoryId); // Gọi chức năng từ service
       if (posts) {
         return responseHelper.sendResponse.SUCCESS(res, posts);
       }
 
       return responseHelper.sendResponse.BAD_REQUEST(res, null);
-    } catch (error) {
-      responseHelper.sendResponse.SERVER_ERROR(res, null);
-    }
+    // } catch (error) {
+    //   responseHelper.sendResponse.SERVER_ERROR(res, null);
+    // }
   },
 
   getPostsById: async (req, res) => {
     try {
+      const organizationId = parseInt(req.user.organizationId);
       const postsId = parseInt(req.params.id);
-      const posts = await postsOrganizationService.getById(postsId); // Gọi chức năng từ service
+      const posts = await postsOrganizationService.getById(postsId, organizationId); // Gọi chức năng từ service
       if (posts) {
         return responseHelper.sendResponse.SUCCESS(res, posts);
       }

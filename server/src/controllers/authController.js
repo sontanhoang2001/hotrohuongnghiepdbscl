@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 
 const authService = require('../services/authService');
 const userService = require('../services/userService');
+const organizationService = require('../services/organizationService');
 
 const responseHelper = require('../helpers/responseHelper');
 const validateHelper = require('../helpers/validateHelper');
@@ -176,7 +177,7 @@ module.exports = {
     }
   },
   login: async (req, res) => {
-    try {
+    // try {
       const user = req.body;
       const username = user.username;
 
@@ -195,6 +196,11 @@ module.exports = {
           const { password, ...userData } = result;
           let finalUserData = {};
           if (userData.status == 1) {
+            if(userData.Role.id == 2) {
+              const getOrganizationByUserId = await organizationService.getOrganizationByUserId(userData.id);
+                userData.Organization = getOrganizationByUserId;
+            }
+
             // Account đã active
             const accessToken = generateToken.generateAccessToken(userData);
             const refreshToken = generateToken.generateRefreshToken(userData);
@@ -219,9 +225,9 @@ module.exports = {
         null,
         'Tên đăng nhập hoặc mật khẩu không đúng!',
       );
-    } catch (error) {
-      responseHelper.sendResponse.SERVER_ERROR(res, null);
-    }
+    // } catch (error) {
+    //   responseHelper.sendResponse.SERVER_ERROR(res, null);
+    // }
   },
   loginBySocialNetwork: async (req, res) => {
     try {
