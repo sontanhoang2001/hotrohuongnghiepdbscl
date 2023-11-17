@@ -145,7 +145,10 @@ module.exports = {
         return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a full and valid parameter');
       }
 
-      const updateOrganization = await organizationService.reqToVerifyOrganization(userId, fileAttached);
+      // Trạng thái đã gửi
+      const status = 2;
+
+      const updateOrganization = await organizationService.reqToVerifyOrganization(userId, fileAttached, status);
       if (updateOrganization) {
         return responseHelper.sendResponse.SUCCESS(res, null, 'Bạn đã nộp hồ sơ tổ chức thành công');
       }

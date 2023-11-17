@@ -237,14 +237,14 @@ module.exports = {
     }
   },
 
-  reqToVerifyOrganization: async (userId, fileAttached) => {
+  reqToVerifyOrganization: async (userId, fileAttached, status) => {
     try {
       const verifyOrganization = await Organization.findOne({ where: { userId }, attributes: ['verifyOrganizationId'] });
       const verifyOrganizationId = verifyOrganization.dataValues.verifyOrganizationId;
 
       // Update fileAttached for VerifyOrganization
       const [numberOfAffectedRows1] = await VerifyOrganization.update(
-        { fileAttached },
+        { fileAttached, status },
         {
           where: { id: verifyOrganizationId },
         },
@@ -431,6 +431,10 @@ module.exports = {
       const organization = await Organization.findByPk(organizationId,{
         attributes: ['id', 'name'],
         include: [
+          {
+            model: UserOrganization,
+            attributes: ['id'],
+          },
           {
             model: OrganizationDetail,
             attributes: ['id', 'image', 'address', 'province', 'email', 'phone', 'lat', 'long', 'description', 'url', 'rank'],
