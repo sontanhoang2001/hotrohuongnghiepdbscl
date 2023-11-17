@@ -237,9 +237,10 @@ module.exports = {
     }
   },
 
-  reqToVerifyOrganization: async (userId, fileAttached, status) => {
+  reqToVerifyOrganization: async (userId, organizationId, fileAttached, status) => {
     try {
-      const verifyOrganization = await Organization.findOne({ where: { userId }, attributes: ['verifyOrganizationId'] });
+      const verifyOrganization = await Organization.findByPk(organizationId, { attributes: ['verifyOrganizationId'] });
+
       const verifyOrganizationId = verifyOrganization.dataValues.verifyOrganizationId;
 
       // Update fileAttached for VerifyOrganization
@@ -255,6 +256,16 @@ module.exports = {
       }
 
       return true;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  checkUserBelongtoOrganization: async (userId, organizationId) => {
+    try {
+      const verifyOrganization = await UserOrganization.findOne({ where: { userId, organizationId } });
+
+      return verifyOrganization instanceof UserOrganization;
     } catch (error) {
       throw error;
     }
@@ -358,19 +369,11 @@ module.exports = {
   },
 
   getAllByUser: async (userId, page, size, search) => {
-
     try {
-
       const userOrganization = await UserOrganization.findAll({
         where: {
           userId,
         },
-        include: [
-          {
-            model: Organization,
-            attributes: ['id'],
-          },
-        ],
         raw: true,
       });
 
@@ -422,17 +425,18 @@ module.exports = {
     }
   },
 
-
-
   getOneByOrganizationId: async (userId, organizationId) => {
     try {
       const where = {};
 
-      const organization = await Organization.findByPk(organizationId,{
+      const organization = await Organization.findByPk(organizationId, {
+        raw: true,
+        nest: true,
         attributes: ['id', 'name'],
         include: [
           {
-            model: UserOrganization,
+            where: { id: userId },
+            model: User,
             attributes: ['id'],
           },
           {
@@ -450,7 +454,7 @@ module.exports = {
         ],
       });
 
-      console.log("organization", organization)
+      console.log('organization', organization);
       return organization;
     } catch (error) {
       throw error;

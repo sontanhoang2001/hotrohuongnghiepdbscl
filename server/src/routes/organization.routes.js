@@ -7,7 +7,6 @@ const Roles = require('../config/role.js');
 //* Call the controller with the methods
 const {
   getAll,
-  getOrganizationProfile,
   getOrganizationById,
   createOrganization,
   updateOrganization,
@@ -23,7 +22,6 @@ const {
 //* Here I defined the methods
 // Admin
 router.get('/', middleware.verifyToken, middleware.checkRole([Roles.ORGANIZATION]), getAll);
-// router.get('/getProfile', middleware.verifyToken, middleware.checkRole([Roles.ORGANIZATION]), getOrganizationProfile);
 
 router.get('/id/:id', getOrganizationById);
 

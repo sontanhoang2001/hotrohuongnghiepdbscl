@@ -17,7 +17,8 @@ module.exports = {
       !organization.email ||
       !organization.phone ||
       !organization.description ||
-      !organization.url) {
+      !organization.url
+    ) {
       return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a full and valid parameter');
     }
     // không xếp hạng
@@ -66,43 +67,45 @@ module.exports = {
     }
   },
 
-  getOrganizationProfile: async (req, res) => {
+
+  updateOrganization: async (req, res) => {
     try {
-      const organizationId = parseInt(req.user.organizationId);
-      const organizationData = await organizationService.getOrganizationById(organizationId); // Gọi chức năng từ service
-      if (organizationData) {
-        return responseHelper.sendResponse.SUCCESS(res, organizationData);
+      const organizationId = parseInt(req.params.id);
+      const organization = req.body;
+      const userId = req.user.id;
+
+      // Check user có thuộc tổ chức ko ?
+      const checkUserResult = await organizationService.checkUserBelongtoOrganization(userId, organizationId);
+      if (!checkUserResult) {
+        return responseHelper.sendResponse.UNAUTHORIZED(res, null);
       }
 
-      return responseHelper.sendResponse.NOT_FOUND(res, null);
+      if (isNaN(organizationId)) {
+        return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a valid organization as a parameter');
+      }
+
+      if (
+        !organization.name ||
+        !organization.image ||
+        !organization.address ||
+        !organization.province ||
+        !organization.email ||
+        !organization.phone ||
+        !organization.description ||
+        !organization.url
+      ) {
+        return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a full and valid parameter');
+      }
+
+      const updateOrganization = await organizationService.updateOrganization(organizationId, organization);
+      if (updateOrganization) {
+        return responseHelper.sendResponse.SUCCESS(res, null, 'Cập nhật thành công');
+      }
+
+      return responseHelper.sendResponse.BAD_REQUEST(res, null, 'Cập nhật thất bại');
     } catch (error) {
       responseHelper.sendResponse.SERVER_ERROR(res, null);
     }
-  },
-
-  updateOrganization: async (req, res) => {
-    // try {
-    const organizationId = parseInt(req.params.id);
-    const organization = req.body;
-
-    if (isNaN(organizationId)) {
-      return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a valid organization as a parameter');
-    }
-
-    if (!organization.name || !organization.image || !organization.address || !organization.province || !organization.email ||
-       !organization.phone || !organization.description || !organization.url) {
-      return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a full and valid parameter');
-    }
-
-    const updateOrganization = await organizationService.updateOrganization(organizationId, organization);
-    if (updateOrganization) {
-      return responseHelper.sendResponse.SUCCESS(res, null, 'Cập nhật thành công');
-    }
-
-    return responseHelper.sendResponse.BAD_REQUEST(res, null, 'Cập nhật thất bại');
-    // } catch (error) {
-    //   responseHelper.sendResponse.SERVER_ERROR(res, null);
-    // }
   },
 
   deleteOneOrganization: async (req, res) => {
@@ -137,26 +140,34 @@ module.exports = {
   },
 
   reqToVerifyOrganization: async (req, res) => {
-    try {
-      const userId = req.user.id;
-      const fileAttached = req.body.fileAttached;
+    // try {
+    const userId = req.user.id;
+    const organizationId = req.body.organizationId;
 
-      if (!fileAttached) {
-        return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a full and valid parameter');
-      }
-
-      // Trạng thái đã gửi
-      const status = 2;
-
-      const updateOrganization = await organizationService.reqToVerifyOrganization(userId, fileAttached, status);
-      if (updateOrganization) {
-        return responseHelper.sendResponse.SUCCESS(res, null, 'Bạn đã nộp hồ sơ tổ chức thành công');
-      }
-
-      return responseHelper.sendResponse.BAD_REQUEST(res, null, 'Bạn đã nộp hồ sơ tổ chức thất bại');
-    } catch (error) {
-      responseHelper.sendResponse.SERVER_ERROR(res, null);
+    // Check user có thuộc tổ chức ko ?
+    const checkUserResult = await organizationService.checkUserBelongtoOrganization(userId, organizationId);
+    if (!checkUserResult) {
+      return responseHelper.sendResponse.UNAUTHORIZED(res, null);
     }
+
+    const fileAttached = req.body.fileAttached;
+
+    if (!fileAttached) {
+      return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a full and valid parameter');
+    }
+
+    // Trạng thái đã gửi
+    const status = 2;
+
+    const updateOrganization = await organizationService.reqToVerifyOrganization(userId, organizationId, fileAttached, status);
+    if (updateOrganization) {
+      return responseHelper.sendResponse.SUCCESS(res, null, 'Bạn đã nộp hồ sơ tổ chức thành công');
+    }
+
+    return responseHelper.sendResponse.BAD_REQUEST(res, null, 'Bạn đã nộp hồ sơ tổ chức thất bại');
+    // } catch (error) {
+    //   responseHelper.sendResponse.SERVER_ERROR(res, null);
+    // }
   },
 
   updateStatusVerifyOrganization: async (req, res) => {
@@ -224,9 +235,9 @@ module.exports = {
     let search = req.query.search;
     let userId = req.user.id;
 
-    const listUniversity = await organizationService.getAllByUser(userId, page, size, search); // Gọi chức năng từ service
-    if (listUniversity) {
-      return responseHelper.sendResponse.SUCCESS(res, listUniversity);
+    const listOrganization = await organizationService.getAllByUser(userId, page, size, search); // Gọi chức năng từ service
+    if (listOrganization) {
+      return responseHelper.sendResponse.SUCCESS(res, listOrganization);
     }
 
     return responseHelper.sendResponse.BAD_REQUEST(res, null);
@@ -240,6 +251,12 @@ module.exports = {
 
     const userId = req.user.id;
     const organizationId = req.params.id;
+
+    // Check user có thuộc tổ chức ko ?
+    const checkUserResult = await organizationService.checkUserBelongtoOrganization(userId, organizationId);
+    if (!checkUserResult) {
+      return responseHelper.sendResponse.UNAUTHORIZED(res, null);
+    }
 
     const listUniversity = await organizationService.getOneByOrganizationId(userId, organizationId); // Gọi chức năng từ service
     if (listUniversity) {
