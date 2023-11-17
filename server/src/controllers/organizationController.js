@@ -17,11 +17,11 @@ module.exports = {
       !organization.email ||
       !organization.phone ||
       !organization.description ||
-      !organization.url ||
-      !organization.rank
-    ) {
+      !organization.url) {
       return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a full and valid parameter');
     }
+    // không xếp hạng
+    organization.rank = -1;
 
     const createNew = await organizationService.createNew(organization);
     if (createNew) {
@@ -66,7 +66,6 @@ module.exports = {
     }
   },
 
-  
   getOrganizationProfile: async (req, res) => {
     try {
       const organizationId = parseInt(req.user.organizationId);
@@ -90,17 +89,8 @@ module.exports = {
       return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a valid organization as a parameter');
     }
 
-    if (
-      !organization.name ||
-      !organization.image ||
-      !organization.address ||
-      !organization.province ||
-      !organization.email ||
-      !organization.phone ||
-      !organization.description ||
-      !organization.url ||
-      !organization.rank
-    ) {
+    if (!organization.name || !organization.image || !organization.address || !organization.province || !organization.email ||
+       !organization.phone || !organization.description || !organization.url) {
       return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a full and valid parameter');
     }
 
@@ -179,12 +169,13 @@ module.exports = {
       if (verifyOrganization) {
         const sendTo = verifyOrganization.userEmail;
         // Gửi email theo đúng nội dung trạng thái
-        const mainContent = verifyOrganization.userEmail == 1
-          ? 'Xin chúc mừng. Chúng tôi đã xem xét hồ sơ tổ chức của bạn và ghi nhận tổ chức của bạn là họp lệ với yêu cầu của chúng tôi. Kể từ bây giờ bạn có thể truy cập quyền quản trị tổ chức của bạn.'
-          : 'Để thông báo rằng hồ sơ tổ chức của bạn hiện tại chưa đáp ứng yêu cầu của chúng tôi. Bạn vui lòng nhanh chóng hoàn thiện hồ sơ và tiến hành nộp lại hồ sơ. Chúng tôi sẽ xem xét và thông báo đến bạn sớm nhất.';
-       
-       const icon = verifyOrganization.userEmail == 1 ? "✔" : "❌";
-          // send mail with defined transport object
+        const mainContent =
+          verifyOrganization.userEmail == 1
+            ? 'Xin chúc mừng. Chúng tôi đã xem xét hồ sơ tổ chức của bạn và ghi nhận tổ chức của bạn là họp lệ với yêu cầu của chúng tôi. Kể từ bây giờ bạn có thể truy cập quyền quản trị tổ chức của bạn.'
+            : 'Để thông báo rằng hồ sơ tổ chức của bạn hiện tại chưa đáp ứng yêu cầu của chúng tôi. Bạn vui lòng nhanh chóng hoàn thiện hồ sơ và tiến hành nộp lại hồ sơ. Chúng tôi sẽ xem xét và thông báo đến bạn sớm nhất.';
+
+        const icon = verifyOrganization.userEmail == 1 ? '✔' : '❌';
+        // send mail with defined transport object
         const transporter = createTransporter();
         const info = await transporter.sendMail({
           from: `"Support Organization 📩" <${sendTo}>`, // sender address
@@ -221,5 +212,40 @@ module.exports = {
     } catch (error) {
       responseHelper.sendResponse.SERVER_ERROR(res, null);
     }
-  }
+  },
+
+  getAllByUser: async (req, res) => {
+    // try {
+    let page = parseInt(req.query.page) || 1;
+    let size = parseInt(req.query.size) || 10;
+    let search = req.query.search;
+    let userId = req.user.id;
+
+    const listUniversity = await organizationService.getAllByUser(userId, page, size, search); // Gọi chức năng từ service
+    if (listUniversity) {
+      return responseHelper.sendResponse.SUCCESS(res, listUniversity);
+    }
+
+    return responseHelper.sendResponse.BAD_REQUEST(res, null);
+    // } catch (error) {
+    //   responseHelper.sendResponse.SERVER_ERROR(res, null);
+    // }
+  },
+
+  getOneByOrganizationId: async (req, res) => {
+    // try {
+
+    const userId = req.user.id;
+    const organizationId = req.params.id;
+
+    const listUniversity = await organizationService.getOneByOrganizationId(userId, organizationId); // Gọi chức năng từ service
+    if (listUniversity) {
+      return responseHelper.sendResponse.SUCCESS(res, listUniversity);
+    }
+
+    return responseHelper.sendResponse.BAD_REQUEST(res, null);
+    // } catch (error) {
+    //   responseHelper.sendResponse.SERVER_ERROR(res, null);
+    // }
+  },
 };

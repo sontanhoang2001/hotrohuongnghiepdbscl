@@ -345,13 +345,109 @@ module.exports = {
   getOrganizationByUserId: async (userId) => {
     try {
       const userOrganization = await UserOrganization.findByPk(userId, {
-        attributes: ['id']
+        attributes: ['id'],
       });
       if (userOrganization) {
-        return {"id": userOrganization.dataValues.id};
+        return { id: userOrganization.dataValues.id };
       } else {
-        return {"id": null};;
+        return { id: null };
       }
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  getAllByUser: async (userId, page, size, search) => {
+
+    try {
+
+      const userOrganization = await UserOrganization.findAll({
+        where: {
+          userId,
+        },
+        include: [
+          {
+            model: Organization,
+            attributes: ['id'],
+          },
+        ],
+        raw: true,
+      });
+
+      const organizationIds = userOrganization.map((item) => item['organizationId']);
+
+      const where = {};
+
+      where.id = { [Op.in]: organizationIds };
+
+      if (search) {
+        where.name = { [Op.like]: `%${search}%` };
+      }
+
+      // Tính offset
+      const offset = (page - 1) * size;
+
+      const { count, rows } = await Organization.findAndCountAll({
+        where,
+        offset,
+        limit: size,
+        attributes: ['id', 'name'],
+        include: [
+          {
+            model: OrganizationDetail,
+            attributes: ['id', 'image', 'address', 'province', 'email', 'phone', 'lat', 'long', 'description', 'url', 'rank'],
+          },
+          {
+            model: VerifyOrganization,
+            attributes: ['status'],
+          },
+          {
+            model: OrganizationType,
+            attributes: ['id', 'name', 'description'],
+          },
+        ],
+      });
+
+      // Chuẩn bị dữ liệu phân trang
+      const pagination = {
+        total: count,
+        page,
+        size,
+        data: rows,
+      };
+
+      return pagination;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+
+
+  getOneByOrganizationId: async (userId, organizationId) => {
+    try {
+      const where = {};
+
+      const organization = await Organization.findByPk(organizationId,{
+        attributes: ['id', 'name'],
+        include: [
+          {
+            model: OrganizationDetail,
+            attributes: ['id', 'image', 'address', 'province', 'email', 'phone', 'lat', 'long', 'description', 'url', 'rank'],
+          },
+          {
+            model: VerifyOrganization,
+            attributes: ['status'],
+          },
+          {
+            model: OrganizationType,
+            attributes: ['id', 'name', 'description'],
+          },
+        ],
+      });
+
+      console.log("organization", organization)
+      return organization;
     } catch (error) {
       throw error;
     }
