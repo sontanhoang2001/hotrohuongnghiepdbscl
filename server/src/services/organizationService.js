@@ -192,13 +192,13 @@ module.exports = {
     }
   },
 
-  deleteUniversity: async (universityId) => {
+  deleteOrganization: async (organizationId) => {
     let transaction;
     try {
       transaction = await sequelize.transaction();
 
-      const numberOfAffectedRows1 = await University.destroy({
-        where: { id: universityId },
+      const numberOfAffectedRows1 = await Organization.destroy({
+        where: { id: organizationId },
       });
 
       if (numberOfAffectedRows1 === 0) {
@@ -206,8 +206,8 @@ module.exports = {
         return false;
       }
 
-      const numberOfAffectedRows2 = await UniversityDetail.destroy({
-        where: { universityId: universityId },
+      const numberOfAffectedRows2 = await OrganizationDetail.destroy({
+        where: { organizationId: organizationId },
       });
 
       if (numberOfAffectedRows2 === 0) {

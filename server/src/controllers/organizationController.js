@@ -102,17 +102,17 @@ module.exports = {
 
   deleteOneOrganization: async (req, res) => {
     try {
-      const universityId = parseInt(req.params.id);
+      const organizationId = parseInt(req.params.id);
 
-      if (isNaN(universityId)) {
-        return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a valid universityId as a parameter');
+      if (isNaN(organizationId)) {
+        return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a valid organizationId as a parameter');
       }
 
-      const deleteQuestion = await organizationService.deleteUniversity(universityId);
+      const deleteQuestion = await organizationService.deleteOrganization(organizationId);
       if (deleteQuestion) {
-        return responseHelper.sendResponse.SUCCESS(res, null, 'Thực hiện xóa thành công');
+        return responseHelper.sendResponse.SUCCESS(res, null, 'Thực hiện xóa tổ chức thành công');
       }
-      return responseHelper.sendResponse.BAD_REQUEST(res, null, 'Thực hiện xóa thất bại');
+      return responseHelper.sendResponse.BAD_REQUEST(res, null, 'Thực hiện xóa tổ chức thất bại');
     } catch (error) {
       responseHelper.sendResponse.SERVER_ERROR(res, null);
     }

@@ -1,36 +1,18 @@
 'use strict';
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('posts_organization', {
+    await queryInterface.createTable('posts_category', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      title: {
+      name: {
         type: Sequelize.STRING(150)
       },
-      thumbnail: {
+      description: {
         type: Sequelize.STRING(555)
-      },
-      content: {
-        type: Sequelize.TEXT('long')
-      },
-      status: {
-        type: Sequelize.INTEGER
-      },
-      displayDate: {
-        type: Sequelize.DATE
-      },
-      authorId: {
-        type: Sequelize.INTEGER
-      },
-      postsCategoryId: {
-        type: Sequelize.INTEGER
-      },
-      organizationId: {
-        type: Sequelize.INTEGER
       },
       createdAt: {
         allowNull: false,
@@ -44,10 +26,10 @@ module.exports = {
         allowNull: true,
         type: Sequelize.DATE,
         defaultValue: null
-      }
+      },
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('posts_organization');
+    await queryInterface.dropTable('posts_category');
   }
 };
