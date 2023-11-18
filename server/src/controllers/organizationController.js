@@ -7,7 +7,8 @@ module.exports = {
     // try {
     // const userId = parseInt(req.user.id);
     const organization = req.body;
-
+    const userId = req.user.id;
+    
     if (
       !organization.organizationTypeId ||
       !organization.name ||
@@ -24,7 +25,7 @@ module.exports = {
     // không xếp hạng
     organization.rank = -1;
 
-    const createNew = await organizationService.createNew(organization);
+    const createNew = await organizationService.createNew(userId, organization);
     if (createNew) {
       return responseHelper.sendResponse.SUCCESS(res, createNew, 'Bạn đã tạo tổ chức thành công');
     }
@@ -100,10 +101,10 @@ module.exports = {
 
       const updateOrganization = await organizationService.updateOrganization(organizationId, organization);
       if (updateOrganization) {
-        return responseHelper.sendResponse.SUCCESS(res, null, 'Cập nhật thành công');
+        return responseHelper.sendResponse.SUCCESS(res, null, 'Cập nhật tổ chức thành công');
       }
 
-      return responseHelper.sendResponse.BAD_REQUEST(res, null, 'Cập nhật thất bại');
+      return responseHelper.sendResponse.BAD_REQUEST(res, null, 'Cập nhật tổ chức thất bại');
     } catch (error) {
       responseHelper.sendResponse.SERVER_ERROR(res, null);
     }

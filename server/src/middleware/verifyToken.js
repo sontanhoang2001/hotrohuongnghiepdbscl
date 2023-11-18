@@ -18,12 +18,6 @@ const middleware = {
           return responseHelper.sendResponse.FORBIDDEN(res, null, 'Token is not valid');
         }
 
-        if (user.roleId == Roles.ORGANIZATION) {
-          if (isNaN(user.organizationId)) {
-            return responseHelper.sendResponse.FORBIDDEN(res, null, 'Token is not valid');
-          }
-        }
-
         req.user = user;
         next();
       });

@@ -9,7 +9,7 @@ const { Op } = require('sequelize');
 const sequelize = require('../database/connection_database');
 
 module.exports = {
-  createNew: async (payload) => {
+  createNew: async (userId, payload) => {
     let transaction;
     try {
       const organizationDetailPayload = {
@@ -30,12 +30,10 @@ module.exports = {
       const verifyOrganization = await VerifyOrganization.create({ status: 0 }, { transaction });
       const verifyOrganizationId = verifyOrganization?.dataValues.id;
 
-      console.log('verifyOrganizationId', verifyOrganizationId);
-
       // Tạo mới organization
       const organizationPayload = {
         name: payload.name,
-        userId: payload.userId,
+        userId: userId,
         organizationTypeId: payload.organizationTypeId,
         verifyOrganizationId: verifyOrganizationId,
       };
@@ -44,6 +42,9 @@ module.exports = {
 
       // Tạo mới organizationDetail
       await OrganizationDetail.create({ ...organizationDetailPayload, organizationId: organizationId }, { transaction });
+
+      // Tạo mới organizationDetail
+      await UserOrganization.create({ OrganizationId : organizationId, UserId : userId }, { transaction });
       await transaction.commit();
       return organization;
     } catch (error) {
@@ -206,7 +207,7 @@ module.exports = {
       transaction = await sequelize.transaction();
 
       const organization = await Organization.findByPk(organizationId, {
-        raw: true
+        raw: true,
       });
       const verifyOrganizationId = organization.verifyOrganizationId;
 
@@ -253,7 +254,7 @@ module.exports = {
 
       const organization = await Organization.findByPk(organizationId, {
         raw: true,
-        paranoid: false
+        paranoid: false,
       });
       const verifyOrganizationId = organization.verifyOrganizationId;
 
