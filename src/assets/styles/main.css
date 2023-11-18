@@ -242,27 +242,27 @@ body {
   color: #8c8c8c;
   font-weight: 600;
 }
-
+/* 
 .layout-dashboard .ant-layout-sider.sider-primary.ant-layout-sider-primary .footer-box button {
   background-color: #fff;
   border-color: #f0f0f0;
   color: #141414;
-}
+} */
 
-.layout-dashboard .ant-layout-sider.sider-primary .footer-box button {
+/* .layout-dashboard .ant-layout-sider.sider-primary .footer-box button {
   margin: 0;
-}
-.ant-btn-sm,
+} */
+/* .ant-btn-sm,
 .ant-radio-group-small .ant-radio-button-wrapper {
   height: 34px;
   font-size: 12px;
   padding: 0 15px;
-}
-.ant-btn-sm {
+} */
+/* .ant-btn-sm {
   border-radius: 4px;
-}
+} */
 
-.ant-btn-sm,
+/* .ant-btn-sm,
 .ant-radio-group-small .ant-radio-button-wrapper {
   height: 34px;
   font-size: 12px;
@@ -274,7 +274,7 @@ body {
 .ant-btn,
 .ant-radio-group .ant-radio-button-wrapper {
   font-weight: 600;
-}
+} */
 
 .layout-dashboard .ant-layout-sider.sider-primary .aside-footer {
   padding-top: 100px;
@@ -1728,12 +1728,12 @@ body {
   margin-top: -2px;
   margin-right: 5px;
 }
-.header-col.header-btn button {
+/* .header-col.header-btn button {
   height: 34px;
   padding: 0 16px;
   border-radius: 34px;
   line-height: 33px;
-}
+} */
 .sign-up-header .content {
   padding-top: 40px;
   max-width: 480px;
@@ -1749,14 +1749,14 @@ body {
 .text-lg {
   font-size: 16px;
 }
-.card-signup .sign-up-gateways .ant-btn {
+/* .card-signup .sign-up-gateways .ant-btn {
   margin-right: 10px;
   margin-left: 10px;
   height: 60px;
   width: 70px;
   box-shadow: none;
   border-radius: 6px;
-}
+} */
 .card-signup {
   width: 100%;
   max-width: 500px;
@@ -1818,7 +1818,7 @@ body {
 .text-dark {
   color: #141414;
 }
-.ant-btn,
+/* .ant-btn,
 .ant-radio-group .ant-radio-button-wrapper {
   font-weight: 600;
   font-size: 12px;
@@ -1827,9 +1827,9 @@ body {
   line-height: 40px;
 }
 .ant-btn {
-  /* box-shadow: 0 2px 4px rgb(0 0 0 / 7%); */
+  box-shadow: 0 2px 4px rgb(0 0 0 / 7%);
   border-radius: 6px;
-}
+} */
 .layout-sign-up .ant-layout-footer {
   padding: 24px 50px;
 }

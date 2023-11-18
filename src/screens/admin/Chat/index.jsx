@@ -1,5 +1,5 @@
-import { MessageOutlined, SearchOutlined } from '@ant-design/icons';
-import { Input } from 'antd';
+import { HomeFilled, MessageOutlined, SearchOutlined } from '@ant-design/icons';
+import { Input, Select } from 'antd';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { MessageContent, YourMessageContent } from '../../../globalStyles';
@@ -75,86 +75,104 @@ function Chat() {
     setSelected(idx);
   };
   return (
-    <ChatContainer>
-      {/* ===========Bắt đầu leftcontent========== */}
-      <LeftContent>
-        <LeftContentHeader>
-          <Input
-            className="header-search"
-            placeholder="Tìm Kiếm..."
-            prefix={<SearchOutlined />}
-            style={{ width: '80%' }}
-          />
-        </LeftContentHeader>
-        <LeftContentList>
-          {/* test in bằng mảng dữ liệu*/}
-          {data.map((val, idx) => (
-            <Discussion
-              key={idx}
-              className={selected != null && selected === idx ? 'discussion-active' : ''}
-              onClick={() => handleActive(idx)}
-            >
-              <ChatAvatar
-                style={{
-                  backgroundImage: `url(${val.image})`,
-                }}
+    <React.Fragment style={{translate:'0 -5rem'}}>
+      {/* channel switch */}
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignContent:'center',
+          alignItems:'center',
+          width: '100%',
+          
+        }}
+      >
+        <span style={{ fontWeight: 'bold', color: '#000' }}>Kênh chat</span>
+        <Select
+          className="header-search"
+          placeholder="Kênh tổ chức"
+          size="large"
+          prefix={<HomeFilled />}
+          style={{ marginBottom: '1rem',width:'30%',}}
+        />
+      </div>
+      <ChatContainer>
+        {/* ===========Bắt đầu leftcontent========== */}
+        <LeftContent>
+          <LeftContentHeader>
+            <Input placeholder="Tìm Kiếm..." prefix={<SearchOutlined />} style={{ width: '80%' }} />
+          </LeftContentHeader>
+          <LeftContentList>
+            {/* test in bằng mảng dữ liệu*/}
+            {data.map((val, idx) => (
+              <Discussion
+                key={idx}
+                className={selected != null && selected === idx ? 'discussion-active' : ''}
+                onClick={() => handleActive(idx)}
               >
-                <OnlineStatus></OnlineStatus>
-              </ChatAvatar>
-              <ChatStatus>
-                <ChatStatusName>{val.name}</ChatStatusName>
-                <LastMessage>{val.lastMessage}</LastMessage>
-              </ChatStatus>
-              <LeftTimer>1 tiếng</LeftTimer>
-            </Discussion>
-          ))}
-        </LeftContentList>
-      </LeftContent>
-      {/* ===========Kết Thúc leftcontent========== */}
-      {/* ===========Bát đầu RightContent========== */}
-      <RightContent>
-        <RightContentHeader>
-          <RightChatAvatar
-            style={{
-              backgroundImage:
-                'url(https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80)',
-            }}
-          ></RightChatAvatar>
-          <Rightinfo>
-            <RightChatName>Tôn Ngộ Không</RightChatName>
-            <RightTimer>Hoạt động 1h trước</RightTimer>
-          </Rightinfo>
-        </RightContentHeader>
-        <ChatBox>
-          <MessageContent>Hey, man! What's up, Mr Stark?👋</MessageContent>
-          <YourMessageContent>Kid, where'd you come from?</YourMessageContent>
-          <MessageContent>Hey, man! What's up, Mr Stark?👋</MessageContent>
-          <YourMessageContent>Kid, where'd you come from?</YourMessageContent>
-          <MessageContent>Hey, man! What's up, Mr Stark?👋</MessageContent>
-          <YourMessageContent>Kid, where'd you come from?</YourMessageContent>
-          <MessageContent>Hey, man! What's up, Mr Stark?👋</MessageContent>
-          <YourMessageContent>Kid, where'd you come from?</YourMessageContent>
-          <YourMessageContent>Kid, where'd you come from?</YourMessageContent>
-          <MessageContent>Hey, man! What's up, Mr Stark?👋</MessageContent>
-          <YourMessageContent>Kid, where'd you come from?</YourMessageContent>
-          <YourMessageContent>Kid, where'd you come from?</YourMessageContent>
-          <MessageContent>Hey, man! What's up, Mr Stark?👋</MessageContent>
-          <YourMessageContent>Kid, where'd you come from?</YourMessageContent>
-          <YourMessageContent>Kid, where'd you come from?</YourMessageContent>
-          <MessageContent>Hey, man! What's up, Mr Stark?👋</MessageContent>
-          <YourMessageContent>Kid, where'd you come from?</YourMessageContent>
-          <YourMessageContent>Kid, where'd you come from?</YourMessageContent>
-          <MessageContent>Hey, man! What's up, Mr Stark?👋</MessageContent>
-          <YourMessageContent>Kid, where'd you come from?</YourMessageContent>
-        </ChatBox>
-        <FooterChat>
-          <span className="smile-face">{smileFace}</span>
-          <Input placeholder="Nhập nội dung..." style={{ height: 50 }} />
-          <span className="paper-plane"> {paperPlane}</span>
-        </FooterChat>
-      </RightContent>
-      {/* ===========Kết Thúc RightContent========== */}
-    </ChatContainer>
+                <ChatAvatar
+                  style={{
+                    backgroundImage: `url(${val.image})`,
+                  }}
+                >
+                  <OnlineStatus></OnlineStatus>
+                </ChatAvatar>
+                <ChatStatus>
+                  <ChatStatusName>{val.name}</ChatStatusName>
+                  <LastMessage>{val.lastMessage}</LastMessage>
+                </ChatStatus>
+                <LeftTimer>1 tiếng</LeftTimer>
+              </Discussion>
+            ))}
+          </LeftContentList>
+        </LeftContent>
+        {/* ===========Kết Thúc leftcontent========== */}
+        {/* ===========Bát đầu RightContent========== */}
+        <RightContent>
+          <RightContentHeader>
+            <RightChatAvatar
+              style={{
+                backgroundImage:
+                  'url(https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80)',
+              }}
+            ></RightChatAvatar>
+            <Rightinfo>
+              <RightChatName>Tôn Ngộ Không</RightChatName>
+              <RightTimer>Hoạt động 1h trước</RightTimer>
+            </Rightinfo>
+          </RightContentHeader>
+          <ChatBox>
+            <MessageContent>Hey, man! What's up, Mr Stark?👋</MessageContent>
+            <YourMessageContent>Kid, where'd you come from?</YourMessageContent>
+            <MessageContent>Hey, man! What's up, Mr Stark?👋</MessageContent>
+            <YourMessageContent>Kid, where'd you come from?</YourMessageContent>
+            <MessageContent>Hey, man! What's up, Mr Stark?👋</MessageContent>
+            <YourMessageContent>Kid, where'd you come from?</YourMessageContent>
+            <MessageContent>Hey, man! What's up, Mr Stark?👋</MessageContent>
+            <YourMessageContent>Kid, where'd you come from?</YourMessageContent>
+            <YourMessageContent>Kid, where'd you come from?</YourMessageContent>
+            <MessageContent>Hey, man! What's up, Mr Stark?👋</MessageContent>
+            <YourMessageContent>Kid, where'd you come from?</YourMessageContent>
+            <YourMessageContent>Kid, where'd you come from?</YourMessageContent>
+            <MessageContent>Hey, man! What's up, Mr Stark?👋</MessageContent>
+            <YourMessageContent>Kid, where'd you come from?</YourMessageContent>
+            <YourMessageContent>Kid, where'd you come from?</YourMessageContent>
+            <MessageContent>Hey, man! What's up, Mr Stark?👋</MessageContent>
+            <YourMessageContent>Kid, where'd you come from?</YourMessageContent>
+            <YourMessageContent>Kid, where'd you come from?</YourMessageContent>
+            <MessageContent>Hey, man! What's up, Mr Stark?👋</MessageContent>
+            <YourMessageContent>Kid, where'd you come from?</YourMessageContent>
+          </ChatBox>
+          <FooterChat>
+            <span className="smile-face">{smileFace}</span>
+            <Input placeholder="Nhập nội dung..." style={{ height: 50 }} />
+            <span className="paper-plane"> {paperPlane}</span>
+          </FooterChat>
+        </RightContent>
+        {/* ===========Kết Thúc RightContent========== */}
+      </ChatContainer>
+    </React.Fragment>
   );
 }
 const heightOfHeader = '90';

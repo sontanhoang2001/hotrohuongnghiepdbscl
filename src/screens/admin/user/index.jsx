@@ -27,7 +27,7 @@ function User() {
   //định dạng cột hiển thị
   const columns = [
     {
-      title: 'account_type',
+      title: 'Loại tài khoản',
       dataIndex: 'account_type',
       key: 'account_type',
       render: (record) => (
@@ -49,7 +49,7 @@ function User() {
       ),
     },
     {
-      title: 'trạng thái',
+      title: 'Trạng thái',
       dataIndex: 'status',
       key: 'status',
       render: (record) => (
@@ -72,7 +72,7 @@ function User() {
     },
 
     {
-      title: 'Loại tk',
+      title: 'Loại người dùng',
       dataIndex: 'RoleId',
       key: 'RoleId',
       render: (record) => {
@@ -114,7 +114,7 @@ function User() {
       },
     },
     {
-      title: 'email',
+      title: 'Email',
       dataIndex: 'email',
       key: 'email',
       render: (record) => (

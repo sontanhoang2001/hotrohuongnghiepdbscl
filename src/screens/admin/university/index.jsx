@@ -1,8 +1,21 @@
-import { Row, Col, Card, Radio, Table, Button, Avatar, Typography, Pagination } from 'antd';
+import {
+  Row,
+  Col,
+  Card,
+  Radio,
+  Table,
+  Button,
+  Avatar,
+  Typography,
+  Pagination,
+  Popconfirm,
+} from 'antd';
 
-import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, LockFilled } from '@ant-design/icons';
 
 import {
+  deleteOrganization,
+  deleteUniversity,
   getAllUniversity,
   selectUniversity,
   selectUniversityPage,
@@ -11,7 +24,7 @@ import {
   selectUniversityToalRow,
 } from '../../../redux/universitySlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 
 const { Title } = Typography;
 
@@ -22,132 +35,143 @@ function University() {
   };
   //hàm bắt event delete
   const handleDelete = (id) => {
-    console.log(id);
+    dispatch(deleteOrganization(id));
   };
   //định dạng cột hiển thị
-  const columns = [
-    {
-      title: 'Tên',
-      dataIndex: 'name',
-      key: 'name',
-      render: (record) => (
-        <Avatar.Group>
-          <Avatar
-            className="shape-avatar"
-            shape="square"
-            size={40}
-            src={record.OrganizationDetail.image}
-          ></Avatar>
-          <div className="avatar-info">
-            {/* <Title level={5}>{university.name}</Title> */}
-            <Title level={5}>{record.name}</Title>
-            <p>{record.OrganizationDetail.email}</p>
-            {/* <p>{university.OrganizationDetail.email}</p> */}
-          </div>
-        </Avatar.Group>
-      ),
-    },
-    {
-      title: 'Rank',
-      dataIndex: 'rank',
-      key: 'rank',
-      render: (record) => (
-        <div className="author-info">
-          <Title level={5}>{record}</Title>
-        </div>
-      ),
-    },
-    {
-      title: 'Địa chỉ',
-      dataIndex: 'address',
-      key: 'address',
-      render: (record) => (
-        <div className="author-info">
-          <Title level={5}>{record}</Title>
-        </div>
-      ),
-    },
-    {
-      title: 'Tỉnh',
-      dataIndex: 'province',
-      key: 'province',
-      render: (record) => (
-        <div className="author-info">
-          <Title level={5}>{record}</Title>
-        </div>
-      ),
-    },
-
-    {
-      title: 'SĐT',
-      dataIndex: 'phone',
-      key: 'phone',
-      render: (record) => (
-        <div className="author-info">
-          <Title level={5}>{record}</Title>
-        </div>
-      ),
-    },
-    {
-      title: 'Năm',
-      dataIndex: 'lat',
-      key: 'lat',
-      render: (record) => (
-        <div className="author-info">
-          <Title level={5}>{record}</Title>
-        </div>
-      ),
-    },
-    {
-      title: 'Ngày cập nhật',
-      dataIndex: 'long',
-      key: 'long',
-      render: (record) => (
-        <div className="author-info">
-          <Title level={5}>{record}</Title>
-        </div>
-      ),
-    },
-    {
-      title: 'Mô tả',
-      dataIndex: 'description',
-      key: 'description',
-      render: (record) => (
-        <div className="author-info">
-          <Title level={5}>{record}</Title>
-        </div>
-      ),
-    },
-    {
-      title: 'Link',
-      dataIndex: 'url',
-      key: 'url',
-      render: (record) => (
-        <div className="author-info">
-          <Title level={5}>
-            <a href={record} rel="noopener noreferrer" target="_blank">
-              {record}
-            </a>
-          </Title>
-        </div>
-      ),
-    },
-    {
-      key: 'action',
-      render: (record) => (
-        <>
+  const columns = useMemo(
+    () => [
+      {
+        title: 'Tên',
+        fixed: 'left',
+        dataIndex: 'name',
+        key: 'name',
+        render: (record) => (
+          <Avatar.Group>
+            <Avatar
+              className="shape-avatar"
+              shape="square"
+              size={40}
+              src={record.OrganizationDetail.image}
+            ></Avatar>
+            <div className="avatar-info">
+              {/* <Title level={5}>{university.name}</Title> */}
+              <Title level={5}>{record.name}</Title>
+              <p>{record.OrganizationDetail.email}</p>
+              {/* <p>{university.OrganizationDetail.email}</p> */}
+            </div>
+          </Avatar.Group>
+        ),
+      },
+      {
+        title: 'Rank',
+        dataIndex: 'rank',
+        key: 'rank',
+        render: (record) => (
           <div className="author-info">
-            <Button type="text">
-              <EditOutlined onClick={() => handleEdit(record.id)} style={{ color: 'green' }} />
-            </Button>
-            <Button type="text" danger onClick={() => handleDelete(record.id)}>
-              <DeleteOutlined />
-            </Button>
+            <Title level={5}>{record}</Title>
           </div>
-        </>
-      ),
-    },
-  ];
+        ),
+      },
+      {
+        title: 'Địa chỉ',
+        dataIndex: 'address',
+        key: 'address',
+        render: (record) => (
+          <div className="author-info">
+            <Title level={5}>{record}</Title>
+          </div>
+        ),
+      },
+      {
+        title: 'Tỉnh',
+        dataIndex: 'province',
+        key: 'province',
+        render: (record) => (
+          <div className="author-info">
+            <Title level={5}>{record}</Title>
+          </div>
+        ),
+      },
+
+      {
+        title: 'SĐT',
+        dataIndex: 'phone',
+        key: 'phone',
+        render: (record) => (
+          <div className="author-info">
+            <Title level={5}>{record}</Title>
+          </div>
+        ),
+      },
+      {
+        title: 'Năm',
+        dataIndex: 'lat',
+        key: 'lat',
+        render: (record) => (
+          <div className="author-info">
+            <Title level={5}>{record}</Title>
+          </div>
+        ),
+      },
+      {
+        title: 'Ngày cập nhật',
+        dataIndex: 'long',
+        key: 'long',
+        render: (record) => (
+          <div className="author-info">
+            <Title level={5}>{record}</Title>
+          </div>
+        ),
+      },
+      {
+        title: 'Mô tả',
+        key: 'description',
+        width: 100,
+        render: (record) => (<span>{record.description}</span>)
+      },
+      {
+        title: 'Link',
+        dataIndex: 'url',
+        key: 'url',
+        render: (record) => (
+          <div className="author-info">
+            <Title level={5}>
+              <a href={record} rel="noopener noreferrer" target="_blank">
+                {record}
+              </a>
+            </Title>
+          </div>
+        ),
+      },
+      {
+        key: 'action',
+        title: 'Thao tác',
+        fixed: 'right',
+        width: 100,
+        render: (record) => (
+          <>
+            {/* <Button type="text">
+              <EditOutlined onClick={() => handleEdit(record.id)} style={{ color: 'green' }} />
+            </Button> */}
+            <Popconfirm
+              placement="leftTop"
+              title="Xác nhận xóa"
+              description="Xác nhận xóa tổ chức?"
+              okText="Xóa"
+              
+              onConfirm={() => handleDelete(record.id)}
+              cancelText="Hủy"
+            >
+              <Button danger title='Khóa tổ chức'>
+                <LockFilled />
+              </Button>
+            </Popconfirm>
+          </>
+        ),
+      },
+    ],
+    [],
+  );
 
   //goi redux
   const dispatch = useDispatch();
@@ -163,21 +187,26 @@ function University() {
     dispatch(getAllUniversity(payload));
   }, []);
 
-  const convertedData = getUniversity?.data.map((university, index) => {
-    return {
-      key: index.toString(),
-      id: university.OrganizationDetail.id,
-      name: university,
-      rank: university.OrganizationDetail.rank,
-      url: university.OrganizationDetail.url,
-      address: university.OrganizationDetail.address,
-      province: university.OrganizationDetail.province,
-      phone: university.OrganizationDetail.phone,
-      lat: university.OrganizationDetail.lat,
-      long: university.OrganizationDetail.long,
-      description: university.OrganizationDetail.description,
-    };
-  });
+  const convertedData = useMemo(
+    () =>
+      getUniversity?.data.map((university, index) => {
+        return {
+          key: index.toString(),
+          id: university.OrganizationDetail.id,
+          name: university,
+          rank: university.OrganizationDetail.rank,
+          url: university.OrganizationDetail.url,
+          address: university.OrganizationDetail.address,
+          province: university.OrganizationDetail.province,
+          phone: university.OrganizationDetail.phone,
+          lat: university.OrganizationDetail.lat,
+          long: university.OrganizationDetail.long,
+          description: university.OrganizationDetail.description,
+        };
+      }),
+    [getUniversity],
+  );
+
   //hàm phan trang
   const handlePageChange = (page, pageSize) => {
     const payload = { page, pageSize };

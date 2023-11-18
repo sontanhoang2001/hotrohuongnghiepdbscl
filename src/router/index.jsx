@@ -34,6 +34,8 @@ import ManageNews from '../screens/admin/news';
 import ManageCompanion from '../screens/admin/companion';
 import PrivateRoute from './PrivateRoute';
 import VerifyOrganization from '../screens/verifyQrganization';
+import OrganizationProfile from '../screens/organization/information';
+import OrganizationList from '../screens/organization/organizationlist';
 
 function Router() {
   return (
@@ -78,6 +80,10 @@ function Router() {
           <Route path="tin-nhan" element={<Chat />} />
           <Route path="danh-sach-tin-tuc" element={<ManageNews />} />
         </Route>
+        <Route path="/organization" element={<PrivateRoute />}>
+          <Route index element={<OrganizationList />} />          
+        </Route>
+
 
         {/* no other result match */}
         <Route path="*" element={<NotFound />} />

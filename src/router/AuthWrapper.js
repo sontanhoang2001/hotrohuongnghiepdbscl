@@ -1,14 +1,14 @@
 import React from 'react'
-import { useAppSelector } from '../../store/configureStore'
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const AuthWrapper = ({roles}) => {
-    const { user } = useAppSelector(state => state.account);
+    const { role,isLogin } = useSelector(state => state.auth);
     const location = useLocation();
 
-    if (!user) return <Navigate to="/login" state={{ from: location }} replace />
+    if (!isLogin) return <Navigate to="/login" state={{ from: location }} replace />
 
-    if (!roles?.some((r) => user.roles?.includes(r))) {
+    if (!roles?.some((r) => r===role)) {
         
         return <Navigate to="/" state={{ from: location }} replace />
     }

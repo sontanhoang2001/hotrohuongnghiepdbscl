@@ -91,7 +91,6 @@ function Mbti() {
   };
   //hàm bắt event delete
   const handleDelete = (id) => {
-    
     mbtiApi
       .deleteMbti(id)
       .then(({ data }) => {
@@ -162,6 +161,7 @@ function Mbti() {
       },
       {
         key: 'action',
+        fixed: 'right',
         dataIndex: 'action',
         render: (_, mbti) => (
           <div className="author-info">
@@ -169,9 +169,11 @@ function Mbti() {
               <EditOutlined style={{ color: 'green' }} />
             </Button>
             <Popconfirm
-              title="Title"
-              description="Open Popconfirm with Promise"
+              placement="leftTop"
+              title="Xác nhận xóa"             
+              okText="Xóa"
               onConfirm={() => handleDelete(mbti.id)}
+              cancelText="Hủy"
             >
               <Button danger>
                 <DeleteOutlined />
@@ -184,7 +186,7 @@ function Mbti() {
     [],
   );
 
-  //gọi redux
+  //gọi redux state
   const dispatch = useDispatch();
   const {
     data: mbtiData,

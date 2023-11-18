@@ -9,17 +9,19 @@ import {
   InboxOutlined,
   BookOutlined,
 } from '@ant-design/icons';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../../redux/authSlice';
 import styled from 'styled-components';
 
 function Sidenav({ color }) {
   const dispatch = useDispatch();
+  const {role}=useSelector(state=>state.auth);
   const navigate = useNavigate();
   const handleLogout = () => {
     dispatch(logout());
     navigate('/');
   };
+
   const dashboard = [
     <svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" key={0}>
       <path
@@ -64,8 +66,7 @@ function Sidenav({ color }) {
       type,
     };
   }
-
-  const items = [
+  const adminItems = [
     getItem(
       <NavLink to="/admin/dashboard">
         <span className="icon">{dashboard}</span>
@@ -152,6 +153,100 @@ function Sidenav({ color }) {
       '10',
     ),
   ];
+  const universityItems = [
+    getItem(
+      <NavLink to="/admin/dashboard">
+        <span className="icon">{dashboard}</span>
+        <span className="label">Dashboard</span>
+      </NavLink>,
+      '1',
+    ),
+    getItem(
+      <NavLink to="/organization">
+        <span className="icon">
+          <BankOutlined />
+        </span>
+        <span className="label">Danh sách tổ chức</span>
+      </NavLink>,
+      '2',
+    ),
+    getItem(
+      <NavLink to="/admin/danh-sach-cau-hoi">
+        <span className="icon">
+          <InboxOutlined />
+        </span>
+        <span className="label">Câu hỏi</span>
+      </NavLink>,
+      '3',
+    ),
+    getItem(
+      <NavLink to="/admin/danh-cau-hoi-dong-hanh">
+        <span className="icon">
+          <BookOutlined />
+        </span>
+        <span className="label">Đồng hành</span>
+      </NavLink>,
+      '4',
+    ),
+    getItem(
+      <NavLink to="/admin/danh-sach-nguoi-dung">
+        <span className="icon">
+          <UserOutlined />
+        </span>
+        <span className="label">Người dùng</span>
+      </NavLink>,
+      '5',
+    ),
+    getItem(
+      <NavLink to="/admin/danh-sach-tin-tuc">
+        <span className="icon">
+          <CopyOutlined />
+        </span>
+        <span className="label">Tin tức</span>
+      </NavLink>,
+      '6',
+    ),
+    getItem(
+      <MeunuItem>
+        <span className="label sidenav-title-content">Tài Khoản</span>
+      </MeunuItem>,
+      '7',
+    ),
+    getItem(
+      <NavLink to="/admin/profile">
+        <span className="icon">{profile}</span>
+        <span className="label">Profile</span>
+      </NavLink>,
+      '8',
+    ),
+    getItem(
+      <NavLink to="/admin/tin-nhan">
+        <span className="icon">
+          <CommentOutlined />
+        </span>
+        <span className="label">Tin Nhắn</span>
+      </NavLink>,
+      '9',
+    ),
+    getItem(
+      <MeunuItem>
+        <span className="icon">
+          <LogoutOutlined />
+        </span>
+        <span className="label" onClick={() => handleLogout()}>
+          Đăng xuất
+        </span>
+      </MeunuItem>,
+      '10',
+    ),
+  ];
+
+  const navItemsByRole={
+    "ADMIN":adminItems,
+    "UNIVERSITY":universityItems
+  }
+
+ 
   return (
     <>
       <div className="brand">
@@ -159,7 +254,7 @@ function Sidenav({ color }) {
         <p>ĐBSCL</p>
       </div>
       <hr />
-      <Menu defaultSelectedKeys={['1']} mode="inline" items={items} />
+      <Menu defaultSelectedKeys={['1']} mode="inline" items={navItemsByRole[role]} />
     </>
   );
 }
