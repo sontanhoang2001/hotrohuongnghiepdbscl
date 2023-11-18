@@ -31,8 +31,9 @@ module.exports = {
       let size = parseInt(req.query.size) || 10;
       let search = req.query.search;
       let postsCategoryId = req.query.category && parseInt(req.query.category);
+      let deleted = req.query.deleted;
 
-      const posts = await postsOrganizationService.getAll(organizationId, page, size, search, postsCategoryId); // Gọi chức năng từ service
+      const posts = await postsOrganizationService.getAll(organizationId, page, size, search, postsCategoryId, deleted); // Gọi chức năng từ service
       if (posts) {
         return responseHelper.sendResponse.SUCCESS(res, posts);
       }
@@ -99,5 +100,24 @@ module.exports = {
       responseHelper.sendResponse.SERVER_ERROR(res, null);
     }
   },
+
+
+  restoreOnePosts: async (req, res) => {
+    try {
+      const postsId = parseInt(req.params.id);
+      if (isNaN(postsId)) {
+        return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a valid postsId as a parameter');
+      }
+
+      const deletePosts = await postsOrganizationService.restore(postsId);
+      if (deletePosts) {
+        return responseHelper.sendResponse.SUCCESS(res, deletePosts, "Khôi phục bài viết thành công");
+      }
+
+      return responseHelper.sendResponse.BAD_REQUEST(res, null, "Khôi phục bài viết thất bại");
+    } catch (error) {
+      responseHelper.sendResponse.SERVER_ERROR(res, null);
+    }
+  }
 
 };

@@ -53,7 +53,7 @@ module.exports = {
       throw error; // Sau đó ném lỗi để xử lý ở phần gọi hàm
     }
   },
-  getAll: async (page, size, search, organizationTypeId, status) => {
+  getAll: async (page, size, search, organizationTypeId, status, deleted) => {
     try {
       const where = {};
       if (search) {
@@ -71,11 +71,16 @@ module.exports = {
         };
       }
 
+      if (deleted) {
+        where.deletedAt = { [Op.not]: null };
+      }
+
       // Tính offset
       const offset = (page - 1) * size;
 
       const { count, rows } = await Organization.findAndCountAll({
         where,
+        paranoid: false,
         offset,
         limit: size,
         attributes: ['id', 'name'],
@@ -83,11 +88,13 @@ module.exports = {
           {
             model: OrganizationDetail,
             attributes: ['id', 'image', 'address', 'province', 'email', 'phone', 'lat', 'long', 'description', 'url', 'rank'],
+            paranoid: false,
           },
           {
             model: VerifyOrganization,
             attributes: ['status'],
             where: whereVerifyOrganization,
+            paranoid: false,
           },
           {
             model: OrganizationType,
@@ -198,6 +205,11 @@ module.exports = {
     try {
       transaction = await sequelize.transaction();
 
+      const organization = await Organization.findByPk(organizationId, {
+        raw: true
+      });
+      const verifyOrganizationId = organization.verifyOrganizationId;
+
       const numberOfAffectedRows1 = await Organization.destroy({
         where: { id: organizationId },
       });
@@ -212,6 +224,62 @@ module.exports = {
       });
 
       if (numberOfAffectedRows2 === 0) {
+        await transaction.rollback();
+        return false;
+      }
+
+      const numberOfAffectedRows3 = await VerifyOrganization.destroy({
+        where: { id: verifyOrganizationId },
+      });
+
+      if (numberOfAffectedRows3 === 0) {
+        await transaction.rollback();
+        return false;
+      }
+      transaction.commit();
+      return true;
+    } catch (error) {
+      if (transaction) {
+        await transaction.rollback();
+      }
+      throw error;
+    }
+  },
+
+  restoreOrganization: async (organizationId) => {
+    let transaction;
+    try {
+      transaction = await sequelize.transaction();
+
+      const organization = await Organization.findByPk(organizationId, {
+        raw: true,
+        paranoid: false
+      });
+      const verifyOrganizationId = organization.verifyOrganizationId;
+
+      const numberOfAffectedRows1 = await Organization.restore({
+        where: { id: organizationId },
+      });
+
+      if (numberOfAffectedRows1 === 0) {
+        await transaction.rollback();
+        return false;
+      }
+
+      const numberOfAffectedRows2 = await OrganizationDetail.restore({
+        where: { organizationId: organizationId },
+      });
+
+      if (numberOfAffectedRows2 === 0) {
+        await transaction.rollback();
+        return false;
+      }
+
+      const numberOfAffectedRows3 = await VerifyOrganization.restore({
+        where: { id: verifyOrganizationId },
+      });
+
+      if (numberOfAffectedRows3 === 0) {
         await transaction.rollback();
         return false;
       }

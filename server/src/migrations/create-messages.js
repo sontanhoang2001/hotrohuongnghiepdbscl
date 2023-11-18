@@ -8,19 +8,30 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      sender_id: {
+      senderId: {
         type: Sequelize.INTEGER
       },
-      reciver_id: {
+      reciverId: {
+        type: Sequelize.INTEGER
+      },
+      adviserId : {
         type: Sequelize.INTEGER
       },
       content: {
         type: Sequelize.STRING
       },
+      status: {
+        type: Sequelize.INTEGER,
+        defaultValue: 1
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
-      }
+      },
+      updateAt: {
+        allowNull: false,
+        type: Sequelize.DATE
+      },
     });
   },
   down: async (queryInterface, Sequelize) => {

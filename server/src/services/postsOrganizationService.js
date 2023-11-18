@@ -2,6 +2,8 @@ const Question = require('../models').Question;
 const Answer = require('../models').Answer;
 const PostsOrganization = require('../models').PostsOrganization;
 const PostsCategory = require('../models').PostsCategory;
+const User = require('../models').User;
+
 
 // const sequelize = require('../database/connection_database');
 const { Op } = require('sequelize');
@@ -17,13 +19,20 @@ module.exports = {
       throw error;
     }
   },
-  getAll: async (organizationId, page, size, search, postsCategoryId) => {
+  getAll: async (organizationId, page, size, search, postsCategoryId, deleted) => {
     try {
       const where = {};
       where.organizationId = { [Op.eq]: organizationId };
+
+      
+      if (deleted) {
+        where.deletedAt = { [Op.not]: null };
+      }
+
       if (search) {
         where.title = { [Op.like]: `%${search}%` };
       }
+
       if (postsCategoryId) {
         where.postsCategoryId = { [Op.eq]: postsCategoryId };
       }
@@ -33,19 +42,21 @@ module.exports = {
 
       const { rows, count } = await PostsOrganization.findAndCountAll({
         where,
+        paranoid: false,
         offset,
         limit: size,
         attributes: ['id', 'title', 'thumbnail', 'content', 'status', 'displayDate'],
         include: [
+          {
+            model: User,
+            attributes: ['id'],
+          },
           {
             model: PostsCategory,
             attributes: ['id', 'name', 'description'],
           },
         ],
       });
-
-      // !posts.postsCategoryId) {
-      // const postsNewData = {...posts, authorId : userId, organizationId};
 
       // Chuẩn bị dữ liệu phân trang
       const pagination = {
@@ -115,4 +126,28 @@ module.exports = {
       throw error;
     }
   },
+
+  restore: async (postsId) => {
+    try {
+      // Lấy thông tin bài viết cần xóa
+      const post = await PostsOrganization.findByPk(postsId, {
+        paranoid: false
+      });
+
+      // Xóa bài viết
+      const numberOfAffectedRows = await PostsOrganization.restore({
+        where: { id: postsId },
+      });
+
+      if (numberOfAffectedRows === 0) {
+        return false;
+      }
+
+      // Trả về dữ liệu bài viết vừa xóa cho client
+      return post;
+    } catch (error) {
+      throw error;
+    }
+  },
+  
 };

@@ -4,18 +4,19 @@ const dbConnection = require('../database/dbConnection');
 const responseHelper = require('../helpers/responseHelper');
 
 module.exports = {
-  getUsers: async (req, res) => {
+  getAll: async (req, res) => {
     // try {
-      let page = parseInt(req.query.page) || 1;
-      let size = parseInt(req.query.size) || 10;
-      let search = req.query.search;
+    let page = parseInt(req.query.page) || 1;
+    let size = parseInt(req.query.size) || 10;
+    let search = req.query.search;
+    let disable = req.query.disable;
 
-      const users = await userService.getAll(page, size, search); // Gọi chức năng từ service
-      if (users) {
-        return responseHelper.sendResponse.SUCCESS(res, users);
-      }
+    const users = await userService.getAll(page, size, search, disable); // Gọi chức năng từ service
+    if (users) {
+      return responseHelper.sendResponse.SUCCESS(res, users);
+    }
 
-      return responseHelper.sendResponse.BAD_REQUEST(res, null);
+    return responseHelper.sendResponse.BAD_REQUEST(res, null);
     // } catch (error) {
     //   responseHelper.sendResponse.SERVER_ERROR(res, null);
     // }
@@ -27,13 +28,13 @@ module.exports = {
     //   });
   },
   getUserById: async (req, res) => {
-    try {
-      const userId = parseInt(req.params.id);
-      const users = await userService.getUserByUserId(userId); // Gọi chức năng từ service
-      responseHelper.sendResponse.SUCCESS(res, users);
-    } catch (error) {
-      responseHelper.sendResponse.SERVER_ERROR(res, null);
-    }
+    // try {
+    const userId = parseInt(req.params.id);
+    const users = await userService.getUserByUserId(userId); // Gọi chức năng từ service
+    responseHelper.sendResponse.SUCCESS(res, users);
+    // } catch (error) {
+    //   responseHelper.sendResponse.SERVER_ERROR(res, null);
+    // }
   },
   getUserProfile: async (req, res) => {
     try {
@@ -69,16 +70,38 @@ module.exports = {
   },
 
   deleteOneUser: async (req, res) => {
-    const userId = parseInt(req.params.id);
+    try {
+      const userId = parseInt(req.params.id);
 
-    if (isNaN(userId)) {
-      return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a valid userId as a parameter');
-    }
+      if (isNaN(userId)) {
+        return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a valid userId as a parameter');
+      }
 
-    const resultDeleteUser = await userService.deleteOneUser(userId);
-    if (resultDeleteUser) {
-      return responseHelper.sendResponse.SUCCESS(res, null, "Bạn đã xóa người dùng thành công");
+      const resultDeleteUser = await userService.deleteOneUser(userId);
+      if (resultDeleteUser) {
+        return responseHelper.sendResponse.SUCCESS(res, null, 'Vô hiệu hóa người dùng thành công');
+      }
+      return responseHelper.sendResponse.NOT_FOUND(res, null, 'Vô hiệu hóa người dùng thất bại');
+    } catch (error) {
+      responseHelper.sendResponse.SERVER_ERROR(res, null);
     }
-    return responseHelper.sendResponse.NOT_FOUND(res, null);
+  },
+
+  restoreOneUser: async (req, res) => {
+    try {
+      const userId = parseInt(req.params.id);
+
+      if (isNaN(userId)) {
+        return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a valid userId as a parameter');
+      }
+
+      const resultDeleteUser = await userService.restoreOneUser(userId);
+      if (resultDeleteUser) {
+        return responseHelper.sendResponse.SUCCESS(res, null, 'Khôi phục người dùng thành công');
+      }
+      return responseHelper.sendResponse.NOT_FOUND(res, null, 'Khôi phục người dùng thất bại');
+    } catch (error) {
+      responseHelper.sendResponse.SERVER_ERROR(res, null);
+    }
   },
 };

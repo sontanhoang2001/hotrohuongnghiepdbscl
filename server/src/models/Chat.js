@@ -1,7 +1,7 @@
 'use strict';
 const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Channel extends Model {
+  class Chat extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -9,12 +9,12 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Channel.belongsTo(models.User);
-      Channel.hasMany(models.Organization);
-      Channel.hasMany(models.UserChannel);
+      Chat.hasMany(models.Messages);
+      Chat.hasMany(models.UserChat);
+      Chat.belongsTo(models.Organization);
     }
   }
-  Channel.init(
+  Chat.init(
     {
       name: DataTypes.STRING,
       avatar: DataTypes.STRING,
@@ -25,10 +25,10 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: 'Channel',
-      tableName: 'channel',
+      modelName: 'Chat',
+      tableName: 'Chat',
       paranoid: true
     },
   );
-  return Channel;
+  return Chat;
 };

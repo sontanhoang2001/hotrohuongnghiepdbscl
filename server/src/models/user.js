@@ -12,9 +12,10 @@ module.exports = (sequelize, DataTypes) => {
       User.hasOne(models.UserDetail);
       User.belongsTo(models.Role);
       User.hasMany(models.Messages);
-      User.hasMany(models.Channel);
-      User.hasMany(models.UserChannel);
+      User.hasMany(models.UserChat);
       User.hasOne(models.VerifyOrganization);
+      User.hasMany(models.PostsOrganization);
+
       User.belongsToMany(models.Organization, { through: models.UserOrganization });
     }
 
@@ -39,6 +40,7 @@ module.exports = (sequelize, DataTypes) => {
       sequelize,
       modelName: 'User',
       tableName: 'user',
+      paranoid: true
     },
   );
   return User;

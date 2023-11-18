@@ -21,6 +21,7 @@ module.exports = (sequelize, DataTypes) => {
       sequelize,
       modelName: 'MajorMBTI',
       tableName: 'major_mbti',
+      paranoid: true
     },
   );
   return MajorMBTI;

@@ -35,22 +35,23 @@ module.exports = {
   },
 
   getAll: async (req, res) => {
-    // try {
+    try {
     let page = parseInt(req.query.page) || 1;
     let size = parseInt(req.query.size) || 10;
     let search = req.query.search;
     let organizationTypeId = req.query.organizationType;
     let status = parseInt(req.query.status);
+    let deleted = req.query.deleted;
 
-    const listUniversity = await organizationService.getAll(page, size, search, organizationTypeId, status); // Gọi chức năng từ service
+    const listUniversity = await organizationService.getAll(page, size, search, organizationTypeId, status, deleted); // Gọi chức năng từ service
     if (listUniversity) {
       return responseHelper.sendResponse.SUCCESS(res, listUniversity);
     }
 
     return responseHelper.sendResponse.BAD_REQUEST(res, null);
-    // } catch (error) {
-    //   responseHelper.sendResponse.SERVER_ERROR(res, null);
-    // }
+    } catch (error) {
+      responseHelper.sendResponse.SERVER_ERROR(res, null);
+    }
   },
 
   getOrganizationById: async (req, res) => {
@@ -121,6 +122,24 @@ module.exports = {
         return responseHelper.sendResponse.SUCCESS(res, null, 'Thực hiện xóa tổ chức thành công');
       }
       return responseHelper.sendResponse.BAD_REQUEST(res, null, 'Thực hiện xóa tổ chức thất bại');
+    } catch (error) {
+      responseHelper.sendResponse.SERVER_ERROR(res, null);
+    }
+  },
+
+  restoreOneOrganization: async (req, res) => {
+    try {
+      const organizationId = parseInt(req.params.id);
+
+      if (isNaN(organizationId)) {
+        return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a valid organizationId as a parameter');
+      }
+
+      const deleteOrganization = await organizationService.restoreOrganization(organizationId);
+      if (deleteOrganization) {
+        return responseHelper.sendResponse.SUCCESS(res, null, 'Thực hiện khôi phục tổ chức thành công');
+      }
+      return responseHelper.sendResponse.BAD_REQUEST(res, null, 'Thực hiện khôi phục tổ chức thất bại');
     } catch (error) {
       responseHelper.sendResponse.SERVER_ERROR(res, null);
     }

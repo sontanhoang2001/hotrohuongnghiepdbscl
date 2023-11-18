@@ -9,22 +9,21 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Organization.belongsTo(models.Channel);
       Organization.belongsTo(models.VerifyOrganization);
       Organization.belongsTo(models.OrganizationType);
       Organization.hasOne(models.OrganizationDetail);
+      Organization.hasMany(models.Chat);
       Organization.hasMany(models.FAQs);
       Organization.hasMany(models.PostsOrganization);
+      
       Organization.belongsToMany(models.User, { through: models.UserOrganization });
     }
   }
   Organization.init(
     {
       name: DataTypes.STRING,
-      userId: DataTypes.INTEGER,
       organizationTypeId: DataTypes.INTEGER,
       verifyOrganizationId: DataTypes.INTEGER,
-      channelId: DataTypes.INTEGER
     },
     {
       sequelize,

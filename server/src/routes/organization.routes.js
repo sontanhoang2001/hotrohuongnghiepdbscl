@@ -11,6 +11,7 @@ const {
   createOrganization,
   updateOrganization,
   deleteOneOrganization,
+  restoreOneOrganization,
   getAllOrganizationType,
   reqToVerifyOrganization,
   updateStatusVerifyOrganization,
@@ -29,6 +30,7 @@ router.get('/id/:id', getOrganizationById);
 router.post('/add', middleware.verifyToken, middleware.checkRole([Roles.ORGANIZATION]), createOrganization);
 router.patch('/edit/:id', middleware.verifyToken, middleware.checkRole([Roles.ORGANIZATION]), updateOrganization);
 router.delete('/delete/:id', middleware.verifyToken, middleware.checkRole([Roles.ORGANIZATION]), deleteOneOrganization);
+router.post('/restore/:id', middleware.verifyToken, middleware.checkRole([Roles.ORGANIZATION]), restoreOneOrganization);
 
 // User thuộc tổ chức
 router.get('/getAllByUser', middleware.verifyToken, middleware.checkRole([Roles.ORGANIZATION]), getAllByUser);

@@ -4,14 +4,15 @@ const router = express.Router();
 const middleware = require('../middleware/verifyToken');
 
 //* Call the controller with the methods
-const { getUsers, getUserById, updateUser, deleteOneUser, getUserProfile} = require( '../controllers/usersController');
+const { getAll, getUserById, updateUser, deleteOneUser, getUserProfile, restoreOneUser} = require( '../controllers/usersController');
 
 //* Here I defined the methods 
-router.get('/', getUsers);
+router.get('/', getAll);
 router.get('/id/:id', getUserById);
 router.get('/profile', middleware.verifyToken, getUserProfile);
 
 router.patch('/edit', middleware.verifyToken, updateUser);
 router.delete('/delete/:id', deleteOneUser);
+router.post('/restore/:id', restoreOneUser);
 
 module.exports = router;

@@ -36,11 +36,15 @@ module.exports = {
       throw error; // Sau đó ném lỗi để xử lý ở phần gọi hàm
     }
   },
-  getAll: async (page, size, search) => {
+  getAll: async (page, size, search, deleted) => {
     try {
       const where = {};
       if (search) {
         where.question = { [Op.like]: `%${search}%` };
+      }
+
+      if (deleted) {
+        where.deletedAt = { [Op.not]: null };
       }
 
       // Tính offset
@@ -48,12 +52,14 @@ module.exports = {
 
       const { count } = await Question.findAndCountAll({
         where,
+        paranoid: false,
         offset,
         limit: size,
       });
 
       const { rows } = await Question.findAndCountAll({
         where,
+        paranoid: false,
         offset,
         limit: size,
         attributes: ['id', 'question'],
@@ -62,6 +68,7 @@ module.exports = {
             model: Answer,
             as: 'Answers',
             attributes: ['answer', 'value'],
+            paranoid: false,
           },
           {
             model: QuestionGroup,
@@ -188,6 +195,42 @@ module.exports = {
       throw error; // Sau đó ném lỗi để xử lý ở phần gọi hàm
     }
   },
+
+  restoreQuestion: async (questionId) => {
+    let transaction;
+    try {
+      transaction = await sequelize.transaction();
+
+      // Destroy question
+      const numberOfAffectedRows1 = await Question.restore({
+        where: { id: questionId },
+      });
+
+      // Kiểm tra số lượng dòng bị ảnh hưởng bởi câu lệnh update cho câu hỏi
+      if (numberOfAffectedRows1 === 0) {
+        await transaction.rollback();
+        return false; // Trả về false nếu không có câu hỏi nào được cập nhật
+      }
+
+      // Destroy answers
+      const numberOfAffectedRows2 = await Answer.restore({
+        where: { questionId: questionId },
+      });
+
+      if (numberOfAffectedRows2 === 0) {
+        await transaction.rollback();
+        return false; // Trả về false nếu có lỗi khi cập nhật một trong các câu trả lời
+      }
+      transaction.commit();
+      return true;
+    } catch (error) {
+      if (transaction) {
+        await transaction.rollback(); // Rollback transaction nếu có lỗi
+      }
+      throw error; // Sau đó ném lỗi để xử lý ở phần gọi hàm
+    }
+  },
+
   newDoTestMBTI: async (page, size) => {
     try {
       const questionGroupIdValues = [1, 2, 3, 4];

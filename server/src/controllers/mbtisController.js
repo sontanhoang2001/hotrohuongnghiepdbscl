@@ -27,8 +27,9 @@ module.exports = {
       let page = parseInt(req.query.page) || 1;
       let size = parseInt(req.query.size) || 10;
       let search = req.query.search;
+      let deleted = req.query.deleted;
 
-      const mbti = await mbtiService.getAll(page, size, search); // Gọi chức năng từ service
+      const mbti = await mbtiService.getAll(page, size, search, deleted); // Gọi chức năng từ service
       if (mbti) {
         return responseHelper.sendResponse.SUCCESS(res, mbti);
       }
@@ -86,16 +87,33 @@ module.exports = {
 
       const deleteQuestion = await mbtiService.deleteQuestion(questionId);
       if (deleteQuestion) {
-        return responseHelper.sendResponse.SUCCESS(res, null, "Thực hiện xóa thành công");
+        return responseHelper.sendResponse.SUCCESS(res, null, 'Thực hiện xóa thành công');
       }
 
-      return responseHelper.sendResponse.BAD_REQUEST(res, null, "Thực hiện xóa thất bại");
+      return responseHelper.sendResponse.BAD_REQUEST(res, null, 'Thực hiện xóa thất bại');
     } catch (error) {
       responseHelper.sendResponse.SERVER_ERROR(res, null);
     }
   },
 
+  
+  restoreOneQuestion: async (req, res) => {
+    // try {
+      const questionId = parseInt(req.params.id);
+      if (isNaN(questionId)) {
+        return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a valid questionId as a parameter');
+      }
 
+      const deleteQuestion = await mbtiService.restoreQuestion(questionId);
+      if (deleteQuestion) {
+        return responseHelper.sendResponse.SUCCESS(res, null, 'Khôi phục câu hỏi thành công');
+      }
+
+      return responseHelper.sendResponse.BAD_REQUEST(res, null, 'Khôi phục câu hỏi thất bại');
+    // } catch (error) {
+    //   responseHelper.sendResponse.SERVER_ERROR(res, null);
+    // }
+  },
   newDoTestMBTI: async (req, res) => {
     try {
       const mbti = await mbtiService.newDoTestMBTI();
@@ -135,5 +153,4 @@ module.exports = {
       responseHelper.sendResponse.SERVER_ERROR(res, null);
     }
   },
-
 };

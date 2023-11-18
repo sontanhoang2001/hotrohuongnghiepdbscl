@@ -23,7 +23,7 @@ module.exports = {
       displayDate: {
         type: Sequelize.DATE
       },
-      authorId: {
+      userId: {
         type: Sequelize.INTEGER
       },
       postsCategoryId: {

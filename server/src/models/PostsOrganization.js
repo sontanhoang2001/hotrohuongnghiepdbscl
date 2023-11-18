@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
       status: DataTypes.INTEGER,
       displayDate: DataTypes.DATE,
       organizationId: DataTypes.INTEGER,
-      authorId: DataTypes.INTEGER,
+      userId: DataTypes.INTEGER,
       postsCategoryId: DataTypes.INTEGER
     },
     {

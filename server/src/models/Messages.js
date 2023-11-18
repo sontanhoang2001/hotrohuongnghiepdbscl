@@ -10,19 +10,22 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Messages.belongsTo(models.User);
-      Messages.belongsTo(models.Channel);
+      Messages.belongsTo(models.Chat);
     }
   }
   Messages.init(
     {
-      sender_id: DataTypes.INTEGER,
-      reciver_id: DataTypes.INTEGER,
+      senderId: DataTypes.INTEGER,
+      reciverId: DataTypes.INTEGER,
+      adviserId: DataTypes.INTEGER,
       content: DataTypes.STRING,
+      status: DataTypes.INTEGER,
     },
     {
       sequelize,
       modelName: 'Messages',
       tableName: 'messages',
+      paranoid: true
     },
   );
   return Messages;

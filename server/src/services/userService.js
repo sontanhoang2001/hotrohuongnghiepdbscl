@@ -26,14 +26,16 @@ module.exports = {
       throw error;
     }
   },
-  getAll: async (page, size, search) => {
+  getAll: async (page, size, search, disable) => {
     try {
       const where = {};
+      
+      if (disable) {
+        where.deletedAt = { [Op.not]: null };
+      }
+
       if (search) {
-        where[Op.or] = [
-          { email: { [Op.like]: `%${search}%` }}, 
-          { phone: { [Op.like]: `%${search}%` }}
-        ];
+        where[Op.or] = [{ email: { [Op.like]: `%${search}%` } }, { phone: { [Op.like]: `%${search}%` } }];
       }
 
       // Tính offset
@@ -41,8 +43,13 @@ module.exports = {
 
       const { count, rows } = await User.findAndCountAll({
         where,
+        paranoid: false,
         offset,
         limit: size,
+        include : [{
+          model: Role,
+          attributes: ['id', 'name']
+        }]
       });
 
       // Chuẩn bị dữ liệu phân trang
@@ -65,15 +72,7 @@ module.exports = {
         include: [
           {
             model: UserDetail,
-            attributes: [
-              'id',
-              'fullName',
-              'gender',
-              'avatar',
-              'birthday',
-              'address',
-              'addressDetail',
-            ],
+            attributes: ['id', 'fullName', 'gender', 'avatar', 'birthday', 'address', 'addressDetail'],
           },
           {
             model: Role,
@@ -131,7 +130,7 @@ module.exports = {
     }
   },
 
-  deleteOneUser : async (userId) => {
+  deleteOneUser: async (userId) => {
     let transaction;
     try {
       transaction = await sequelize.transaction();
@@ -149,6 +148,41 @@ module.exports = {
 
       // Destroy answers
       const numberOfAffectedRows2 = await UserDetail.destroy({
+        where: { userId: userId },
+      });
+
+      if (numberOfAffectedRows2 === 0) {
+        await transaction.rollback();
+        return false; // Trả về false nếu có lỗi khi cập nhật một trong các câu trả lời
+      }
+      transaction.commit();
+      return true;
+    } catch (error) {
+      if (transaction) {
+        await transaction.rollback(); // Rollback transaction nếu có lỗi
+      }
+      throw error; // Sau đó ném lỗi để xử lý ở phần gọi hàm
+    }
+  },
+
+  restoreOneUser: async (userId) => {
+    let transaction;
+    try {
+      transaction = await sequelize.transaction();
+
+      // Destroy question
+      const numberOfAffectedRows1 = await User.restore({
+        where: { id: userId },
+      });
+
+      // Kiểm tra số lượng dòng bị ảnh hưởng bởi câu lệnh update cho câu hỏi
+      if (numberOfAffectedRows1 === 0) {
+        await transaction.rollback();
+        return false; // Trả về false nếu không có câu hỏi nào được cập nhật
+      }
+
+      // Destroy answers
+      const numberOfAffectedRows2 = await UserDetail.restore({
         where: { userId: userId },
       });
 
