@@ -189,6 +189,8 @@ module.exports = {
 
       const result = await authService.loginUser(username);
 
+      console.log("login check", result)
+
       // Đúng 'username email or phone'
       if (result) {
         const validPassword = await bcrypt.compare(user.password, result?.password);
