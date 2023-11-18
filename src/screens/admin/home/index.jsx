@@ -43,7 +43,7 @@ function Home() {
         placement={placement === 'right' ? 'left' : 'right'}
         closable={false}
         onClose={() => setVisible(false)}
-        visible={visible}
+        open={visible}
         key={placement === 'right' ? 'left' : 'right'}
         width={250}
         className={`drawer-sidebar ${pathname === 'rtl' ? 'drawer-sidebar-rtl' : ''} `}

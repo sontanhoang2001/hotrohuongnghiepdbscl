@@ -25,6 +25,7 @@ import OtpByPhone from '../components/otpByPhone';
 
 //admin's pages
 import Profile from '../screens/admin/profile';
+// import Admin from '../screens/admin/home';
 import Dashboard from '../screens/admin/dashboard/index';
 import University from '../screens/admin/university';
 import User from '../screens/admin/user';
@@ -34,8 +35,12 @@ import ManageNews from '../screens/admin/news';
 import ManageCompanion from '../screens/admin/companion';
 import PrivateRoute from './PrivateRoute';
 import VerifyOrganization from '../screens/verifyQrganization';
+
 import OrganizationProfile from '../screens/organization/information';
 import OrganizationList from '../screens/organization/organizationlist';
+
+import Posts from '../screens/admin/posts';
+
 
 function Router() {
   return (
@@ -79,6 +84,7 @@ function Router() {
           <Route path="profile" element={<Profile />} />
           <Route path="tin-nhan" element={<Chat />} />
           <Route path="danh-sach-tin-tuc" element={<ManageNews />} />
+          <Route path="tao-bai-viet" element={<Posts />} />
         </Route>
         <Route path="/organization" element={<PrivateRoute />}>
           <Route index element={<OrganizationList />} />          

@@ -82,7 +82,7 @@ function Header() {
   return (
     <Nav>
       {/* logo image */}
-      <div className="logo">
+      <div className="brand-logo">
         <img src="./images/logo/logo2.webp" alt="home" onClick={() => navigate('/')} />
       </div>
       <div className="top-nav">
@@ -148,7 +148,7 @@ const Nav = styled.header`
   height: 120px;
   position: relative;
   margin-top: 0;
-  .logo {
+  .brand-logo {
     display: flex;
     align-items: center;
     justify-content: center;
