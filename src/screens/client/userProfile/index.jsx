@@ -175,7 +175,7 @@ function UserProfile() {
 
                   <p></p>
                   <p className="underline">
-                    {address}, {addressDetail}dfsfdsfdsssssssssssssdddddddddddddddddddddddddddddd
+                    {address}, {addressDetail}
                   </p>
                 </Col>
               </Row>
@@ -195,7 +195,6 @@ function UserProfile() {
           </Card>
         </Col>
         <Col xs={24} sm={24} md={24} lg={12}>
-          <Card></Card>
           <Card>
             <HistoryHeader>
               <h3>Lịch sử test MBTI</h3>

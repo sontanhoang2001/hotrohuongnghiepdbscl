@@ -1,9 +1,8 @@
-import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons';
 import {
   Button,
   Card,
   Cascader,
-  Checkbox,
   Col,
   Form,
   Input,
@@ -14,7 +13,6 @@ import {
   message,
 } from 'antd';
 import React, { useState } from 'react';
-import styled from 'styled-components';
 import ProvincesOpenApi from '../../api/province';
 import { HeadingTitle, MarginTopContent } from '../../globalStyles';
 //gọi api thông tin vùng miền
@@ -28,16 +26,15 @@ const getBase64 = (file) =>
     reader.onerror = (error) => reject(error);
   });
 const beforeUpload = (file) => {
-  const checkImageExtension =
-    file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/jpg';
-  if (!checkImageExtension) {
-    message.error('Chỉ có thể tải lên JPG/PNG file!', 3);
+  const isPdf = file.type === 'application/pdf';
+  if (!isPdf) {
+    message.error('Chỉ có thể tải lên PDF file!', 3);
   }
   const isLt2M = file.size / 1024 / 1024 < 2;
   if (!isLt2M) {
     message.error('File không vượt quá 2MB', 3);
   }
-  return (checkImageExtension && isLt2M) || Upload.LIST_IGNORE;
+  return (isPdf && isLt2M) || Upload.LIST_IGNORE;
 };
 
 function VerifyOrganization() {
@@ -46,6 +43,7 @@ function VerifyOrganization() {
   const [previewTitle, setPreviewTitle] = useState('');
   const [fileList, setFileList] = useState([]);
 
+  //giá trị mặt định
   const initialValues = {
     email: 'abc@gmail.com',
     phone: '0987654321',
@@ -55,10 +53,13 @@ function VerifyOrganization() {
     agreement: true,
   };
 
+  //fillter cho địa chỉ
   const filter = (inputValue, path) =>
     path.some((option) => option.label.toLowerCase().indexOf(inputValue.toLowerCase()) > -1);
 
+  //huỷ preview
   const handleCancel = () => setPreviewOpen(false);
+  //hàm preview
   const handlePreview = async (file) => {
     if (!file.url && !file.preview) {
       file.preview = await getBase64(file.originFileObj);
@@ -67,7 +68,8 @@ function VerifyOrganization() {
     setPreviewOpen(true);
     setPreviewTitle(file.name || file.url.substring(file.url.lastIndexOf('/') + 1));
   };
-  const handleChange = ({ fileList: newFileList }) => setFileList(newFileList);
+  //bắt sự kiện upload file
+  const handleChangeUpload = ({ fileList: newFileList }) => setFileList(newFileList);
   const uploadButton = (
     <div>
       <PlusOutlined />
@@ -80,6 +82,8 @@ function VerifyOrganization() {
       </div>
     </div>
   );
+
+  //hàm submit form
   const onFinish = (values) => {
     console.log(values);
   };
@@ -235,14 +239,18 @@ function VerifyOrganization() {
                 <Row align="middle" justify="center">
                   <Col>
                     <Upload
-                      action={'http://localhost:9000'}
                       listType="picture-card"
                       fileList={fileList}
                       onPreview={handlePreview}
-                      onChange={handleChange}
+                      onChange={handleChangeUpload}
                       beforeUpload={beforeUpload}
-                      accept=".png,.jpeg,.jpg"
+                      accept=".pdf"
                       maxCount={1}
+                      customRequest={({ file, onSuccess }) => {
+                        setTimeout(() => {
+                          onSuccess('ok');
+                        }, 0);
+                      }}
                       style={{ width: 200, height: 200 }}
                     >
                       {fileList.length >= 1 ? null : uploadButton}
