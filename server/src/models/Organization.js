@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
       Organization.belongsTo(models.VerifyOrganization);
       Organization.belongsTo(models.OrganizationType);
       Organization.hasOne(models.OrganizationDetail);
-      Organization.hasMany(models.Chat);
+      Organization.hasOne(models.Chat);
       Organization.hasMany(models.FAQs);
       Organization.hasMany(models.PostsOrganization);
       
