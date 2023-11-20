@@ -23,7 +23,8 @@ app.use(morgan('dev'));
 
 //* Enabling cors for all request by usiing cors middleware
 // app.use(cors());
-app.use(cors({ origin: 'http://localhost:3000' })); // Replace with the appropriate origin
+const allowedOrigins = ['http://localhost:3000', 'https://hotrohuongnghiepdbscl-50a160f317f0.herokuapp.com'];
+app.use(cors({ origin: allowedOrigins })); // Replace with the appropriate origin
 
 
 // app.use((req, res, next) => {
