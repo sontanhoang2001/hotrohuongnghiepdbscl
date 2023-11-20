@@ -6,7 +6,7 @@ const User = require('../models').User;
 
 
 // const sequelize = require('../database/connection_database');
-const { Op } = require('sequelize');
+const { Op, where } = require('sequelize');
 
 module.exports = {
   createNew: async (payload) => {
@@ -78,7 +78,17 @@ module.exports = {
           id: postsId,
           organizationId: organizationId,
         },
-        attributes: ['id', 'title', 'thumbnail', 'content'],
+        attributes: ['id', 'title', 'thumbnail', 'content', 'status', 'displayDate'],
+        include: [
+          {
+            model: User,
+            attributes: ['id'],
+          },
+          {
+            model: PostsCategory,
+            attributes: ['id', 'name', 'description'],
+          },
+        ],
       });
 
       if (postsOrganization instanceof PostsOrganization) {
@@ -90,9 +100,14 @@ module.exports = {
       throw error;
     }
   },
-  update: async (postsId, payload) => {
+  update: async (organizationId, postsId, payload) => {
     try {
-      const posts = await PostsOrganization.findByPk(postsId);
+      const posts = await PostsOrganization.findOne({
+        where: {
+          id: postsId,
+          organizationId: organizationId,
+        }
+      });
 
       if (!posts) {
         return false;
@@ -106,22 +121,25 @@ module.exports = {
     }
   },
 
-  delete: async (postsId) => {
+  delete: async (organizationId, postsId) => {
     try {
       // Lấy thông tin bài viết cần xóa
-      const post = await PostsOrganization.findByPk(postsId);
+      const posts = await PostsOrganization.findOne({
+        where: {
+          id: postsId,
+          organizationId: organizationId,
+        }
+      });
 
       // Xóa bài viết
-      const numberOfAffectedRows = await PostsOrganization.destroy({
-        where: { id: postsId },
-      });
+      const numberOfAffectedRows = await posts.destroy();
 
       if (numberOfAffectedRows === 0) {
         return false;
       }
 
       // Trả về dữ liệu bài viết vừa xóa cho client
-      return post;
+      return posts;
     } catch (error) {
       throw error;
     }
