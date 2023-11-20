@@ -1,6 +1,6 @@
 const Question = require('../models').Question;
 const Answer = require('../models').Answer;
-const PostsOrganization = require('../models').PostsOrganization;
+const FAQs = require('../models').FAQs;
 const PostsCategory = require('../models').PostsCategory;
 const User = require('../models').User;
 
@@ -11,10 +11,10 @@ const { Op, where } = require('sequelize');
 module.exports = {
   createNew: async (payload) => {
     try {
-      // Tạo mới bài viết mới
-      const postsOrganization = await PostsOrganization.create(payload);
+      // Tạo mới FAQs mới
+      const faqs = await FAQs.create(payload);
 
-      return postsOrganization;
+      return faqs;
     } catch (error) {
       throw error;
     }

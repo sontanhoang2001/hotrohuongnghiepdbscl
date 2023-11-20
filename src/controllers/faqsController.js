@@ -1,4 +1,4 @@
-const postsOrganizationService = require('../services/postsOrganizationService');
+const FAQsService = require('../services/faqsService');
 
 const responseHelper = require('../helpers/responseHelper');
 
@@ -12,15 +12,15 @@ module.exports = {
         return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a valid organizationId as a parameter');
       }
 
-      if (!posts.question || !posts.answer || !posts.content || !posts.thumbnail || !posts.content || !posts.status || !posts.displayDate || !posts.postsCategoryId) {
+      if (!posts.question || !posts.answer) {
         return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a full and valid parameter');
       }
 
       const postsNewData = {...posts, userId};
 
-      const createNew = await postsOrganizationService.createNew(postsNewData);
+      const createNew = await FAQsService.createNew(postsNewData);
       if (createNew) {
-        return responseHelper.sendResponse.SUCCESS(res, createNew, 'Bạn đã tạo bài viết thành công');
+        return responseHelper.sendResponse.SUCCESS(res, createNew, 'Bạn đã tạo câu hỏi thường gặp thành công');
       }
       return responseHelper.sendResponse.BAD_REQUEST(res, null);
     } catch (error) {
@@ -38,7 +38,7 @@ module.exports = {
       
       let deleted = req.query.deleted;
 
-      const posts = await postsOrganizationService.getAll(organizationId, page, size, search, postsCategoryId, deleted); // Gọi chức năng từ service
+      const posts = await FAQsService.getAll(organizationId, page, size, search, postsCategoryId, deleted); // Gọi chức năng từ service
       if (posts) {
         return responseHelper.sendResponse.SUCCESS(res, posts);
       }
@@ -53,7 +53,7 @@ module.exports = {
     try {
       let organizationId = req.query.organizationId && parseInt(req.query.organizationId);
       const postsId = parseInt(req.params.id);
-      const posts = await postsOrganizationService.getById(postsId, organizationId); // Gọi chức năng từ service
+      const posts = await FAQsService.getById(postsId, organizationId); // Gọi chức năng từ service
       if (posts) {
         return responseHelper.sendResponse.SUCCESS(res, posts);
       }
@@ -82,7 +82,7 @@ module.exports = {
         return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a full and valid parameter');
       }
 
-      const updatePosts = await postsOrganizationService.update(organizationId, postsId, posts);
+      const updatePosts = await FAQsService.update(organizationId, postsId, posts);
       if (updatePosts) {
         return responseHelper.sendResponse.SUCCESS(res, updatePosts, 'Cập nhật bài viết thành công');
       }
@@ -102,7 +102,7 @@ module.exports = {
         return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a valid postsId as a parameter');
       }
 
-      const deletePosts = await postsOrganizationService.delete(organizationId, postsId);
+      const deletePosts = await FAQsService.delete(organizationId, postsId);
       if (deletePosts) {
         return responseHelper.sendResponse.SUCCESS(res, deletePosts, "Thực hiện xóa thành công");
       }
@@ -121,7 +121,7 @@ module.exports = {
         return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a valid postsId as a parameter');
       }
 
-      const deletePosts = await postsOrganizationService.restore(postsId);
+      const deletePosts = await FAQsService.restore(postsId);
       if (deletePosts) {
         return responseHelper.sendResponse.SUCCESS(res, deletePosts, "Khôi phục bài viết thành công");
       }

@@ -1,5 +1,4 @@
-const Question = require('../models').Question;
-const Answer = require('../models').Answer;
+
 const PostsOrganization = require('../models').PostsOrganization;
 const PostsCategory = require('../models').PostsCategory;
 const User = require('../models').User;
@@ -163,6 +162,19 @@ module.exports = {
 
       // Trả về dữ liệu bài viết vừa xóa cho client
       return post;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+
+  getAllPostsCategory: async () => {
+    try {
+      const postsCategory = await PostsCategory.findAll({
+        attributes: ['id', 'name', 'description'],
+      });
+
+      return postsCategory;
     } catch (error) {
       throw error;
     }

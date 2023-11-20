@@ -130,6 +130,18 @@ module.exports = {
     } catch (error) {
       responseHelper.sendResponse.SERVER_ERROR(res, null);
     }
-  }
+  },
 
+  getAllPostsCategory: async (req, res) => {
+    try {
+      const listPostsCategory = await postsOrganizationService.getAllPostsCategory(); // Gọi chức năng từ service
+      if (listPostsCategory) {
+        return responseHelper.sendResponse.SUCCESS(res, listPostsCategory);
+      }
+
+      return responseHelper.sendResponse.BAD_REQUEST(res, null);
+    } catch (error) {
+      responseHelper.sendResponse.SERVER_ERROR(res, null);
+    }
+  },
 };
