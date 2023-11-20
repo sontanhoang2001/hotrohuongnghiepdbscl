@@ -8,7 +8,7 @@ module.exports = {
     // const userId = parseInt(req.user.id);
     const organization = req.body;
     const userId = req.user.id;
-    
+
     if (
       !organization.organizationTypeId ||
       !organization.name ||
@@ -37,19 +37,19 @@ module.exports = {
 
   getAll: async (req, res) => {
     try {
-    let page = parseInt(req.query.page) || 1;
-    let size = parseInt(req.query.size) || 10;
-    let search = req.query.search;
-    let organizationTypeId = req.query.organizationType;
-    let status = parseInt(req.query.status);
-    let deleted = req.query.deleted;
+      let page = parseInt(req.query.page) || 1;
+      let size = parseInt(req.query.size) || 10;
+      let search = req.query.search;
+      let organizationTypeId = req.query.organizationType;
+      let status = parseInt(req.query.status);
+      let deleted = req.query.deleted;
 
-    const listUniversity = await organizationService.getAll(page, size, search, organizationTypeId, status, deleted); // Gọi chức năng từ service
-    if (listUniversity) {
-      return responseHelper.sendResponse.SUCCESS(res, listUniversity);
-    }
+      const listUniversity = await organizationService.getAll(page, size, search, organizationTypeId, status, deleted); // Gọi chức năng từ service
+      if (listUniversity) {
+        return responseHelper.sendResponse.SUCCESS(res, listUniversity);
+      }
 
-    return responseHelper.sendResponse.BAD_REQUEST(res, null);
+      return responseHelper.sendResponse.BAD_REQUEST(res, null);
     } catch (error) {
       responseHelper.sendResponse.SERVER_ERROR(res, null);
     }
@@ -68,7 +68,6 @@ module.exports = {
       responseHelper.sendResponse.SERVER_ERROR(res, null);
     }
   },
-
 
   updateOrganization: async (req, res) => {
     try {
@@ -208,29 +207,33 @@ module.exports = {
   },
 
   updateStatusVerifyOrganization: async (req, res) => {
-    try {
-      const organizationId = parseInt(req.body.organizationId);
-      const status = parseInt(req.body.status);
+    // try {
+    const organizationId = parseInt(req.body.organizationId);
+    const status = parseInt(req.body.status);
 
-      if (Number.isNaN(organizationId) || Number.isNaN(status)) {
-        return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a full and valid parameter');
-      }
+    if (Number.isNaN(organizationId) || Number.isNaN(status)) {
+      return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a full and valid parameter');
+    }
 
-      const verifyOrganization = await organizationService.updateStatusVerifyOrganization(organizationId, status);
-      if (verifyOrganization) {
-        const sendTo = verifyOrganization.userEmail;
-        // Gửi email theo đúng nội dung trạng thái
-        const mainContent =
-          verifyOrganization.userEmail == 1
-            ? 'Xin chúc mừng. Chúng tôi đã xem xét hồ sơ tổ chức của bạn và ghi nhận tổ chức của bạn là họp lệ với yêu cầu của chúng tôi. Kể từ bây giờ bạn có thể truy cập quyền quản trị tổ chức của bạn.'
-            : 'Để thông báo rằng hồ sơ tổ chức của bạn hiện tại chưa đáp ứng yêu cầu của chúng tôi. Bạn vui lòng nhanh chóng hoàn thiện hồ sơ và tiến hành nộp lại hồ sơ. Chúng tôi sẽ xem xét và thông báo đến bạn sớm nhất.';
+    const verifyOrganization = await organizationService.updateStatusVerifyOrganization(organizationId, status);
+    console.log('verifyOrganization>>', verifyOrganization);
+    if (verifyOrganization) {
+      const receivers = verifyOrganization.userEmails;
+      // Gửi email theo đúng nội dung trạng thái
+      const mainContent =
+        verifyOrganization.status == 1
+          ? 'Xin chúc mừng. Chúng tôi đã xem xét hồ sơ tổ chức của bạn và ghi nhận tổ chức của bạn là họp lệ với yêu cầu của chúng tôi. Kể từ bây giờ bạn có thể truy cập quyền quản trị tổ chức của bạn.'
+          : 'Để thông báo rằng hồ sơ tổ chức của bạn hiện tại chưa đáp ứng yêu cầu của chúng tôi. Bạn vui lòng nhanh chóng hoàn thiện hồ sơ và tiến hành nộp lại hồ sơ. Chúng tôi sẽ xem xét và thông báo đến bạn sớm nhất.';
 
-        const icon = verifyOrganization.userEmail == 1 ? '✔' : '❌';
-        // send mail with defined transport object
-        const transporter = createTransporter();
+      const icon = verifyOrganization.status == 1 ? '✔' : '❌';
+      // send mail with defined transport object
+      const transporter = createTransporter();
+
+      // Gửi từng email
+      for (let userEmail of receivers) {
         const info = await transporter.sendMail({
-          from: `"Support Organization 📩" <${sendTo}>`, // sender address
-          to: sendTo, // list of receivers
+          from: `"Support Organization 📩" <${userEmail.email}>`, // sender address
+          to: userEmail.email, // list of receivers
           subject: `Xác nhận trạng thái tổ chức ${icon}`, // Subject line
           text: `Xác nhận trạng thái tổ chức`, // plain text body
           html: `
@@ -254,30 +257,31 @@ module.exports = {
           </div>
           `, // html body
         });
-
-        // Gửi phản hồi thành công nếu email đã được gửi
-        return responseHelper.sendResponse.SUCCESS(res, verifyOrganization, 'Đã cập nhật trạng thái tổ chức thành công');
       }
 
-      return responseHelper.sendResponse.BAD_REQUEST(res, null, 'Đã cập nhật trạng thái tổ chức thất bại');
-    } catch (error) {
-      responseHelper.sendResponse.SERVER_ERROR(res, null);
+      // Gửi phản hồi thành công nếu email đã được gửi
+      return responseHelper.sendResponse.SUCCESS(res, verifyOrganization, 'Đã cập nhật trạng thái tổ chức thành công');
     }
+
+    return responseHelper.sendResponse.BAD_REQUEST(res, null, 'Đã cập nhật trạng thái tổ chức thất bại');
+    // } catch (error) {
+    //   responseHelper.sendResponse.SERVER_ERROR(res, null);
+    // }
   },
 
   getAllByUser: async (req, res) => {
     try {
-    let page = parseInt(req.query.page) || 1;
-    let size = parseInt(req.query.size) || 10;
-    let search = req.query.search;
-    let userId = req.user.id;
+      let page = parseInt(req.query.page) || 1;
+      let size = parseInt(req.query.size) || 10;
+      let search = req.query.search;
+      let userId = req.user.id;
 
-    const listOrganization = await organizationService.getAllByUser(userId, page, size, search); // Gọi chức năng từ service
-    if (listOrganization) {
-      return responseHelper.sendResponse.SUCCESS(res, listOrganization);
-    }
+      const listOrganization = await organizationService.getAllByUser(userId, page, size, search); // Gọi chức năng từ service
+      if (listOrganization) {
+        return responseHelper.sendResponse.SUCCESS(res, listOrganization);
+      }
 
-    return responseHelper.sendResponse.BAD_REQUEST(res, null);
+      return responseHelper.sendResponse.BAD_REQUEST(res, null);
     } catch (error) {
       responseHelper.sendResponse.SERVER_ERROR(res, null);
     }
@@ -285,22 +289,21 @@ module.exports = {
 
   getOneByOrganizationId: async (req, res) => {
     try {
+      const userId = req.user.id;
+      const organizationId = req.params.id;
 
-    const userId = req.user.id;
-    const organizationId = req.params.id;
+      // Check user có thuộc tổ chức ko ?
+      const checkUserResult = await organizationService.checkUserBelongtoOrganization(userId, organizationId);
+      if (!checkUserResult) {
+        return responseHelper.sendResponse.UNAUTHORIZED(res, null);
+      }
 
-    // Check user có thuộc tổ chức ko ?
-    const checkUserResult = await organizationService.checkUserBelongtoOrganization(userId, organizationId);
-    if (!checkUserResult) {
-      return responseHelper.sendResponse.UNAUTHORIZED(res, null);
-    }
+      const listUniversity = await organizationService.getOneByOrganizationId(userId, organizationId); // Gọi chức năng từ service
+      if (listUniversity) {
+        return responseHelper.sendResponse.SUCCESS(res, listUniversity);
+      }
 
-    const listUniversity = await organizationService.getOneByOrganizationId(userId, organizationId); // Gọi chức năng từ service
-    if (listUniversity) {
-      return responseHelper.sendResponse.SUCCESS(res, listUniversity);
-    }
-
-    return responseHelper.sendResponse.BAD_REQUEST(res, null);
+      return responseHelper.sendResponse.BAD_REQUEST(res, null);
     } catch (error) {
       responseHelper.sendResponse.SERVER_ERROR(res, null);
     }

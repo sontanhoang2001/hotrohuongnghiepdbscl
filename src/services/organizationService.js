@@ -369,7 +369,9 @@ module.exports = {
           },
         ],
       });
-      const verifyOrganizationId = organization.dataValues.verifyOrganizationId;
+      const plainOrganization = organization.get({plain: true});
+
+      const verifyOrganizationId = plainOrganization.verifyOrganizationId;
 
       // Update fileAttached for VerifyOrganization
       const [numberOfAffectedRows1] = await VerifyOrganization.update(
@@ -386,7 +388,7 @@ module.exports = {
       const result = {
         verifyOrganizationId,
         status,
-        userEmail: organization.dataValues.User.dataValues.email,
+        userEmails: plainOrganization.Users,
       };
 
       return result;

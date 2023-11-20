@@ -12,7 +12,7 @@ module.exports = {
         return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a valid organizationId as a parameter');
       }
 
-      if (!posts.title || !posts.thumbnail || !posts.content || !posts.thumbnail || !posts.content || !posts.status || !posts.displayDate || !posts.postsCategoryId) {
+      if (!posts.question || !posts.answer || !posts.content || !posts.thumbnail || !posts.content || !posts.status || !posts.displayDate || !posts.postsCategoryId) {
         return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a full and valid parameter');
       }
 
