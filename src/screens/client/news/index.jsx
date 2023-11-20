@@ -6,184 +6,10 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { useDispatch } from 'react-redux';
 import ImageCard from '../../../components/card/imageCard';
-import { HeadingTitle, MarginTopContent } from '../../../globalStyles';
+import { HeadingTitle, MarginTopContent, Title } from '../../../globalStyles';
+import { news } from './news';
+import { Link } from 'react-router-dom';
 
-const data = [
-  {
-    image: 'istockphoto-1402360271-612x612.jpg',
-    title: 'abc1',
-    content:
-      'Eiusmod laboris laboris culpa duis irure labore exercitation consectetur dolor magna sunt. Cillum magna veniam deserunt sunt aliqua qui sunt ex reprehenderit. Id occaecat laboris irure magna proident sunt. Enim eu anim ad duis non magna. Esse dolore irure aliquip do laboris consectetur eiusmod excepteur. Ullamco mollit velit ad cupidatat ex amet do do.',
-  },
-  {
-    image: 'istockphoto-1402360271-612x612.jpg',
-    title: 'abc2',
-    content:
-      'Eiusmod laboris laboris culpa duis irure labore exercitation consectetur dolor magna sunt. Cillum magna veniam deserunt sunt aliqua qui sunt ex reprehenderit. Id occaecat laboris irure magna proident sunt. Enim eu anim ad duis non magna. Esse dolore irure aliquip do laboris consectetur eiusmod excepteur. Ullamco mollit velit ad cupidatat ex amet do do.',
-  },
-  {
-    image: 'istockphoto-1402360271-612x612.jpg',
-    title: 'abc3',
-    content:
-      'Eiusmod laboris laboris culpa duis irure labore exercitation consectetur dolor magna sunt. Cillum magna veniam deserunt sunt aliqua qui sunt ex reprehenderit. Id occaecat laboris irure magna proident sunt. Enim eu anim ad duis non magna. Esse dolore irure aliquip do laboris consectetur eiusmod excepteur. Ullamco mollit velit ad cupidatat ex amet do do.',
-  },
-  {
-    image: 'istockphoto-1402360271-612x612.jpg',
-    title: 'abc',
-    content:
-      'Eiusmod laboris laboris culpa duis irure labore exercitation consectetur dolor magna sunt. Cillum magna veniam deserunt sunt aliqua qui sunt ex reprehenderit. Id occaecat laboris irure magna proident sunt. Enim eu anim ad duis non magna. Esse dolore irure aliquip do laboris consectetur eiusmod excepteur. Ullamco mollit velit ad cupidatat ex amet do do.',
-  },
-  {
-    image: 'istockphoto-1402360271-612x612.jpg',
-    title: 'abc4',
-    content:
-      'Eiusmod laboris laboris culpa duis irure labore exercitation consectetur dolor magna sunt. Cillum magna veniam deserunt sunt aliqua qui sunt ex reprehenderit. Id occaecat laboris irure magna proident sunt. Enim eu anim ad duis non magna. Esse dolore irure aliquip do laboris consectetur eiusmod excepteur. Ullamco mollit velit ad cupidatat ex amet do do.',
-  },
-  {
-    image: 'istockphoto-1402360271-612x612.jpg',
-    title: 'abc',
-    content:
-      'Eiusmod laboris laboris culpa duis irure labore exercitation consectetur dolor magna sunt. Cillum magna veniam deserunt sunt aliqua qui sunt ex reprehenderit. Id occaecat laboris irure magna proident sunt. Enim eu anim ad duis non magna. Esse dolore irure aliquip do laboris consectetur eiusmod excepteur. Ullamco mollit velit ad cupidatat ex amet do do.',
-  },
-  {
-    image: 'istockphoto-1402360271-612x612.jpg',
-    title: 'abc6',
-    content:
-      'Eiusmod laboris laboris culpa duis irure labore exercitation consectetur dolor magna sunt. Cillum magna veniam deserunt sunt aliqua qui sunt ex reprehenderit. Id occaecat laboris irure magna proident sunt. Enim eu anim ad duis non magna. Esse dolore irure aliquip do laboris consectetur eiusmod excepteur. Ullamco mollit velit ad cupidatat ex amet do do.',
-  },
-  {
-    image: 'istockphoto-1402360271-612x612.jpg',
-    title: 'abc',
-    content:
-      'Eiusmod laboris laboris culpa duis irure labore exercitation consectetur dolor magna sunt. Cillum magna veniam deserunt sunt aliqua qui sunt ex reprehenderit. Id occaecat laboris irure magna proident sunt. Enim eu anim ad duis non magna. Esse dolore irure aliquip do laboris consectetur eiusmod excepteur. Ullamco mollit velit ad cupidatat ex amet do do.',
-  },
-  {
-    image: 'istockphoto-1402360271-612x612.jpg',
-    title: 'abc8',
-    content:
-      'Eiusmod laboris laboris culpa duis irure labore exercitation consectetur dolor magna sunt. Cillum magna veniam deserunt sunt aliqua qui sunt ex reprehenderit. Id occaecat laboris irure magna proident sunt. Enim eu anim ad duis non magna. Esse dolore irure aliquip do laboris consectetur eiusmod excepteur. Ullamco mollit velit ad cupidatat ex amet do do.',
-  },
-  {
-    image: 'istockphoto-1402360271-612x612.jpg',
-    title: 'abc',
-    content:
-      'Eiusmod laboris laboris culpa duis irure labore exercitation consectetur dolor magna sunt. Cillum magna veniam deserunt sunt aliqua qui sunt ex reprehenderit. Id occaecat laboris irure magna proident sunt. Enim eu anim ad duis non magna. Esse dolore irure aliquip do laboris consectetur eiusmod excepteur. Ullamco mollit velit ad cupidatat ex amet do do.',
-  },
-  {
-    image: 'istockphoto-1402360271-612x612.jpg',
-    title: 'abc',
-    content:
-      'Eiusmod laboris laboris culpa duis irure labore exercitation consectetur dolor magna sunt. Cillum magna veniam deserunt sunt aliqua qui sunt ex reprehenderit. Id occaecat laboris irure magna proident sunt. Enim eu anim ad duis non magna. Esse dolore irure aliquip do laboris consectetur eiusmod excepteur. Ullamco mollit velit ad cupidatat ex amet do do.',
-  },
-  {
-    image: 'istockphoto-1402360271-612x612.jpg',
-    title: 'abc',
-    content:
-      'Eiusmod laboris laboris culpa duis irure labore exercitation consectetur dolor magna sunt. Cillum magna veniam deserunt sunt aliqua qui sunt ex reprehenderit. Id occaecat laboris irure magna proident sunt. Enim eu anim ad duis non magna. Esse dolore irure aliquip do laboris consectetur eiusmod excepteur. Ullamco mollit velit ad cupidatat ex amet do do.',
-  },
-  {
-    image: 'istockphoto-1402360271-612x612.jpg',
-    title: 'abc',
-    content:
-      'Eiusmod laboris laboris culpa duis irure labore exercitation consectetur dolor magna sunt. Cillum magna veniam deserunt sunt aliqua qui sunt ex reprehenderit. Id occaecat laboris irure magna proident sunt. Enim eu anim ad duis non magna. Esse dolore irure aliquip do laboris consectetur eiusmod excepteur. Ullamco mollit velit ad cupidatat ex amet do do.',
-  },
-  {
-    image: 'istockphoto-1402360271-612x612.jpg',
-    title: 'abc',
-    content:
-      'Eiusmod laboris laboris culpa duis irure labore exercitation consectetur dolor magna sunt. Cillum magna veniam deserunt sunt aliqua qui sunt ex reprehenderit. Id occaecat laboris irure magna proident sunt. Enim eu anim ad duis non magna. Esse dolore irure aliquip do laboris consectetur eiusmod excepteur. Ullamco mollit velit ad cupidatat ex amet do do.',
-  },
-  {
-    image: 'istockphoto-1402360271-612x612.jpg',
-    title: 'abc',
-    content:
-      'Eiusmod laboris laboris culpa duis irure labore exercitation consectetur dolor magna sunt. Cillum magna veniam deserunt sunt aliqua qui sunt ex reprehenderit. Id occaecat laboris irure magna proident sunt. Enim eu anim ad duis non magna. Esse dolore irure aliquip do laboris consectetur eiusmod excepteur. Ullamco mollit velit ad cupidatat ex amet do do.',
-  },
-  {
-    image: 'istockphoto-1402360271-612x612.jpg',
-    title: 'abc',
-    content:
-      'Eiusmod laboris laboris culpa duis irure labore exercitation consectetur dolor magna sunt. Cillum magna veniam deserunt sunt aliqua qui sunt ex reprehenderit. Id occaecat laboris irure magna proident sunt. Enim eu anim ad duis non magna. Esse dolore irure aliquip do laboris consectetur eiusmod excepteur. Ullamco mollit velit ad cupidatat ex amet do do.',
-  },
-  {
-    image: 'istockphoto-1402360271-612x612.jpg',
-    title: 'abc',
-    content:
-      'Eiusmod laboris laboris culpa duis irure labore exercitation consectetur dolor magna sunt. Cillum magna veniam deserunt sunt aliqua qui sunt ex reprehenderit. Id occaecat laboris irure magna proident sunt. Enim eu anim ad duis non magna. Esse dolore irure aliquip do laboris consectetur eiusmod excepteur. Ullamco mollit velit ad cupidatat ex amet do do.',
-  },
-  {
-    image: 'istockphoto-1402360271-612x612.jpg',
-    title: 'abc',
-    content:
-      'Eiusmod laboris laboris culpa duis irure labore exercitation consectetur dolor magna sunt. Cillum magna veniam deserunt sunt aliqua qui sunt ex reprehenderit. Id occaecat laboris irure magna proident sunt. Enim eu anim ad duis non magna. Esse dolore irure aliquip do laboris consectetur eiusmod excepteur. Ullamco mollit velit ad cupidatat ex amet do do.',
-  },
-  {
-    image: 'istockphoto-1402360271-612x612.jpg',
-    title: 'abc',
-    content:
-      'Eiusmod laboris laboris culpa duis irure labore exercitation consectetur dolor magna sunt. Cillum magna veniam deserunt sunt aliqua qui sunt ex reprehenderit. Id occaecat laboris irure magna proident sunt. Enim eu anim ad duis non magna. Esse dolore irure aliquip do laboris consectetur eiusmod excepteur. Ullamco mollit velit ad cupidatat ex amet do do.',
-  },
-  {
-    image: 'istockphoto-1402360271-612x612.jpg',
-    title: 'abc',
-    content:
-      'Eiusmod laboris laboris culpa duis irure labore exercitation consectetur dolor magna sunt. Cillum magna veniam deserunt sunt aliqua qui sunt ex reprehenderit. Id occaecat laboris irure magna proident sunt. Enim eu anim ad duis non magna. Esse dolore irure aliquip do laboris consectetur eiusmod excepteur. Ullamco mollit velit ad cupidatat ex amet do do.',
-  },
-  {
-    image: 'istockphoto-1402360271-612x612.jpg',
-    title: 'abc',
-    content:
-      'Eiusmod laboris laboris culpa duis irure labore exercitation consectetur dolor magna sunt. Cillum magna veniam deserunt sunt aliqua qui sunt ex reprehenderit. Id occaecat laboris irure magna proident sunt. Enim eu anim ad duis non magna. Esse dolore irure aliquip do laboris consectetur eiusmod excepteur. Ullamco mollit velit ad cupidatat ex amet do do.',
-  },
-  {
-    image: 'istockphoto-1402360271-612x612.jpg',
-    title: 'abc',
-    content:
-      'Eiusmod laboris laboris culpa duis irure labore exercitation consectetur dolor magna sunt. Cillum magna veniam deserunt sunt aliqua qui sunt ex reprehenderit. Id occaecat laboris irure magna proident sunt. Enim eu anim ad duis non magna. Esse dolore irure aliquip do laboris consectetur eiusmod excepteur. Ullamco mollit velit ad cupidatat ex amet do do.',
-  },
-  {
-    image: 'istockphoto-1402360271-612x612.jpg',
-    title: 'abc',
-    content:
-      'Eiusmod laboris laboris culpa duis irure labore exercitation consectetur dolor magna sunt. Cillum magna veniam deserunt sunt aliqua qui sunt ex reprehenderit. Id occaecat laboris irure magna proident sunt. Enim eu anim ad duis non magna. Esse dolore irure aliquip do laboris consectetur eiusmod excepteur. Ullamco mollit velit ad cupidatat ex amet do do.',
-  },
-  {
-    image: 'istockphoto-1402360271-612x612.jpg',
-    title: 'abc',
-    content:
-      'Eiusmod laboris laboris culpa duis irure labore exercitation consectetur dolor magna sunt. Cillum magna veniam deserunt sunt aliqua qui sunt ex reprehenderit. Id occaecat laboris irure magna proident sunt. Enim eu anim ad duis non magna. Esse dolore irure aliquip do laboris consectetur eiusmod excepteur. Ullamco mollit velit ad cupidatat ex amet do do.',
-  },
-  {
-    image: 'istockphoto-1402360271-612x612.jpg',
-    title: 'abc',
-    content:
-      'Eiusmod laboris laboris culpa duis irure labore exercitation consectetur dolor magna sunt. Cillum magna veniam deserunt sunt aliqua qui sunt ex reprehenderit. Id occaecat laboris irure magna proident sunt. Enim eu anim ad duis non magna. Esse dolore irure aliquip do laboris consectetur eiusmod excepteur. Ullamco mollit velit ad cupidatat ex amet do do.',
-  },
-  {
-    image: 'istockphoto-1402360271-612x612.jpg',
-    title: 'abc',
-    content:
-      'Eiusmod laboris laboris culpa duis irure labore exercitation consectetur dolor magna sunt. Cillum magna veniam deserunt sunt aliqua qui sunt ex reprehenderit. Id occaecat laboris irure magna proident sunt. Enim eu anim ad duis non magna. Esse dolore irure aliquip do laboris consectetur eiusmod excepteur. Ullamco mollit velit ad cupidatat ex amet do do.',
-  },
-  {
-    image: 'istockphoto-1402360271-612x612.jpg',
-    title: 'abc',
-    content:
-      'Eiusmod laboris laboris culpa duis irure labore exercitation consectetur dolor magna sunt. Cillum magna veniam deserunt sunt aliqua qui sunt ex reprehenderit. Id occaecat laboris irure magna proident sunt. Enim eu anim ad duis non magna. Esse dolore irure aliquip do laboris consectetur eiusmod excepteur. Ullamco mollit velit ad cupidatat ex amet do do.',
-  },
-  {
-    image: 'istockphoto-1402360271-612x612.jpg',
-    title: 'abc',
-    content:
-      'Eiusmod laboris laboris culpa duis irure labore exercitation consectetur dolor magna sunt. Cillum magna veniam deserunt sunt aliqua qui sunt ex reprehenderit. Id occaecat laboris irure magna proident sunt. Enim eu anim ad duis non magna. Esse dolore irure aliquip do laboris consectetur eiusmod excepteur. Ullamco mollit velit ad cupidatat ex amet do do.',
-  },
-  {
-    image: 'istockphoto-1402360271-612x612.jpg',
-    title: 'abc',
-    content:
-      'Eiusmod laboris laboris culpa duis irure labore exercitation consectetur dolor magna sunt. Cillum magna veniam deserunt sunt aliqua qui sunt ex reprehenderit. Id occaecat laboris irure magna proident sunt. Enim eu anim ad duis non magna. Esse dolore irure aliquip do laboris consectetur eiusmod excepteur. Ullamco mollit velit ad cupidatat ex amet do do.',
-  },
-];
 function News() {
   const [open, setOpen] = useState(false);
   const [cardSelected, setCardSelected] = useState(0);
@@ -211,7 +37,7 @@ function News() {
         <List
           // loading={pendingState}
           grid={{ column: 3 }}
-          dataSource={data}
+          dataSource={news}
           pagination={false}
           //render content
           renderItem={(val, idx) => (
@@ -221,7 +47,9 @@ function News() {
                 setOpen(true);
               }}
             >
-              <ImageCard key={idx} title={val.title} src={`../images/news/${val.image}`} />
+              <Link to={`/tin-tuc/${val.id}`}>
+                <ImageCard key={idx} title={val.title} src={`../images/news/${val.image}`} />
+              </Link>
             </div>
           )}
         ></List>
@@ -235,41 +63,9 @@ function News() {
           // onShowSizeChange={handlePageChange}
           style={{ marginTop: 20, marginBottom: 20 }}
         />
-        {/* <Modal
-          className="universities-modal"
-          title={getUniversity?.data[cardSelected].name}
-          centered
-          open={open}
-          onOk={() => setOpen(false)}
-          onCancel={() => setOpen(false)}
-          width={1000}
-          footer={null}
-        >
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <img
-              style={{ width: '80%', objectFit: 'cover' }}
-              src={`${getUniversity?.data[cardSelected].UniversityDetail.image}`}
-              alt=""
-            />
-          </div>
-          <p style={{ marginTop: '3%' }}>
-            {getUniversity?.data[cardSelected].UniversityDetail.description}{' '}
-            <Button type="link">
-              <a target="_blank" href={getUniversity?.data[cardSelected].UniversityDetail.url}>
-                Xem thêm
-              </a>
-            </Button>
-          </p>
-        </Modal> */}
       </MarginTopContent>
     </div>
   );
 }
-const Title = styled.div`
-  margin-top: 60px;
-  .underline {
-    border-bottom: 4px solid var(--primary-color);
-  }
-`;
 
 export default News;

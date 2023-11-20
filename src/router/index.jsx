@@ -10,6 +10,7 @@ import SignUpV1 from '../screens/signupV1';
 //client's pages
 import Home from '../screens/client/home';
 import News from '../screens/client/news';
+import NewsDetail from '../screens/client/newsDetail';
 import MBTI from '../screens/client/mbti';
 import TestMbti from '../screens/client/testMbti';
 import Universities from '../screens/client/university';
@@ -17,7 +18,6 @@ import Companion from '../screens/client/companion';
 import UserProfile from '../screens/client/userProfile';
 import ForgotPassword from '../screens/client/forgotpassword';
 import PostMBTI from '../screens/client/postMBTI';
-
 //test chức năng otp phone
 // import Dashboard from '../screens/dashboard';
 import AuthSocial from '../components/authSocial';
@@ -56,7 +56,8 @@ function Router() {
           <Route path="/postMBTI" element={<PostMBTI />} />
           <Route path="/" element={<Home />} />
           <Route path="/counter" element={<Counter />} />
-          <Route path="tin-tuc" element={<News />} />
+          <Route path="tin-tuc" element={<News />}></Route>
+          <Route path="tin-tuc/:newsId" element={<NewsDetail />} />
           <Route path="trach-nghiem-tinh-cach" element={<MBTI />} />
           <Route path="mbti-test" element={<TestMbti />} />
           <Route path="thong-tin-cac-truong-dai-hoc" element={<Universities />} />
@@ -65,6 +66,7 @@ function Router() {
           <Route path="thong-tin-ca-nhan" element={<UserProfile />} />
           <Route path="otp" element={<OtpByPhone />} />
           <Route path="authSocial" element={<AuthSocial />} />
+          <Route path="otp-sdt" element={OtpByPhone} />
         </Route>
         {/* admin */}
         {/* <Route
@@ -89,7 +91,6 @@ function Router() {
           <Route path="danh-sach-tin-tuc" element={<ManageNews />} />
           <Route path="tao-bai-viet" element={<Posts />} />
         </Route>
-
         <Route path="/organization" element={<AuthWrapper roles={['ORGANIZATION']} />}>
           <Route element={<AdminHome />}>
             <Route index element={<OrganizationList />} />
