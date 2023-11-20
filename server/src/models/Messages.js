@@ -20,6 +20,8 @@ module.exports = (sequelize, DataTypes) => {
       adviserId: DataTypes.INTEGER,
       content: DataTypes.STRING,
       status: DataTypes.INTEGER,
+      chatId: DataTypes.INTEGER,
+
     },
     {
       sequelize,
