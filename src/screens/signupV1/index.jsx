@@ -128,9 +128,7 @@ function SignUpV1() {
                   phone: '',
                   password: '',
                   fullName: '',
-                  gender: '',
                   address: '',
-                  roleId: '',
                   agreement: true,
                 }}
                 onFinish={onFinish}

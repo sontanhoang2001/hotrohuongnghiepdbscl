@@ -66,6 +66,7 @@ function Router() {
           <Route path="thong-tin-ca-nhan" element={<UserProfile />} />
           <Route path="otp" element={<OtpByPhone />} />
           <Route path="authSocial" element={<AuthSocial />} />
+          <Route path="otp-sdt" element={OtpByPhone} />
         </Route>
         {/* admin */}
         {/* <Route

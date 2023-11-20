@@ -67,7 +67,7 @@ function RequestOtp(props) {
 
             <Form.Item noStyle>
               <Button block htmlType="submit" type="primary" className="otp-send-btn">
-                gửi
+                Gửi
               </Button>
             </Form.Item>
 
