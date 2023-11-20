@@ -1,9 +1,9 @@
 import { Outlet } from 'react-router-dom';
 import Header from './components/header';
 import CLientFooter from './components/footer';
-import { Drawer, FloatButton, Input, Select } from 'antd';
+import { Drawer, FloatButton, Input, Select, Space } from 'antd';
 import { CommentOutlined } from '@ant-design/icons';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { MessageContent, YourMessageContent } from './globalStyles';
 
@@ -49,14 +49,22 @@ function App() {
   const [openSelect, setOpenSelect] = useState(true);
   const [open, setOpen] = useState(false);
   const OPTIONS = ['Dh Can tho', 'DH Nam CT', 'DH ', 'Helicopters'];
+  const [selectedOrganization, setSelectedOrganization] = useState('');
+  const [selectedUniversity, setSelectedUniversity] = useState('');
 
   const filterOption = (input, option) =>
     (option?.label ?? '').toLowerCase().includes(input.toLowerCase());
 
-  const onChange = (checked) => {
+  const onChangeOrganization = (checked) => {
     setOpenSelect(checked);
+    setSelectedOrganization(checked);
+  };
+  const onChangeUniversity = (checked) => {
+    setOpenSelect(checked);
+    setSelectedUniversity(checked);
   };
 
+  useEffect(() => {}, []);
   const onClose = () => {
     setOpen(false);
   };
@@ -79,11 +87,33 @@ function App() {
         onClose={onClose}
         open={open}
       >
+        <label>Tổ chức: </label>
+        <Select
+          showSearch
+          placeholder="Chọn tổ chức"
+          optionFilterProp="children"
+          onChange={onChangeOrganization}
+          filterOption={filterOption}
+          options={[
+            {
+              value: 'Company',
+              label: 'Tổ chức',
+            },
+            {
+              value: 'University',
+              label: 'Trường học',
+            },
+          ]}
+          allowClear
+          style={{ width: '100%', height: 50, marginBottom: 20 }}
+        />
+
+        <label>Trường học: </label>
         <Select
           showSearch
           placeholder="Chọn trường cần tư vấn"
           optionFilterProp="children"
-          onChange={onChange}
+          onChange={onChangeUniversity}
           filterOption={filterOption}
           options={OPTIONS.map((item) => ({
             value: item,
@@ -135,6 +165,12 @@ function App() {
     </div>
   );
 }
+
+const LabelName = styled.label`
+  font: 14pt;
+  text-transform: capitalize;
+  font-weight: 500;
+`;
 const ChatBox = styled.div`
   display: flex;
   height: 90%;

@@ -1,12 +1,14 @@
 import React from 'react';
+import { Button, Result } from 'antd';
 
 function Unauthorized() {
   return (
-    <div>
-      <h1>Unauthorized</h1>
-      <br />
-      <p>You do not have access to the requested page.</p>
-    </div>
+    <Result
+      status="403"
+      title="403"
+      subTitle="Bạn không có quyền truy cập vào trang"
+      extra={<Button type="primary">Back Home</Button>}
+    />
   );
 }
 

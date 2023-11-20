@@ -1,10 +1,20 @@
 import React from 'react';
+import { Button, Result } from 'antd';
+import { useNavigate } from 'react-router-dom';
 
 function NotFound() {
+  const navigate = useNavigate();
   return (
-    <div>
-      <h1>404</h1>
-    </div>
+    <Result
+      status="404"
+      title="404"
+      subTitle="Trang này không có sẵn. Mong bạn thông cảm."
+      extra={
+        <Button type="primary" onClick={() => navigate('/')}>
+          Back Home
+        </Button>
+      }
+    />
   );
 }
 

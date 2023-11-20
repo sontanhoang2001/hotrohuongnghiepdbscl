@@ -20,6 +20,8 @@ import 'suneditor/dist/css/suneditor.min.css';
 import { PlusOutlined } from '@ant-design/icons';
 import './style.css';
 import viVN from 'antd/lib/locale/vi_VN';
+import moment from 'moment';
+import { getDate, isBefore, isToday } from 'date-fns';
 
 const getBase64 = (file) =>
   new Promise((resolve, reject) => {
@@ -46,11 +48,6 @@ const beforeUpload = (file) => {
 };
 
 function Posts() {
-  const [post, setPost] = useState({
-    title: '',
-    content: '',
-    categoryId: '',
-  });
   const creator = [
     {
       value: 'nguyen thi b',
@@ -90,9 +87,8 @@ function Posts() {
   const filterOption = (input, option) =>
     (option?.label ?? '').toLowerCase().includes(input.toLowerCase());
   //content trong SunEditor
-  const handleChange = (content) => {
+  const handleChangeContent = (content) => {
     setContent(content);
-    console.log(content);
   };
   //file trong uoload
   const handleChangeUpload = ({ fileList: newFileList }) => setFileList(newFileList);
@@ -109,10 +105,7 @@ function Posts() {
     </div>
   );
   //panel của calendar
-  const handleDateChange = (date, dateString) => {
-    console.log('Selected Date: ', date);
-    console.log('Formatted Date String: ', dateString);
-  };
+  const handleDateChange = (date, dateString) => {};
   //huỷ preview
   const handleCancel = () => setPreviewOpen(false);
   //hàm preview
@@ -225,17 +218,32 @@ function Posts() {
                 rules={[
                   {
                     required: true,
-                    message: 'Chưa có ngày hiển thị',
+                    message: 'Chưa chọn ngày',
                   },
+                  ({ getFieldValue }) => ({
+                    validator(_, value) {
+                      console.log(value?.$d);
+                      console.log('Date', new Date());
+                      console.log(isBefore(value?.$d, new Date()));
+
+                      if (isToday(value?.$d)) {
+                        return Promise.resolve();
+                      } else if (isBefore(value?.$d, new Date())) {
+                        return Promise.reject(
+                          new Error('Không thể chọn đăng bài vào ngày hôm qua'),
+                        );
+                      } else {
+                        return Promise.resolve();
+                      }
+                    },
+                  }),
                 ]}
               >
-                <ConfigProvider locale={viVN}>
-                  <DatePicker
-                    format="DD-MM-YYYY"
-                    onChange={handleDateChange}
-                    style={{ width: '100%', height: 50 }}
-                  />
-                </ConfigProvider>
+                <DatePicker
+                  format="DD-MM-YYYY"
+                  onChange={handleDateChange}
+                  style={{ width: '100%', height: 50 }}
+                />
               </Form.Item>
             </Col>
           </Row>
@@ -251,7 +259,7 @@ function Posts() {
           >
             <SunEditor
               height="700px"
-              onChange={handleChange}
+              onChange={handleChangeContent}
               setOptions={{
                 mode: 'classic',
                 rtl: false,

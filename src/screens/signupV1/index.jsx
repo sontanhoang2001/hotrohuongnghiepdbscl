@@ -85,7 +85,8 @@ function SignUpV1() {
   const filter = (inputValue, path) =>
     path.some((option) => option.label.toLowerCase().indexOf(inputValue.toLowerCase()) > -1);
   const onFinish = (values) => {
-    const { agreement, prefix, confirm, ...inputedUserData } = values;
+    const { agreement, confirm, ...inputedUserData } = values;
+    console.log(values);
     //chuyển đổi giá trị submit from tại address từ mảng sang chuổi
     const addressString = inputedUserData.address.join(', ');
     inputedUserData.address = addressString;
@@ -129,6 +130,7 @@ function SignUpV1() {
                   fullName: '',
                   gender: '',
                   address: '',
+                  roleId: '',
                   agreement: true,
                 }}
                 onFinish={onFinish}
@@ -185,9 +187,7 @@ function SignUpV1() {
                         if (!value || getFieldValue('password') === value) {
                           return Promise.resolve();
                         }
-                        return Promise.reject(
-                          new Error('The new password that you entered do not match!'),
-                        );
+                        return Promise.reject(new Error('Mật khẩu mới bạn nhập không khớp!'));
                       },
                     }),
                   ]}
@@ -270,15 +270,15 @@ function SignUpV1() {
                     options={[
                       {
                         value: '1',
-                        label: 'Male',
+                        label: 'Nam',
                       },
                       {
                         value: '2',
-                        label: 'Female',
+                        label: 'Nữ',
                       },
                       {
                         value: '0',
-                        label: 'Other',
+                        label: 'Khác',
                       },
                     ]}
                     style={{ height: 50 }}
@@ -287,7 +287,7 @@ function SignUpV1() {
                 {/* ----------------end gender---------------- */}
                 {/* ----------------begin role---------------- */}
                 <Form.Item
-                  name="role"
+                  name="roleId"
                   rules={[
                     {
                       required: true,
