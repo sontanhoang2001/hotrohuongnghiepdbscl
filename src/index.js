@@ -13,7 +13,8 @@ const app = express();
 dotenv.config();
 
 //* Settings
-const port = process.env.NODE_PORT;
+// const port = process.env.NODE_PORT;
+const port = process.env.PORT;
 // console.log(port);
 
 
@@ -25,10 +26,10 @@ app.use(morgan('dev'));
 app.use(cors({ origin: 'http://localhost:3000' })); // Replace with the appropriate origin
 
 
-app.use((req, res, next) => {
-  res.setHeader('Cache-Control', 'no-store');
-  next();
-});
+// app.use((req, res, next) => {
+//   res.setHeader('Cache-Control', 'no-store');
+//   next();
+// });
 
 /**
  * * Parse request of content-type: application/json
