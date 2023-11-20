@@ -10,7 +10,7 @@ import {
     Popconfirm,
   } from 'antd';
   
-  import { LockFilled } from '@ant-design/icons';
+  import { InfoCircleFilled, LockFilled } from '@ant-design/icons';
   
   import {
     deleteOrganization,
@@ -24,6 +24,7 @@ import {
   } from '../../../redux/universitySlice';
   import { useDispatch, useSelector } from 'react-redux';
   import { useEffect, useMemo } from 'react';
+import { Link } from 'react-router-dom';
   
   const { Title } = Typography;
   
@@ -148,23 +149,13 @@ import {
           fixed: 'right',
           width: 100,
           render: (record) => (
-            <>
-              {/* <Button type="text">
-                <EditOutlined onClick={() => handleEdit(record.id)} style={{ color: 'green' }} />
-              </Button> */}
-              <Popconfirm
-                placement="leftTop"
-                title="Xác nhận xóa"
-                description="Xác nhận xóa tổ chức?"
-                okText="Xóa"
-                
-                onConfirm={() => handleDelete(record.id)}
-                cancelText="Hủy"
-              >
-                <Button danger title='Khóa tổ chức'>
-                  <LockFilled />
+            <>            
+            <Link to={`/organization/${record.id}`}>
+            <Button  danger title='Xem chi tiết'>
+                  <InfoCircleFilled />
                 </Button>
-              </Popconfirm>
+            </Link>
+                
             </>
           ),
         },
@@ -174,6 +165,7 @@ import {
   
     //goi redux
     const dispatch = useDispatch();
+    const {joinedOrganizations}=useSelector(state=>state.university)
     const page = useSelector(selectUniversityPage);
     const size = useSelector(selectUniversityPagesize);
     const Totalpage = useSelector(selectUniversityToalRow);
@@ -188,7 +180,7 @@ import {
   
     const convertedData = useMemo(
       () =>
-        getUniversity?.data.map((university, index) => {
+      joinedOrganizations?.map((university, index) => {
           return {
             key: index.toString(),
             id: university.OrganizationDetail.id,
@@ -203,7 +195,7 @@ import {
             description: university.OrganizationDetail.description,
           };
         }),
-      [getUniversity],
+      [joinedOrganizations],
     );
   
     //hàm phan trang

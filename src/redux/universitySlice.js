@@ -9,8 +9,31 @@ const initialState = {
   page: 1,
   size: 10,
   total: 0,
+  organizationParams:{
+    page:1,
+    size:10,
+    total:0
+  },
+  verifications:[],
+  organization:{},
   joinedOrganizations: [],
 };
+// danh sách yêu cầu xác thực
+export const getAllOrganizationVerification = createAsyncThunk(
+  'university/getAllOrganizationVerification',
+  async (_,  { rejectWithValue,getState }) => {
+    try {
+      const rs = await universityApi.getVerificationRequests(getState().university.organizationParams);
+      return rs.data;
+    } catch (error) {
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      } else {
+        return rejectWithValue(error.message);
+      }
+    }
+  },
+);
 // danh sách tổ chức đang quản lý
 export const getAllOrganizationsByUser = createAsyncThunk(
   'university/getAllOrganizationsByUser',
@@ -18,6 +41,23 @@ export const getAllOrganizationsByUser = createAsyncThunk(
     try {
       const rs = await universityApi.getAllOrganizationsByUser();
       return rs.data.data;
+    } catch (error) {
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      } else {
+        return rejectWithValue(error.message);
+      }
+    }
+  },
+);
+
+// lấy  tổ chức đang quản lý by id
+export const getOrganizationsById = createAsyncThunk(
+  'university/getOrganizationsById',
+  async (id, { rejectWithValue }) => {
+    try {
+      const rs = await universityApi.getOrganizationById(id);
+      return rs.data;
     } catch (error) {
       if (error.response && error.response.data.message) {
         return rejectWithValue(error.response.data.message);
@@ -62,7 +102,7 @@ export const updateOrganization = createAsyncThunk(
   async (data, { rejectWithValue }) => {
     try {
       const rs = await universityApi.updateOrganizationInfo(data);
-      return rs.data.data;
+      return rs.data;
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -76,16 +116,44 @@ const universitySlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      //verification requests
+      .addCase(getAllOrganizationVerification.pending, (state) => {
+        state.pending = true;
+      })
+      .addCase(getAllOrganizationVerification.fulfilled, (state, { payload }) => {
+        state.pending = false;
+        state.page=payload.page;
+        state.size=payload.size;
+        state.total=payload.total;
+        state.verifications = payload.data;
+      })
+      .addCase(getAllOrganizationVerification.rejected, (state, { payload }) => {
+        state.pending = false;
+      })
       //all by user
       .addCase(getAllOrganizationsByUser.pending, (state) => {
         state.pending = true;
       })
       .addCase(getAllOrganizationsByUser.fulfilled, (state, { payload }) => {
         state.pending = false;
-        console.log(payload);
-        state.joinedOrganizations = payload;
+        state.page=payload.page;
+        state.size=payload.size;
+        state.total=payload.total;
+        state.joinedOrganizations = payload.data;
       })
       .addCase(getAllOrganizationsByUser.rejected, (state, { payload }) => {
+        state.pending = false;
+      })
+      //get by id
+      .addCase(getOrganizationsById.pending, (state) => {
+        state.pending = true;
+      })
+      .addCase(getOrganizationsById.fulfilled, (state, { payload }) => {
+        state.pending = false;       
+        console.log(payload);
+        state.organization = payload.data;
+      })
+      .addCase(getOrganizationsById.rejected, (state, { payload }) => {
         state.pending = false;
       })
       //all
@@ -120,8 +188,7 @@ const universitySlice = createSlice({
       })
       .addCase(updateOrganization.fulfilled, (state, { payload }) => {
         state.pending = false;
-        console.log(payload);
-        notification.error({ message: payload.message, duration: 3 });
+        notification.success({ message: payload.message, duration: 3 });
       })
       .addCase(updateOrganization.rejected, (state, { payload }) => {
         state.pending = false;

@@ -40,7 +40,9 @@ import OrganizationProfile from '../screens/organization/information';
 import OrganizationList from '../screens/organization/organizationlist';
 
 import Posts from '../screens/admin/posts';
-
+import AuthWrapper from './AuthWrapper';
+import AdminHome from '../screens/admin/home';
+import OrganizationVerification from '../screens/admin/organizationverification/OrganizationVerification';
 
 function Router() {
   return (
@@ -78,6 +80,7 @@ function Router() {
           <Route path="xac-minh" element={<VerifyOrganization />} />
           {/* <Route index element={<Dashboard />} /> */}
           <Route path="danh-sach-truong-hoc" element={<University />} />
+          <Route path="verification-requests" element={<OrganizationVerification />} />
           <Route path="danh-sach-nguoi-dung" element={<User />} />
           <Route path="danh-sach-cau-hoi" element={<Mbti />} />
           <Route path="danh-cau-hoi-dong-hanh" element={<ManageCompanion />} />
@@ -86,10 +89,13 @@ function Router() {
           <Route path="danh-sach-tin-tuc" element={<ManageNews />} />
           <Route path="tao-bai-viet" element={<Posts />} />
         </Route>
-        <Route path="/organization" element={<PrivateRoute />}>
-          <Route index element={<OrganizationList />} />          
-        </Route>
 
+        <Route path="/organization" element={<AuthWrapper roles={['ORGANIZATION']} />}>
+          <Route element={<AdminHome />}>
+            <Route index element={<OrganizationList />} />
+            <Route path=":id" element={<OrganizationProfile />} />
+          </Route>
+        </Route>
 
         {/* no other result match */}
         <Route path="*" element={<NotFound />} />
