@@ -93,7 +93,7 @@ module.exports = {
           },
           {
             model: VerifyOrganization,
-            attributes: ['status'],
+            attributes: ['id', 'fileAttached', 'status', ['userId', 'approver'], 'createdAt'],
             where: whereVerifyOrganization,
             paranoid: false,
           },
@@ -293,6 +293,24 @@ module.exports = {
       throw error;
     }
   },
+
+
+  // getReqVerifyDetailById: async (verifyOrganizationId) => {
+  //   try {
+  //     const verifyOrganization = await VerifyOrganization.findOne({
+  //       where: { id: verifyOrganizationId },
+  //       attributes: ['id', 'fileAttached', 'status', 'userId', 'createdAt'],
+  //     });
+
+  //     if (verifyOrganization instanceof VerifyOrganization) {
+  //       return verifyOrganization.get();
+  //     }
+
+  //     return verifyOrganization;
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // },
 
   getAllOrganizationType: async () => {
     try {

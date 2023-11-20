@@ -1,40 +1,46 @@
-const faqsService = require('../services/faqsService');
+const postsOrganizationService = require('../services/postsOrganizationService');
 
 const responseHelper = require('../helpers/responseHelper');
 
 module.exports = {
-  createNewFAQS: async (req, res) => {
+  createNew: async (req, res) => {
     try {
-      // const userId = parseInt(req.user.id);
-      const faqs = req.body;
+      const userId = parseInt(req.user.id);
+      const posts = req.body;
 
-      // "question": "Cơ hội việc làm sau khi ra trường thế nào ạ ?",
-      // "answer": "Sau khi tốt nghiệp trường sẽ đảm bảo 100% việc làm cho các bạn sinh vi",
-      // "userId": 3,
-      // "organizationId": 1
+      if (isNaN(posts.organizationId)) {
+        return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a valid organizationId as a parameter');
+      }
 
-      if (!faqs.question || !faqs.answer) {
+      if (!posts.title || !posts.thumbnail || !posts.content || !posts.thumbnail || !posts.content || !posts.status || !posts.displayDate || !posts.postsCategoryId) {
         return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a full and valid parameter');
       }
 
-      const createNew = await faqsService.createNew(faqs);
+      const postsNewData = {...posts, userId};
+
+      const createNew = await postsOrganizationService.createNew(postsNewData);
       if (createNew) {
-        return responseHelper.sendResponse.SUCCESS(res, createNew, 'Bạn đã tạo mới faqs thành công');
+        return responseHelper.sendResponse.SUCCESS(res, createNew, 'Bạn đã tạo bài viết thành công');
       }
-      return responseHelper.sendResponse.BAD_REQUEST(res, null, 'Bạn đã tạo mới faqs thất bại');
+      return responseHelper.sendResponse.BAD_REQUEST(res, null);
     } catch (error) {
       responseHelper.sendResponse.SERVER_ERROR(res, null);
     }
   },
-  getAllFAQS: async (req, res) => {
+  getAll: async (req, res) => {
     try {
+      let organizationId = req.query.organizationId && parseInt(req.query.organizationId);
+
       let page = parseInt(req.query.page) || 1;
       let size = parseInt(req.query.size) || 10;
       let search = req.query.search;
+      let postsCategoryId = req.query.category && parseInt(req.query.category);
+      
+      let deleted = req.query.deleted;
 
-      const faqsList = await faqsService.getAll(page, size, search); // Gọi chức năng từ service
-      if (faqsList) {
-        return responseHelper.sendResponse.SUCCESS(res, faqsList);
+      const posts = await postsOrganizationService.getAll(organizationId, page, size, search, postsCategoryId, deleted); // Gọi chức năng từ service
+      if (posts) {
+        return responseHelper.sendResponse.SUCCESS(res, posts);
       }
 
       return responseHelper.sendResponse.BAD_REQUEST(res, null);
@@ -43,12 +49,13 @@ module.exports = {
     }
   },
 
-  getFAQSById: async (req, res) => {
+  getById: async (req, res) => {
     try {
-      const questionId = parseInt(req.params.id);
-      const faqs = await faqsService.getById(questionId); // Gọi chức năng từ service
-      if (faqs) {
-        return responseHelper.sendResponse.SUCCESS(res, faqs);
+      let organizationId = req.query.organizationId && parseInt(req.query.organizationId);
+      const postsId = parseInt(req.params.id);
+      const posts = await postsOrganizationService.getById(postsId, organizationId); // Gọi chức năng từ service
+      if (posts) {
+        return responseHelper.sendResponse.SUCCESS(res, posts);
       }
 
       return responseHelper.sendResponse.NOT_FOUND(res, null);
@@ -57,43 +64,69 @@ module.exports = {
     }
   },
 
-  updateFAQS: async (req, res) => {
+  update: async (req, res) => {
     try {
-      const questionId = parseInt(req.params.id);
-      const mbti = req.body;
-
-      if (isNaN(questionId)) {
-        return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a valid questionId as a parameter');
+      const postsId = parseInt(req.params.id);
+      const posts = req.body;
+      const  organizationId = posts.organizationId && parseInt(posts.organizationId);
+      
+      if (isNaN(posts.organizationId)) {
+        return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a valid organizationId as a parameter');
       }
 
-      if (!mbti.question_group_id || !mbti.question || !mbti.answers || !Array.isArray(mbti.answers) || mbti.answers.length === 0) {
+      if (isNaN(postsId)) {
+        return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a valid postsId as a parameter');
+      }
+
+      if (!posts.title || !posts.thumbnail || !posts.content) {
         return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a full and valid parameter');
       }
 
-      const updateFAQS = await faqsService.update(questionId, mbti);
-      if (updateFAQS) {
-        return responseHelper.sendResponse.SUCCESS(res, null, 'Cập nhật thành công');
+      const updatePosts = await postsOrganizationService.update(organizationId, postsId, posts);
+      if (updatePosts) {
+        return responseHelper.sendResponse.SUCCESS(res, updatePosts, 'Cập nhật bài viết thành công');
       }
 
-      return responseHelper.sendResponse.BAD_REQUEST(res, null, 'Cập nhật thất bại');
+      return responseHelper.sendResponse.BAD_REQUEST(res, null, 'Cập nhật bài viết thất bại');
     } catch (error) {
       responseHelper.sendResponse.SERVER_ERROR(res, null);
     }
   },
 
-  deleteOneFAQS: async (req, res) => {
+  deleteOne: async (req, res) => {
     try {
-      const questionId = parseInt(req.params.id);
-      if (isNaN(questionId)) {
-        return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a valid questionId as a parameter');
+      const postsId = parseInt(req.params.id);
+      const organizationId = req.query.organizationId && parseInt(req.query.organizationId);
+
+      if (isNaN(postsId)) {
+        return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a valid postsId as a parameter');
       }
 
-      const deleteQuestion = await faqsService.deleteQuestion(questionId);
-      if (deleteQuestion) {
-        return responseHelper.sendResponse.SUCCESS(res, null, "Thực hiện xóa thành công");
+      const deletePosts = await postsOrganizationService.delete(organizationId, postsId);
+      if (deletePosts) {
+        return responseHelper.sendResponse.SUCCESS(res, deletePosts, "Thực hiện xóa thành công");
       }
 
       return responseHelper.sendResponse.BAD_REQUEST(res, null, "Thực hiện xóa thất bại");
+    } catch (error) {
+      responseHelper.sendResponse.SERVER_ERROR(res, null);
+    }
+  },
+
+
+  restoreOne: async (req, res) => {
+    try {
+      const postsId = parseInt(req.params.id);
+      if (isNaN(postsId)) {
+        return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a valid postsId as a parameter');
+      }
+
+      const deletePosts = await postsOrganizationService.restore(postsId);
+      if (deletePosts) {
+        return responseHelper.sendResponse.SUCCESS(res, deletePosts, "Khôi phục bài viết thành công");
+      }
+
+      return responseHelper.sendResponse.BAD_REQUEST(res, null, "Khôi phục bài viết thất bại");
     } catch (error) {
       responseHelper.sendResponse.SERVER_ERROR(res, null);
     }

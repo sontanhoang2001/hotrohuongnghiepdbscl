@@ -8,13 +8,13 @@ const Roles = require('../config/role.js')
 const { getAllPosts, getPostsById, createNewPosts, updatePosts, deleteOnePosts, restoreOnePosts } = require('../controllers/postsOrganizationController.js');
 
 //* Here I defined the methods
-router.get('/', middleware.verifyToken, middleware.checkRole([Roles.ORGANIZATION]), getAllPosts);
-router.get('/id/:id', middleware.verifyToken, middleware.checkRole([Roles.ORGANIZATION]), getPostsById);
+router.get('/', middleware.verifyToken, middleware.checkRole([Roles.ADMIN, Roles.ORGANIZATION]), getAllPosts);
+router.get('/id/:id', middleware.verifyToken, middleware.checkRole([Roles.ADMIN, Roles.ORGANIZATION]), getPostsById);
 
-router.post('/add', middleware.verifyToken, middleware.checkRole([Roles.ORGANIZATION]), createNewPosts);
-router.patch('/edit/:id', middleware.verifyToken, middleware.checkRole([Roles.ORGANIZATION]), updatePosts);
-router.delete('/delete/:id', middleware.verifyToken, middleware.checkRole([Roles.ORGANIZATION]), deleteOnePosts);
-router.post('/restore/:id', middleware.verifyToken, middleware.checkRole([Roles.ORGANIZATION]), restoreOnePosts);
+router.post('/add', middleware.verifyToken, middleware.checkRole([Roles.ADMIN, Roles.ORGANIZATION]), createNewPosts);
+router.patch('/edit/:id', middleware.verifyToken, middleware.checkRole([Roles.ADMIN, Roles.ORGANIZATION]), updatePosts);
+router.delete('/delete/:id', middleware.verifyToken, middleware.checkRole([Roles.ADMIN, Roles.ORGANIZATION]), deleteOnePosts);
+router.post('/restore/:id', middleware.verifyToken, middleware.checkRole([Roles.ADMIN, Roles.ORGANIZATION]), restoreOnePosts);
 
 
 module.exports = router;

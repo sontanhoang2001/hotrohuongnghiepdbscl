@@ -145,6 +145,23 @@ module.exports = {
       responseHelper.sendResponse.SERVER_ERROR(res, null);
     }
   },
+  getReqVerifyDetailById: async (req, res) => {
+    try {
+      const verifyOrganizationId = parseInt(req.params.id);
+
+      if (isNaN(verifyOrganizationId)) {
+        return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a valid verifyOrganizationId as a parameter');
+      }
+
+      const reqVerifyDetail = await organizationService.getReqVerifyDetailById(verifyOrganizationId);
+      if (reqVerifyDetail) {
+        return responseHelper.sendResponse.SUCCESS(res, null);
+      }
+      return responseHelper.sendResponse.BAD_REQUEST(res, null, 'Lấy thông tin chi tiết hồ sơ yêu cầu xác thực tổ chức thất bại');
+    } catch (error) {
+      responseHelper.sendResponse.SERVER_ERROR(res, null);
+    }
+  },
 
   getAllOrganizationType: async (req, res) => {
     try {
@@ -249,7 +266,7 @@ module.exports = {
   },
 
   getAllByUser: async (req, res) => {
-    // try {
+    try {
     let page = parseInt(req.query.page) || 1;
     let size = parseInt(req.query.size) || 10;
     let search = req.query.search;
@@ -261,13 +278,13 @@ module.exports = {
     }
 
     return responseHelper.sendResponse.BAD_REQUEST(res, null);
-    // } catch (error) {
-    //   responseHelper.sendResponse.SERVER_ERROR(res, null);
-    // }
+    } catch (error) {
+      responseHelper.sendResponse.SERVER_ERROR(res, null);
+    }
   },
 
   getOneByOrganizationId: async (req, res) => {
-    // try {
+    try {
 
     const userId = req.user.id;
     const organizationId = req.params.id;
@@ -284,8 +301,8 @@ module.exports = {
     }
 
     return responseHelper.sendResponse.BAD_REQUEST(res, null);
-    // } catch (error) {
-    //   responseHelper.sendResponse.SERVER_ERROR(res, null);
-    // }
+    } catch (error) {
+      responseHelper.sendResponse.SERVER_ERROR(res, null);
+    }
   },
 };

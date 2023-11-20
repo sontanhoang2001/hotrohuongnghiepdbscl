@@ -25,7 +25,6 @@ module.exports = {
         return responseHelper.sendResponse.BAD_REQUEST(res, null);
       }
 
-
       // Kiểm tra email đúng định dạng
       const checkEmailValid = await validateHelper.validateEmail(user.email);
       if (!checkEmailValid) {

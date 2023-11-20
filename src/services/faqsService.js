@@ -1,72 +1,59 @@
 const Question = require('../models').Question;
 const Answer = require('../models').Answer;
-const QuestionGroup = require('../models').QuestionGroup;
+const PostsOrganization = require('../models').PostsOrganization;
+const PostsCategory = require('../models').PostsCategory;
+const User = require('../models').User;
 
-const sequelize = require('../database/connection_database');
-const { Op } = require('sequelize');
+
+// const sequelize = require('../database/connection_database');
+const { Op, where } = require('sequelize');
 
 module.exports = {
   createNew: async (payload) => {
-    let transaction;
     try {
-      const answers = [...payload.answers];
+      // Tạo mới bài viết mới
+      const postsOrganization = await PostsOrganization.create(payload);
 
-      transaction = await sequelize.transaction();
-      // Tạo mới câu hỏi
-      const questionPayload = { question: payload.question, questionGroupId: payload.question_group_id };
-      const question = await Question.create(questionPayload, { transaction });
-      const questionId = question?.dataValues.id;
-
-      // Duyệt qua mảng answers
-      answers.forEach((answer) => {
-        // Gán questionId cho mỗi đối tượng
-        answer.questionId = questionId;
-      });
-
-      // Tạo đáp án cho câu hỏi
-      await Answer.bulkCreate(answers, {
-        transaction,
-      });
-      await transaction.commit();
-      return question;
+      return postsOrganization;
     } catch (error) {
-      if (transaction) {
-        await transaction.rollback(); // Rollback transaction nếu có lỗi
-      }
-      throw error; // Sau đó ném lỗi để xử lý ở phần gọi hàm
+      throw error;
     }
   },
-  getAll: async (page, size, search) => {
+  getAll: async (organizationId, page, size, search, postsCategoryId, deleted) => {
     try {
       const where = {};
+      where.organizationId = { [Op.eq]: organizationId };
+
+      
+      if (deleted) {
+        where.deletedAt = { [Op.not]: null };
+      }
+
       if (search) {
-        where.question = { [Op.like]: `%${search}%` };
+        where.title = { [Op.like]: `%${search}%` };
+      }
+
+      if (postsCategoryId) {
+        where.postsCategoryId = { [Op.eq]: postsCategoryId };
       }
 
       // Tính offset
       const offset = (page - 1) * size;
 
-      const { count } = await Question.findAndCountAll({
+      const { rows, count } = await PostsOrganization.findAndCountAll({
         where,
+        paranoid: false,
         offset,
         limit: size,
-      });
-
-      const { rows } = await Question.findAndCountAll({
-        where,
-        offset,
-        limit: size,
-        attributes: ['id', 'question'],
+        attributes: ['id', 'title', 'thumbnail', 'content', 'status', 'displayDate'],
         include: [
           {
-            model: Answer,
-            as: 'Answers',
-            attributes: ['answer', 'value'],
+            model: User,
+            attributes: ['id'],
           },
           {
-            model: QuestionGroup,
-            as: 'QuestionGroup',
-            attributes: ['id', 'name', 'value'],
+            model: PostsCategory,
+            attributes: ['id', 'name', 'description'],
           },
         ],
       });
@@ -84,108 +71,101 @@ module.exports = {
       throw error;
     }
   },
-  getById: async (questionId) => {
+  getById: async (postsId, organizationId) => {
     try {
-      const question = await Question.findByPk(questionId, {
-        attributes: ['id', 'question'],
+      const postsOrganization = await PostsOrganization.findOne({
+        where: {
+          id: postsId,
+          organizationId: organizationId,
+        },
+        attributes: ['id', 'title', 'thumbnail', 'content', 'status', 'displayDate'],
         include: [
           {
-            model: Answer,
-            as: 'Answers',
-            attributes: ['id', 'answer', 'value'],
+            model: User,
+            attributes: ['id'],
           },
           {
-            model: QuestionGroup,
-            as: 'QuestionGroup',
-            attributes: ['id', 'name', 'value'],
-          }
+            model: PostsCategory,
+            attributes: ['id', 'name', 'description'],
+          },
         ],
       });
 
-      if (question instanceof Question) {
-        return question.get();
+      if (postsOrganization instanceof PostsOrganization) {
+        return postsOrganization.get();
       }
 
-      return question;
+      return postsOrganization;
     } catch (error) {
       throw error;
     }
   },
-  update: async (questionId, payload) => {
-    let transaction;
+  update: async (organizationId, postsId, payload) => {
     try {
-      transaction = await sequelize.transaction();
-
-      // Update question
-      const [numberOfAffectedRows] = await Question.update(
-        { question: payload.question },
-        {
-          where: { id: questionId },
-          transaction,
-        },
-      );
-
-      // Kiểm tra số lượng dòng bị ảnh hưởng bởi câu lệnh update cho câu hỏi
-      if (numberOfAffectedRows === 0) {
-        await transaction.rollback();
-        return false; // Trả về false nếu không có câu hỏi nào được cập nhật
-      }
-
-      // Update answers
-      for (const answer of payload.answers) {
-        const [numberOfAffectedRows] = await Answer.update(answer, {
-          where: { id: answer.id },
-          transaction,
-        });
-
-        if (numberOfAffectedRows === 0) {
-          await transaction.rollback();
-          return false; // Trả về false nếu có lỗi khi cập nhật một trong các câu trả lời
+      const posts = await PostsOrganization.findOne({
+        where: {
+          id: postsId,
+          organizationId: organizationId,
         }
+      });
+
+      if (!posts) {
+        return false;
       }
 
-      await transaction.commit();
-      return true; // Trả về true nếu tất cả cập nhật thành công
+      await posts.update(payload);
+
+      return posts;
     } catch (error) {
-      if (transaction) {
-        await transaction.rollback(); // Rollback transaction nếu có lỗi
-      }
       throw error; // Sau đó ném lỗi để xử lý ở phần gọi hàm
     }
   },
 
-  delete: async (questionId) => {
-    let transaction;
+  delete: async (organizationId, postsId) => {
     try {
-      transaction = await sequelize.transaction();
-
-      // Destroy question
-      const numberOfAffectedRows1 = await Question.destroy({
-        where: { id: questionId },
+      // Lấy thông tin bài viết cần xóa
+      const posts = await PostsOrganization.findOne({
+        where: {
+          id: postsId,
+          organizationId: organizationId,
+        }
       });
 
-      // Kiểm tra số lượng dòng bị ảnh hưởng bởi câu lệnh update cho câu hỏi
-      if (numberOfAffectedRows1 === 0) {
-        await transaction.rollback();
-        return false; // Trả về false nếu không có câu hỏi nào được cập nhật
+      // Xóa bài viết
+      const numberOfAffectedRows = await posts.destroy();
+
+      if (numberOfAffectedRows === 0) {
+        return false;
       }
 
-      // Destroy answers
-      const numberOfAffectedRows2 = await Answer.destroy({
-        where: { questionId: questionId },
-      });
-
-      if (numberOfAffectedRows2 === 0) {
-        await transaction.rollback();
-        return false; // Trả về false nếu có lỗi khi cập nhật một trong các câu trả lời
-      }
-      transaction.commit();
-      return true;
+      // Trả về dữ liệu bài viết vừa xóa cho client
+      return posts;
     } catch (error) {
-      if (transaction) {
-        await transaction.rollback(); // Rollback transaction nếu có lỗi
-      }
-      throw error; // Sau đó ném lỗi để xử lý ở phần gọi hàm
+      throw error;
     }
-  }
+  },
+
+  restore: async (postsId) => {
+    try {
+      // Lấy thông tin bài viết cần xóa
+      const post = await PostsOrganization.findByPk(postsId, {
+        paranoid: false
+      });
+
+      // Xóa bài viết
+      const numberOfAffectedRows = await PostsOrganization.restore({
+        where: { id: postsId },
+      });
+
+      if (numberOfAffectedRows === 0) {
+        return false;
+      }
+
+      // Trả về dữ liệu bài viết vừa xóa cho client
+      return post;
+    } catch (error) {
+      throw error;
+    }
+  },
+  
 };
