@@ -5,6 +5,8 @@ import authReducer from '../redux/authSlice';
 import mbtiReducer from '../redux/mbtiSlice';
 import userReducer from '../redux/userSlice';
 import universityReducer from '../redux/universitySlice';
+import faqsReducer from '../redux/faqsSlice';
+import postsReducer from '../redux/postsSlice';
 
 
 export const store = configureStore({
@@ -15,6 +17,8 @@ export const store = configureStore({
     mbti: mbtiReducer,
     user: userReducer,
     university: universityReducer,
+    faqs:faqsReducer,
+    posts:postsReducer
   },
   // middleware: [authMiddleware],
 });
