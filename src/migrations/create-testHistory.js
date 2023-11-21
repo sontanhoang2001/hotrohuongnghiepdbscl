@@ -8,11 +8,11 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      startTime: {
-        type: Sequelize.DATE,
+      userId: {
+        type: Sequelize.INTEGER,
       },
-      endTime: {
-        type: Sequelize.DATE,
+      mbtiId: {
+        type: Sequelize.INTEGER,
       },
       createdAt: {
         allowNull: false,
@@ -22,11 +22,10 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE,
       },
-      complete: {
-        type: Sequelize.INTEGER,
-      },
-      testId: {
-        type: Sequelize.INTEGER,
+      deletedAt: {
+        allowNull: true,
+        type: Sequelize.DATE,
+        defaultValue: null
       }
     });
   },

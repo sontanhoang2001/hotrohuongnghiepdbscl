@@ -52,7 +52,6 @@ module.exports = {
       return responseHelper.sendResponse.BAD_REQUEST(res, null);
     } catch (error) {
       responseHelper.sendResponse.SERVER_ERROR(res, null);
-      throw error;
     }
   },
 
