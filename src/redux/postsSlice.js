@@ -124,6 +124,25 @@ export const restorePost = createAsyncThunk(
   },
 );
 
+// Lấy thông tin public của posts -------------
+export const getAllPublicPosts = createAsyncThunk(
+  'posts/getAllPublicPosts',
+  async (payload, { rejectWithValue }) => {
+    try {
+      const rs = await postsApi.getAllPublicPosts(payload);
+      console.log('payload contruct', payload);
+      console.log('payload', rs.data);
+      return rs.data.data;
+    } catch (error) {
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      } else {
+        return rejectWithValue(error.message);
+      }
+    }
+  },
+);
+
 // Tạo slice
 const postsSlice = createSlice({
   name: 'posts',
@@ -197,6 +216,21 @@ const postsSlice = createSlice({
       .addCase(getAllPosts.rejected, (state, { payload }) => {
         state.pending = false;
         notification.error({ message: 'Lấy danh sách thất bại' });
+      })
+      //all public posts
+      .addCase(getAllPublicPosts.pending, (state) => {
+        state.pending = true;
+      })
+      .addCase(getAllPublicPosts.fulfilled, (state, { payload }) => {
+        state.pending = false;
+        state.data = payload;
+        state.clientPosts.page = payload.page;
+        state.clientPosts.size = payload.size;
+        state.clientPosts.total = payload.total;
+        state.clientPosts.search = payload.search;
+      })
+      .addCase(getAllPublicPosts.rejected, (state, { payload }) => {
+        state.pending = false;
       })
       //create update
       .addCase(createPost.pending, (state) => {
