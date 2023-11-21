@@ -24,7 +24,7 @@ const {
 
 // Người dùng thuộc Admin
 router.get('/', middleware.verifyToken, middleware.checkRole([Roles.ADMIN]), getAll);
-router.get('/id/:id', getOrganizationById);
+router.get('/id/:id', middleware.verifyToken, middleware.checkRole([Roles.ADMIN]), getOrganizationById);
 router.post('/add', middleware.verifyToken, middleware.checkRole([Roles.ADMIN]), createOrganization);
 router.patch('/edit/:id', middleware.verifyToken, middleware.checkRole([Roles.ADMIN]), updateOrganization);
 router.delete('/delete/:id', middleware.verifyToken, middleware.checkRole([Roles.ADMIN]), deleteOneOrganization);
@@ -36,5 +36,6 @@ router.get('/getOneByOrganizationId/:id', middleware.verifyToken, middleware.che
 router.get('/getAllOrganizationType', middleware.verifyToken, middleware.checkRole([Roles.ADMIN, Roles.ORGANIZATION]), getAllOrganizationType);
 router.patch('/reqToVerifyOrganization', middleware.verifyToken, middleware.checkRole([Roles.ADMIN, Roles.ORGANIZATION]), middleware.verifyToken, reqToVerifyOrganization);
 router.patch('/updateStatusVerifyOrganization', middleware.verifyToken, middleware.checkRole([Roles.ADMIN, Roles.ORGANIZATION]), middleware.verifyToken, updateStatusVerifyOrganization);
+
 
 module.exports = router;

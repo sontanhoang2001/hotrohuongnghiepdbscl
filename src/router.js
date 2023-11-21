@@ -9,6 +9,8 @@ const organizationRoutes = require('./routes/organization.routes');
 const mbtiRoutes = require('./routes/mbti.routes');
 const PostsOrganization = require('./routes/postsOrganization.routes');
 const FaqsOrganization = require('./routes/faqsOrganization.routes');
+const Public = require('./routes/public.routes');
+
 
 // const swaggerUi = require('swagger-ui-express');
 // const swaggerDocument = require('./swagger.json');
@@ -23,6 +25,9 @@ const router = (app) => {
     app.use('/api/v1/mbtis', mbtiRoutes);
     app.use('/api/v1/PostsOrganization', PostsOrganization);
     app.use('/api/v1/faqsOrganization', FaqsOrganization);
+
+    app.use('/api/v1/public', Public);
+
     // app.use('/api-docs', swaggerUi.serve);
     // app.get('/api-docs', swaggerUi.setup(swaggerDocument));
 };

@@ -52,6 +52,7 @@ module.exports = {
       return responseHelper.sendResponse.BAD_REQUEST(res, null);
     } catch (error) {
       responseHelper.sendResponse.SERVER_ERROR(res, null);
+      throw error;
     }
   },
 
@@ -308,4 +309,26 @@ module.exports = {
       responseHelper.sendResponse.SERVER_ERROR(res, null);
     }
   },
+
+
+
+  getAllForPublic: async (req, res) => {
+    try {
+      let page = parseInt(req.query.page) || 1;
+      let size = parseInt(req.query.size) || 10;
+      let search = req.query.search;
+      let organizationTypeId = req.query.organizationType;
+      let status = 1;
+      let deleted = false;
+
+      const listUniversity = await organizationService.getAll(page, size, search, organizationTypeId, status, deleted); // Gọi chức năng từ service
+      if (listUniversity) {
+        return responseHelper.sendResponse.SUCCESS(res, listUniversity);
+      }
+
+      return responseHelper.sendResponse.BAD_REQUEST(res, null);
+    } catch (error) {
+      responseHelper.sendResponse.SERVER_ERROR(res, null);
+    }
+  }
 };

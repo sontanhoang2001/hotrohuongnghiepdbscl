@@ -19,12 +19,11 @@ module.exports = {
       throw error;
     }
   },
-  getAll: async (organizationId, page, size, search, postsCategoryId, deleted) => {
+  getAll: async (organizationId, page, size, search, deleted) => {
     try {
       const where = {};
       where.organizationId = { [Op.eq]: organizationId };
 
-      
       if (deleted) {
         where.deletedAt = { [Op.not]: null };
       }
@@ -33,29 +32,15 @@ module.exports = {
         where.title = { [Op.like]: `%${search}%` };
       }
 
-      if (postsCategoryId) {
-        where.postsCategoryId = { [Op.eq]: postsCategoryId };
-      }
-
       // Tính offset
       const offset = (page - 1) * size;
 
-      const { rows, count } = await PostsOrganization.findAndCountAll({
+      const { rows, count } = await FAQs.findAndCountAll({
         where,
         paranoid: false,
         offset,
         limit: size,
-        attributes: ['id', 'title', 'thumbnail', 'content', 'status', 'displayDate'],
-        include: [
-          {
-            model: User,
-            attributes: ['id'],
-          },
-          {
-            model: PostsCategory,
-            attributes: ['id', 'name', 'description'],
-          },
-        ],
+        attributes: ['id', 'question', 'answer', 'createdAt']
       });
 
       // Chuẩn bị dữ liệu phân trang

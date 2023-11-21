@@ -34,13 +34,11 @@ module.exports = {
       let page = parseInt(req.query.page) || 1;
       let size = parseInt(req.query.size) || 10;
       let search = req.query.search;
-      let postsCategoryId = req.query.category && parseInt(req.query.category);
-      
       let deleted = req.query.deleted;
 
-      const posts = await FAQsService.getAll(organizationId, page, size, search, postsCategoryId, deleted); // Gọi chức năng từ service
-      if (posts) {
-        return responseHelper.sendResponse.SUCCESS(res, posts);
+      const listFaqs = await FAQsService.getAll(organizationId, page, size, search, deleted); // Gọi chức năng từ service
+      if (listFaqs) {
+        return responseHelper.sendResponse.SUCCESS(res, listFaqs);
       }
 
       return responseHelper.sendResponse.BAD_REQUEST(res, null);
