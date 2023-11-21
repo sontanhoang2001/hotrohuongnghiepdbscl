@@ -72,8 +72,10 @@ function SignInV1() {
     //lấy role khi người dùng đăng nhập
     if (profile != null && profile !== undefined) {
       const role = profile?.userData?.Role?.name;
-      if (role === 'ADMIN' || role === 'ORGANIZATION') {
+      if (role === 'ADMIN') {
         navigate('/admin/dashboard');
+      } else if (role === 'ORGANIZATION') {
+        navigate('/organization');
       } else {
         navigate('/');
       }
