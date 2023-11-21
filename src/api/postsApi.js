@@ -1,8 +1,9 @@
 import axiosService from './axiosClient';
+import qs from 'qs';
 
 const pathname = 'postsOrganization';
 
-const faqsApi = {
+const postsApi = {
   getAll: (params) => {
     const url = `${pathname}?page=${params.page}&size=${params.size}`;
     return axiosService.get(url);
@@ -28,10 +29,14 @@ const faqsApi = {
     return axiosService.post(url);
   },
   //pulic api
-  getAllPublicPosts: (params) => {
-    const url = `public/posts?page=${params.page}&size=${params.size}`;
-    return axiosService.get(url);
+  getAllPublicPosts: ({ page, size, search }) => {
+    console.debug('search', search);
+    const url = `public/posts`;
+    return axiosService.get(url, {
+      params: { page, size, search },
+      paramsSerializer: qs.stringify,
+    });
   },
 };
 
-export default faqsApi;
+export default postsApi;

@@ -43,3 +43,13 @@ export const YourMessageContent = styled.div`
   max-width: 66%;
   box-shadow: 0 0 2rem rgba(0, 0, 0, 0.075), 0rem 1rem 1rem -1rem rgba(0, 0, 0, 0.1);
 `;
+
+export const SearchBox = styled.div`
+  display: flex;
+  width: 80%;
+  margin-top: 50px;
+  margin-left: auto;
+  margin-right: auto;
+
+  align-items: center;
+`;

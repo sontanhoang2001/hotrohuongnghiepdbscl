@@ -1,66 +1,87 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { Button, Card, List, Modal, Pagination } from 'antd';
+import { Button, Card, Input, List, Modal, Pagination } from 'antd';
 
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import ImageCard from '../../../components/card/imageCard';
-import { HeadingTitle, MarginTopContent, Title } from '../../../globalStyles';
+import { HeadingTitle, MarginTopContent, SearchBox, Title } from '../../../globalStyles';
 import { news } from './news';
 import { Link } from 'react-router-dom';
+import {
+  getAllPublicPosts,
+  selectClientPosts,
+  selectPostsPending,
+  selectPublicPosts,
+} from '../../../redux/postsSlice';
+import { debounce } from 'lodash';
 
 function News() {
-  const [open, setOpen] = useState(false);
-  const [cardSelected, setCardSelected] = useState(0);
-  //goi redux
-  // const dispatch = useDispatch();
-  // useEffect(() => {
-  //   const payload = { page, size };
-  //   //gọi api thông qua redux
-  //   dispatch(getAllUniversity(payload));
-  // }, []);
-  // console.log(getUniversity);
-  //hàm bắt sự kiện phân trang và làm mới lại api
+  // goi redux
+  const pendingState = useSelector(selectPostsPending);
+  const getPosts = useSelector(selectPublicPosts);
+  const ClientPosts = useSelector(selectClientPosts);
 
-  // const handlePageChange = (page, pageSize) => {
-  //   const payload = { page, pageSize };
-  //   dispatch(getAllUniversity(payload));
-  // };
+  // goi redux
+  const dispatch = useDispatch();
+  useEffect(() => {
+    //gọi api thông qua redux
+    dispatch(getAllPublicPosts(ClientPosts));
+  }, []);
+  console.log(getPosts);
+
+  //hàm bắt sự kiện phân trang và làm mới lại api
+  const handlePageChange = (page, pageSize) => {
+    dispatch(getAllPublicPosts({ ...ClientPosts, page: page, size: pageSize }));
+  };
+  //tìm kiếm
+  const onSearch = debounce((e) => {
+    dispatch(getAllPublicPosts({ ...ClientPosts, search: e.target.value }));
+  }, 500);
+
   return (
     <div className="container">
       <Title>
         <HeadingTitle>Tin Tức</HeadingTitle>
         <div className="underline"></div>
       </Title>
+      <SearchBox>
+        <Input
+          placeholder="Tìm kiếm tin tức..."
+          onChange={onSearch}
+          enterButton={
+            <Button type="primary" style={{ height: 50 }}>
+              Tìm kiếm
+            </Button>
+          }
+          allowClear
+          style={{ height: 50 }}
+        />
+      </SearchBox>
       <MarginTopContent>
         <List
-          // loading={pendingState}
+          loading={pendingState}
           grid={{ column: 3 }}
-          dataSource={news}
+          dataSource={getPosts?.data}
           pagination={false}
           //render content
           renderItem={(val, idx) => (
-            <div
-              onClick={() => {
-                setCardSelected(idx);
-                setOpen(true);
-              }}
-            >
+            <div>
               <Link to={`/tin-tuc/${val.id}`}>
-                <ImageCard key={idx} title={val.title} src={`../images/news/${val.image}`} />
+                <ImageCard key={idx} title={val.title} src={`${val.image}`} />
               </Link>
             </div>
           )}
         ></List>
         <Pagination
-          // current={page}
-          // pageSize={size}
-          // total={Totalpage}
-          // onChange={handlePageChange}
+          current={ClientPosts.page}
+          pageSize={ClientPosts.size}
+          total={ClientPosts.total}
+          onChange={handlePageChange}
           showQuickJumper
           showSizeChanger
-          // onShowSizeChange={handlePageChange}
+          onShowSizeChange={handlePageChange}
           style={{ marginTop: 20, marginBottom: 20 }}
         />
       </MarginTopContent>
