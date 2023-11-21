@@ -4,12 +4,14 @@ import styled from 'styled-components';
 import ImageCard from '../../../components/card/imageCard';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  getAllUniversity,
+  getAllPublicUniversityInfo,
+  // getAllUniversity,
   selectUniversity,
   selectUniversityPage,
   selectUniversityPagesize,
   selectUniversityPending,
   selectUniversityToalRow,
+  setSize,
 } from '../../../redux/universitySlice';
 import { HeadingTitle, MarginTopContent, Title } from '../../../globalStyles';
 
@@ -20,21 +22,21 @@ function Universities() {
   //goi redux
   const dispatch = useDispatch();
   const page = useSelector(selectUniversityPage);
-  const size = useSelector(selectUniversityPagesize);
+
   const Totalpage = useSelector(selectUniversityToalRow);
   const getUniversity = useSelector(selectUniversity);
   const pendingState = useSelector(selectUniversityPending);
 
   useEffect(() => {
-    const payload = { page, size };
     //gọi api thông qua redux
-    dispatch(getAllUniversity(payload));
+    dispatch(getAllPublicUniversityInfo({ page: page, size: 9 }));
   }, []);
-  console.log(getUniversity);
+
+  // console.log('card', cardSelected);
+  // console.log(getUniversity?.data[cardSelected].name);
   //hàm bắt sự kiện phân trang và làm mới lại api
   const handlePageChange = (page, pageSize) => {
-    const payload = { page, pageSize };
-    dispatch(getAllUniversity(payload));
+    dispatch(getAllPublicUniversityInfo({ page: page, size: 9 }));
   };
   return (
     <div className="container">
@@ -54,15 +56,16 @@ function Universities() {
               onClick={() => {
                 setCardSelected(idx);
                 setOpen(true);
+                console.log(idx);
               }}
             >
-              <ImageCard key={idx} title={val.name} src={`${val.OrganizationDetail.image}`} />
+              <ImageCard key={idx} title={val?.name} src={`${val?.OrganizationDetail.image}`} />
             </div>
           )}
         ></List>
         <Pagination
           current={page}
-          pageSize={size}
+          pageSize={9}
           total={Totalpage}
           onChange={handlePageChange}
           showQuickJumper
