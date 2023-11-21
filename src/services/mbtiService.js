@@ -62,7 +62,7 @@ module.exports = {
         paranoid: false,
         offset,
         limit: size,
-        attributes: ['id', 'question'],
+        attributes: ['id', 'question', 'deletedAt'],
         include: [
           {
             model: Answer,
@@ -94,12 +94,14 @@ module.exports = {
   getMBTIQuestionById: async (questionId) => {
     try {
       const question = await Question.findByPk(questionId, {
-        attributes: ['id', 'question'],
+        attributes: ['id', 'question', 'deletedAt'],
+        paranoid: false,
         include: [
           {
             model: Answer,
             as: 'Answers',
             attributes: ['id', 'answer', 'value'],
+            paranoid: false,
           },
           {
             model: QuestionGroup,
