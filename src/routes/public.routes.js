@@ -5,7 +5,7 @@ const middleware = require('../middleware/verifyToken.js');
 const Roles = require('../config/role.js');
 
 //* Call the controller with the methods
-const { getAllForPublic, getOrganizationById } = require('../controllers/organizationController.js');
+const { getAllForPublic, getOrganizationByIdForPublic } = require('../controllers/organizationController.js');
 
 const { getAllPostsForPublic, getPostsByIdForPublic } = require('../controllers/postsOrganizationController.js');
 
@@ -15,7 +15,7 @@ const { getAllFaqsForPublic, getFaqsByIdForPublic } = require('../controllers/fa
 // public - ai cũng có thể truy cập
 const organizationRoutePrefix = '/organization';
 router.get(organizationRoutePrefix + '/', getAllForPublic);
-router.get(organizationRoutePrefix + '/id/:id', getOrganizationById);
+router.get(organizationRoutePrefix + '/id/:id', getOrganizationByIdForPublic);
 
 const postsRoutePrefix = '/posts';
 router.get(postsRoutePrefix + '/', getAllPostsForPublic);

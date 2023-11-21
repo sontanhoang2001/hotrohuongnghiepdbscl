@@ -44,7 +44,7 @@ module.exports = {
       await OrganizationDetail.create({ ...organizationDetailPayload, organizationId: organizationId }, { transaction });
 
       // Tạo mới organizationDetail
-      await UserOrganization.create({ OrganizationId : organizationId, UserId : userId }, { transaction });
+      await UserOrganization.create({ OrganizationId: organizationId, UserId: userId }, { transaction });
       await transaction.commit();
       return organization;
     } catch (error) {
@@ -57,7 +57,6 @@ module.exports = {
   getAll: async (page, size, search, organizationTypeId, status, deleted) => {
     try {
       const where = {};
-
       if (search) {
         where.name = { [Op.like]: `%${search}%` };
       }
@@ -85,7 +84,7 @@ module.exports = {
         paranoid: false,
         offset,
         limit: size,
-        attributes: ['id', 'name'],
+        attributes: ['id', 'name', 'deletedAt'],
         include: [
           {
             model: OrganizationDetail,
@@ -118,19 +117,27 @@ module.exports = {
       throw error;
     }
   },
-  getOrganizationById: async (organizationId) => {
+  getOrganizationById: async (organizationId, isAdmin) => {
     try {
+      let paranoidBool = true;
+      if (isAdmin) {
+        paranoidBool = false;
+      }
+      
       const organization = await Organization.findOne({
         where: { id: organizationId },
-        attributes: ['id', 'name'],
+        attributes: ['id', 'name', 'deletedAt'],
+        paranoid: paranoidBool,
         include: [
           {
             model: OrganizationDetail,
             attributes: ['id', 'image', 'address', 'province', 'email', 'phone', 'lat', 'long', 'description', 'url', 'rank'],
+            paranoid: paranoidBool,
           },
           {
             model: VerifyOrganization,
             attributes: ['status'],
+            paranoid: paranoidBool,
           },
           {
             model: OrganizationType,
@@ -295,7 +302,6 @@ module.exports = {
     }
   },
 
-
   // getReqVerifyDetailById: async (verifyOrganizationId) => {
   //   try {
   //     const verifyOrganization = await VerifyOrganization.findOne({
@@ -370,7 +376,7 @@ module.exports = {
           },
         ],
       });
-      const plainOrganization = organization.get({plain: true});
+      const plainOrganization = organization.get({ plain: true });
 
       const verifyOrganizationId = plainOrganization.verifyOrganizationId;
 

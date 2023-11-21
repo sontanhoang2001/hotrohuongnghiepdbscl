@@ -59,7 +59,9 @@ module.exports = {
   getOrganizationById: async (req, res) => {
     try {
       const organizationId = parseInt(req.params.id);
-      const organizationData = await organizationService.getOrganizationById(organizationId); // Gọi chức năng từ service
+      const isAdmin = true;
+
+      const organizationData = await organizationService.getOrganizationById(organizationId, isAdmin); // Gọi chức năng từ service
       if (organizationData) {
         return responseHelper.sendResponse.SUCCESS(res, organizationData);
       }
@@ -330,5 +332,24 @@ module.exports = {
     } catch (error) {
       responseHelper.sendResponse.SERVER_ERROR(res, null);
     }
-  }
+  },
+
+
+  getOrganizationByIdForPublic: async (req, res) => {
+    try {
+      const organizationId = parseInt(req.params.id);
+      const isAdmin = false;
+
+      const organizationData = await organizationService.getOrganizationById(organizationId, isAdmin); // Gọi chức năng từ service
+      if (organizationData) {
+        return responseHelper.sendResponse.SUCCESS(res, organizationData);
+      }
+
+      return responseHelper.sendResponse.NOT_FOUND(res, null);
+    } catch (error) {
+      responseHelper.sendResponse.SERVER_ERROR(res, null);
+    }
+  },
+
+  
 };

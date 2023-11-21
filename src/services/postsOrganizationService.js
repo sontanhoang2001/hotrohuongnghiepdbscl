@@ -19,8 +19,12 @@ module.exports = {
   getAll: async (organizationId, page, size, search, postsCategoryId, deleted) => {
     try {
       const where = {};
+      let paranoidBol = true;
       if (organizationId) {
         where.organizationId = { [Op.eq]: organizationId };
+        // Trường họp sử dụng public
+        // Ngăn không cho lấy rows đã bị xóa
+        paranoidBol = false;
       }
 
       if (deleted) {
@@ -40,7 +44,7 @@ module.exports = {
 
       const { rows, count } = await PostsOrganization.findAndCountAll({
         where,
-        paranoid: false,
+        paranoid: paranoidBol,
         offset,
         limit: size,
         attributes: ['id', 'title', 'thumbnail', 'content', 'status', 'displayDate', 'deletedAt'],
