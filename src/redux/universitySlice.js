@@ -60,12 +60,28 @@ export const getAllOrganizationsByUser = createAsyncThunk(
   },
 );
 
-// lấy  tổ chức đang quản lý by id
+// lấy  tổ chức  by id --admin
 export const getOrganizationsById = createAsyncThunk(
   'university/getOrganizationsById',
   async (id, { rejectWithValue }) => {
     try {
       const rs = await universityApi.getOrganizationById(id);
+      return rs.data;
+    } catch (error) {
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      } else {
+        return rejectWithValue(error.message);
+      }
+    }
+  },
+);
+// lấy  tổ chức  by id --organization
+export const getOneByOrganizationId = createAsyncThunk(
+  'university/getOneByOrganizationId',
+  async (id, { rejectWithValue }) => {
+    try {
+      const rs = await universityApi.getOneByOrganizationId(id);
       return rs.data;
     } catch (error) {
       if (error.response && error.response.data.message) {
@@ -117,12 +133,12 @@ export const updateVerificationStatus = createAsyncThunk(
     }
   },
 );
-// Cập nhật thông tin tổ chức
+// Cập nhật thông tin tổ chức --organization
 export const updateOrganization = createAsyncThunk(
   'university/updateOrganization',
   async (data, { rejectWithValue }) => {
     try {
-      const rs = await universityApi.updateOrganizationInfo(data);
+      const rs = await universityApi.updateOrganizationInfoByOrg(data);
       return rs.data;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -200,7 +216,7 @@ const universitySlice = createSlice({
       .addCase(getAllOrganizationsByUser.rejected, (state, { payload }) => {
         state.pending = false;
       })
-      //get by id
+      //get by id -admin
       .addCase(getOrganizationsById.pending, (state) => {
         state.pending = true;
       })
@@ -210,6 +226,18 @@ const universitySlice = createSlice({
         state.organization = payload.data;
       })
       .addCase(getOrganizationsById.rejected, (state, { payload }) => {
+        state.pending = false;
+      })
+      //get by id -organization
+      .addCase(getOneByOrganizationId.pending, (state) => {
+        state.pending = true;
+      })
+      .addCase(getOneByOrganizationId.fulfilled, (state, { payload }) => {
+        state.pending = false;
+        console.log(payload);
+        state.organization = payload.data;
+      })
+      .addCase(getOneByOrganizationId.rejected, (state, { payload }) => {
         state.pending = false;
       })
       //all
@@ -245,10 +273,13 @@ const universitySlice = createSlice({
       })
       .addCase(updateOrganization.fulfilled, (state, { payload }) => {
         state.pending = false;
-        notification.success({ message: payload.message, duration: 3 });
+        console.log(payload);
+        notification.success({ message: "Cập nhật tổ chức thành công", duration: 3 });
       })
       .addCase(updateOrganization.rejected, (state, { payload }) => {
         state.pending = false;
+        console.log(payload.message);
+
         notification.error({ message: payload, duration: 3 });
       }) //all public University
       .addCase(getAllPublicUniversityInfo.pending, (state) => {

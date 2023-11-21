@@ -22,6 +22,7 @@ import {
   MinusCircleOutlined,
   PlusCircleFilled,
   PlusCircleOutlined,
+  UndoOutlined,
 } from '@ant-design/icons';
 
 import { useDispatch, useSelector } from 'react-redux';
@@ -37,11 +38,23 @@ import React from 'react';
 import TextArea from 'antd/es/input/TextArea';
 import mbtiApi from '../../../api/mbtiApi';
 import Search from 'antd/es/input/Search';
-import { getAllFAQS } from '../../../redux/faqsSlice';
+import {
+  createFaqs,
+  deleteFaqs,
+  getAllFAQS,
+  restoreFaqs,
+  setFaqsParams,
+  updateFaqs,
+} from '../../../redux/faqsSlice';
+import faqsApi from '../../../api/faqsApi';
 
 const { Title } = Typography;
 
-function Faqs() {
+function Faqs({ organizationId }) {
+  //gọi redux state
+  const dispatch = useDispatch();
+
+  const { faqs,size,page,total,pending,faqsParams } = useSelector((state) => state.faqs);
   //form
   // Filter `option.label` match the user type `input`
   const filterOption = (input, option) =>
@@ -52,13 +65,19 @@ function Faqs() {
     formRef.current
       .validateFields()
       .then((values) => {
+        let formData = { ...values, organizationId: organizationId };
         if (!isEditing) {
           //create
-          dispatch(addNewMbti(values));
+          dispatch(createFaqs(formData)).then(()=>{
+            dispatch(getAllFAQS({ organizationId }));
+          });
         } else {
           //update
-          dispatch(updateMbti(values));
+          dispatch(updateFaqs(formData)).then(()=>{
+            dispatch(getAllFAQS({ organizationId }));
+          });
         }
+        
       })
       .catch((errorInfo) => {
         console.log('Form validation failed:', errorInfo);
@@ -71,18 +90,20 @@ function Faqs() {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const handleEdit = (id) => {
     setProcessId(id);
-    mbtiApi
-      .getQuestionById(id)
+    faqsApi
+      .getById({ id, organizationId })
       .then((res) => {
-        const question = res.data.data;
-        formRef.current?.resetFields();
-        formRef.current?.setFieldsValue({
-          ...question,
-          answers: question.Answers,
-          question_group_id: question.QuestionGroup.id,
-        });
         setIsEditing(true);
         setIsOpenModal(true);
+
+        setTimeout(() => {
+          const question = res.data.data;
+          formRef.current?.resetFields();
+          formRef.current?.setFieldsValue({
+            ...question,
+          });
+        }, 200);
+
         setProcessId(0);
       })
       .catch((error) => {
@@ -92,16 +113,17 @@ function Faqs() {
   };
   //hàm bắt event delete
   const handleDelete = (id) => {
-    mbtiApi
-      .deleteMbti(id)
-      .then(({ data }) => {
-        notification.success({ message: data.message, duration: 3 });
-        dispatch(setParams({}));
-      })
-      .catch((err) => {
-        notification.error({ message: err.message, duration: 3 });
-      });
+    dispatch(deleteFaqs({ id, organizationId })).then(() => {
+      dispatch(getAllFAQS({ organizationId }));
+    });
   };
+  //restore
+  const handleRestore = (id) => {
+    dispatch(restoreFaqs({ id, organizationId })).then(() => {
+      dispatch(getAllFAQS({ organizationId }));
+    });
+  };
+
   //định dạng cột hiển thị
   const columns = useMemo(
     () => [
@@ -123,100 +145,69 @@ function Faqs() {
         ),
       },
       {
-        title: 'Đáp án',
+        title: 'Trả lời',
         dataIndex: 'answers',
         key: 'answers',
-        render: (_, mbti) => (
-          <div className="author-info">
-            <List
-              size="small"
-              bordered
-              dataSource={mbti.Answers}
-              renderItem={(item, idx) => (
-                <List.Item>
-                  {idx + 1}. {item.answer}
-                </List.Item>
-              )}
-            />
-          </div>
-        ),
+        render: (_, record) => <div className="author-info">{record.answer}</div>,
       },
-      {
-        title: 'Giá trị',
-        dataIndex: 'value',
-        key: 'value',
-        render: (_, mbti) => (
-          <div className="author-info">
-            <List
-              size="small"
-              bordered
-              dataSource={mbti.Answers}
-              renderItem={(item, idx) => (
-                <List.Item>
-                  <CaretRightOutlined /> {item.value}
-                </List.Item>
-              )}
-            />
-          </div>
-        ),
-      },
+
       {
         key: 'action',
         fixed: 'right',
         dataIndex: 'action',
-        render: (_, mbti) => (
+        render: (_, record) => (
           <div className="author-info">
-            <Button type="text" loading={processId === mbti.id} onClick={() => handleEdit(mbti.id)}>
+            <Button type="text" onClick={() => handleEdit(record.id)}>
               <EditOutlined style={{ color: 'green' }} />
             </Button>
-            <Popconfirm
-              placement="leftTop"
-              title="Xác nhận xóa"             
-              okText="Xóa"
-              onConfirm={() => handleDelete(mbti.id)}
-              cancelText="Hủy"
-            >
-              <Button danger>
-                <DeleteOutlined />
-              </Button>
-            </Popconfirm>
+            {record.deletedAt === null && (
+              <Popconfirm
+                placement="leftTop"
+                title="Xác nhận xóa"
+                okText="Xóa"
+                onConfirm={() => handleDelete(record.id)}
+                cancelText="Hủy"
+              >
+                <Button danger>
+                  <DeleteOutlined />
+                </Button>
+              </Popconfirm>
+            )}
+            {record.deletedAt !== null && (
+              <Popconfirm
+                placement="leftTop"
+                title="Xác nhận khôi phục"
+                okText="Khôi phục"
+                onConfirm={() => handleRestore(record.id)}
+                cancelText="Hủy"
+              >
+                <Button danger>
+                  <UndoOutlined />
+                </Button>
+              </Popconfirm>
+            )}
           </div>
         ),
       },
     ],
-    [],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [handleDelete, handleEdit, faqs],
   );
-
-  //gọi redux state
-  const dispatch = useDispatch();
-  const {
-    data: mbtiData,
-    pending: pendingState,
-    mbtiParams,
-    metaData,
-    questionGroups,
-  } = useSelector((state) => state.mbti);
-  const {faqs}=useSelector(state=>state.faqs);
 
   //Lấy danh sách nhóm câu hỏi
   useEffect(() => {
     //gọi api thông qua redux
-    dispatch(getAllFAQS());
-  }, [dispatch]);
-
-  useEffect(() => {
-    //gọi api thông qua redux
-    dispatch(getMbtiQuestion());
-  }, [dispatch, mbtiParams]);
+    dispatch(getAllFAQS({ organizationId }));
+  }, [dispatch, organizationId,faqsParams]);
 
   //hàm phan trang
   const handlePageChange = (page, pageSize) => {
-    dispatch(setParams({ page: page, size: pageSize }));
+    dispatch(setFaqsParams({ page: page, size: pageSize }));
   };
 
   //tìm kiếm
   const onSearch = (value, _e, info) => {
-    dispatch(setParams({ search: value, page: 1 }));
+    dispatch(setFaqsParams({ search: value, page: 1 }));
   };
 
   return (
@@ -243,21 +234,25 @@ function Faqs() {
             <Search placeholder="Tìm kiếm câu hỏi" onSearch={onSearch} enterButton="Tìm" />
           </Col>
           <Col xs="24" xl={24}>
-            <Card bordered={false} className="criclebox tablespace mb-24" title="Danh sách câu hỏi thường gặp">
+            <Card
+              bordered={false}
+              className="criclebox tablespace mb-24"
+              title="Danh sách câu hỏi thường gặp"
+            >
               <div className="table-responsive">
                 <Table
                   bordered={true}
                   columns={columns}
-                  loading={pendingState}
-                  dataSource={mbtiData?.data}
+                  loading={pending}
+                  dataSource={faqs}
                   pagination={false}
                   className="ant-border-space"
                 />
               </div>
               <Pagination
-                current={metaData.page}
-                pageSize={metaData.size}
-                total={metaData.total}
+                current={page}
+                pageSize={size}
+                total={total}
                 onChange={handlePageChange}
                 showQuickJumper
                 showSizeChanger
@@ -270,7 +265,7 @@ function Faqs() {
       </div>
       {/* Creating modal */}
       <Modal
-        confirmLoading={pendingState}
+        confirmLoading={pending}
         title={
           <p style={{ textAlign: 'center', margin: 0 }}>
             {' '}
@@ -285,24 +280,10 @@ function Faqs() {
         onOk={handleSubmitForm}
         onCancel={() => setIsOpenModal(false)}
       >
-        <Card style={{ margin: 0, padding: 0 }} loading={pendingState}>
+        <Card style={{ margin: 0, padding: 0 }} loading={pending}>
           <Form wrapperCol={{ span: 20 }} labelCol={{ span: 4 }} ref={formRef}>
             <Form.Item name="id">
               <Input type="hidden" />
-            </Form.Item>
-            <Form.Item
-              name="question_group_id"
-              label="Nhóm câu hỏi"
-              rules={[{ required: true, message: 'Vui lòng chọn điểm điểm dừng' }]}
-            >
-              <Select
-                size="large"
-                options={questionGroups?.map((group) => ({
-                  value: group.id,
-                  label: `${group.value} - ${group.name}`,
-                }))}
-                placeholder="Chọn nhóm câu hỏi"
-              />
             </Form.Item>
             <Form.Item
               label="Câu hỏi"
@@ -311,54 +292,13 @@ function Faqs() {
             >
               <TextArea placeholder="Câu hỏi" autoSize={{ minRows: 3, maxRows: 5 }} />
             </Form.Item>
-
-            <Form.List name="answers">
-              {(fields, { add, remove }) => (
-                <>
-                  {fields.map(({ key, name, ...restField }, index) => (
-                    <Card
-                      title={'Câu trả lời ' + parseInt(index + 1)}
-                      extra={!isEditing && <MinusCircleOutlined onClick={() => remove(name)} />}
-                      key={key}
-                      className="mb-3"
-                    >
-                      <Form.Item
-                        wrapperCol={{ span: 16 }}
-                        labelCol={{ span: 8 }}
-                        {...restField}
-                        name={[name, 'answer']}
-                        label="Câu trả lời"
-                        rules={[{ required: true, message: 'Vui lòng nhập câu trả lời' }]}
-                      >
-                        <Input size="large" placeholder="Câu trả lời" />
-                      </Form.Item>
-                      <Form.Item
-                        wrapperCol={{ span: 16 }}
-                        labelCol={{ span: 8 }}
-                        {...restField}
-                        name={[name, 'value']}
-                        label="Giá trị"
-                        rules={[{ required: true, message: 'Vui lòng nhập giá trị' }]}
-                      >
-                        <Input size="large" placeholder="Câu trả lời" />
-                      </Form.Item>
-                    </Card>
-                  ))}
-                  {!isEditing && (
-                    <Form.Item wrapperCol={{ span: 8, offset: 8 }}>
-                      <Button
-                        type="dashed"
-                        onClick={() => add()}
-                        block
-                        icon={<PlusCircleOutlined />}
-                      >
-                        Thêm câu trả lời
-                      </Button>
-                    </Form.Item>
-                  )}
-                </>
-              )}
-            </Form.List>
+            <Form.Item
+              label="Câu trả lời"
+              name="answer"
+              rules={[{ required: true, message: 'Nhập câu trả lời!' }]}
+            >
+              <TextArea placeholder="Câu trả lời" autoSize={{ minRows: 3, maxRows: 5 }} />
+            </Form.Item>
           </Form>
         </Card>
       </Modal>

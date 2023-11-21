@@ -23,7 +23,13 @@ const universityApi = {
     const url = `${pathname}/id/${id}`;
     return axiosService.get(url);
   },
+  //admin
   updateOrganizationInfo: (data) => {
+    const url = `${pathname}/edit/${data.id}`;
+    return axiosService.patch(url, data);
+  },
+  //org
+  updateOrganizationInfoByOrg: (data) => {
     const url = `${pathname}/edit/${data.id}`;
     return axiosService.patch(url, data);
   },
@@ -40,6 +46,12 @@ const universityApi = {
     const url = `public/organization?page=${params.page}&size=${params.size}&search=${params.search}&organizationType=${params.type}`;
     return axiosService.get(url);
   },
+  getOneByOrganizationId: (id) => {
+    const url = `${pathname}/getOneByOrganizationId/${id}`;
+    return axiosService.get(url);
+  },
+
+  
 };
 
 export default universityApi;

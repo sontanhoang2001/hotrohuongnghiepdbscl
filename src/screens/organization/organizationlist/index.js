@@ -151,7 +151,7 @@ import { Link } from 'react-router-dom';
           render: (record) => (
             <>            
             <Link to={`/organization/${record.id}`}>
-            <Button  danger title='Xem chi tiết'>
+            <Button  title='Xem chi tiết'>
                   <InfoCircleFilled />
                 </Button>
             </Link>

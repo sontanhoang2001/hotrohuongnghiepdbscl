@@ -4,14 +4,19 @@ import qs from 'qs';
 const pathname = 'postsOrganization';
 
 const postsApi = {
+  getCategories: () => {
+    const url = `${pathname}/getAllPostsCategory`;
+    return axiosService.get(url);
+  },
   getAll: (params) => {
-    const url = `${pathname}?page=${params.page}&size=${params.size}`;
+    const url = `${pathname}?page=${params.page}&size=${params.size}&organizationId=${params.organizationId}&search=${params.search}`;
     return axiosService.get(url);
   },
   getById: (params) => {
     const url = `${pathname}/id/${params.id}?organizationId=${params.organizationId}`;
     return axiosService.get(url);
   },
+
   create: (data) => {
     const url = `${pathname}/add`;
     return axiosService.post(url, data);
