@@ -4,7 +4,7 @@ const pathname = 'faqsOrganization';
 
 const faqsApi = {  
   getAll: (params) => {
-    const url = `${pathname}?page=${params.page}&size=${params.size}&organizationId=${params.organizationId}`;
+    const url = `${pathname}?page=${params.page}&size=${params.size}&organizationId=${params.organizationId}&search=${params.search}`;
     return axiosService.get(url);
   },
   getById: (params) => {

@@ -15,6 +15,7 @@ const initialState = {
     page: 1,
     size: 10,
     total: 0,
+    search:''
   },
   faqs: [],
   currentFaqs: {},
@@ -123,7 +124,11 @@ export const restoreFaqs = createAsyncThunk(
 const faqsSlice = createSlice({
   name: 'faqs',
   initialState,
-  reducers: {},
+  reducers: {
+    setFaqsParams:(state,action)=>{
+      state.faqsParams={...state.faqsParams,...action.payload}
+    }
+  },
   extraReducers: (builder) => {
     builder
       //restore
@@ -219,4 +224,4 @@ const faqsSlice = createSlice({
 });
 
 export default faqsSlice.reducer;
-export const {} = faqsSlice.actions;
+export const {setFaqsParams} = faqsSlice.actions;

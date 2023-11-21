@@ -43,6 +43,7 @@ import {
   deleteFaqs,
   getAllFAQS,
   restoreFaqs,
+  setFaqsParams,
   updateFaqs,
 } from '../../../redux/faqsSlice';
 import faqsApi from '../../../api/faqsApi';
@@ -53,7 +54,7 @@ function Faqs({ organizationId }) {
   //gọi redux state
   const dispatch = useDispatch();
 
-  const { faqs,size,page,total,pending } = useSelector((state) => state.faqs);
+  const { faqs,size,page,total,pending,faqsParams } = useSelector((state) => state.faqs);
   //form
   // Filter `option.label` match the user type `input`
   const filterOption = (input, option) =>
@@ -193,16 +194,16 @@ function Faqs({ organizationId }) {
   useEffect(() => {
     //gọi api thông qua redux
     dispatch(getAllFAQS({ organizationId }));
-  }, [dispatch, organizationId]);
+  }, [dispatch, organizationId,faqsParams]);
 
   //hàm phan trang
   const handlePageChange = (page, pageSize) => {
-    dispatch(setParams({ page: page, size: pageSize }));
+    dispatch(setFaqsParams({ page: page, size: pageSize }));
   };
 
   //tìm kiếm
   const onSearch = (value, _e, info) => {
-    dispatch(setParams({ search: value, page: 1 }));
+    dispatch(setFaqsParams({ search: value, page: 1 }));
   };
 
   return (
