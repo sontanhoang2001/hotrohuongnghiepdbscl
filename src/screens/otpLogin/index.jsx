@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button, Space, Spin } from 'antd';
+import { Button, Card, Space, Spin, message } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
 import RequestOtp from '../../components/requestOtp';
@@ -12,6 +12,7 @@ import {
   selectSignupData,
   setIsSignup,
 } from '../../redux/authSlice';
+import { auth, RecaptchaVerifier, signInWithPhoneNumber } from '../../firebase/config';
 
 function OtpLogin() {
   const dispatch = useDispatch();
@@ -42,6 +43,44 @@ function OtpLogin() {
     if (type === 'email') {
       dispatch(requestOtp(requestData));
     }
+    if (type === 'phone') {
+      setOpen(true);
+      setloadinpage(true);
+      // Add a timeout to stop spinning after 3 seconds
+      setTimeout(() => {
+        setloadinpage(false);
+      }, 3000);
+    }
+  };
+  // otp bằng số điện thoại
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [otp, setOtp] = useState('');
+  const [step, setStep] = useState('INPUT_PHONE_NUMBER');
+  const [result, setResult] = useState('');
+
+  // setPhoneNumber(`+84${phone.substring(1)}`);
+  const signin = () => {
+    try {
+      console.log('bắt đầu gửi OTP qua sđt');
+      message.success('Đã gửi OTP qua sđt', 3);
+      if (phoneNumber === '') return;
+
+      let verify = new RecaptchaVerifier(auth, 'recaptcha-container', {
+        size: 'invisible',
+      });
+
+      signInWithPhoneNumber(auth, phoneNumber, verify)
+        .then((result) => {
+          console.log('result: ', result);
+          setResult(result);
+          setStep('VERIFY_OTP');
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } catch (error) {
+      console.log('hết hạn');
+    }
   };
 
   useEffect(() => {
@@ -58,36 +97,61 @@ function OtpLogin() {
       dispatch(isOtp(false));
     }
   }, [pending, loadinpage, open, sentOtp, dispatch, phone, mail]);
+  // console.log(`+84${phone.substring(1)}`);
 
   return (
     <Spin spinning={loadinpage}>
       <Container>
         {/* dùng toán tử 3 ngôi thay đổi của sổ khi giá trị open thây đổi */}
         {open === false ? (
-          <div className="box">
-            <h3 className="box-title">Lấy mã xác nhận</h3>
-            <div className="group-btn-send-otp">
-              <Space direction="vertical" size="middle">
-                <p>
-                  Otp sẽ được gửi qua mail: <u style={{ color: `#1677ff` }}>{mail}</u>
-                </p>
-                {!hasPhone ? (
+          <Card style={{ boxShadow: `rgba(0, 0, 0, 0.24) 0px 3px 8px` }}>
+            <div className="box">
+              <h3 className="box-title">Lấy mã xác nhận</h3>
+              <div className="group-btn-send-otp">
+                <Space direction="vertical" size="middle">
                   <p>
-                    Otp sẽ được gửi qua SĐT:{' '}
-                    <u style={{ color: `var(--secondary-color)` }}> {phone}</u>
+                    Otp sẽ được gửi qua mail:{' '}
+                    <u style={{ color: `var(--secondary-color)` }}>{mail}</u>
                   </p>
-                ) : (
-                  <p>Hiện bạn chưa cập nhật số điện thoại</p>
-                )}
-              </Space>
-              <Button type="primary" onClick={() => handleOnclick('email')}>
-                Gửi qua mail
-              </Button>
-              <Button type="primary" danger onClick={() => handleOnclick('phone')}>
-                Gửi qua SĐT
-              </Button>
+                  {!hasPhone ? (
+                    <div>
+                      Otp sẽ được gửi qua SĐT:{' '}
+                      <u style={{ color: `var(--secondary-color)` }}> {phone}</u>
+                      {step === 'INPUT_PHONE_NUMBER' && (
+                        <div>
+                          <input
+                            value={phoneNumber}
+                            onChange={(e) => {
+                              setPhoneNumber(e.target.value);
+                            }}
+                            placeholder="phone number"
+                          />
+                          <br />
+                          <br />
+                          <div id="recaptcha-container"></div>
+                          <button onClick={signin}>Send OTP</button>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <p>Hiện bạn chưa cập nhật số điện thoại</p>
+                  )}
+                </Space>
+                <Button type="primary" onClick={() => handleOnclick('email')}>
+                  Gửi qua mail
+                </Button>
+
+                <Button
+                  type="primary"
+                  disabled={hasPhone}
+                  danger
+                  onClick={() => handleOnclick('phone')}
+                >
+                  Gửi qua SĐT
+                </Button>
+              </div>
             </div>
-          </div>
+          </Card>
         ) : (
           <OtpRequestCard className="box">
             <div className="box-header">

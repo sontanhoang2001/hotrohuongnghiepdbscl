@@ -25,14 +25,19 @@ const universityApi = {
   },
   updateOrganizationInfo: (data) => {
     const url = `${pathname}/edit/${data.id}`;
-    return axiosService.patch(url,data);
+    return axiosService.patch(url, data);
   },
   requestVerification: (data) => {
     const url = `${pathname}/reqToVerifyOrganization`;
-    return axiosService.patch(url,data);
+    return axiosService.patch(url, data);
   },
   getAllOrganizationsByUser: () => {
     const url = `${pathname}/getAllByUser?page=1&size=100`;
+    return axiosService.get(url);
+  },
+  //client public api
+  getAllPublicUniversityInfo: (page, size) => {
+    const url = `public/organization?page=${page}&size=${size}&organizationType=1`;
     return axiosService.get(url);
   },
   getOneByOrganizationId: (id) => {

@@ -14,7 +14,7 @@ const initialState = {
     size: 10,
     total: 0,
   },
-  currentVerification:{},
+  currentVerification: {},
   verifications: [],
   organization: {},
   joinedOrganizations: [],
@@ -140,15 +140,39 @@ export const updateOrganization = createAsyncThunk(
   },
 );
 
+//Lấy thông tin public của các trường đại học
+export const getAllPublicUniversityInfo = createAsyncThunk(
+  'university/getAllPublicUniversityInfo',
+  async ({ page, size }, { rejectWithValue }) => {
+    try {
+      const rs = await universityApi.getAllPublicUniversityInfo(page, size);
+
+      return rs.data.data;
+    } catch (error) {
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      } else {
+        return rejectWithValue(error.message);
+      }
+    }
+  },
+);
+
 // Tạo slice
 const universitySlice = createSlice({
   name: 'university',
   initialState,
   reducers: {
     getLocalOrganizationsById: (state, action) => {
-      state.currentVerification = state.verifications.find((record) => record.id === action.payload);
+      state.currentVerification = state.verifications.find(
+        (record) => record.id === action.payload,
+      );
+    },
+    setSize: (state, action) => {
+      state.size = action.payload;
     },
   },
+
   extraReducers: (builder) => {
     builder
       //verification update
@@ -157,11 +181,11 @@ const universitySlice = createSlice({
       })
       .addCase(updateVerificationStatus.fulfilled, (state, { payload }) => {
         state.pending = false;
-        notification.success({message:'Cập nhật trạng thái thành công'});
+        notification.success({ message: 'Cập nhật trạng thái thành công' });
       })
       .addCase(updateVerificationStatus.rejected, (state, { payload }) => {
         state.pending = false;
-        notification.error({message:'Cập nhật trạng thái thất bại'});
+        notification.error({ message: 'Cập nhật trạng thái thất bại' });
       })
       //verification requests
       .addCase(getAllOrganizationVerification.pending, (state) => {
@@ -229,13 +253,14 @@ const universitySlice = createSlice({
       .addCase(getAllUniversity.rejected, (state, { payload }) => {
         state.pending = false;
       })
+
       //delete
       .addCase(deleteOrganization.pending, (state) => {
         state.pending = true;
       })
       .addCase(deleteOrganization.fulfilled, (state, { payload }) => {
         state.pending = false;
-        console.log(payload);
+
         notification.success({ message: payload.message, duration: 3 });
       })
       .addCase(deleteOrganization.rejected, (state, { payload }) => {
@@ -252,13 +277,27 @@ const universitySlice = createSlice({
       .addCase(updateOrganization.rejected, (state, { payload }) => {
         state.pending = false;
         notification.error({ message: payload, duration: 3 });
+      }) //all public University
+      .addCase(getAllPublicUniversityInfo.pending, (state) => {
+        state.pending = true;
+      })
+      .addCase(getAllPublicUniversityInfo.fulfilled, (state, { payload }) => {
+        state.pending = false;
+        state.data = payload;
+        state.page = payload.page;
+        state.size = payload.size;
+        state.total = payload.total;
+      })
+      .addCase(getAllPublicUniversityInfo.rejected, (state, { payload }) => {
+        state.pending = false;
       });
   },
 });
+export const { getLocalOrganizationsById, setSize } = universitySlice.actions;
 export const selectUniversity = (state) => state.university.data;
 export const selectUniversityPending = (state) => state.university.pending;
 export const selectUniversityToalRow = (state) => state.university.total;
 export const selectUniversityPage = (state) => state.university.page;
 export const selectUniversityPagesize = (state) => state.university.size;
+
 export default universitySlice.reducer;
-export const {getLocalOrganizationsById}=universitySlice.actions;

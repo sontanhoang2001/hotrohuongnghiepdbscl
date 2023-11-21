@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button, Form, Spin } from 'antd';
+import { Button, Form, Spin, message } from 'antd';
 import { InputOTP } from 'antd-input-otp';
 import styled from 'styled-components';
 import { authOTP } from '../../redux/authSlice';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { auth, RecaptchaVerifier, signInWithPhoneNumber } from '../../firebase/config';
 
 function RequestOtp(props) {
   const { type, userId, sentOtp } = props;
@@ -12,6 +13,32 @@ function RequestOtp(props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+  console.log(type);
+  const [step, setStep] = useState('INPUT_PHONE_NUMBER');
+  const [result, setResult] = useState('');
+
+  //hàm xác thựcn otp bằng số điện thoại
+  const ValidateOtpByPhone = (otp) => {
+    try {
+      console.log('Xác thực OTP từ ng dùng');
+
+      if (otp === null) return;
+
+      result
+        .confirm(otp)
+        .then((result) => {
+          setStep('VERIFY_SUCCESS');
+        })
+        .catch((err) => {
+          console.log('Incorrect code');
+          message.success('Nhập sai mã OTP', 3);
+        });
+    } catch (error) {
+      console.log('hết hạn');
+      message.success('Otp quá hạn', 3);
+    }
+  };
+
   useEffect(() => {
     if (sentOtp) {
       localStorage.removeItem('userSignupData');
@@ -49,8 +76,14 @@ function RequestOtp(props) {
       otpCode: otpString,
     };
     console.log(formData);
-    dispatch(authOTP(formData));
+    if (type === 'email') {
+      dispatch(authOTP(formData));
+    }
+    if (type === 'phone') {
+      ValidateOtpByPhone(sentOtp);
+    }
   };
+
   return (
     <OtpContainer>
       <main>

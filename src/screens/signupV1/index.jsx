@@ -86,7 +86,6 @@ function SignUpV1() {
     path.some((option) => option.label.toLowerCase().indexOf(inputValue.toLowerCase()) > -1);
   const onFinish = (values) => {
     const { agreement, confirm, ...inputedUserData } = values;
-    console.log(values);
     //chuyển đổi giá trị submit from tại address từ mảng sang chuổi
     const addressString = inputedUserData.address.join(', ');
     inputedUserData.address = addressString;
@@ -247,6 +246,10 @@ function SignUpV1() {
                       max: 10,
                       message: 'Độ dài sdt không quá 10 số',
                     },
+                    {
+                      pattern: /^09\d{8}$/,
+                      message: 'Sai định dạng sđt',
+                    },
                   ]}
                   className="no-star"
                 >
@@ -297,6 +300,10 @@ function SignUpV1() {
                     placeholder="Chọn vai trò"
                     options={[
                       {
+                        value: '5',
+                        label: 'Học sinh - sinh viên',
+                      },
+                      {
                         value: '2',
                         label: 'Trường học',
                       },
@@ -307,10 +314,6 @@ function SignUpV1() {
                       {
                         value: '4',
                         label: 'Tư vấn viên - Cố vấn',
-                      },
-                      {
-                        value: '5',
-                        label: 'Quyền học sinh - sinh viên',
                       },
                     ]}
                     style={{ height: 50 }}
