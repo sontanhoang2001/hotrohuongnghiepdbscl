@@ -79,7 +79,8 @@ module.exports = {
 
       const postsOrganization = await PostsOrganization.findOne({
         where: whereClause,
-        attributes: ['id', 'title', 'thumbnail', 'content', 'status', 'displayDate'],
+        paranoid: false,
+        attributes: ['id', 'title', 'thumbnail', 'content', 'status', 'displayDate', 'deletedAt'],
         include: [
           {
             model: User,

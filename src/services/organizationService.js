@@ -57,7 +57,6 @@ module.exports = {
   getAll: async (page, size, search, organizationTypeId, status, deleted) => {
     try {
       const where = {};
-      let paranoidBol = true;
 
       if (search) {
         where.name = { [Op.like]: `%${search}%` };
@@ -76,7 +75,6 @@ module.exports = {
 
       if (deleted) {
         where.deletedAt = { [Op.not]: null };
-        paranoidBol = false
       }
 
       // Tính offset
@@ -84,7 +82,7 @@ module.exports = {
 
       const { count, rows } = await Organization.findAndCountAll({
         where,
-        paranoid: paranoidBol,
+        paranoid: false,
         offset,
         limit: size,
         attributes: ['id', 'name'],

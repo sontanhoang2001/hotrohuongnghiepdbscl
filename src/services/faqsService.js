@@ -21,14 +21,12 @@ module.exports = {
   getAll: async (organizationId, page, size, search, deleted) => {
     try {
       const where = {};
-      let paranoidBol = true;
       if (organizationId) {
         where.organizationId = { [Op.eq]: organizationId };
       }
 
       if (deleted) {
         where.deletedAt = { [Op.not]: null };
-        paranoidBol = false;
       }
 
       if (search) {
@@ -40,10 +38,10 @@ module.exports = {
 
       const { rows, count } = await FAQs.findAndCountAll({
         where,
-        paranoid: paranoidBol,
+        paranoid: false,
         offset,
         limit: size,
-        attributes: ['id', 'question', 'answer', 'createdAt'],
+        attributes: ['id', 'question', 'answer', 'createdAt', 'deletedAt'],
       });
 
       // Chuẩn bị dữ liệu phân trang
