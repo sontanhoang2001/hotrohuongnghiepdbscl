@@ -16,7 +16,7 @@ router.patch('/edit/:id', middleware.verifyToken, middleware.checkRole([Roles.AD
 router.delete('/delete/:id', middleware.verifyToken, middleware.checkRole([Roles.ADMIN, Roles.ORGANIZATION]), deleteOnePosts);
 router.post('/restore/:id', middleware.verifyToken, middleware.checkRole([Roles.ADMIN, Roles.ORGANIZATION]), restoreOnePosts);
 
-router.get('/getAllPostsCategory', middleware.verifyToken, middleware.checkRole([Roles.ADMIN, Roles.ORGANIZATION]), getAllPostsCategory);
+router.get('/getAllPostsCategory', getAllPostsCategory);
 
 
 

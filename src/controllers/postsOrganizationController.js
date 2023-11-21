@@ -34,10 +34,14 @@ module.exports = {
       let page = parseInt(req.query.page) || 1;
       let size = parseInt(req.query.size) || 10;
       let search = req.query.search;
-      let postsCategoryId = req.query.category && parseInt(req.query.category);
+      let postsCategoryId = req.query.postsCategoryId && parseInt(req.query.postsCategoryId);
       
       let deleted = req.query.deleted;
 
+      if (isNaN(organizationId)) {
+        return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a valid organizationId as a parameter');
+      }
+      
       const posts = await postsOrganizationService.getAll(organizationId, page, size, search, postsCategoryId, deleted); // Gọi chức năng từ service
       if (posts) {
         return responseHelper.sendResponse.SUCCESS(res, posts);
@@ -53,6 +57,11 @@ module.exports = {
     try {
       let organizationId = req.query.organizationId && parseInt(req.query.organizationId);
       const postsId = parseInt(req.params.id);
+
+      if (isNaN(organizationId)) {
+        return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a valid organizationId as a parameter');
+      }
+      
       const posts = await postsOrganizationService.getById(postsId, organizationId); // Gọi chức năng từ service
       if (posts) {
         return responseHelper.sendResponse.SUCCESS(res, posts);
@@ -140,6 +149,43 @@ module.exports = {
       }
 
       return responseHelper.sendResponse.BAD_REQUEST(res, null);
+    } catch (error) {
+      responseHelper.sendResponse.SERVER_ERROR(res, null);
+    }
+  },
+
+
+  // Use by user Public
+  getAllPostsForPublic: async (req, res) => {
+    try {
+      let organizationId = false;
+      let page = parseInt(req.query.page) || 1;
+      let size = parseInt(req.query.size) || 10;
+      let search = req.query.search;
+      let postsCategoryId = req.query.postsCategoryId && parseInt(req.query.postsCategoryId);
+      let deleted = false;
+
+      const posts = await postsOrganizationService.getAll(organizationId, page, size, search, postsCategoryId, deleted); // Gọi chức năng từ service
+      if (posts) {
+        return responseHelper.sendResponse.SUCCESS(res, posts);
+      }
+
+      return responseHelper.sendResponse.BAD_REQUEST(res, null);
+    } catch (error) {
+      responseHelper.sendResponse.SERVER_ERROR(res, null);
+    }
+  },
+
+  getPostsByIdForPublic: async (req, res) => {
+    try {
+      const organizationId = false;
+      const postsId = parseInt(req.params.id);
+      const posts = await postsOrganizationService.getById(postsId, organizationId); // Gọi chức năng từ service
+      if (posts) {
+        return responseHelper.sendResponse.SUCCESS(res, posts);
+      }
+
+      return responseHelper.sendResponse.NOT_FOUND(res, null);
     } catch (error) {
       responseHelper.sendResponse.SERVER_ERROR(res, null);
     }

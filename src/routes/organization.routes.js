@@ -23,19 +23,18 @@ const {
 //* Here I defined the methods
 
 // Người dùng thuộc Admin
-router.get('/', middleware.verifyToken, middleware.checkRole([Roles.ADMIN, Roles.ORGANIZATION]), getAll);
-router.get('/id/:id', middleware.verifyToken, middleware.checkRole([Roles.ADMIN, Roles.ORGANIZATION]), getOrganizationById);
-router.post('/add', middleware.verifyToken, middleware.checkRole([Roles.ADMIN, Roles.ORGANIZATION]), createOrganization);
-router.patch('/edit/:id', middleware.verifyToken, middleware.checkRole([Roles.ADMIN, Roles.ORGANIZATION]), updateOrganization);
-router.delete('/delete/:id', middleware.verifyToken, middleware.checkRole([Roles.ADMIN, Roles.ORGANIZATION]), deleteOneOrganization);
-router.post('/restore/:id', middleware.verifyToken, middleware.checkRole([Roles.ADMIN, Roles.ORGANIZATION]), restoreOneOrganization);
+router.get('/', middleware.verifyToken, middleware.checkRole([Roles.ADMIN]), getAll);
+router.get('/id/:id', middleware.verifyToken, middleware.checkRole([Roles.ADMIN]), getOrganizationById);
+router.post('/add', middleware.verifyToken, middleware.checkRole([Roles.ADMIN]), createOrganization);
+router.patch('/edit/:id', middleware.verifyToken, middleware.checkRole([Roles.ADMIN]), updateOrganization);
+router.delete('/delete/:id', middleware.verifyToken, middleware.checkRole([Roles.ADMIN]), deleteOneOrganization);
+router.post('/restore/:id', middleware.verifyToken, middleware.checkRole([Roles.ADMIN]), restoreOneOrganization);
 
 // Người dùng thuộc - Tổ chức
 router.get('/getAllByUser', middleware.verifyToken, middleware.checkRole([Roles.ADMIN, Roles.ORGANIZATION]), getAllByUser);
 router.get('/getOneByOrganizationId/:id', middleware.verifyToken, middleware.checkRole([Roles.ADMIN, Roles.ORGANIZATION]), getOneByOrganizationId);
-router.get('/getAllOrganizationType', middleware.verifyToken, middleware.checkRole([Roles.ADMIN, Roles.ORGANIZATION]), getAllOrganizationType);
+router.get('/getAllOrganizationType', getAllOrganizationType);
 router.patch('/reqToVerifyOrganization', middleware.verifyToken, middleware.checkRole([Roles.ADMIN, Roles.ORGANIZATION]), middleware.verifyToken, reqToVerifyOrganization);
 router.patch('/updateStatusVerifyOrganization', middleware.verifyToken, middleware.checkRole([Roles.ADMIN, Roles.ORGANIZATION]), middleware.verifyToken, updateStatusVerifyOrganization);
-
 
 module.exports = router;

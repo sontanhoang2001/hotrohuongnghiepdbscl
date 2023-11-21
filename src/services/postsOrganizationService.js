@@ -1,8 +1,6 @@
-
 const PostsOrganization = require('../models').PostsOrganization;
 const PostsCategory = require('../models').PostsCategory;
 const User = require('../models').User;
-
 
 // const sequelize = require('../database/connection_database');
 const { Op, where } = require('sequelize');
@@ -21,11 +19,14 @@ module.exports = {
   getAll: async (organizationId, page, size, search, postsCategoryId, deleted) => {
     try {
       const where = {};
-      where.organizationId = { [Op.eq]: organizationId };
+      let paranoidBol = true;
+      if (organizationId) {
+        where.organizationId = { [Op.eq]: organizationId };
+      }
 
-      
       if (deleted) {
         where.deletedAt = { [Op.not]: null };
+        paranoidBol = false;
       }
 
       if (search) {
@@ -41,7 +42,7 @@ module.exports = {
 
       const { rows, count } = await PostsOrganization.findAndCountAll({
         where,
-        paranoid: false,
+        paranoid: paranoidBol,
         offset,
         limit: size,
         attributes: ['id', 'title', 'thumbnail', 'content', 'status', 'displayDate'],
@@ -72,11 +73,14 @@ module.exports = {
   },
   getById: async (postsId, organizationId) => {
     try {
+      const whereClause = { id: postsId };
+
+      if (organizationId) {
+        whereClause.organizationId = organizationId;
+      }
+
       const postsOrganization = await PostsOrganization.findOne({
-        where: {
-          id: postsId,
-          organizationId: organizationId,
-        },
+        where: whereClause,
         attributes: ['id', 'title', 'thumbnail', 'content', 'status', 'displayDate'],
         include: [
           {
@@ -105,7 +109,7 @@ module.exports = {
         where: {
           id: postsId,
           organizationId: organizationId,
-        }
+        },
       });
 
       if (!posts) {
@@ -127,7 +131,7 @@ module.exports = {
         where: {
           id: postsId,
           organizationId: organizationId,
-        }
+        },
       });
 
       // Xóa bài viết
@@ -148,7 +152,7 @@ module.exports = {
     try {
       // Lấy thông tin bài viết cần xóa
       const post = await PostsOrganization.findByPk(postsId, {
-        paranoid: false
+        paranoid: false,
       });
 
       // Xóa bài viết
@@ -167,7 +171,6 @@ module.exports = {
     }
   },
 
-
   getAllPostsCategory: async () => {
     try {
       const postsCategory = await PostsCategory.findAll({
@@ -179,5 +182,4 @@ module.exports = {
       throw error;
     }
   },
-  
 };
