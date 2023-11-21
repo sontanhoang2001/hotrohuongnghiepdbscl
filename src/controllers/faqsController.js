@@ -99,19 +99,19 @@ module.exports = {
 
   deleteOneFaqs: async (req, res) => {
     try {
-      const postsId = parseInt(req.params.id);
+      const faqsId = parseInt(req.params.id);
       const organizationId = req.query.organizationId && parseInt(req.query.organizationId);
 
-      if (isNaN(postsId)) {
-        return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a valid postsId as a parameter');
+      if (isNaN(faqsId)) {
+        return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a valid faqsId as a parameter');
       }
 
-      const deletePosts = await FAQsService.delete(organizationId, postsId);
-      if (deletePosts) {
-        return responseHelper.sendResponse.SUCCESS(res, deletePosts, 'Thực hiện xóa thành công');
+      const result = await FAQsService.delete(organizationId, faqsId);
+      if (result) {
+        return responseHelper.sendResponse.SUCCESS(res, result, 'Thực hiện xóa câu hỏi thường gặp thành công');
       }
 
-      return responseHelper.sendResponse.BAD_REQUEST(res, null, 'Thực hiện xóa thất bại');
+      return responseHelper.sendResponse.BAD_REQUEST(res, null, 'Thực hiện xóa câu hỏi thường gặp thất bại');
     } catch (error) {
       responseHelper.sendResponse.SERVER_ERROR(res, null);
     }
@@ -119,17 +119,17 @@ module.exports = {
 
   restoreOneFaqs: async (req, res) => {
     try {
-      const postsId = parseInt(req.params.id);
-      if (isNaN(postsId)) {
-        return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a valid postsId as a parameter');
+      const faqsId = parseInt(req.params.id);
+      if (isNaN(faqsId)) {
+        return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a valid faqsId as a parameter');
       }
 
-      const deletePosts = await FAQsService.restore(postsId);
-      if (deletePosts) {
-        return responseHelper.sendResponse.SUCCESS(res, deletePosts, 'Khôi phục bài viết thành công');
+      const result = await FAQsService.restore(faqsId);
+      if (result) {
+        return responseHelper.sendResponse.SUCCESS(res, result, 'Khôi phục câu hỏi thường gặp thành công');
       }
 
-      return responseHelper.sendResponse.BAD_REQUEST(res, null, 'Khôi phục bài viết thất bại');
+      return responseHelper.sendResponse.BAD_REQUEST(res, null, 'Khôi phục câu hỏi thường gặp thất bại');
     } catch (error) {
       responseHelper.sendResponse.SERVER_ERROR(res, null);
     }

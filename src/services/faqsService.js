@@ -22,10 +22,12 @@ module.exports = {
   getAll: async (organizationId, page, size, search, deleted) => {
     try {
       const where = {};
+      let paranoidBol = true;
       where.organizationId = { [Op.eq]: organizationId };
 
       if (deleted) {
         where.deletedAt = { [Op.not]: null };
+        paranoidBol = false;
       }
 
       if (search) {
@@ -37,7 +39,7 @@ module.exports = {
 
       const { rows, count } = await FAQs.findAndCountAll({
         where,
-        paranoid: false,
+        paranoid: paranoidBol,
         offset,
         limit: size,
         attributes: ['id', 'question', 'answer', 'createdAt']
@@ -96,48 +98,46 @@ module.exports = {
     }
   },
 
-  delete: async (organizationId, postsId) => {
+  delete: async (organizationId, faqsId) => {
     try {
       // Lấy thông tin bài viết cần xóa
-      const posts = await PostsOrganization.findOne({
+      const faqs = await FAQs.findOne({
         where: {
-          id: postsId,
+          id: faqsId,
           organizationId: organizationId,
         }
       });
 
       // Xóa bài viết
-      const numberOfAffectedRows = await posts.destroy();
+      const numberOfAffectedRows = await faqs.destroy();
 
       if (numberOfAffectedRows === 0) {
         return false;
       }
 
       // Trả về dữ liệu bài viết vừa xóa cho client
-      return posts;
+      return faqs;
     } catch (error) {
       throw error;
     }
   },
 
-  restore: async (postsId) => {
+  restore: async (faqsId) => {
     try {
       // Lấy thông tin bài viết cần xóa
-      const post = await PostsOrganization.findByPk(postsId, {
+      const faqs = await FAQs.findByPk(faqsId, {
         paranoid: false
       });
 
       // Xóa bài viết
-      const numberOfAffectedRows = await PostsOrganization.restore({
-        where: { id: postsId },
-      });
+      const numberOfAffectedRows = await faqs.restore();
 
       if (numberOfAffectedRows === 0) {
         return false;
       }
 
       // Trả về dữ liệu bài viết vừa xóa cho client
-      return post;
+      return faqs;
     } catch (error) {
       throw error;
     }
