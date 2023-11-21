@@ -29,7 +29,7 @@ import convesionImg4 from '../../../assets/images/face-6.jpeg';
 import convesionImg5 from '../../../assets/images/face-2.jpg';
 import { useDispatch, useSelector } from 'react-redux';
 import TextArea from 'antd/es/input/TextArea';
-import { getOrganizationsById, updateOrganization } from '../../../redux/universitySlice';
+import { getOneByOrganizationId, getOrganizationsById, updateOrganization } from '../../../redux/universitySlice';
 import { useParams } from 'react-router-dom';
 
 const pencil = [
@@ -60,6 +60,8 @@ const Information = () => {
   //redux state
   const dispatch = useDispatch();
   const { pending, organization } = useSelector((state) => state.university);
+ 
+
 
   //Form yêu cầu xác thực tổ chức
   const [openVerifyForm, setOpenVerifyForm] = useState(false);
@@ -89,7 +91,7 @@ const Information = () => {
       .then((values) => {
         //update
         dispatch(updateOrganization(values)).then(() => {
-          dispatch(getOrganizationsById(id));
+          dispatch( (id));
         });
       })
       .catch((err) => {

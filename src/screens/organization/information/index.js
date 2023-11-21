@@ -29,7 +29,11 @@ import convesionImg4 from '../../../assets/images/face-6.jpeg';
 import convesionImg5 from '../../../assets/images/face-2.jpg';
 import { useDispatch, useSelector } from 'react-redux';
 import TextArea from 'antd/es/input/TextArea';
-import { getOrganizationsById, updateOrganization } from '../../../redux/universitySlice';
+import {
+  getOneByOrganizationId,
+  getOrganizationsById,
+  updateOrganization,
+} from '../../../redux/universitySlice';
 import { useParams } from 'react-router-dom';
 import Information from './Information';
 import Posts from './Posts';
@@ -117,7 +121,7 @@ function OrganizationProfile() {
   //Lấy thông tin tổ chức
   const { id } = useParams();
   useEffect(() => {
-    dispatch(getOrganizationsById(id));
+    dispatch(getOneByOrganizationId(id));
     setLoading(false);
   }, [dispatch, id]);
 
@@ -225,12 +229,12 @@ function OrganizationProfile() {
           {
             label: 'Bài viết',
             key: '2',
-            children: <Posts />,
+            children: <Posts organizationId={id} />,
           },
           {
             label: 'FAQS',
             key: '3',
-            children: <Faqs />,
+            children: <Faqs organizationId={id}  />,
           },
           {
             label: 'Tin nhắn',

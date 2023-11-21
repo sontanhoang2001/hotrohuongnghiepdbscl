@@ -35,6 +35,12 @@ const universityApi = {
     const url = `${pathname}/getAllByUser?page=1&size=100`;
     return axiosService.get(url);
   },
+  getOneByOrganizationId: (id) => {
+    const url = `${pathname}/getOneByOrganizationId/${id}`;
+    return axiosService.get(url);
+  },
+
+  
 };
 
 export default universityApi;

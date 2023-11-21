@@ -2,7 +2,6 @@ import {
   Button,
   Card,
   Col,
-  ConfigProvider,
   DatePicker,
   Form,
   Input,
@@ -19,9 +18,7 @@ import SunEditor from 'suneditor-react';
 import 'suneditor/dist/css/suneditor.min.css';
 import { PlusOutlined } from '@ant-design/icons';
 import './style.css';
-import viVN from 'antd/lib/locale/vi_VN';
-import moment from 'moment';
-import { getDate, isBefore, isToday } from 'date-fns';
+import { isBefore, isToday } from 'date-fns';
 
 const getBase64 = (file) =>
   new Promise((resolve, reject) => {
