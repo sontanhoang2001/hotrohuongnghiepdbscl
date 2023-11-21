@@ -178,34 +178,34 @@ module.exports = {
   },
 
   reqToVerifyOrganization: async (req, res) => {
-    // try {
-    const userId = req.user.id;
-    const organizationId = req.body.organizationId;
+    try {
+      const userId = req.user.id;
+      const organizationId = req.body.organizationId;
 
-    // Check user có thuộc tổ chức ko ?
-    const checkUserResult = await organizationService.checkUserBelongtoOrganization(userId, organizationId);
-    if (!checkUserResult) {
-      return responseHelper.sendResponse.UNAUTHORIZED(res, null);
+      // Check user có thuộc tổ chức ko ?
+      const checkUserResult = await organizationService.checkUserBelongtoOrganization(userId, organizationId);
+      if (!checkUserResult) {
+        return responseHelper.sendResponse.UNAUTHORIZED(res, null);
+      }
+
+      const fileAttached = req.body.fileAttached;
+
+      if (!fileAttached) {
+        return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a full and valid parameter');
+      }
+
+      // Trạng thái đã gửi
+      const status = 2;
+
+      const updateOrganization = await organizationService.reqToVerifyOrganization(userId, organizationId, fileAttached, status);
+      if (updateOrganization) {
+        return responseHelper.sendResponse.SUCCESS(res, null, 'Bạn đã nộp hồ sơ tổ chức thành công');
+      }
+
+      return responseHelper.sendResponse.BAD_REQUEST(res, null, 'Bạn đã nộp hồ sơ tổ chức thất bại');
+    } catch (error) {
+      responseHelper.sendResponse.SERVER_ERROR(res, null);
     }
-
-    const fileAttached = req.body.fileAttached;
-
-    if (!fileAttached) {
-      return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a full and valid parameter');
-    }
-
-    // Trạng thái đã gửi
-    const status = 2;
-
-    const updateOrganization = await organizationService.reqToVerifyOrganization(userId, organizationId, fileAttached, status);
-    if (updateOrganization) {
-      return responseHelper.sendResponse.SUCCESS(res, null, 'Bạn đã nộp hồ sơ tổ chức thành công');
-    }
-
-    return responseHelper.sendResponse.BAD_REQUEST(res, null, 'Bạn đã nộp hồ sơ tổ chức thất bại');
-    // } catch (error) {
-    //   responseHelper.sendResponse.SERVER_ERROR(res, null);
-    // }
   },
 
   updateStatusVerifyOrganization: async (req, res) => {
@@ -311,8 +311,6 @@ module.exports = {
     }
   },
 
-
-
   getAllForPublic: async (req, res) => {
     try {
       let page = parseInt(req.query.page) || 1;
@@ -333,7 +331,6 @@ module.exports = {
     }
   },
 
-
   getOrganizationByIdForPublic: async (req, res) => {
     try {
       const organizationId = parseInt(req.params.id);
@@ -349,6 +346,4 @@ module.exports = {
       responseHelper.sendResponse.SERVER_ERROR(res, null);
     }
   },
-
-  
 };
