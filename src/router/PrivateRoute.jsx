@@ -9,7 +9,7 @@ const PrivateAdminRoute = () => {
   const role = useSelector(selectRole);
   const isLogin = useSelector(selectIsLogin);
 
-  return isLogin && (role === 'ADMIN' || role === 'ORGANIZATION' || role === 'CONPANY') ? (
+  return isLogin && (role === 'ADMIN' || role === 'ORGANIZATION') ? (
     <Home />
   ) : (
     <Navigate to={'/dang-nhap'} />

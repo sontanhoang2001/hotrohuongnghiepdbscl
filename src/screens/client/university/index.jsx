@@ -5,8 +5,6 @@ import ImageCard from '../../../components/card/imageCard';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   getAllPublicUniversityInfo,
-  getClientParams,
-  // getAllUniversity,
   selectUniversity,
   selectUniversityPending,
   selectclientParams,
@@ -38,7 +36,7 @@ function Universities() {
   //hàm bắt sự kiện phân trang và làm mới lại api
   const handlePageChange = (page, pageSize) => {
     console.log('page - pageSize', page, pageSize);
-    dispatch(getClientParams({ page: page, size: pageSize }));
+
     console.log(clientParams);
     // dispatch(getAllPublicUniversityInfo(clientParams));
     console.log(getUniversity);

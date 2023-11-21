@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { Button, Card, Input, List, Modal, Pagination } from 'antd';
+import { Button, Card, ConfigProvider, Input, List, Modal, Pagination } from 'antd';
 
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -16,6 +16,7 @@ import {
   selectPublicPosts,
 } from '../../../redux/postsSlice';
 import { debounce } from 'lodash';
+import viVN from 'antd/lib/locale/vi_VN';
 
 function News() {
   // goi redux
@@ -47,17 +48,19 @@ function News() {
         <div className="underline"></div>
       </Title>
       <SearchBox>
-        <Input
-          placeholder="Tìm kiếm tin tức..."
-          onChange={onSearch}
-          enterButton={
-            <Button type="primary" style={{ height: 50 }}>
-              Tìm kiếm
-            </Button>
-          }
-          allowClear
-          style={{ height: 50 }}
-        />
+        <ConfigProvider locale={viVN}>
+          <Input
+            placeholder="Tìm kiếm tin tức..."
+            onChange={onSearch}
+            enterButton={
+              <Button type="primary" style={{ height: 50 }}>
+                Tìm kiếm
+              </Button>
+            }
+            allowClear
+            style={{ height: 50 }}
+          />
+        </ConfigProvider>
       </SearchBox>
       <MarginTopContent>
         <List
