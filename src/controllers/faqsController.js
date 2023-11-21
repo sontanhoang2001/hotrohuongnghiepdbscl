@@ -134,4 +134,46 @@ module.exports = {
       responseHelper.sendResponse.SERVER_ERROR(res, null);
     }
   },
+
+
+  getAllFaqsForPublic: async (req, res) => {
+    try {
+      let organizationId = false;
+
+      let page = parseInt(req.query.page) || 1;
+      let size = parseInt(req.query.size) || 10;
+      let search = req.query.search;
+      let deleted = false;
+
+      if (isNaN(organizationId)) {
+        return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a valid organizationId as a parameter');
+      }
+
+      const listFaqs = await FAQsService.getAll(organizationId, page, size, search, deleted); // Gọi chức năng từ service
+      if (listFaqs) {
+        return responseHelper.sendResponse.SUCCESS(res, listFaqs);
+      }
+
+      return responseHelper.sendResponse.BAD_REQUEST(res, null);
+    } catch (error) {
+      responseHelper.sendResponse.SERVER_ERROR(res, null);
+      throw error;
+    }
+  },
+
+  getFaqsByIdForPublic: async (req, res) => {
+    try {
+      let organizationId = false;
+      const FaqsId = parseInt(req.params.id);
+      const result = await FAQsService.getById(FaqsId, organizationId); // Gọi chức năng từ service
+      
+      if (result) {
+        return responseHelper.sendResponse.SUCCESS(res, result);
+      }
+
+      return responseHelper.sendResponse.NOT_FOUND(res, null);
+    } catch (error) {
+      responseHelper.sendResponse.SERVER_ERROR(res, null);
+    }
+  },
 };

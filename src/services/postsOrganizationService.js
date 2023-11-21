@@ -19,14 +19,12 @@ module.exports = {
   getAll: async (organizationId, page, size, search, postsCategoryId, deleted) => {
     try {
       const where = {};
-      let paranoidBol = true;
       if (organizationId) {
         where.organizationId = { [Op.eq]: organizationId };
       }
 
       if (deleted) {
         where.deletedAt = { [Op.not]: null };
-        paranoidBol = false;
       }
 
       if (search) {
@@ -42,10 +40,10 @@ module.exports = {
 
       const { rows, count } = await PostsOrganization.findAndCountAll({
         where,
-        paranoid: paranoidBol,
+        paranoid: false,
         offset,
         limit: size,
-        attributes: ['id', 'title', 'thumbnail', 'content', 'status', 'displayDate'],
+        attributes: ['id', 'title', 'thumbnail', 'content', 'status', 'displayDate', 'deletedAt'],
         include: [
           {
             model: User,

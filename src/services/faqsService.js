@@ -4,7 +4,6 @@ const FAQs = require('../models').FAQs;
 const PostsCategory = require('../models').PostsCategory;
 const User = require('../models').User;
 
-
 // const sequelize = require('../database/connection_database');
 const { Op, where } = require('sequelize');
 
@@ -23,7 +22,9 @@ module.exports = {
     try {
       const where = {};
       let paranoidBol = true;
-      where.organizationId = { [Op.eq]: organizationId };
+      if (organizationId) {
+        where.organizationId = { [Op.eq]: organizationId };
+      }
 
       if (deleted) {
         where.deletedAt = { [Op.not]: null };
@@ -42,7 +43,7 @@ module.exports = {
         paranoid: paranoidBol,
         offset,
         limit: size,
-        attributes: ['id', 'question', 'answer', 'createdAt']
+        attributes: ['id', 'question', 'answer', 'createdAt'],
       });
 
       // Chuẩn bị dữ liệu phân trang
@@ -60,12 +61,17 @@ module.exports = {
   },
   getById: async (FaqsId, organizationId) => {
     try {
+
+      // whereVerifyOrganization = {
+      //   [Op.and]: [{ status: { [Op.eq]: status } }],
+      // };
+
       const FAQsData = await FAQs.findOne({
         where: {
           id: FaqsId,
           organizationId: organizationId,
         },
-        attributes: ['id', 'question', 'answer', 'createdAt']
+        attributes: ['id', 'question', 'answer', 'createdAt'],
       });
 
       if (FAQsData instanceof FAQs) {
@@ -83,7 +89,7 @@ module.exports = {
         where: {
           id: faqsId,
           organizationId: organizationId,
-        }
+        },
       });
 
       if (!faqs) {
@@ -105,7 +111,7 @@ module.exports = {
         where: {
           id: faqsId,
           organizationId: organizationId,
-        }
+        },
       });
 
       // Xóa bài viết
@@ -126,7 +132,7 @@ module.exports = {
     try {
       // Lấy thông tin bài viết cần xóa
       const faqs = await FAQs.findByPk(faqsId, {
-        paranoid: false
+        paranoid: false,
       });
 
       // Xóa bài viết
@@ -142,5 +148,4 @@ module.exports = {
       throw error;
     }
   },
-  
 };
