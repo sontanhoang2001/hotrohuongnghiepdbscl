@@ -23,7 +23,13 @@ const universityApi = {
     const url = `${pathname}/id/${id}`;
     return axiosService.get(url);
   },
+  //admin
   updateOrganizationInfo: (data) => {
+    const url = `${pathname}/edit/${data.id}`;
+    return axiosService.patch(url, data);
+  },
+  //org
+  updateOrganizationInfoByOrg: (data) => {
     const url = `${pathname}/edit/${data.id}`;
     return axiosService.patch(url, data);
   },

@@ -35,6 +35,7 @@ function Posts({ organizationId }) {
   };
   const dispatchCreate = () => {
     setCurrentPostId(null);
+    dispatch(clearCurrentPost());
     setPostStep(1);
   };
   const backTolist = () => {

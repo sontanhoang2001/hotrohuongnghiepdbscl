@@ -53,6 +53,22 @@ export const createPost = createAsyncThunk(
     }
   },
 );
+// cập nhật bài viết
+export const updatePost = createAsyncThunk(
+  'university/updatePost',
+  async (data, { rejectWithValue, getState }) => {
+    try {
+      const rs = await postsApi.update(data);
+      return rs.data;
+    } catch (error) {
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      } else {
+        return rejectWithValue(error.message);
+      }
+    }
+  },
+);
 // get by id
 export const getPostById = createAsyncThunk(
   'university/getPostById',
@@ -176,7 +192,7 @@ const postsSlice = createSlice({
         state.pending = false;
         notification.error({ message: 'Lấy danh sách thất bại' });
       })
-      //verification update
+      //create update
       .addCase(createPost.pending, (state) => {
         state.pending = true;
         state.status = 'creating';
@@ -191,6 +207,22 @@ const postsSlice = createSlice({
         state.pending = false;
         state.status = 'idle';
         notification.error({ message: 'Lấy danh sách thất bại' });
+      })
+      // update
+      .addCase(updatePost.pending, (state) => {
+        state.pending = true;
+        state.status = 'editing';
+      })
+      .addCase(updatePost.fulfilled, (state, { payload }) => {
+        state.pending = false;
+        state.status = 'idle';
+        console.log(payload);
+        notification.success({ message: 'Cập nhật bài viết thành công' });
+      })
+      .addCase(updatePost.rejected, (state, { payload }) => {
+        state.pending = false;
+        state.status = 'idle';
+        notification.error({ message: 'Thất bại' });
       });
   },
 });

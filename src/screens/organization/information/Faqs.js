@@ -68,12 +68,16 @@ function Faqs({ organizationId }) {
         let formData = { ...values, organizationId: organizationId };
         if (!isEditing) {
           //create
-          dispatch(createFaqs(formData));
+          dispatch(createFaqs(formData)).then(()=>{
+            dispatch(getAllFAQS({ organizationId }));
+          });
         } else {
           //update
-          dispatch(updateFaqs(formData));
+          dispatch(updateFaqs(formData)).then(()=>{
+            dispatch(getAllFAQS({ organizationId }));
+          });
         }
-        dispatch(getAllFAQS({ organizationId }));
+        
       })
       .catch((errorInfo) => {
         console.log('Form validation failed:', errorInfo);

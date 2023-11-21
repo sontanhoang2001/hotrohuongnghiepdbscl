@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 
+import { UploadOutlined } from '@ant-design/icons';
 import {
   Row,
   Col,
@@ -13,6 +14,8 @@ import {
   Input,
   Badge,
   Tabs,
+  Upload,
+  message,
 } from 'antd';
 
 import {
@@ -33,11 +36,13 @@ import {
   getOneByOrganizationId,
   getOrganizationsById,
   updateOrganization,
+  updateVerificationStatus,
 } from '../../../redux/universitySlice';
 import { useParams } from 'react-router-dom';
 import Information from './Information';
 import Posts from './Posts';
 import Faqs from './Faqs';
+import { uploadFile } from '../../../firebase/uploadConfig';
 
 //verification status
 const verificationStatus = {
@@ -66,8 +71,12 @@ function OrganizationProfile() {
       .validateFields()
       .then((values) => {
         //update
-        console.log('Received values of form: ', { ...values, id: organization.id });
-        // dispatch(updateOrganization(values));
+        const formValues = {
+          fileAttached: 'https://blog.hocexcel.online/wp-content/uploads/2018/02/1-2.png',
+          organizationId: organization.id,
+        };
+        console.log('Received values of form: ', formValues);
+        dispatch(updateVerificationStatus(formValues));
       })
       .catch((errorInfo) => {})
       .finally(() => setOpenUpdateForm(false));
@@ -75,6 +84,25 @@ function OrganizationProfile() {
   const handleVerifyClick = () => {
     //setid for verify form
     setOpenVerifyForm(true);
+  };
+
+  ///upload file yêu cầu xác thực
+  const beforeUpload = (file) => {
+    // You can add custom validation logic here if needed
+    return true;
+  };
+  const customRequest = ({ onError, onSuccess, file }) => {
+    uploadFile(file)
+      .then((imgUrl) => {
+        onSuccess(null, imgUrl);
+        verifyFormRef.current?.setFieldsValue({
+          fileAttached: imgUrl,
+        });
+        console.log('uploaded', imgUrl);
+      })
+      .catch((err) => {
+        onError({ message: err.message });
+      });
   };
 
   //Form cập nhật thông tin tổ chức
@@ -234,7 +262,7 @@ function OrganizationProfile() {
           {
             label: 'FAQS',
             key: '3',
-            children: <Faqs organizationId={id}  />,
+            children: <Faqs organizationId={id} />,
           },
           {
             label: 'Tin nhắn',
@@ -285,6 +313,21 @@ function OrganizationProfile() {
       >
         <Card style={{ margin: 0, padding: 0 }} loading={pending}>
           <Form wrapperCol={{ span: 16 }} labelCol={{ span: 8 }} ref={verifyFormRef}>
+            <Form.Item wrapperCol={24}>
+              <Upload.Dragger
+                className="mb-3"
+                name="file"
+                multiple={false}
+                beforeUpload={beforeUpload}
+                customRequest={customRequest}
+              >
+                <p className="ant-upload-drag-icon">
+                  <UploadOutlined />
+                </p>
+                <p className="ant-upload-text">Chọn hoặc kéo thả file để tải lên</p>
+              </Upload.Dragger>
+            </Form.Item>
+
             <Form.Item
               label="Phiếu thông tin tổ chức"
               name="fileAttached"

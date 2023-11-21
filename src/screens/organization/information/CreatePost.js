@@ -22,7 +22,7 @@ import './style.css';
 import viVN from 'antd/lib/locale/vi_VN';
 import { uploadFile } from '../../../firebase/uploadConfig';
 import { useDispatch, useSelector } from 'react-redux';
-import { createPost, deletePost, getPostById, restorePost } from '../../../redux/postsSlice';
+import { createPost, deletePost, getPostById, restorePost, updatePost } from '../../../redux/postsSlice';
 import { useEffect } from 'react';
 import postsApi from '../../../api/postsApi';
 import dayjs from 'dayjs';
@@ -125,7 +125,7 @@ function CreatePost({ organizationId, setStep, currentPostId, backTolist }) {
   };
 
   //Editing
-  const [isEditing, setIsEditing] = useState(organizationId!==null);
+  const [isEditing, setIsEditing] = useState(currentPostId!==null);
 
  
 
@@ -134,9 +134,11 @@ function CreatePost({ organizationId, setStep, currentPostId, backTolist }) {
       formRef.current?.setFieldsValue({
         ...currentPost,
         postsCategoryId: currentPost.PostsCategory?.id,
-        displayDate: dayjs(currentPost.displayDate),
+        displayDate: dayjs(currentPost.displayDate,"YYYY-MM-DD HH:mm[Z]"),
         title: currentPost.title,
       });
+      console.log(currentPost.displayDate);
+      console.log(dayjs(currentPost.displayDate,"YYYY-MM-DD HH:mm[Z]"));
       setFileList([{ url: currentPost.thumbnail }]);
       // Ensure the SunEditor is fully loaded before accessing its editor
       if (sunEditorRef.current && sunEditorRef.current.editor) {
@@ -155,7 +157,10 @@ function CreatePost({ organizationId, setStep, currentPostId, backTolist }) {
       organizationId: organizationId ?? 2,
     };
     if (!isEditing) dispatch(createPost(formValues));
-    else console.log(formValues);
+    else {
+      dispatch(updatePost(formValues));
+      console.log('values',formValues);
+    }
   };
   return (
     <div>
@@ -257,6 +262,7 @@ function CreatePost({ organizationId, setStep, currentPostId, backTolist }) {
                 <DatePicker
                   format="DD-MM-YYYY HH:mm"
                   showTime
+                  locale='vi-VN'
                   onChange={handleDateChange}
                   style={{ width: '100%', height: 50 }}
                 />
@@ -363,7 +369,7 @@ function CreatePost({ organizationId, setStep, currentPostId, backTolist }) {
                 Huỷ
               </Button>
 
-              <Button type="primary" loading={status === 'creating'} htmlType="submit">
+              <Button type="primary" loading={status === 'creating'||status==='editing'} htmlType="submit">
                 {!isEditing ? 'Tạo bài viết' : 'Cập nhật bài viết'}
               </Button>
             </Space>

@@ -127,12 +127,12 @@ export const updateVerificationStatus = createAsyncThunk(
     }
   },
 );
-// Cập nhật thông tin tổ chức
+// Cập nhật thông tin tổ chức --organization
 export const updateOrganization = createAsyncThunk(
   'university/updateOrganization',
   async (data, { rejectWithValue }) => {
     try {
-      const rs = await universityApi.updateOrganizationInfo(data);
+      const rs = await universityApi.updateOrganizationInfoByOrg(data);
       return rs.data;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -272,10 +272,13 @@ const universitySlice = createSlice({
       })
       .addCase(updateOrganization.fulfilled, (state, { payload }) => {
         state.pending = false;
-        notification.success({ message: payload.message, duration: 3 });
+        console.log(payload);
+        notification.success({ message: "Cập nhật tổ chức thành công", duration: 3 });
       })
       .addCase(updateOrganization.rejected, (state, { payload }) => {
         state.pending = false;
+        console.log(payload.message);
+
         notification.error({ message: payload, duration: 3 });
       }) //all public University
       .addCase(getAllPublicUniversityInfo.pending, (state) => {
