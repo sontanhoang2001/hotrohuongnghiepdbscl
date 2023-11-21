@@ -3,6 +3,10 @@ import axiosService from './axiosClient';
 const pathname = 'organization';
 
 const universityApi = {
+  updateVerificationStatus: (data) => {
+    const url = `${pathname}/updateStatusVerifyOrganization`;
+    return axiosService.patch(url,data);
+  },
   getVerificationRequests: (params) => {
     const url = `${pathname}?page=${params.page}&size=${params.size}&status=2`;
     return axiosService.get(url);

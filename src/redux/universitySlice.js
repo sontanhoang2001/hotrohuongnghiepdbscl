@@ -14,6 +14,7 @@ const initialState = {
     size: 10,
     total: 0,
   },
+  currentVerification: {},
   verifications: [],
   organization: {},
   joinedOrganizations: [],
@@ -26,7 +27,7 @@ export const getAllOrganizationVerification = createAsyncThunk(
       const rs = await universityApi.getVerificationRequests(
         getState().university.organizationParams,
       );
-      return rs.data;
+      return rs.data.data;
     } catch (error) {
       if (error.response && error.response.data.message) {
         return rejectWithValue(error.response.data.message);
@@ -98,6 +99,18 @@ export const deleteOrganization = createAsyncThunk(
     }
   },
 );
+// Cập nhật trạng thái xác thực
+export const updateVerificationStatus = createAsyncThunk(
+  'university/updateVerificationStatus',
+  async (data, { rejectWithValue }) => {
+    try {
+      const rs = await universityApi.updateVerificationStatus(data);
+      return rs.data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  },
+);
 // Cập nhật thông tin tổ chức
 export const updateOrganization = createAsyncThunk(
   'university/updateOrganization',
@@ -134,6 +147,11 @@ const universitySlice = createSlice({
   name: 'university',
   initialState,
   reducers: {
+    getLocalOrganizationsById: (state, action) => {
+      state.currentVerification = state.verifications.find(
+        (record) => record.id === action.payload,
+      );
+    },
     setSize: (state, action) => {
       state.size = action.payload;
     },
@@ -141,6 +159,18 @@ const universitySlice = createSlice({
 
   extraReducers: (builder) => {
     builder
+      //verification update
+      .addCase(updateVerificationStatus.pending, (state) => {
+        state.pending = true;
+      })
+      .addCase(updateVerificationStatus.fulfilled, (state, { payload }) => {
+        state.pending = false;
+        notification.success({ message: 'Cập nhật trạng thái thành công' });
+      })
+      .addCase(updateVerificationStatus.rejected, (state, { payload }) => {
+        state.pending = false;
+        notification.error({ message: 'Cập nhật trạng thái thất bại' });
+      })
       //verification requests
       .addCase(getAllOrganizationVerification.pending, (state) => {
         state.pending = true;
@@ -175,7 +205,7 @@ const universitySlice = createSlice({
       })
       .addCase(getOrganizationsById.fulfilled, (state, { payload }) => {
         state.pending = false;
-
+        console.log(payload);
         state.organization = payload.data;
       })
       .addCase(getOrganizationsById.rejected, (state, { payload }) => {
@@ -235,10 +265,11 @@ const universitySlice = createSlice({
       });
   },
 });
-export const { setSize } = universitySlice.actions;
+export const { getLocalOrganizationsById, setSize } = universitySlice.actions;
 export const selectUniversity = (state) => state.university.data;
 export const selectUniversityPending = (state) => state.university.pending;
 export const selectUniversityToalRow = (state) => state.university.total;
 export const selectUniversityPage = (state) => state.university.page;
 export const selectUniversityPagesize = (state) => state.university.size;
+
 export default universitySlice.reducer;

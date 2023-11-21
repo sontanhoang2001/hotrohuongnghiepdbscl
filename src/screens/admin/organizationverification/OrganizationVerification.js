@@ -1,19 +1,52 @@
-import { Avatar, Button, Card, Col, Pagination, Popconfirm, Row, Table } from 'antd'
-import React, { useEffect, useMemo } from 'react'
-import { deleteOrganization, getAllOrganizationVerification, selectUniversity, selectUniversityPage, selectUniversityPagesize, selectUniversityPending, selectUniversityToalRow } from '../../../redux/universitySlice';
+import { Avatar, Button, Card, Col, Modal, Pagination, Popconfirm, Row, Table } from 'antd';
+import React, { useEffect, useMemo } from 'react';
+import {
+  deleteOrganization,
+  getAllOrganizationVerification,
+  getLocalOrganizationsById,
+  getOrganizationsById,
+  selectUniversity,
+  selectUniversityPage,
+  selectUniversityPagesize,
+  selectUniversityPending,
+  selectUniversityToalRow,
+  updateVerificationStatus,
+} from '../../../redux/universitySlice';
 import Title from 'antd/es/typography/Title';
-import { LockFilled } from '@ant-design/icons';
+import { DownloadOutlined, EyeFilled, LockFilled, SettingOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const OrganizationVerification = () => {
-     //hàm bắt event edit
-  const handleEdit = (id) => {
-    console.log(id);
+  //goi redux
+  const dispatch = useDispatch();
+  const { verifications,currentVerification } = useSelector((state) => state.university);
+  const page = useSelector(selectUniversityPage);
+  const size = useSelector(selectUniversityPagesize);
+  const Totalpage = useSelector(selectUniversityToalRow);
+  const pendingState = useSelector(selectUniversityPending);
+
+  //Xử lý yêu cầu
+  const [openProcess, setOpenProcess] = useState(false);
+  const acceptRequest = () => {
+    dispatch(updateVerificationStatus({status:1,organizationId:currentVerification.id}));
+    dispatch(getAllOrganizationVerification());
+    setOpenProcess(false);
+
   };
-  //hàm bắt event delete
-  const handleDelete = (id) => {
-    dispatch(deleteOrganization(id));
+  const rejectRequest = () => {
+    dispatch(updateVerificationStatus({status:0,organizationId:currentVerification.id}));
+    dispatch(getAllOrganizationVerification());
+    setOpenProcess(false);
   };
+
+  //hàm bắt event process  
+  const handleProcess = (id) => {
+    dispatch(getLocalOrganizationsById(id));   
+    setOpenProcess(true);
+  };
+
   //định dạng cột hiển thị
   const columns = useMemo(
     () => [
@@ -104,7 +137,7 @@ const OrganizationVerification = () => {
         title: 'Mô tả',
         key: 'description',
         width: 100,
-        render: (record) => (<span>{record.description}</span>)
+        render: (record) => <span>{record.description}</span>,
       },
       {
         title: 'Link',
@@ -127,37 +160,15 @@ const OrganizationVerification = () => {
         width: 100,
         render: (record) => (
           <>
-            {/* <Button type="text">
-              <EditOutlined onClick={() => handleEdit(record.id)} style={{ color: 'green' }} />
-            </Button> */}
-            <Popconfirm 
-              placement="leftTop"
-              title="Xác nhận xóa"
-              description="Xác nhận xóa tổ chức?"
-              okText="Xóa"
-              
-              onConfirm={() => handleDelete(record.id)}
-              cancelText="Hủy"
-            >
-              <Button danger title='Khóa tổ chức'>
-                <LockFilled />
-              </Button>
-            </Popconfirm>
+            <Button onClick={() => handleProcess(record.id)} title="Xem chi tiết">
+              <SettingOutlined />
+            </Button>
           </>
         ),
       },
     ],
     [],
   );
-
-  //goi redux
-  const dispatch = useDispatch();
-  const {verifications}=useSelector(state=>state.university)
-  const page = useSelector(selectUniversityPage);
-  const size = useSelector(selectUniversityPagesize);
-  const Totalpage = useSelector(selectUniversityToalRow);
-  const getUniversity = useSelector(selectUniversity);
-  const pendingState = useSelector(selectUniversityPending);
 
   useEffect(() => {
     //gọi api thông qua redux
@@ -166,7 +177,7 @@ const OrganizationVerification = () => {
 
   const convertedData = useMemo(
     () =>
-    verifications?.map((university, index) => {
+      verifications?.map((university, index) => {
         return {
           key: index.toString(),
           id: university.OrganizationDetail.id,
@@ -189,6 +200,7 @@ const OrganizationVerification = () => {
     const payload = { page, pageSize };
     dispatch(getAllOrganizationVerification(payload));
   };
+
   return (
     <>
       <div className="tabled">
@@ -223,8 +235,27 @@ const OrganizationVerification = () => {
           </Col>
         </Row>
       </div>
+      {/* Creating modal */}
+      <Modal
+        confirmLoading={pendingState}
+        title={<p style={{ textAlign: 'center', margin: 0 }}>Chi tiết yêu cầu xác thực</p>}
+        okText="Lưu"
+        centered    
+        style={{ maxHeight: '80vh',width:'auto', overflowY: 'auto' }}
+        open={openProcess}
+        onOk={acceptRequest}
+        onCancel={rejectRequest}
+      >
+        <Card style={{ margin: 0, padding: 0 }} loading={pendingState}>
+          <Link to={currentVerification?.VerifyOrganization?.fileAttached} target="_blank" download>
+            <Button type="primary" shape="round" icon={<DownloadOutlined />} size={size}>
+              Tải xuống phiếu thông tin
+            </Button>
+          </Link>
+        </Card>
+      </Modal>
     </>
-  )
-}
+  );
+};
 
-export default OrganizationVerification
+export default OrganizationVerification;
