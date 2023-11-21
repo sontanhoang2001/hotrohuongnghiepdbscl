@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const responseHelper = require('../helpers/responseHelper');
 const Roles = require('../config/role.js');
+const organizationService = require('../services/organizationService');
 
 const middleware = {
   //verifyToken
@@ -33,6 +34,34 @@ const middleware = {
         next();
       } else {
         return responseHelper.sendResponse.UNAUTHORIZED(res, null, "You're not authenticated");
+      }
+    };
+  },
+  checkUserBelongtoOrganization() {
+    return async (req, res, next) => {
+      const userId = req.user.id;
+
+      const organizationReq = (req) => {
+        if (req.query.organizationId) {
+          return parseInt(req.query.organizationId);
+        } else if (req.body.organizationId) {
+          return parseInt(req.body.organizationId);
+        }
+        return NaN;
+      };
+      const organizationId = organizationReq(req);
+
+      if (isNaN(organizationId)) {
+        return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a valid organizationId as a parameter');
+      }
+
+      // Check user có thuộc tổ chức ko ?
+      const checkUserResult = await organizationService.checkUserBelongtoOrganization(userId, organizationId);
+      if (checkUserResult) {
+        next();
+      } else {
+        // return responseHelper.sendResponse.UNAUTHORIZED(res, null, "You're not authenticated");
+        return responseHelper.sendResponse.UNAUTHORIZED(res, null);
       }
     };
   },

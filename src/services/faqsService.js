@@ -29,7 +29,7 @@ module.exports = {
       }
 
       if (search) {
-        where.title = { [Op.like]: `%${search}%` };
+        where[Op.or] = [{ question: { [Op.like]: `%${search}%` } }, { answer: { [Op.like]: `%${search}%` } }];
       }
 
       // Tính offset
@@ -56,51 +56,41 @@ module.exports = {
       throw error;
     }
   },
-  getById: async (postsId, organizationId) => {
+  getById: async (FaqsId, organizationId) => {
     try {
-      const postsOrganization = await PostsOrganization.findOne({
+      const FAQsData = await FAQs.findOne({
         where: {
-          id: postsId,
+          id: FaqsId,
           organizationId: organizationId,
         },
-        attributes: ['id', 'title', 'thumbnail', 'content', 'status', 'displayDate'],
-        include: [
-          {
-            model: User,
-            attributes: ['id'],
-          },
-          {
-            model: PostsCategory,
-            attributes: ['id', 'name', 'description'],
-          },
-        ],
+        attributes: ['id', 'question', 'answer', 'createdAt']
       });
 
-      if (postsOrganization instanceof PostsOrganization) {
-        return postsOrganization.get();
+      if (FAQsData instanceof FAQs) {
+        return FAQsData.get();
       }
 
-      return postsOrganization;
+      return FAQsData;
     } catch (error) {
       throw error;
     }
   },
-  update: async (organizationId, postsId, payload) => {
+  update: async (organizationId, faqsId, payload) => {
     try {
-      const posts = await PostsOrganization.findOne({
+      const faqs = await FAQs.findOne({
         where: {
-          id: postsId,
+          id: faqsId,
           organizationId: organizationId,
         }
       });
 
-      if (!posts) {
+      if (!faqs) {
         return false;
       }
 
-      await posts.update(payload);
+      await faqs.update(payload);
 
-      return posts;
+      return faqs;
     } catch (error) {
       throw error; // Sau đó ném lỗi để xử lý ở phần gọi hàm
     }
