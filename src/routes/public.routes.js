@@ -9,7 +9,7 @@ const { getAllForPublic, getOrganizationById } = require('../controllers/organiz
 
 const { getAllPostsForPublic, getPostsByIdForPublic } = require('../controllers/postsOrganizationController.js');
 
-const { getAllFaqs, getFaqsById } = require('../controllers/faqsController.js');
+const { getAllFaqsForPublic, getFaqsByIdForPublic } = require('../controllers/faqsController.js');
 //* Here I defined the methods
 
 // public - ai cũng có thể truy cập
@@ -22,6 +22,6 @@ router.get(postsRoutePrefix + '/', getAllPostsForPublic);
 router.get(postsRoutePrefix + '/id/:id', getPostsByIdForPublic);
 
 const faqsRoutePrefix = '/faqs';
-router.get(faqsRoutePrefix + '/', getAllFaqs);
-router.get(faqsRoutePrefix + '/id/:id', getFaqsById);
+router.get(faqsRoutePrefix + '/', getAllFaqsForPublic);
+router.get(faqsRoutePrefix + '/id/:id', getFaqsByIdForPublic);
 module.exports = router;

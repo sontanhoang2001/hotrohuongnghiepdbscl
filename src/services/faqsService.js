@@ -20,9 +20,14 @@ module.exports = {
   },
   getAll: async (organizationId, page, size, search, deleted) => {
     try {
+      let paranoidBol = true;
+
       const where = {};
       if (organizationId) {
         where.organizationId = { [Op.eq]: organizationId };
+        // Trường họp sử dụng public
+        // Ngăn không cho lấy rows đã bị xóa
+        paranoidBol = false;
       }
 
       if (deleted) {
@@ -38,10 +43,10 @@ module.exports = {
 
       const { rows, count } = await FAQs.findAndCountAll({
         where,
-        paranoid: false,
+        paranoid: paranoidBol,
         offset,
         limit: size,
-        attributes: ['id', 'question', 'answer', 'createdAt', 'deletedAt'],
+        attributes: ['id', 'question', 'answer', 'createdAt', 'updatedAt', 'deletedAt'],
       });
 
       // Chuẩn bị dữ liệu phân trang
@@ -59,17 +64,22 @@ module.exports = {
   },
   getById: async (FaqsId, organizationId) => {
     try {
+      let paranoidBol = true;
 
-      // whereVerifyOrganization = {
-      //   [Op.and]: [{ status: { [Op.eq]: status } }],
-      // };
+      const whereCondition = {
+        id: FaqsId,
+      };
 
+      if (organizationId) {
+        whereCondition.organizationId = organizationId;
+        // Trường họp sử dụng public
+        // Ngăn không cho lấy rows đã bị xóa
+        paranoidBol = false;
+      }
       const FAQsData = await FAQs.findOne({
-        where: {
-          id: FaqsId,
-          organizationId: organizationId,
-        },
-        attributes: ['id', 'question', 'answer', 'createdAt'],
+        where: whereCondition,
+        paranoid: paranoidBol,
+        attributes: ['id', 'question', 'answer', 'createdAt', 'updatedAt', 'deletedAt'],
       });
 
       if (FAQsData instanceof FAQs) {
