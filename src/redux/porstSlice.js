@@ -14,7 +14,7 @@ export const getAllPublicUniversityInfo = createAsyncThunk(
   'posts/getAllPublicUniversityInfo',
   async ({ page, size }, { rejectWithValue }) => {
     try {
-      //   const rs = await getAllPublicPost.getAllPublicUniversityInfo(page, size);
+      const rs = await getAllPublicPost.getAllPublicUniversityInfo(page, size);
 
       return rs.data.data;
     } catch (error) {
