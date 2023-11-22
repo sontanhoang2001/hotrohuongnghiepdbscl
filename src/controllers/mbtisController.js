@@ -5,9 +5,11 @@ const responseHelper = require('../helpers/responseHelper');
 
 module.exports = {
   createNewQuestion: async (req, res) => {
-    try {
+    // try {
       // const userId = parseInt(req.user.id);
       const mbti = req.body;
+
+      console.log("mbti", mbti);
 
       if (!mbti.question_group_id || !mbti.question || !mbti.answers || !Array.isArray(mbti.answers) || mbti.answers.length === 0) {
         return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a full and valid parameter');
@@ -18,9 +20,9 @@ module.exports = {
         return responseHelper.sendResponse.SUCCESS(res, createNew, 'Bạn đã tạo mới câu hỏi thành công');
       }
       return responseHelper.sendResponse.BAD_REQUEST(res, null);
-    } catch (error) {
-      responseHelper.sendResponse.SERVER_ERROR(res, null);
-    }
+    // } catch (error) {
+    //   responseHelper.sendResponse.SERVER_ERROR(res, null);
+    // }
   },
   getAllQuestion: async (req, res) => {
     try {
