@@ -382,7 +382,7 @@ module.exports = {
 
       // Update fileAttached for VerifyOrganization
       const [numberOfAffectedRows1] = await VerifyOrganization.update(
-        { status },
+        { status, userId: 1 },
         {
           where: { id: verifyOrganizationId },
         },

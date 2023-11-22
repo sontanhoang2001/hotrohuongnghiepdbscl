@@ -218,7 +218,8 @@ module.exports = {
     }
 
     const verifyOrganization = await organizationService.updateStatusVerifyOrganization(organizationId, status);
-    console.log('verifyOrganization>>', verifyOrganization);
+    // console.log('verifyOrganization>>', verifyOrganization);
+
     if (verifyOrganization) {
       const receivers = verifyOrganization.userEmails;
       // Gửi email theo đúng nội dung trạng thái
