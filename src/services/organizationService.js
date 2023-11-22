@@ -471,6 +471,7 @@ module.exports = {
           userId,
         },
         raw: true,
+        paranoid: false,
       });
 
       const organizationIds = userOrganization.map((item) => item['organizationId']);
@@ -487,10 +488,11 @@ module.exports = {
       const offset = (page - 1) * size;
 
       const { count, rows } = await Organization.findAndCountAll({
+        paranoid: false,
         where,
         offset,
         limit: size,
-        attributes: ['id', 'name'],
+        attributes: ['id', 'name', 'deletedAt'],
         include: [
           {
             model: OrganizationDetail,

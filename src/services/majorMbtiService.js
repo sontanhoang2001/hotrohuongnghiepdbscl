@@ -7,7 +7,7 @@ const sequelize = require('../database/connection_database');
 const { Op } = require('sequelize');
 
 module.exports = {
-  createNew: async (payload) => {
+  createNewMajorMbti: async (payload) => {
     let transaction;
     try {
       const answers = [...payload.answers];
@@ -37,7 +37,7 @@ module.exports = {
       throw error; // Sau đó ném lỗi để xử lý ở phần gọi hàm
     }
   },
-  getAll: async (page, size, search, deleted) => {
+  getAllMajorMbt: async (page, size, search, deleted) => {
     try {
       const where = {};
       if (search) {
@@ -92,7 +92,7 @@ module.exports = {
       throw error;
     }
   },
-  getMBTIQuestionById: async (questionId) => {
+  getMajorMbtById: async (questionId) => {
     try {
       const question = await Question.findByPk(questionId, {
         attributes: ['id', 'question', 'deletedAt'],
@@ -121,7 +121,7 @@ module.exports = {
       throw error;
     }
   },
-  updateQuestion: async (questionId, payload) => {
+  updateMajorMbt: async (questionId, payload) => {
     let transaction;
     try {
       transaction = await sequelize.transaction();
@@ -164,7 +164,7 @@ module.exports = {
     }
   },
 
-  deleteQuestion: async (questionId) => {
+  deleteMajorMbt: async (questionId) => {
     let transaction;
     try {
       transaction = await sequelize.transaction();
@@ -199,7 +199,7 @@ module.exports = {
     }
   },
 
-  restoreQuestion: async (questionId) => {
+  restoreMajorMbt: async (questionId) => {
     let transaction;
     try {
       transaction = await sequelize.transaction();
@@ -234,71 +234,5 @@ module.exports = {
     }
   },
 
-  getAllQuestionGroup: async () => {
-    try {
-      const listQuestionGroup = await QuestionGroup.findAll({
-        attributes: ['id', 'name', 'value', 'description', 'image'],
-      });
 
-      return listQuestionGroup;
-    } catch (error) {
-      throw error;
-    }
-  },
-
-  getQuestionGroupById: async (question_group_id) => {
-    try {
-      const questionGroup = await QuestionGroup.findByPk(question_group_id, {
-        attributes: ['id', 'name', 'value', 'description', 'image'],
-      });
-
-      return questionGroup;
-    } catch (error) {
-      throw error;
-    }
-  },
-
-  newDoTestMBTI: async (page, size) => {
-    try {
-      const questionGroupIdValues = [1, 2, 3, 4];
-      const rowsPerGroup = 27;
-
-      const question = await Question.findAll({
-        limit: rowsPerGroup,
-        attributes: ['question'],
-        include: [
-          {
-            model: Answer,
-            as: 'Answers',
-            attributes: ['answer', 'value'],
-          },
-        ],
-        where: {
-          questionGroupId: {
-            [Op.in]: questionGroupIdValues,
-          },
-        },
-        // group: 'questionGroupId',
-        // having: sequelize.literal(`COUNT(*) <= ${rowsPerGroup}`)
-      });
-
-      console.log('question', question);
-      return question;
-    } catch (error) {
-      throw error;
-    }
-  },
-
-  getAllPersonalityGroups: async () => {
-    try {
-
-      const mbti = await MBTI.findAll({
-        attributes: ['id', 'name', 'description'],
-      });
-
-      return mbti;
-    } catch (error) {
-      throw error;
-    }
-  },
 };

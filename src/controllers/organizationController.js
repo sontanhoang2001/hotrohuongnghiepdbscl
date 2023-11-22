@@ -209,7 +209,7 @@ module.exports = {
   },
 
   updateStatusVerifyOrganization: async (req, res) => {
-    // try {
+    try {
     const organizationId = parseInt(req.body.organizationId);
     const status = parseInt(req.body.status);
 
@@ -266,9 +266,9 @@ module.exports = {
     }
 
     return responseHelper.sendResponse.BAD_REQUEST(res, null, 'Đã cập nhật trạng thái tổ chức thất bại');
-    // } catch (error) {
-    //   responseHelper.sendResponse.SERVER_ERROR(res, null);
-    // }
+    } catch (error) {
+      responseHelper.sendResponse.SERVER_ERROR(res, null);
+    }
   },
 
   getAllByUser: async (req, res) => {

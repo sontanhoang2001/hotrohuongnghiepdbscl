@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      MBTI.hasOne(models.MajorMBTI);
+      MBTI.hasMany(models.MajorMBTI);
       MBTI.hasMany(models.TestHistory);
     }
   }
@@ -22,7 +22,6 @@ module.exports = (sequelize, DataTypes) => {
       sequelize,
       modelName: 'MBTI',
       tableName: 'mbti',
-      paranoid: true
     },
   );
   return MBTI;

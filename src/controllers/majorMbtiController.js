@@ -4,7 +4,7 @@ const dbConnection = require('../database/dbConnection');
 const responseHelper = require('../helpers/responseHelper');
 
 module.exports = {
-  createNewQuestion: async (req, res) => {
+  createNewMajorMbti: async (req, res) => {
     try {
       // const userId = parseInt(req.user.id);
       const mbti = req.body;
@@ -28,7 +28,7 @@ module.exports = {
       responseHelper.sendResponse.SERVER_ERROR(res, null);
     }
   },
-  getAllQuestion: async (req, res) => {
+  getAllMajorMbti: async (req, res) => {
     try {
       let page = parseInt(req.query.page) || 1;
       let size = parseInt(req.query.size) || 10;
@@ -46,7 +46,7 @@ module.exports = {
     }
   },
 
-  getQuestionById: async (req, res) => {
+  getMajorMbtiById: async (req, res) => {
     try {
       const questionId = parseInt(req.params.id);
       const mbti = await mbtiService.getMBTIQuestionById(questionId); // Gọi chức năng từ service
@@ -60,7 +60,7 @@ module.exports = {
     }
   },
 
-  updateQuestion: async (req, res) => {
+  updateMajorMbti: async (req, res) => {
     try {
       const questionId = parseInt(req.params.id);
       const mbti = req.body;
@@ -90,7 +90,7 @@ module.exports = {
     }
   },
 
-  deleteOneQuestion: async (req, res) => {
+  deleteOneMajorMbti: async (req, res) => {
     try {
       const questionId = parseInt(req.params.id);
       if (isNaN(questionId)) {
@@ -108,7 +108,7 @@ module.exports = {
     }
   },
 
-  restoreOneQuestion: async (req, res) => {
+  restoreOneMajorMbti: async (req, res) => {
     try {
       const questionId = parseInt(req.params.id);
       if (isNaN(questionId)) {
@@ -124,60 +124,5 @@ module.exports = {
     } catch (error) {
       responseHelper.sendResponse.SERVER_ERROR(res, null);
     }
-  },
-
-  getAllQuestionGroup: async (req, res) => {
-    try {
-      const listQuestionGroup = await mbtiService.getAllQuestionGroup(); // Gọi chức năng từ service
-      if (listQuestionGroup) {
-        return responseHelper.sendResponse.SUCCESS(res, listQuestionGroup);
-      }
-
-      return responseHelper.sendResponse.BAD_REQUEST(res, null);
-    } catch (error) {
-      responseHelper.sendResponse.SERVER_ERROR(res, null);
-    }
-  },
-
-  getQuestionGroupById: async (req, res) => {
-    try {
-      const questionGroupId = parseInt(req.params.id);
-      const questionGroup = await mbtiService.getQuestionGroupById(questionGroupId); // Gọi chức năng từ service
-      if (questionGroup) {
-        return responseHelper.sendResponse.SUCCESS(res, questionGroup);
-      }
-
-      return responseHelper.sendResponse.NOT_FOUND(res, null);
-    } catch (error) {
-      responseHelper.sendResponse.SERVER_ERROR(res, null);
-    }
-  },
-
-  // Do test MBTI
-  newDoTestMBTI: async (req, res) => {
-    try {
-      const mbti = await mbtiService.newDoTestMBTI();
-      if (mbti) {
-        return responseHelper.sendResponse.SUCCESS(res, mbti);
-      }
-
-      return responseHelper.sendResponse.BAD_REQUEST(res, null);
-    } catch (error) {
-      responseHelper.sendResponse.SERVER_ERROR(res, null);
-    }
-  },
-
-  getAllPersonalityGroups: async (req, res) => {
-    try {
-      const mbti = await mbtiService.getAllPersonalityGroups();
-      if (mbti) {
-        return responseHelper.sendResponse.SUCCESS(res, mbti);
-      }
-
-      return responseHelper.sendResponse.BAD_REQUEST(res, null);
-    } catch (error) {
-      responseHelper.sendResponse.SERVER_ERROR(res, null);
-      throw error;
-    }
-  },
+  }
 };

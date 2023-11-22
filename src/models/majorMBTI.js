@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    
+
     static associate(models) {
       // define association here
       MajorMBTI.belongsTo(models.MBTI);
@@ -15,15 +15,16 @@ module.exports = (sequelize, DataTypes) => {
   }
   MajorMBTI.init(
     {
-      name: DataTypes.STRING,
+      majorName: DataTypes.STRING,
       link: DataTypes.STRING,
-      mbtiId: DataTypes.INTEGER
+      universityId: DataTypes.INTEGER,
+      mbtiId: DataTypes.INTEGER,
     },
     {
       sequelize,
       modelName: 'MajorMBTI',
       tableName: 'major_mbti',
-      paranoid: true
+      paranoid: true,
     },
   );
   return MajorMBTI;
