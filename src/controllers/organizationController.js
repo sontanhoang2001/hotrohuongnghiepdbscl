@@ -211,7 +211,7 @@ module.exports = {
   updateStatusVerifyOrganization: async (req, res) => {
     try {
     const organizationId = parseInt(req.body.organizationId);
-    const status = parseInt(req.body.status);
+    const status = req.body.status && parseInt(req.body.status);
 
     if (Number.isNaN(organizationId) || Number.isNaN(status)) {
       return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a full and valid parameter');
