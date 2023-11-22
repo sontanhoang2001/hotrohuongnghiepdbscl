@@ -5,7 +5,7 @@ const pathname = 'organization';
 const universityApi = {
   updateVerificationStatus: (data) => {
     const url = `${pathname}/updateStatusVerifyOrganization`;
-    return axiosService.patch(url,data);
+    return axiosService.patch(url, data);
   },
   getVerificationRequests: (params) => {
     const url = `${pathname}?page=${params.page}&size=${params.size}&status=2`;
@@ -47,8 +47,8 @@ const universityApi = {
     return axiosService.get(url);
   },
   //client public api
-  getAllPublicUniversityInfo: (page, size) => {
-    const url = `public/organization?page=${page}&size=${size}&organizationType=1`;
+  getAllPublicUniversityInfo: (params) => {
+    const url = `public/organization?page=${params.page}&size=${params.size}&search=${params.search}&organizationType=${params.type}`;
     return axiosService.get(url);
   },
   getOneByOrganizationId: (id) => {

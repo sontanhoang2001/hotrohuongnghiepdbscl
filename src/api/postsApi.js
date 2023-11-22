@@ -1,4 +1,5 @@
 import axiosService from './axiosClient';
+import qs from 'qs';
 
 const pathname = 'postsOrganization';
 
@@ -33,9 +34,13 @@ const postsApi = {
     return axiosService.post(url);
   },
   //pulic api
-  getAllPublicPosts: (params) => {
-    const url = `public/posts?page=${params.page}&size=${params.size}`;
-    return axiosService.get(url);
+  getAllPublicPosts: ({ page, size, search }) => {
+    console.debug('search', search);
+    const url = `public/posts`;
+    return axiosService.get(url, {
+      params: { page, size, search },
+      paramsSerializer: qs.stringify,
+    });
   },
 };
 

@@ -9,6 +9,13 @@ const initialState = {
   page: 1,
   size: 10,
   total: 0,
+  clientParams: {
+    page: 1,
+    size: 9,
+    total: 0,
+    type: 1,
+    search: '',
+  },
   organizationParams: {
     page: 1,
     size: 10,
@@ -155,9 +162,9 @@ export const updateOrganization = createAsyncThunk(
 //Lấy thông tin public của các trường đại học
 export const getAllPublicUniversityInfo = createAsyncThunk(
   'university/getAllPublicUniversityInfo',
-  async ({ page, size }, { rejectWithValue }) => {
+  async (payload, { rejectWithValue }) => {
     try {
-      const rs = await universityApi.getAllPublicUniversityInfo(page, size);
+      const rs = await universityApi.getAllPublicUniversityInfo(payload);
 
       return rs.data.data;
     } catch (error) {
@@ -298,7 +305,7 @@ const universitySlice = createSlice({
       .addCase(updateOrganization.fulfilled, (state, { payload }) => {
         state.pending = false;
         console.log(payload);
-        notification.success({ message: "Cập nhật tổ chức thành công", duration: 3 });
+        notification.success({ message: 'Cập nhật tổ chức thành công', duration: 3 });
       })
       .addCase(updateOrganization.rejected, (state, { payload }) => {
         state.pending = false;
@@ -309,12 +316,15 @@ const universitySlice = createSlice({
       .addCase(getAllPublicUniversityInfo.pending, (state) => {
         state.pending = true;
       })
+      // ----------------------
       .addCase(getAllPublicUniversityInfo.fulfilled, (state, { payload }) => {
         state.pending = false;
         state.data = payload;
-        state.page = payload.page;
-        state.size = payload.size;
-        state.total = payload.total;
+        state.clientParams.page = payload.page;
+        state.clientParams.size = payload.size;
+        state.clientParams.total = payload.total;
+        state.clientParams.search = payload.search;
+        state.clientParams.type = payload.type;
       })
       .addCase(getAllPublicUniversityInfo.rejected, (state, { payload }) => {
         state.pending = false;
@@ -327,5 +337,6 @@ export const selectUniversityPending = (state) => state.university.pending;
 export const selectUniversityToalRow = (state) => state.university.total;
 export const selectUniversityPage = (state) => state.university.page;
 export const selectUniversityPagesize = (state) => state.university.size;
+export const selectclientParams = (state) => state.university.clientParams;
 
 export default universitySlice.reducer;

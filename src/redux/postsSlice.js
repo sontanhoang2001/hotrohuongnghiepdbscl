@@ -12,11 +12,17 @@ const initialState = {
   page: 1,
   size: 10,
   total: 0,
+  clientPosts: {
+    page: 1,
+    size: 3,
+    search: '',
+    total: 0,
+  },
   postsParams: {
     page: 1,
     size: 10,
     total: 0,
-    search:''
+    search: '',
   },
   posts: [],
   currentPost: {},
@@ -118,6 +124,25 @@ export const restorePost = createAsyncThunk(
   },
 );
 
+// Lấy thông tin public của posts -------------
+export const getAllPublicPosts = createAsyncThunk(
+  'posts/getAllPublicPosts',
+  async (payload, { rejectWithValue }) => {
+    try {
+      const rs = await postsApi.getAllPublicPosts(payload);
+      console.log('payload contruct', payload);
+      console.log('payload', rs.data);
+      return rs.data.data;
+    } catch (error) {
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      } else {
+        return rejectWithValue(error.message);
+      }
+    }
+  },
+);
+
 // Tạo slice
 const postsSlice = createSlice({
   name: 'posts',
@@ -126,10 +151,10 @@ const postsSlice = createSlice({
     clearCurrentPost: (state, action) => {
       state.currentPost = {};
     },
-    setPostParams:(state,action)=>{
-      console.log('changed params',action.payload);
-      state.postsParams={...state.postsParams,...action.payload}
-    }
+    setPostParams: (state, action) => {
+      console.log('changed params', action.payload);
+      state.postsParams = { ...state.postsParams, ...action.payload };
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -139,7 +164,7 @@ const postsSlice = createSlice({
       })
       .addCase(restorePost.fulfilled, (state, { payload }) => {
         state.status = 'idle';
-        state.currentPost =  {...state.currentPost,deletedAt:null};
+        state.currentPost = { ...state.currentPost, deletedAt: null };
         notification.success({ message: 'Đã khôi phục bài viết' });
         console.log(payload);
       })
@@ -153,7 +178,7 @@ const postsSlice = createSlice({
       })
       .addCase(deletePost.fulfilled, (state, { payload }) => {
         state.status = 'idle';
-        state.currentPost = {...state.currentPost,deletedAt:payload.data.deletedAt};
+        state.currentPost = { ...state.currentPost, deletedAt: payload.data.deletedAt };
         notification.success({ message: 'Đã xóa bài viết' });
 
         console.log(payload);
@@ -192,6 +217,21 @@ const postsSlice = createSlice({
         state.pending = false;
         notification.error({ message: 'Lấy danh sách thất bại' });
       })
+      //all public posts
+      .addCase(getAllPublicPosts.pending, (state) => {
+        state.pending = true;
+      })
+      .addCase(getAllPublicPosts.fulfilled, (state, { payload }) => {
+        state.pending = false;
+        state.data = payload;
+        state.clientPosts.page = payload.page;
+        state.clientPosts.size = payload.size;
+        state.clientPosts.total = payload.total;
+        state.clientPosts.search = payload.search;
+      })
+      .addCase(getAllPublicPosts.rejected, (state, { payload }) => {
+        state.pending = false;
+      })
       //create update
       .addCase(createPost.pending, (state) => {
         state.pending = true;
@@ -227,5 +267,10 @@ const postsSlice = createSlice({
   },
 });
 
+export const {} = postsSlice.actions;
+export const selectPublicPosts = (state) => state.posts.data;
+export const selectClientPosts = (state) => state.posts.clientPosts;
+export const selectPostsPending = (state) => state.posts.pending;
+
 export default postsSlice.reducer;
-export const { clearCurrentPost,setPostParams } = postsSlice.actions;
+export const { clearCurrentPost, setPostParams } = postsSlice.actions;

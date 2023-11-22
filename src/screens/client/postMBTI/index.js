@@ -7,955 +7,1127 @@ class PostMBTI extends Component {
     // Lặp qua mảng các dữ liệu JSON bạn muốn gửi
     const dataToPost = [
       {
-        question_group_id: 3,
-        question: 'Tại một buổi tiệc, bạn sẽ',
+        question_group_id: 1,
+        question: 'Khi điện thoại đổ chuông, bạn có:',
         answers: [
           {
-            answer: 'Giao tiếp với nhiều người, kể cả người lạ',
             value: 'E',
+            answer: 'Nhanh chóng đạt được nó trước',
           },
           {
-            answer: 'Chỉ giao tiếp với với một số ít người mà bạn đã quen',
             value: 'I',
-          },
-        ],
-      },
-      {
-        question_group_id: 1,
-        question: 'Bạn thấy mình là người nghiêng về kiểu nào nhiều hơn?',
-        answers: [
-          {
-            answer: 'Thực tế',
-            value: 'S',
-          },
-          {
-            answer: 'Sáng tạo',
-            value: 'N',
-          },
-        ],
-      },
-      {
-        question_group_id: 1,
-        question: 'Bạn nghĩ tình huống nào tồi tể hơn?',
-        answers: [
-          {
-            answer: 'Đầu óc của bạn cứ “bay bổng trên mây”',
-            value: 'S',
-          },
-          {
-            answer: 'Cuộc sống của bạn thật nhàm chán và không bao giờ thay đổi',
-            value: 'N',
-          },
-        ],
-      },
-      {
-        question_group_id: 1,
-        question: 'Bạn sẽ bị ấn tượng hơn với',
-        answers: [
-          {
-            answer: 'Các nguyên tắc',
-            value: 'S',
-          },
-          {
-            answer: 'Những cảm xúc',
-            value: 'N',
+            answer: 'Hy vọng người khác sẽ trả lời',
           },
         ],
       },
       {
         question_group_id: 2,
-        question: 'Khi quyết định việc gì đó, bạn thường hay dựa vào:',
+        question: 'Bạn có nhiều hơn không',
         answers: [
           {
-            answer: 'Sự thuyết phục',
-            value: 'T',
-          },
-          {
-            answer: 'Sự đồng cảm',
-            value: 'F',
-          },
-        ],
-      },
-      {
-        question_group_id: 2,
-        question: 'Bạn thích làm việc theo kiểu nào nhiều hơn?',
-        answers: [
-          {
-            answer: 'Theo đúng thời hạn',
-            value: 'T',
-          },
-          {
-            answer: 'Tùy hứng',
-            value: 'F',
-          },
-        ],
-      },
-      {
-        question_group_id: 2,
-        question: 'Bạn có khuynh hướng đưa ra các lựa chọn',
-        answers: [
-          {
-            answer: 'Rất cẩn thận',
-            value: 'T',
-          },
-          {
-            answer: 'Phần nào theo cảm nhận',
-            value: 'F',
-          },
-        ],
-      },
-      {
-        question_group_id: 1,
-        question: 'Điều nào khiến bạn thấy thích thú hơn?',
-        answers: [
-          {
-            answer: 'Những điều thực tế',
             value: 'S',
+            answer: 'Quan sát hơn là hướng nội',
           },
           {
-            answer: 'Những ý tưởng khả thi',
             value: 'N',
+            answer: 'Nội tâm hơn là quan sát',
           },
         ],
       },
       {
-        question_group_id: 1,
-        question: 'Khi đánh giá hoặc phán xét người khác, bạn thường hay dựa vào điều gì?',
+        question_group_id: 2,
+        question: 'Có tệ hơn không',
         answers: [
           {
-            answer: 'Luật lệ và nguyên tắc',
             value: 'S',
+            answer: 'Đầu óc bạn như trên mây',
           },
           {
-            answer: 'Hoàn cảnh',
             value: 'N',
+            answer: 'Đang ở trong lối mòn',
           },
         ],
       },
       {
-        question_group_id: 2,
-        question: 'Khi tiếp cận, tiếp xúc người khác, bạn nghiêng về hướng nào hơn?',
+        question_group_id: 3,
+        question: 'Với mọi người, bạn thường hơn',
         answers: [
           {
-            answer: 'Tiếp cận theo hướng khách quan',
             value: 'T',
+            answer: 'Cứng rắn hơn dịu dàng',
           },
           {
-            answer: 'Tiếp cận theo hướng sử dụng trải nghiệm cá nhân',
             value: 'F',
+            answer: 'Dịu dàng hơn kiên quyết',
           },
         ],
       },
       {
-        question_group_id: 2,
-        question: 'Phong cách của bạn nghiêng về hướng nào hơn?',
+        question_group_id: 3,
+        question: 'Bạn có thoải mái hơn khi thực hiện',
         answers: [
           {
-            answer: 'Đúng giờ, nghiêm túc',
             value: 'T',
+            answer: 'Phán xét quan trọng',
           },
           {
-            answer: 'Nhàn nhã, thoải mái',
             value: 'F',
+            answer: 'Đánh giá giá trị',
           },
         ],
       },
       {
         question_group_id: 4,
-        question: 'Bạn cảm thấy không thoải mái khi có những việc:',
+        question: 'Sự bừa bộn ở nơi làm việc có phải là điều bạn không?',
         answers: [
           {
-            answer: 'Chưa hoàn thiện',
             value: 'J',
+            answer: 'Dành thời gian để đứng thẳng',
           },
           {
-            answer: 'Đã quá hoàn thiện',
             value: 'P',
-          },
-        ],
-      },
-      {
-        question_group_id: 3,
-        question: 'Trong các mối quan hệ xã hội, bạn thường',
-        answers: [
-          {
-            answer: 'Luôn nắm bắt kịp thời thông tin về các vấn đề của mọi người',
-            value: 'E',
-          },
-          {
-            answer: 'Thường biết thông tin sau những người khác',
-            value: 'I',
-          },
-        ],
-      },
-      {
-        question_group_id: 3,
-        question: 'Với các công việc thông thường, bạn nghiêng về cách:',
-        answers: [
-          {
-            answer: 'Làm theo cách thông thường',
-            value: 'E',
-          },
-          {
-            answer: 'Làm theo cách của riêng mình',
-            value: 'I',
-          },
-        ],
-      },
-      {
-        question_group_id: 1,
-        question: 'Các nhà văn nên:',
-        answers: [
-          {
-            answer: 'Viết những gì họ nghĩ và chân thật với những gì mình viết',
-            value: 'S',
-          },
-          {
-            answer: 'Diễn đạt sự việc bằng cách so sánh hay liên tưởng',
-            value: 'N',
-          },
-        ],
-      },
-      {
-        question_group_id: 1,
-        question: 'Điều gì lôi cuốn bạn hơn?',
-        answers: [
-          {
-            answer: 'Tính nhất quán của tư duy, suy nghĩ',
-            value: 'S',
-          },
-          {
-            answer: 'Sự hòa hợp trong các mối quan hệ của con người',
-            value: 'N',
-          },
-        ],
-      },
-      {
-        question_group_id: 2,
-        question: 'Bạn cảm thấy thoải mái hơn khi đưa ra:',
-        answers: [
-          {
-            answer: 'Những đánh giá, nhận xét một cách logic',
-            value: 'T',
-          },
-          {
-            answer: 'Những đánh giá, nhận xét một cách có ý nghĩa',
-            value: 'F',
-          },
-        ],
-      },
-      {
-        question_group_id: 2,
-        question: 'Bạn thích những điều:',
-        answers: [
-          {
-            answer: 'Đã được sắp xếp, quyết định trước',
-            value: 'T',
-          },
-          {
-            answer: 'Chưa xác định, chưa được quyết định',
-            value: 'F',
+            answer: 'Chịu đựng khá tốt',
           },
         ],
       },
       {
         question_group_id: 4,
-        question: 'Bạn tự thấy mình:',
+        question: 'Đó có phải là cách của bạn để',
         answers: [
           {
-            answer: 'Nghiêm túc, quyết đoán',
             value: 'J',
+            answer: 'Quyết định nhanh chóng',
           },
           {
-            answer: 'Dễ gần, thoải mái',
             value: 'P',
-          },
-        ],
-      },
-      {
-        question_group_id: 3,
-        question: 'Khi nói chuyện điện thoại, bạn:',
-        answers: [
-          {
-            answer: 'Cứ gọi bình thường',
-            value: 'E',
-          },
-          {
-            answer: 'Chuẩn bị trước những điều sẽ nói',
-            value: 'I',
-          },
-        ],
-      },
-      {
-        question_group_id: 3,
-        question: 'Những sự kiện trong thực tế',
-        answers: [
-          {
-            answer: 'Bản thân nó giải thích cho chính nó”',
-            value: 'E',
-          },
-          {
-            answer: 'Nó là bằng chứng giải thích cho các quy tắc, quy luật',
-            value: 'I',
+            answer: 'Chọn và chọn ở một mức độ nào đó',
           },
         ],
       },
       {
         question_group_id: 1,
-        question: 'Những người có tầm nhìn xa/người lo xa:',
+        question: 'Xếp hàng chờ đợi, bạn có thường xuyên không',
         answers: [
           {
-            answer: 'Thường gây khó chịu cho người khác',
-            value: 'S',
+            value: 'E',
+            answer: 'Trò chuyện với người khác',
           },
           {
-            answer: 'Khá thú vị',
-            value: 'N',
-          },
-        ],
-      },
-      {
-        question_group_id: 1,
-        question: 'Bạn thường là người có:',
-        answers: [
-          {
-            answer: 'Cái đầu lạnh',
-            value: 'S',
-          },
-          {
-            answer: 'Trái tim nóng',
-            value: 'N',
+            value: 'I',
+            answer: 'Gắn bó với công việc kinh doanh',
           },
         ],
       },
       {
         question_group_id: 2,
-        question: 'Điều nào thì tồi tệ hơn?',
+        question: 'Bạn có nhiều hơn không',
         answers: [
           {
-            answer: 'Không công bằng',
-            value: 'T',
+            value: 'S',
+            answer: 'Hợp lý hơn lý tưởng',
           },
           {
-            answer: 'Tàn nhẫn',
-            value: 'F',
+            value: 'N',
+            answer: 'Lý tưởng hơn là hợp lý',
           },
         ],
       },
       {
         question_group_id: 2,
-        question: 'Các sự kiện nên xảy ra theo hướng:',
+        question: 'Bạn có quan tâm nhiều hơn đến',
         answers: [
           {
-            answer: 'Được lựa chọn và cân nhắc kỹ lưỡng',
-            value: 'T',
+            value: 'S',
+            answer: 'Cái gì là thực tế',
           },
           {
-            answer: 'Ngẫu nhiên và tự nhiên',
+            value: 'N',
+            answer: 'Điều gì có thể',
+          },
+        ],
+      },
+      {
+        question_group_id: 3,
+        question: 'Khi đã quyết định, bạn có nhiều khả năng sẽ bỏ qua',
+        answers: [
+          {
+            value: 'T',
+            answer: 'Dữ liệu',
+          },
+          {
             value: 'F',
+            answer: 'Mong muốn',
+          },
+        ],
+      },
+      {
+        question_group_id: 3,
+        question: 'Khi đánh giá người khác, bạn có xu hướng',
+        answers: [
+          {
+            value: 'T',
+            answer: 'Khách quan và khách quan',
+          },
+          {
+            value: 'F',
+            answer: 'Thân thiện và cá nhân',
           },
         ],
       },
       {
         question_group_id: 4,
-        question: 'Bạn cảm thấy thoải mái hơn khi',
+        question: 'Bạn có thích hợp đồng',
         answers: [
           {
-            answer: 'Đã mua một thứ gì đó',
             value: 'J',
+            answer: 'Ký, đóng dấu và giao',
           },
           {
-            answer: 'Đang lựa chọn để mua',
             value: 'P',
+            answer: 'Giải quyết bằng cái bắt tay',
           },
         ],
       },
       {
-        question_group_id: 3,
-        question: 'Trong công ty, bạn là người:',
+        question_group_id: 4,
+        question: 'Bạn có hài lòng hơn khi có',
         answers: [
           {
-            answer: 'Khởi xướng các câu chuyện',
-            value: 'E',
+            value: 'J',
+            answer: 'Thành phẩm',
           },
           {
-            answer: 'Đợi người khác bắt chuyện với mình',
-            value: 'I',
-          },
-        ],
-      },
-      {
-        question_group_id: 3,
-        question: 'Đối với những quy ước, quy tắc thông thường trong xã hội, bạn :',
-        answers: [
-          {
-            answer: 'Ít khi nghi ngờ những điều này',
-            value: 'E',
-          },
-          {
-            answer: 'Thường xem xét lại tính đúng đắn của những điều đó',
-            value: 'I',
+            value: 'P',
+            answer: 'Công việc đang tiến hành',
           },
         ],
       },
       {
         question_group_id: 1,
-        question: 'Trẻ em thường:',
+        question: 'Tại một bữa tiệc, bạn có',
         answers: [
           {
-            answer: 'Chưa cố gắng đủ',
-            value: 'S',
+            value: 'E',
+            answer: 'Tương tác với nhiều người, thậm chí cả người lạ',
           },
           {
-            answer: 'Chưa vui chơi đủ',
-            value: 'N',
-          },
-        ],
-      },
-      {
-        question_group_id: 1,
-        question: 'Khi đưa ra các quyết định, bạn sẽ thấy thoải mái hơn với:',
-        answers: [
-          {
-            answer: 'Các tiêu chuẩn',
-            value: 'S',
-          },
-          {
-            answer: 'Cảm xúc, cảm nhận',
-            value: 'N',
+            value: 'I',
+            answer: 'Tương tác với một vài người bạn',
           },
         ],
       },
       {
         question_group_id: 2,
-        question: 'Bạn nghiêng về tính cách nào hơn ?',
+        question: 'Bạn có xu hướng trở nên nhiều hơn',
         answers: [
           {
+            value: 'S',
+            answer: 'Thực tế hơn là suy đoán',
+          },
+          {
+            value: 'N',
+            answer: 'Suy đoán hơn thực tế',
+          },
+        ],
+      },
+      {
+        question_group_id: 2,
+        question: 'Bạn có thích những nhà văn',
+        answers: [
+          {
+            value: 'S',
+            answer: 'Nói ý nghĩa của chúng',
+          },
+          {
+            value: 'N',
+            answer: 'Sử dụng ẩn dụ và biểu tượng',
+          },
+        ],
+      },
+      {
+        question_group_id: 3,
+        question: 'Điều nào hấp dẫn bạn hơn:',
+        answers: [
+          {
+            value: 'T',
+            answer: 'Sự nhất quán trong suy nghĩ',
+          },
+          {
+            value: 'F',
+            answer: 'Mối quan hệ hài hòa',
+          },
+        ],
+      },
+      {
+        question_group_id: 3,
+        question: 'Nếu bạn phải làm ai đó thất vọng thì bạn thường',
+        answers: [
+          {
+            value: 'T',
+            answer: 'Thẳng thắn, thẳng thắn',
+          },
+          {
+            value: 'F',
+            answer: 'Ấm áp và ân cần',
+          },
+        ],
+      },
+
+      {
+        question_group_id: 4,
+        question: 'Trong công việc bạn có muốn các hoạt động của mình',
+        answers: [
+          {
+            value: 'J',
+            answer: 'Theo lịch trình',
+          },
+          {
+            value: 'P',
+            answer: 'Đột xuất',
+          },
+        ],
+      },
+      {
+        question_group_id: 4,
+        question: 'Bạn có thường thích',
+        answers: [
+          {
+            value: 'J',
+            answer: 'Tuyên bố cuối cùng, không thể thay đổi',
+          },
+          {
+            value: 'P',
+            answer: 'Tuyên bố dự kiến, sơ bộ',
+          },
+        ],
+      },
+      {
+        question_group_id: 1,
+        question: 'Có tương tác với người lạ không',
+        answers: [
+          {
+            value: 'E',
+            answer: 'Tiếp thêm sinh lực cho bạn',
+          },
+          {
+            value: 'I',
+            answer: 'Đánh thuế khoản dự trữ của bạn',
+          },
+        ],
+      },
+      {
+        question_group_id: 2,
+        question: 'sự thật',
+        answers: [
+          {
+            value: 'S',
+            answer: 'Tự nói về mình',
+          },
+          {
+            value: 'N',
+            answer: 'Minh họa các nguyên tắc',
+          },
+        ],
+      },
+      {
+        question_group_id: 2,
+        question: 'Bạn có thấy những người nhìn xa trông rộng và những nhà lý luận',
+        answers: [
+          {
+            value: 'S',
+            answer: 'Hơi khó chịu',
+          },
+          {
+            value: 'N',
+            answer: 'Khá hấp dẫn',
+          },
+        ],
+      },
+      {
+        question_group_id: 3,
+        question: 'Trong một cuộc thảo luận sôi nổi, bạn có',
+        answers: [
+          {
+            value: 'T',
+            answer: 'Giữ vững khẩu súng của bạn',
+          },
+          {
+            value: 'F',
+            answer: 'Tìm điểm chung',
+          },
+        ],
+      },
+      {
+        question_group_id: 3,
+        question: 'Có tốt hơn không?',
+        answers: [
+          {
+            value: 'T',
+            answer: 'Chỉ',
+          },
+          {
+            value: 'F',
+            answer: 'Nhân từ',
+          },
+        ],
+      },
+      {
+        question_group_id: 4,
+        question: 'Tại nơi làm việc, bạn có tự nhiên hơn không?',
+        answers: [
+          {
+            value: 'J',
+            answer: 'Chỉ ra lỗi sai',
+          },
+          {
+            value: 'P',
+            answer: 'Cố gắng làm hài lòng người khác',
+          },
+        ],
+      },
+      {
+        question_group_id: 4,
+        question: 'Bạn có thấy thoải mái hơn không?',
+        answers: [
+          {
+            value: 'J',
+            answer: 'Sau một quyết định',
+          },
+          {
+            value: 'P',
+            answer: 'Trước khi có quyết định',
+          },
+        ],
+      },
+
+      {
+        question_group_id: 1,
+        question: 'Bạn có xu hướng',
+        answers: [
+          {
+            value: 'E',
+            answer: 'Nói thẳng ra điều bạn đang nghĩ',
+          },
+          {
+            value: 'I',
+            answer: 'Luôn mở rộng đôi tai của bạn',
+          },
+        ],
+      },
+      {
+        question_group_id: 2,
+        question: 'lẽ thường là',
+        answers: [
+          {
+            value: 'S',
+            answer: 'Thường đáng tin cậy',
+          },
+          {
+            value: 'N',
+            answer: 'Thường xuyên nghi vấn',
+          },
+        ],
+      },
+      {
+        question_group_id: 2,
+        question: 'Trẻ em thường không',
+        answers: [
+          {
+            value: 'S',
+            answer: 'Làm cho mình đủ hữu ích',
+          },
+          {
+            value: 'N',
+            answer: 'Vận dụng đủ trí tưởng tượng của mình',
+          },
+        ],
+      },
+      {
+        question_group_id: 3,
+        question: 'Khi phụ trách người khác, bạn có xu hướng',
+        answers: [
+          {
+            value: 'T',
+            answer: 'Vững chắc và không uốn cong',
+          },
+          {
+            value: 'F',
+            answer: 'Tha thứ và khoan dung',
+          },
+        ],
+      },
+      {
+        question_group_id: 3,
+        question: 'Bạn có thường xuyên hơn không',
+        answers: [
+          {
+            value: 'T',
+            answer: 'Một người có cái đầu lạnh',
+          },
+          {
+            value: 'F',
+            answer: 'Một người có trái tim ấm áp',
+          },
+        ],
+      },
+      {
+        question_group_id: 4,
+        question: 'Bạn có dễ bị',
+        answers: [
+          {
+            value: 'J',
+            answer: 'Đóng đinh mọi thứ xuống',
+          },
+          {
+            value: 'P',
+            answer: 'Khám phá các khả năng',
+          },
+        ],
+      },
+      {
+        question_group_id: 4,
+        question: 'Trong hầu hết các tình huống, bạn nhiều hơn',
+        answers: [
+          {
+            value: 'J',
+            answer: 'Cố ý hơn là tự phát',
+          },
+          {
+            value: 'P',
+            answer: 'Tự phát hơn là cố ý',
+          },
+        ],
+      },
+      {
+        question_group_id: 1,
+        question: 'Bạn có nghĩ mình là',
+        answers: [
+          {
+            value: 'E',
+            answer: 'Một người hướng ngoại',
+          },
+          {
+            value: 'I',
+            answer: 'Cá nhân',
+          },
+        ],
+      },
+      {
+        question_group_id: 2,
+        question: 'Bạn có thường xuyên hơn không',
+        answers: [
+          {
+            value: 'S',
+            answer: 'Một loại người thực tế',
+          },
+          {
+            value: 'N',
+            answer: 'Một loại người huyền ảo',
+          },
+        ],
+      },
+
+      {
+        question_group_id: 2,
+        question: 'Bạn có nói nhiều hơn trong',
+        answers: [
+          {
+            value: 'S',
+            answer: 'Cụ thể hơn là chung chung',
+          },
+          {
+            value: 'N',
+            answer: 'Tổng quát hơn là chi tiết',
+          },
+        ],
+      },
+      {
+        question_group_id: 3,
+        question: 'Lời khen nào hay hơn:',
+        answers: [
+          {
+            value: 'T',
+            answer: '“Có một người logic”',
+          },
+          {
+            value: 'F',
+            answer: '“Có một người đa cảm”',
+          },
+        ],
+      },
+      {
+        question_group_id: 3,
+        question: 'Điều gì quy định bạn nhiều hơn',
+        answers: [
+          {
+            value: 'T',
+            answer: 'Suy nghĩ của bạn',
+          },
+          {
+            value: 'F',
+            answer: 'Cảm xúc của bạn',
+          },
+        ],
+      },
+      {
+        question_group_id: 4,
+        question: 'Khi kết thúc công việc, bạn có thích',
+        answers: [
+          {
+            value: 'J',
+            answer: 'Buộc lại tất cả các đầu lỏng lẻo',
+          },
+          {
+            value: 'P',
+            answer: 'Chuyển sang việc khác',
+          },
+        ],
+      },
+      {
+        question_group_id: 4,
+        question: 'Bạn có thích làm việc không?',
+        answers: [
+          {
+            value: 'J',
+            answer: 'Đến thời hạn',
+          },
+          {
+            value: 'P',
+            answer: 'Bất cứ khi nào',
+          },
+        ],
+      },
+      {
+        question_group_id: 1,
+        question: 'Bạn có phải là người',
+        answers: [
+          {
+            value: 'E',
+            answer: 'Khá là nói nhiều',
+          },
+          {
+            value: 'I',
+            answer: 'Không bỏ lỡ nhiều',
+          },
+        ],
+      },
+      {
+        question_group_id: 2,
+        question: 'Bạn có khuynh hướng chấp nhận những gì được nói',
+        answers: [
+          {
+            value: 'S',
+            answer: 'Theo nghĩa đen hơn',
+          },
+          {
+            value: 'N',
+            answer: 'Theo nghĩa bóng hơn',
+          },
+        ],
+      },
+      {
+        question_group_id: 2,
+        question: 'Bạn có thường xuyên gặp hơn không?',
+        answers: [
+          {
+            value: 'S',
+            answer: 'Cái gì ở ngay trước mặt bạn',
+          },
+          {
+            value: 'N',
+            answer: 'Những gì chỉ có thể tưởng tượng được',
+          },
+        ],
+      },
+      {
+        question_group_id: 3,
+        question: 'Có tệ hơn không?',
+        answers: [
+          {
+            value: 'T',
+            answer: 'Mềm mại',
+          },
+          {
+            value: 'F',
             answer: 'Cứng rắn',
-            value: 'T',
-          },
-          {
-            answer: 'Nhẹ nhàng',
-            value: 'F',
           },
         ],
       },
       {
-        question_group_id: 2,
-        question: 'Theo bạn, khả năng nào đáng khâm phục hơn ?',
+        question_group_id: 3,
+        question: 'Đôi khi bạn gặp hoàn cảnh khó khăn',
         answers: [
           {
-            answer: 'Khả năng tổ chức và làm việc có phương pháp',
             value: 'T',
+            answer: 'Quá thiếu thông cảm',
           },
           {
-            answer: 'Khả năng thích ứng và xoay xở trước mọi tình huống',
             value: 'F',
+            answer: 'Quá thông cảm',
           },
         ],
       },
       {
         question_group_id: 4,
-        question: 'Bạn đề cao tố chất nào hơn?',
+        question: 'Bạn có xu hướng chọn',
         answers: [
           {
-            answer: 'Sự chắc chắn',
             value: 'J',
+            answer: 'Khá cẩn thận',
           },
           {
-            answer: 'Sự cởi mở',
             value: 'P',
-          },
-        ],
-      },
-      {
-        question_group_id: 3,
-        question:
-          'Khi tương tác với người khác ở các tình huống và vấn đề mới lạ, không thường gặp, bạn:',
-        answers: [
-          {
-            answer: 'Thấy phấn chấn và hào hứng',
-            value: 'E',
-          },
-          {
-            answer: 'Cảm thấy mệt mỏi',
-            value: 'I',
-          },
-        ],
-      },
-      {
-        question_group_id: 3,
-        question: 'Thường thì bạn là:',
-        answers: [
-          {
-            answer: 'Người thực tế',
-            value: 'E',
-          },
-          {
-            answer: 'Người có khả năng tưởng tượng phong phú',
-            value: 'I',
-          },
-        ],
-      },
-      {
-        question_group_id: 1,
-        question: 'Bạn thường có xu hướng:',
-        answers: [
-          {
-            answer: 'Xem người khác có thể làm được việc gì hữu ích',
-            value: 'S',
-          },
-          {
-            answer: 'Xem người khác sẽ nghĩ và cảm nhận như thế nào',
-            value: 'N',
-          },
-        ],
-      },
-      {
-        question_group_id: 1,
-        question: 'Bạn cảm thấy thoải mái hơn khi:',
-        answers: [
-          {
-            answer: 'Thảo luận một vân đề kĩ lưỡng, triệt để',
-            value: 'S',
-          },
-          {
-            answer: 'Đạt được thỏa thuận, sự nhất trí về vấn đề',
-            value: 'N',
-          },
-        ],
-      },
-      {
-        question_group_id: 2,
-        question: 'Cái đầu hay trái tim chi phối bạn nhiều hơn',
-        answers: [
-          {
-            answer: 'Cái đầu',
-            value: 'T',
-          },
-          {
-            answer: 'Trái tim',
-            value: 'F',
-          },
-        ],
-      },
-      {
-        question_group_id: 2,
-        question: 'Bạn cảm thấy thoải mái hơn khi làm các công việc theo dạng:',
-        answers: [
-          {
-            answer: 'Được giao trọn gói, làm xong hết rồi bàn giao',
-            value: 'T',
-          },
-          {
-            answer: 'Công việc làm hàng ngày, theo lịch',
-            value: 'F',
+            answer: 'Hơi bốc đồng',
           },
         ],
       },
       {
         question_group_id: 4,
-        question: 'Bạn có xu hướng tìm kiếm những điều:',
+        question: 'Bạn có xu hướng muốn nhiều hơn',
         answers: [
           {
-            answer: 'Theo trật tự, thứ tự',
             value: 'J',
+            answer: 'Vội vã hơn là nhàn nhã',
           },
           {
-            answer: 'Ngẫu nhiên',
             value: 'P',
-          },
-        ],
-      },
-      {
-        question_group_id: 3,
-        question: 'Bạn thích kiểu nào hơn?',
-        answers: [
-          {
-            answer: 'Nhiều bạn bè ở mức độ xã giao',
-            value: 'E',
-          },
-          {
-            answer: 'Một vài người bạn thân',
-            value: 'I',
-          },
-        ],
-      },
-      {
-        question_group_id: 3,
-        question: 'Bạn thường dựa vào:',
-        answers: [
-          {
-            answer: 'Sự kiện, thông tin thực tế',
-            value: 'E',
-          },
-          {
-            answer: 'Nguyên lí, nguyên tắc',
-            value: 'I',
+            answer: 'Nhàn nhã hơn là vội vã',
           },
         ],
       },
       {
         question_group_id: 1,
-        question: 'Bạn hứng thú với việc gì hơn?',
+        question: 'Tại nơi làm việc bạn có xu hướng',
         answers: [
           {
-            answer: 'Sản xuất và phân phối',
-            value: 'S',
+            value: 'E',
+            answer: 'Hòa đồng với đồng nghiệp của bạn',
           },
           {
-            answer: 'Thiết kế và nghiên cứu',
-            value: 'N',
-          },
-        ],
-      },
-      {
-        question_group_id: 1,
-        question: 'Lời khen nào giá trị hơn?',
-        answers: [
-          {
-            answer: '“Đó là một người có suy nghĩ rất logic”',
-            value: 'S',
-          },
-          {
-            answer: '“Đó là một người rất tình cảm, tinh tế”',
-            value: 'N',
+            value: 'I',
+            answer: 'Giữ nhiều hơn cho riêng mình',
           },
         ],
       },
       {
         question_group_id: 2,
-        question: 'Bạn thích mình có tố chất nào hơn?',
+        question: 'Bạn có dễ tin tưởng hơn không',
         answers: [
           {
-            answer: 'Kiên định, vững vàng',
-            value: 'T',
+            value: 'S',
+            answer: 'Kinh nghiệm của bạn',
           },
           {
-            answer: 'Toàn tâm, cống hiến',
-            value: 'F',
+            value: 'N',
+            answer: 'Quan niệm của bạn',
           },
         ],
       },
       {
         question_group_id: 2,
-        question: 'Bạn thường thích điều nào hơn?',
+        question: 'Bạn có xu hướng cảm thấy',
         answers: [
           {
-            answer: 'Một tuyên bố cuối cùng, không thay đổi',
-            value: 'T',
+            value: 'S',
+            answer: 'Xuống trái đất',
           },
           {
-            answer: 'Một tuyên bố dự kiến, ban đầu',
+            value: 'N',
+            answer: 'Loại bỏ một phần',
+          },
+        ],
+      },
+      {
+        question_group_id: 3,
+        question: 'Bạn có nghĩ mình là một',
+        answers: [
+          {
+            value: 'T',
+            answer: 'Người cứng rắn',
+          },
+          {
             value: 'F',
+            answer: 'Người có trái tim dịu dàng',
+          },
+        ],
+      },
+      {
+        question_group_id: 3,
+        question: 'Bạn có coi trọng bản thân mình hơn bạn không?',
+        answers: [
+          {
+            value: 'T',
+            answer: '(một sự hợp lí',
+          },
+          {
+            value: 'F',
+            answer: 'Cống hiến',
           },
         ],
       },
       {
         question_group_id: 4,
-        question: 'Bạn thấy thoải mái hơn vào lúc:',
+        question: 'Bạn có thường muốn những thứ',
         answers: [
           {
-            answer: 'Trước khi đưa ra quyết định',
             value: 'J',
+            answer: 'Giải quyết và quyết định',
           },
           {
-            answer: 'Sau khi đưa ra quyết định',
             value: 'P',
-          },
-        ],
-      },
-      {
-        question_group_id: 3,
-        question: 'Bạn có thấy mình:',
-        answers: [
-          {
-            answer: 'Dễ dàng bắt chuyện và kéo dài cuộc trò chuyện với người mới gặp',
-            value: 'E',
-          },
-          {
-            answer: 'Khó mà trò chuyện nhiều với những người mới quen',
-            value: 'I',
-          },
-        ],
-      },
-      {
-        question_group_id: 3,
-        question: 'Bạn có xu hướng tin tưởng vào:',
-        answers: [
-          {
-            answer: 'Kinh nghiệm của mình',
-            value: 'E',
-          },
-          {
-            answer: 'Linh cảm của mình',
-            value: 'I',
-          },
-        ],
-      },
-      {
-        question_group_id: 1,
-        question: 'Bạn cho rằng mình thuộc tuýp người nào hơn?',
-        answers: [
-          {
-            answer: 'Người thực tế',
-            value: 'S',
-          },
-          {
-            answer: 'Người khôn khéo',
-            value: 'N',
-          },
-        ],
-      },
-      {
-        question_group_id: 1,
-        question: 'Theo bạn ai là người đáng được khen ngợi hơn?',
-        answers: [
-          {
-            answer: 'Một người giàu lý trí',
-            value: 'S',
-          },
-          {
-            answer: 'Một người giàu cảm xúc',
-            value: 'N',
-          },
-        ],
-      },
-      {
-        question_group_id: 2,
-        question: 'Bạn có xu hướng hành xử:',
-        answers: [
-          {
-            answer: 'Công bằng, vô tư',
-            value: 'T',
-          },
-          {
-            answer: 'Thông cảm, đồng cảm',
-            value: 'F',
-          },
-        ],
-      },
-      {
-        question_group_id: 2,
-        question: 'Bạn thích:',
-        answers: [
-          {
-            answer: 'Đảm bảo rằng mọi việc được chuẩn bị, thu xếp sẵn sàng',
-            value: 'T',
-          },
-          {
-            answer: 'Để mọi việc diễn ra tự nhiên',
-            value: 'F',
+            answer: 'Vừa mới viết bút chì vào',
           },
         ],
       },
       {
         question_group_id: 4,
-        question: 'Trong các mối quan hệ thì mọi việc:',
+        question: 'Bạn có nói rằng bạn hơn',
         answers: [
           {
-            answer: 'Có thể thảo luận để giải quyết được',
             value: 'J',
+            answer: 'Nghiêm túc và quyết tâm',
           },
           {
-            answer: 'Diễn ra ngẫu nhiên và tùy theo điều kiện hoàn cảnh',
             value: 'P',
-          },
-        ],
-      },
-      {
-        question_group_id: 3,
-        question: 'Khi chuông điện thoại reo, bạn sẽ:',
-        answers: [
-          {
-            answer: 'Là người đầu tiên nhấc máy',
-            value: 'E',
-          },
-          {
-            answer: 'Hi vọng có người khác sẽ nhấc máy',
-            value: 'I',
-          },
-        ],
-      },
-      {
-        question_group_id: 3,
-        question: 'Bạn đánh giá cao điều gì trong mình hơn:',
-        answers: [
-          {
-            answer: 'Nhận thức tốt về các yếu tố thực tế',
-            value: 'E',
-          },
-          {
-            answer: 'Có trí tưởng tượng phong phú, rực rỡ',
-            value: 'I',
+            answer: 'Dễ dàng',
           },
         ],
       },
       {
         question_group_id: 1,
-        question: 'Bạn sẽ chú tâm hơn đến:',
+        question: 'Bạn có coi mình là chính mình không?',
         answers: [
           {
-            answer: 'Các nguyên tắc, nguyên lý cơ bản',
-            value: 'S',
+            value: 'E',
+            answer: 'Một người nói chuyện giỏi',
           },
           {
-            answer: 'Các ngụ ý, hàm ý, ẩn ý',
-            value: 'N',
+            value: 'I',
+            answer: 'Một người biết lắng nghe',
           },
         ],
       },
+
       {
-        question_group_id: 1,
-        question: 'Điều gì có vẻ sẽ là một lỗi lớn hơn?',
+        question_group_id: 4,
+        question: 'Bạn có xu hướng chọn',
         answers: [
           {
-            answer: 'Quá nồng nhiệt, thiết tha',
-            value: 'S',
+            value: 'J',
+            answer: 'Khá cẩn thận',
           },
           {
-            answer: 'Quá khách quan, thờ ơ',
-            value: 'N',
-          },
-        ],
-      },
-      {
-        question_group_id: 2,
-        question: 'Về cơ bản, bạn sẽ đánh giá mình là người thế nào?',
-        answers: [
-          {
-            answer: 'Thiết thực, ít bị chi phối bởi tình cảm',
-            value: 'T',
-          },
-          {
-            answer: 'Từ tâm, đa cảm',
-            value: 'F',
-          },
-        ],
-      },
-      {
-        question_group_id: 2,
-        question: 'Tình huống nào sẽ lôi cuốn bạn hơn?',
-        answers: [
-          {
-            answer: 'Tình huống rõ ràng, có kế hoạch',
-            value: 'T',
-          },
-          {
-            answer: 'Tình huống không xác định, không có kế hoạch',
-            value: 'F',
+            value: 'P',
+            answer: 'Hơi bốc đồng',
           },
         ],
       },
       {
         question_group_id: 4,
-        question: 'Bạn là người có xu hướng nào hơn?',
+        question: 'Bạn có xu hướng muốn nhiều hơn',
         answers: [
           {
-            answer: 'Theo thói quen',
             value: 'J',
+            answer: 'Vội vã hơn là nhàn nhã',
           },
           {
-            answer: 'Hay thay đổi',
             value: 'P',
-          },
-        ],
-      },
-      {
-        question_group_id: 3,
-        question: 'Bạn có xu hướng nào hơn?',
-        answers: [
-          {
-            answer: 'Là người dễ tiếp cận',
-            value: 'E',
-          },
-          {
-            answer: 'Ở mức độ nào đó là người kín đáo',
-            value: 'I',
-          },
-        ],
-      },
-      {
-        question_group_id: 3,
-        question: 'Khi viết, bạn thích:',
-        answers: [
-          {
-            answer: 'Viết theo hướng văn chương hơn',
-            value: 'E',
-          },
-          {
-            answer: 'Viết theo số liệu, dữ liệu hơn',
-            value: 'I',
+            answer: 'Nhàn nhã hơn là vội vã',
           },
         ],
       },
       {
         question_group_id: 1,
-        question: 'Đối với bạn, điều gì khó thực hiện hơn?',
+        question: 'Tại nơi làm việc bạn có xu hướng',
         answers: [
           {
-            answer: 'Hiểu và chia sẻ với người khác',
-            value: 'S',
+            value: 'E',
+            answer: 'Hòa đồng với đồng nghiệp của bạn',
           },
           {
-            answer: 'Điều khiển người khác',
-            value: 'N',
-          },
-        ],
-      },
-      {
-        question_group_id: 1,
-        question: 'Bạn mong ước mình sẽ có thêm nhiều điều gì?',
-        answers: [
-          {
-            answer: 'Lí trí và khả năng nhận xét rõ ràng',
-            value: 'S',
-          },
-          {
-            answer: 'Tình thương, lòng trắc ẩn sâu sắc',
-            value: 'N',
+            value: 'I',
+            answer: 'Giữ nhiều hơn cho riêng mình',
           },
         ],
       },
       {
         question_group_id: 2,
-        question: 'Điều gì sẽ là lỗi lớn hơn?',
+        question: 'Bạn có dễ tin tưởng hơn không',
         answers: [
           {
-            answer: 'Hành động bừa bãi, không cân nhắc',
-            value: 'T',
+            value: 'S',
+            answer: 'Kinh nghiệm của bạn',
           },
           {
-            answer: 'Hành động chỉ trích, phê phán',
-            value: 'F',
+            value: 'N',
+            answer: 'Quan niệm của bạn',
           },
         ],
       },
       {
         question_group_id: 2,
-        question: 'Bạn sẽ thích sự kiện nào hơn?',
+        question: 'Bạn có xu hướng cảm thấy',
         answers: [
           {
-            answer: 'Sự kiện có lên kế hoạch trước',
-            value: 'T',
+            value: 'S',
+            answer: 'Xuống trái đất',
           },
           {
-            answer: 'Sự kiện không có kế hoạch trước',
+            value: 'N',
+            answer: 'Loại bỏ một phần',
+          },
+        ],
+      },
+      {
+        question_group_id: 3,
+        question: 'Bạn có nghĩ mình là một',
+        answers: [
+          {
+            value: 'T',
+            answer: 'Người cứng rắn',
+          },
+          {
             value: 'F',
+            answer: 'Người có trái tim dịu dàng',
+          },
+        ],
+      },
+      {
+        question_group_id: 3,
+        question: 'Bạn có coi trọng bản thân mình hơn bạn không?',
+        answers: [
+          {
+            value: 'T',
+            answer: '(một sự hợp lí',
+          },
+          {
+            value: 'F',
+            answer: 'Cống hiến',
           },
         ],
       },
       {
         question_group_id: 4,
-        question: 'Bạn thường có hành động:',
+        question: 'Bạn có thường muốn những thứ',
         answers: [
           {
-            answer: 'Cân nhắc thận trọng',
             value: 'J',
+            answer: 'Giải quyết và quyết định',
           },
           {
-            answer: 'Tự nhiên, tự phát',
             value: 'P',
+            answer: 'Vừa mới viết bút chì vào',
+          },
+        ],
+      },
+      {
+        question_group_id: 4,
+        question: 'Bạn có nói rằng bạn hơn',
+        answers: [
+          {
+            value: 'J',
+            answer: 'Nghiêm túc và quyết tâm',
+          },
+          {
+            value: 'P',
+            answer: 'Dễ dàng',
+          },
+        ],
+      },
+      {
+        question_group_id: 1,
+        question: 'Bạn có coi mình là chính mình không?',
+        answers: [
+          {
+            value: 'E',
+            answer: 'Một người nói chuyện giỏi',
+          },
+          {
+            value: 'I',
+            answer: 'Một người biết lắng nghe',
+          },
+        ],
+      },
+      {
+        question_group_id: 2,
+        question: 'Bạn có tự thưởng cho mình không',
+        answers: [
+          {
+            value: 'S',
+            answer: 'Bám chặt vào thực tế',
+          },
+          {
+            value: 'N',
+            answer: 'Trí tưởng tượng sống động',
+          },
+        ],
+      },
+      {
+        question_group_id: 2,
+        question: 'Bạn có bị thu hút nhiều hơn vào',
+        answers: [
+          {
+            value: 'S',
+            answer: 'Nguyên tắc cơ bản',
+          },
+          {
+            value: 'N',
+            answer: 'Âm bội',
+          },
+        ],
+      },
+      {
+        question_group_id: 3,
+        question: 'Có vẻ như lỗi lớn hơn:',
+        answers: [
+          {
+            value: 'T',
+            answer: 'Quá từ bi',
+          },
+          {
+            value: 'F',
+            answer: 'Quá vô tư',
+          },
+        ],
+      },
+      {
+        question_group_id: 3,
+        question: 'Bạn có bị ảnh hưởng nhiều hơn bởi',
+        answers: [
+          {
+            value: 'T',
+            answer: 'Bằng chứng thuyết phục',
+          },
+          {
+            value: 'F',
+            answer: 'Một lời kêu gọi cảm động',
+          },
+        ],
+      },
+      {
+        question_group_id: 4,
+        question: 'Bạn có cảm thấy tốt hơn về',
+        answers: [
+          {
+            value: 'J',
+            answer: 'Sắp kết thúc',
+          },
+          {
+            value: 'P',
+            answer: 'Luôn để ngỏ các lựa chọn của bạn',
+          },
+        ],
+      },
+      {
+        question_group_id: 4,
+        question: 'Tốt nhất là nên',
+        answers: [
+          {
+            value: 'J',
+            answer: 'Đảm bảo mọi thứ được sắp xếp',
+          },
+          {
+            value: 'P',
+            answer: 'Cứ để mọi việc diễn ra tự nhiên',
+          },
+        ],
+      },
+
+      {
+        question_group_id: 1,
+        question: 'Bạn có muốn trở thành',
+        answers: [
+          {
+            value: 'E',
+            answer: 'Dễ gần',
+          },
+          {
+            value: 'I',
+            answer: 'Hơi dè dặt',
+          },
+        ],
+      },
+      {
+        question_group_id: 2,
+        question: 'Trong truyện bạn thích',
+        answers: [
+          {
+            value: 'S',
+            answer: 'Hành động và phiêu lưu',
+          },
+          {
+            value: 'N',
+            answer: 'Ảo tưởng và chủ nghĩa anh hùng',
+          },
+        ],
+      },
+      {
+        question_group_id: 2,
+        question: 'Có dễ dàng hơn cho bạn không?',
+        answers: [
+          {
+            value: 'S',
+            answer: 'Sử dụng người khác một cách có ích',
+          },
+          {
+            value: 'N',
+            answer: 'Xác định với người khác',
+          },
+        ],
+      },
+      {
+        question_group_id: 3,
+        question: 'Bạn mong muốn điều gì hơn cho bản thân:',
+        answers: [
+          {
+            value: 'T',
+            answer: 'Sức mạnh của ý chí',
+          },
+          {
+            value: 'F',
+            answer: 'Sức mạnh của cảm xúc',
+          },
+        ],
+      },
+      {
+        question_group_id: 3,
+        question: 'Bạn có thấy mình về cơ bản là',
+        answers: [
+          {
+            value: 'T',
+            answer: 'Da dày',
+          },
+          {
+            value: 'F',
+            answer: 'Da mỏng',
+          },
+        ],
+      },
+      {
+        question_group_id: 4,
+        question: 'Bạn có xu hướng để ý',
+        answers: [
+          {
+            value: 'J',
+            answer: 'Sự hỗn loạn',
+          },
+          {
+            value: 'P',
+            answer: 'Cơ hội thay đổi',
+          },
+        ],
+      },
+      {
+        question_group_id: 4,
+        question: 'Bạn có nhiều hơn không',
+        answers: [
+          {
+            value: 'J',
+            answer: 'Thường lệ hơn là hay thay đổi',
+          },
+          {
+            value: 'P',
+            answer: 'Hay thay đổi hơn thường lệ',
           },
         ],
       },
