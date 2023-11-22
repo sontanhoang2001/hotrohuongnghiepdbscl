@@ -66,7 +66,21 @@ export const updateMbti = createAsyncThunk('mbti/UpdateMbti', async (data, { rej
 // Tạo một async thunk xoá câu hỏi MBTI
 export const deleteMbti = createAsyncThunk('mbti/deleteMbti', async (id, { rejectWithValue }) => {
   try {
-    const rs = await mbtiApi.addNewMbti();
+    const rs = await mbtiApi.deleteMbti(id);
+    return rs.data.data; // Đảm bảo kiểm tra API response và chọn dữ liệu cần thiết
+  } catch (err) {
+    // Xử lý lỗi và trả về thông báo hoặc giá trị mặc định
+    if (err.response && err.response.data.message) {
+      throw rejectWithValue(err.response.data.message);
+    } else {
+      throw rejectWithValue(err.message);
+    }
+  }
+});
+// Tạo một async thunk khôi phục câu hỏi MBTI
+export const restoreMbti = createAsyncThunk('mbti/restoreMbti', async (id, { rejectWithValue }) => {
+  try {
+    const rs = await mbtiApi.restoreMbti(id);
     return rs.data.data; // Đảm bảo kiểm tra API response và chọn dữ liệu cần thiết
   } catch (err) {
     // Xử lý lỗi và trả về thông báo hoặc giá trị mặc định
@@ -146,9 +160,21 @@ const mbtiSlice = createSlice({
       })
       .addCase(deleteMbti.fulfilled, (state, { payload }) => {
         state.pending = false;
-        message.error('Xoá thành công', 3);
+        message.success('Xoá thành công', 3);
       })
       .addCase(deleteMbti.rejected, (state, { payload }) => {
+        state.pending = false;
+        message.error(payload, 3);
+      })
+      //trạng thái của restoreMbti pending - fulfilled - rejected
+      .addCase(restoreMbti.pending, (state) => {
+        state.pending = true;
+      })
+      .addCase(restoreMbti.fulfilled, (state, { payload }) => {
+        state.pending = false;
+        message.success('Khôi phục thành công', 3);
+      })
+      .addCase(restoreMbti.rejected, (state, { payload }) => {
         state.pending = false;
         message.error(payload, 3);
       });

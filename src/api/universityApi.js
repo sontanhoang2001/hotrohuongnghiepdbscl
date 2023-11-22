@@ -28,6 +28,11 @@ const universityApi = {
     const url = `${pathname}/edit/${data.id}`;
     return axiosService.patch(url, data);
   },
+  //admin update verification
+  updateVerificationByAdmin: (data) => {
+    const url = `${pathname}/updateStatusVerifyOrganization`;
+    return axiosService.patch(url, data);
+  },
   //org
   updateOrganizationInfoByOrg: (data) => {
     const url = `${pathname}/edit/${data.id}`;

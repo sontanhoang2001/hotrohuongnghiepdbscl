@@ -22,14 +22,17 @@ import {
   MinusCircleOutlined,
   PlusCircleFilled,
   PlusCircleOutlined,
+  UndoOutlined,
 } from '@ant-design/icons';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useMemo, useState } from 'react';
 import {
   addNewMbti,
+  deleteMbti,
   getMbtiQuestion,
   getMbtiQuestionGroup,
+  restoreMbti,
   setParams,
   updateMbti,
 } from '../../../redux/mbtiSlice';
@@ -90,16 +93,12 @@ function Mbti() {
       });
   };
   //hàm bắt event delete
-  const handleDelete = (id) => {
-    mbtiApi
-      .deleteMbti(id)
-      .then(({ data }) => {
-        notification.success({ message: data.message, duration: 3 });
-        dispatch(setParams({}));
-      })
-      .catch((err) => {
-        notification.error({ message: err.message, duration: 3 });
-      });
+  const handleDelete = (id) => {    
+    dispatch(deleteMbti(id)).then(()=>{dispatch(getMbtiQuestion())});
+  };
+  //hàm bắt event delete
+  const handleRestore = (id) => {
+    dispatch(restoreMbti(id)).then(()=>{dispatch(getMbtiQuestion())});
   };
   //định dạng cột hiển thị
   const columns = useMemo(
@@ -168,17 +167,32 @@ function Mbti() {
             <Button type="text" loading={processId === mbti.id} onClick={() => handleEdit(mbti.id)}>
               <EditOutlined style={{ color: 'green' }} />
             </Button>
-            <Popconfirm
-              placement="leftTop"
-              title="Xác nhận xóa"             
-              okText="Xóa"
-              onConfirm={() => handleDelete(mbti.id)}
-              cancelText="Hủy"
-            >
-              <Button danger>
-                <DeleteOutlined />
-              </Button>
-            </Popconfirm>
+            {mbti.deletedAt === null && (
+              <Popconfirm
+                placement="leftTop"
+                title="Xác nhận xóa"
+                okText="Xóa"
+                onConfirm={() => handleDelete(mbti.id)}
+                cancelText="Hủy"
+              >
+                <Button danger>
+                  <DeleteOutlined />
+                </Button>
+              </Popconfirm>
+            )}
+            {mbti.deletedAt !== null && (
+              <Popconfirm
+                placement="leftTop"
+                title="Xác nhận khôi phục"
+                okText="Khôi phục"
+                onConfirm={() => handleRestore(mbti.id)}
+                cancelText="Hủy"
+              >
+                <Button success>
+                  <UndoOutlined />
+                </Button>
+              </Popconfirm>
+            )}
           </div>
         ),
       },

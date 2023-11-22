@@ -1,15 +1,16 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import userApi from '../api/userApi';
 import { format } from 'date-fns';
+import { notification } from 'antd';
 
 const initialState = {
   data: null,
   pending: false,
   page: 1,
-  size: 10,
+  size: 7,
   total: null,
 };
-
+//get all
 export const getAllUserAsync = createAsyncThunk(
   'user/getAllUser',
   async ({ page, size }, { rejectWithValue }) => {
@@ -25,12 +26,69 @@ export const getAllUserAsync = createAsyncThunk(
     }
   },
 );
+//delete
+export const deleleUserAsync = createAsyncThunk(
+  'user/deleleUserAsync',
+  async (id, { rejectWithValue }) => {
+    try {
+      const rs = await userApi.deleteUser(id);
+      return rs.data;
+    } catch (error) {
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      } else {
+        return rejectWithValue(error.message);
+      }
+    }
+  },
+);
+//restore
+export const restoreUserAsync = createAsyncThunk(
+  'user/restoreUserAsync',
+  async (id, { rejectWithValue }) => {
+    try {
+      const rs = await userApi.restoreUser(id);
+      return rs.data;
+    } catch (error) {
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      } else {
+        return rejectWithValue(error.message);
+      }
+    }
+  },
+);
 
 export const userSlice = createSlice({
   name: 'user',
   initialState,
   extraReducers: (builder) => {
     builder
+    //restoreUserAsync
+      .addCase(restoreUserAsync.pending, (state, { payload }) => {
+        state.pending = true;
+      })
+      .addCase(restoreUserAsync.fulfilled, (state, { payload }) => {
+        state.pending = false;
+        notification.success({message:"Khôi phục thành công"})
+      })
+      .addCase(restoreUserAsync.rejected, (state, { payload }) => {
+        notification.error({message:"Khôi phục thất bại"})
+        state.pending = false;
+      })
+    //delete
+      .addCase(deleleUserAsync.pending, (state, { payload }) => {
+        state.pending = true;
+      })
+      .addCase(deleleUserAsync.fulfilled, (state, { payload }) => {
+        state.pending = false;
+        notification.success({message:"Đã xóa thành công"})
+      })
+      .addCase(deleleUserAsync.rejected, (state, { payload }) => {
+        notification.error({message:"Xóa thất bại"})
+        state.pending = false;
+      })
+    //get all
       .addCase(getAllUserAsync.pending, (state, { payload }) => {
         state.pending = true;
       })
