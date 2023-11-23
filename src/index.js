@@ -23,7 +23,7 @@ app.use(morgan('dev'));
 
 //* Enabling cors for all request by usiing cors middleware
 // app.use(cors());
-const allowedOrigins = ['http://localhost:3000', 'https://hotrohuongnghiepdbscl.web.app'];
+const allowedOrigins = ['http://localhost:3000', 'http://localhost:3001', 'https://hotrohuongnghiepdbscl.web.app'];
 app.use(cors({ origin: allowedOrigins })); // Replace with the appropriate origin
 
 
