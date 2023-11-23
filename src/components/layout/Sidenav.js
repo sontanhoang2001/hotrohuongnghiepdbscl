@@ -169,7 +169,7 @@ function Sidenav({ color }) {
       '3',
     ),
     getItem(
-      <NavLink to="/organization/2">
+      <NavLink to="/organization/profile">
         <span className="icon">{profile}</span>
         <span className="label">Profile</span>
       </NavLink>,

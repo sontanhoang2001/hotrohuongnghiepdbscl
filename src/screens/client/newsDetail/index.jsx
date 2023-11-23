@@ -53,7 +53,8 @@ function NewsDetail() {
           <Col span={22}>
             <MarginTopContent>
               <NewsContent>
-                <p>{getPosts?.content}</p>
+                {/* <p>{getPosts?.content}</p> */}
+                <div dangerouslySetInnerHTML={{ __html: getPosts?.content }} />
               </NewsContent>
               <Button type="primary" onClick={() => navigate(-2)}>
                 Quay lại

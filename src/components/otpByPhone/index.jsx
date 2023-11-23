@@ -63,7 +63,7 @@ function OtpByPhone() {
   return (
     <div style={{ marginTop: 100 }}>
       <center>
-        {step === 'INPUT_PHONE_NUMBER' && (
+        {/* {step === 'INPUT_PHONE_NUMBER' && (
           <div>
             <input
               value={phoneNumber}
@@ -77,7 +77,7 @@ function OtpByPhone() {
             <div id="recaptcha-container"></div>
             <button onClick={signin}>Send OTP</button>
           </div>
-        )}
+        )} */}
 
         {step === 'VERIFY_OTP' && (
           <div>

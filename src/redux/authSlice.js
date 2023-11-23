@@ -47,7 +47,8 @@ const initialState = {
   isSignup: false,
   otp: false,
   message: null,
-  role: parsedUserDatalocalStorage?.Role.name,
+  role: parsedUserDatalocalStorage?.Role.name || null,
+  status: parsedUserDatalocalStorage?.status,
 };
 // tạo một Redux Thunk, bất đồng bộ được sử dụng để đăng nhập người dùng
 export const signinAsync = createAsyncThunk(
@@ -55,6 +56,7 @@ export const signinAsync = createAsyncThunk(
   async (userLoginData, { rejectWithValue }) => {
     try {
       const rs = await authApi.signin(userLoginData);
+      console.log(rs.data);
       // The value we return becomes the `fulfilled` action payload
       const dataUser = {
         ...rs.data.data,
@@ -178,7 +180,6 @@ export const authSlice = createSlice({
       state.role = null;
       window.localStorage.removeItem('accessToken');
       window.localStorage.removeItem('userData');
-      
     },
     setIsSignup: (state, action) => {
       state.isSignup = action.payload; // Thay đổi giá trị isSignup dựa trên action.payload
@@ -201,7 +202,8 @@ export const authSlice = createSlice({
         state.profile = payload?.userData;
         state.authToken = payload.token;
         state.isLogin = true;
-        state.role = payload?.userData.Role.name;
+        state.role = payload?.userData.Role.name || null;
+        state.status = payload?.userData.status;
       })
 
       .addCase(signinAsync.rejected, (state, { payload }) => {

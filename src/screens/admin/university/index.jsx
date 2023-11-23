@@ -127,7 +127,7 @@ function University() {
         title: 'Mô tả',
         key: 'description',
         width: 100,
-        render: (record) => (<span>{record.description}</span>)
+        render: (record) => <span>{record.description}</span>,
       },
       {
         title: 'Link',
@@ -158,11 +158,10 @@ function University() {
               title="Xác nhận xóa"
               description="Xác nhận xóa tổ chức?"
               okText="Xóa"
-              
               onConfirm={() => handleDelete(record.id)}
               cancelText="Hủy"
             >
-              <Button danger title='Khóa tổ chức'>
+              <Button danger title="Khóa tổ chức">
                 <LockFilled />
               </Button>
             </Popconfirm>
@@ -218,11 +217,7 @@ function University() {
       <div className="tabled">
         <Row gutter={[24, 0]}>
           <Col xs="24" xl={24}>
-            <Card
-              bordered={false}
-              className="criclebox tablespace mb-24"
-              title="Danh sách trường học"
-            >
+            <Card bordered={false} className="criclebox tablespace mb-24" title="Danh sách tổ chức">
               <div className="table-responsive">
                 <Table
                   bordered={true}

@@ -305,16 +305,16 @@ function SignUpV1() {
                       },
                       {
                         value: '2',
-                        label: 'Trường học',
+                        label: 'Tổ chức(Trường Đại Học - Công Ty)',
                       },
-                      {
-                        value: '3',
-                        label: 'Doanh nghiệp - Công ty',
-                      },
-                      {
-                        value: '4',
-                        label: 'Tư vấn viên - Cố vấn',
-                      },
+                      // {
+                      //   value: '3',
+                      //   label: 'Doanh nghiệp - Công ty',
+                      // },
+                      // {
+                      //   value: '4',
+                      //   label: 'Tư vấn viên - Cố vấn',
+                      // },
                     ]}
                     style={{ height: 50 }}
                   />
