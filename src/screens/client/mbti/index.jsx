@@ -40,7 +40,7 @@ function MBTI() {
                       navigate('/mbti-test');
                     }}
                   >
-                    Khám phá ngay
+                    Đi tìm tính cách của bạn
                   </Button>
                 </div>
               </div>
