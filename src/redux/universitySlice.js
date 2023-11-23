@@ -176,6 +176,23 @@ export const getAllPublicUniversityInfo = createAsyncThunk(
     }
   },
 );
+//Lấy thông tin public của các trường đại học
+export const createOrganizationAsync = createAsyncThunk(
+  'university/createOrganizationAsync',
+  async (data, { rejectWithValue }) => {
+    try {
+      const rs = await universityApi.createOrganization(data);
+
+      return rs.data.data;
+    } catch (error) {
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      } else {
+        return rejectWithValue(error.message);
+      }
+    }
+  },
+);
 
 // Tạo slice
 const universitySlice = createSlice({
@@ -308,6 +325,21 @@ const universitySlice = createSlice({
         notification.success({ message: 'Cập nhật tổ chức thành công', duration: 3 });
       })
       .addCase(updateOrganization.rejected, (state, { payload }) => {
+        state.pending = false;
+        console.log(payload.message);
+
+        notification.error({ message: payload, duration: 3 });
+      }) 
+      //create
+      .addCase(createOrganizationAsync.pending, (state) => {
+        state.pending = true;
+      })
+      .addCase(createOrganizationAsync.fulfilled, (state, { payload }) => {
+        state.pending = false;
+        console.log(payload);
+        notification.success({ message: 'Tạo tổ chức thành công', duration: 3 });
+      })
+      .addCase(createOrganizationAsync.rejected, (state, { payload }) => {
         state.pending = false;
         console.log(payload.message);
 

@@ -178,7 +178,7 @@ export const authSlice = createSlice({
       state.role = null;
       window.localStorage.removeItem('accessToken');
       window.localStorage.removeItem('userData');
-      window.location.reload();
+      
     },
     setIsSignup: (state, action) => {
       state.isSignup = action.payload; // Thay đổi giá trị isSignup dựa trên action.payload

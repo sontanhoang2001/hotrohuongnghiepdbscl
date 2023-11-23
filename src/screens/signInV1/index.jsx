@@ -65,13 +65,13 @@ function SignInV1() {
 
   let pending = useSelector(selectPending);
   const profile = useSelector(selectLoginData);
+  const {role}=useSelector(state=>state.auth);
 
   const navigate = useNavigate();
 
   useEffect(() => {
     //lấy role khi người dùng đăng nhập
-    if (profile != null && profile !== undefined) {
-      const role = profile?.userData?.Role?.name;
+    if (role) {      
       if (role === 'ADMIN') {
         navigate('/admin/dashboard');
       } else if (role === 'ORGANIZATION') {
@@ -80,7 +80,7 @@ function SignInV1() {
         navigate('/');
       }
     }
-  }, [pending, profile, navigate]);
+  }, [pending, navigate, role]);
 
   const onFinish = (values) => {
     const { remember, ...inputedUserData } = values;

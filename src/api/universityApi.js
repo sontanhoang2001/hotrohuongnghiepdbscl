@@ -55,6 +55,14 @@ const universityApi = {
     const url = `${pathname}/getOneByOrganizationId/${id}`;
     return axiosService.get(url);
   },
+  getAllOrganizationType: () => {
+    const url = `${pathname}/getAllOrganizationType`;
+    return axiosService.get(url);
+  },
+  createOrganization: (data) => {
+    const url = `${pathname}/add`;
+    return axiosService.post(url,data);
+  },
 
   
 };
