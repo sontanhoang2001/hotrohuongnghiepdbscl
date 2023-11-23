@@ -19,7 +19,7 @@ const mbtiApi = {
 
   createQuestion: (payload) => {
     const url = `/${pathname}/add`;
-    const rs = axiosService.post(url, { payload }); //truyền thẳng đối tượng thì gỡ {}
+    const rs = axiosService.post(url, payload); //truyền thẳng đối tượng thì gỡ {}
     return rs;
   },
   addNewMbti: (data) => {
@@ -37,6 +37,11 @@ const mbtiApi = {
   restoreMbti: (id) => {
     const url = `/${pathname}/restore/${id}`;
     return axiosService.post(url);
+  },
+  //public data
+  getQuestionTodotestMbti: () => {
+    const url = `/${pathname}/get-question-todotestMbti`;
+    return axiosService.get(url);
   },
 };
 

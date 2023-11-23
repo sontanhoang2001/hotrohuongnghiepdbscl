@@ -89,7 +89,9 @@ function Router() {
             <Route path="danh-sach-nguoi-dung" element={<User />} />
             <Route path="danh-sach-cau-hoi" element={<Mbti />} />
             <Route path="danh-cau-hoi-dong-hanh" element={<ManageCompanion />} />
-            <Route path="profile" element={<Profile />} />
+            <Route path="profile" element={<AuthWrapper roles={['ORGANIZATION']} />}>
+              <Route index element={<Profile />} />
+            </Route>
             <Route path="tin-nhan" element={<Chat />} />
             <Route path="danh-sach-tin-tuc" element={<ManageNews />} />
             <Route path="tao-bai-viet" element={<Posts />} />

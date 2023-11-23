@@ -38,6 +38,7 @@ function MBTI() {
                     size="large"
                     onClick={() => {
                       navigate('/mbti-test');
+                      window.scrollTo(0, 0);
                     }}
                   >
                     Đi tìm tính cách của bạn
@@ -150,7 +151,8 @@ const Introduce = styled.div`
       margin-top: 20px;
       margin-bottom: 20px;
       .paragraph,
-      .mbti-note {
+      .mbti-note,
+      .mbti-description {
         margin-top: 40px;
         margin-left: auto;
         margin-right: auto;
@@ -159,11 +161,16 @@ const Introduce = styled.div`
         width: 80%;
         border: 2px solid #c4c4cc;
         border-radius: 20px;
+        color: var(--text-color);
         h3 {
           text-transform: capitalize;
         }
         span {
           font-weight: 600;
+          font-size: 14pt;
+        }
+        p {
+          font-size: 14pt;
         }
         .mbti-btn {
           margin-top: 20px;
@@ -180,13 +187,6 @@ const Introduce = styled.div`
       .mbti-description {
         background-color: #374151;
         color: var(--text-secondary-color);
-        margin-top: 40px;
-        margin-left: auto;
-        margin-right: auto;
-        padding: 4%;
-        width: 80%;
-        border-radius: 20px;
-        text-align: justify;
         h3 {
           color: var(--text-secondary-color);
           text-transform: capitalize;

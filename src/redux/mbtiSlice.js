@@ -2,7 +2,6 @@ import { message } from 'antd';
 import mbtiApi from '../api/mbtiApi';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-
 // Tạo initialState cho slice
 const initialState = {
   data: null, // Danh sách câu hỏi MBTI
@@ -92,6 +91,25 @@ export const restoreMbti = createAsyncThunk('mbti/restoreMbti', async (id, { rej
   }
 });
 
+// Tạo một async thunk khôi phục câu hỏi MBTI
+export const getQuestionTodotestMbti = createAsyncThunk(
+  'mbti/getQuestionTodotestMbti',
+  async (payload, { rejectWithValue }) => {
+    try {
+      const rs = await mbtiApi.getQuestionTodotestMbti();
+      console.log(rs.data);
+      return rs.data; // Đảm bảo kiểm tra API response và chọn dữ liệu cần thiết
+    } catch (err) {
+      // Xử lý lỗi và trả về thông báo hoặc giá trị mặc định
+      if (err.response && err.response.data.message) {
+        throw rejectWithValue(err.response.data.message);
+      } else {
+        throw rejectWithValue(err.message);
+      }
+    }
+  },
+);
+
 // Tạo slice
 const mbtiSlice = createSlice({
   name: 'mbti',
@@ -177,6 +195,18 @@ const mbtiSlice = createSlice({
       .addCase(restoreMbti.rejected, (state, { payload }) => {
         state.pending = false;
         message.error(payload, 3);
+      })
+      //trạng thái của getQuestionTodotestMbti pending - fulfilled - rejected
+      .addCase(getQuestionTodotestMbti.pending, (state) => {
+        state.pending = true;
+      })
+      .addCase(getQuestionTodotestMbti.fulfilled, (state, { payload }) => {
+        state.pending = false;
+        state.data = payload; // Lưu danh sách câu hỏi MBTI
+      })
+      .addCase(getQuestionTodotestMbti.rejected, (state, { payload }) => {
+        console.log(payload);
+        state.pending = false;
       });
   },
 });
