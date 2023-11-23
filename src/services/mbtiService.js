@@ -261,10 +261,10 @@ module.exports = {
   newDoTestMBTI: async (page, size) => {
     try {
       const questionGroupIdValues = [1, 2, 3, 4];
-      const rowsPerGroup = 27;
+      // const rowsPerGroup = 27;
 
       const question = await Question.findAll({
-        limit: rowsPerGroup,
+        // limit: rowsPerGroup,
         attributes: ['question'],
         include: [
           {
@@ -273,16 +273,16 @@ module.exports = {
             attributes: ['answer', 'value'],
           },
         ],
-        where: {
-          questionGroupId: {
-            [Op.in]: questionGroupIdValues,
-          },
-        },
+        // where: {
+        //   questionGroupId: {
+        //     [Op.in]: questionGroupIdValues,
+        //   },
+        // },
         // group: 'questionGroupId',
         // having: sequelize.literal(`COUNT(*) <= ${rowsPerGroup}`)
       });
 
-      console.log('question', question);
+      // console.log('question', question);
       return question;
     } catch (error) {
       throw error;
