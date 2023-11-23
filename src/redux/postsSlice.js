@@ -3,10 +3,12 @@ import universityApi from '../api/universityApi';
 import { notification } from 'antd/lib';
 import faqsApi from '../api/faqsApi';
 import postsApi from '../api/postsApi';
+import { size } from 'lodash';
 
 // Tạo initialState cho slice
 const initialState = {
   data: null,
+  tempData: null,
   pending: false,
   status: 'idle',
   page: 1,
@@ -14,7 +16,13 @@ const initialState = {
   total: 0,
   clientPosts: {
     page: 1,
-    size: 3,
+    size: 9,
+    search: '',
+    total: 0,
+  },
+  tempClientPosts: {
+    page: 1,
+    size: 4,
     search: '',
     total: 0,
   },
@@ -130,8 +138,6 @@ export const getAllPublicPosts = createAsyncThunk(
   async (payload, { rejectWithValue }) => {
     try {
       const rs = await postsApi.getAllPublicPosts(payload);
-      console.log('payload contruct', payload);
-      console.log('payload', rs.data);
       return rs.data.data;
     } catch (error) {
       if (error.response && error.response.data.message) {
@@ -142,7 +148,36 @@ export const getAllPublicPosts = createAsyncThunk(
     }
   },
 );
-
+export const getAllPublicPostsTemp = createAsyncThunk(
+  'posts/getAllPublicPostsTemp',
+  async (payload, { rejectWithValue }) => {
+    try {
+      const rs = await postsApi.getAllPublicPosts(payload);
+      return rs.data.data;
+    } catch (error) {
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      } else {
+        return rejectWithValue(error.message);
+      }
+    }
+  },
+);
+export const getAllPublicPostsById = createAsyncThunk(
+  'posts/getAllPublicPostsById',
+  async (payload, { rejectWithValue }) => {
+    try {
+      const rs = await postsApi.getAllPublicPostsById(payload);
+      return rs.data.data;
+    } catch (error) {
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      } else {
+        return rejectWithValue(error.message);
+      }
+    }
+  },
+);
 // Tạo slice
 const postsSlice = createSlice({
   name: 'posts',
@@ -153,6 +188,9 @@ const postsSlice = createSlice({
     },
     setPostParams: (state, action) => {
       console.log('changed params', action.payload);
+      state.postsParams = { ...state.postsParams, ...action.payload };
+    },
+    setTempData: (state, action) => {
       state.postsParams = { ...state.postsParams, ...action.payload };
     },
   },
@@ -224,12 +262,35 @@ const postsSlice = createSlice({
       .addCase(getAllPublicPosts.fulfilled, (state, { payload }) => {
         state.pending = false;
         state.data = payload;
+        state.tempData = payload;
         state.clientPosts.page = payload.page;
         state.clientPosts.size = payload.size;
         state.clientPosts.total = payload.total;
         state.clientPosts.search = payload.search;
       })
       .addCase(getAllPublicPosts.rejected, (state, { payload }) => {
+        state.pending = false;
+      })
+      //all public posts temp
+      .addCase(getAllPublicPostsTemp.pending, (state) => {
+        state.pending = true;
+      })
+      .addCase(getAllPublicPostsTemp.fulfilled, (state, { payload }) => {
+        state.pending = false;
+        state.tempData = payload;
+      })
+      .addCase(getAllPublicPostsTemp.rejected, (state, { payload }) => {
+        state.pending = false;
+      })
+      //all public posts by id
+      .addCase(getAllPublicPostsById.pending, (state) => {
+        state.pending = true;
+      })
+      .addCase(getAllPublicPostsById.fulfilled, (state, { payload }) => {
+        state.pending = false;
+        state.data = payload;
+      })
+      .addCase(getAllPublicPostsById.rejected, (state, { payload }) => {
         state.pending = false;
       })
       //create update
@@ -267,8 +328,9 @@ const postsSlice = createSlice({
   },
 });
 
-export const {} = postsSlice.actions;
+export const { setTempData } = postsSlice.actions;
 export const selectPublicPosts = (state) => state.posts.data;
+export const selectPublicPostsTempData = (state) => state.posts.tempData;
 export const selectClientPosts = (state) => state.posts.clientPosts;
 export const selectPostsPending = (state) => state.posts.pending;
 

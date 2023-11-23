@@ -75,7 +75,6 @@ function OrganizationProfile() {
           fileAttached: 'https://blog.hocexcel.online/wp-content/uploads/2018/02/1-2.png',
           organizationId: organization.id,
         };
-        console.log('Received values of form: ', formValues);
         dispatch(updateVerificationStatus(formValues));
       })
       .catch((errorInfo) => {})
@@ -98,7 +97,6 @@ function OrganizationProfile() {
         verifyFormRef.current?.setFieldsValue({
           fileAttached: imgUrl,
         });
-        console.log('uploaded', imgUrl);
       })
       .catch((err) => {
         onError({ message: err.message });
@@ -230,7 +228,7 @@ function OrganizationProfile() {
                 justifyContent: 'flex-end',
               }}
             >
-              {organization?.VerifyOrganization?.status === 0 && (
+              {organization?.VerifyOrganization?.status !== 1 && (
                 <Button
                   type="primary"
                   onClick={handleVerifyClick}
@@ -258,15 +256,18 @@ function OrganizationProfile() {
             label: 'Bài viết',
             key: '2',
             children: <Posts organizationId={id} />,
+            disabled: organization?.VerifyOrganization?.status !== 1,
           },
           {
             label: 'FAQS',
             key: '3',
             children: <Faqs organizationId={id} />,
+            disabled: organization?.VerifyOrganization?.status !== 1,
           },
           {
             label: 'Tin nhắn',
             key: '4',
+            disabled: organization?.VerifyOrganization?.status !== 1,
             children: (
               <Row>
                 <Col span={24} md={12} className="mb-24">

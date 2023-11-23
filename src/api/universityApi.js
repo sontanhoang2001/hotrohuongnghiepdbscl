@@ -1,4 +1,5 @@
 import axiosService from './axiosClient';
+import qs from 'qs';
 
 const pathname = 'organization';
 
@@ -42,16 +43,18 @@ const universityApi = {
     return axiosService.get(url);
   },
   //client public api
-  getAllPublicUniversityInfo: (params) => {
-    const url = `public/organization?page=${params.page}&size=${params.size}&search=${params.search}&organizationType=${params.type}`;
-    return axiosService.get(url);
+  getAllPublicUniversityInfo: ({ page, size, search, organizationType }) => {
+    const url = `public/organization`;
+    return axiosService.get(url, {
+      params: { page, size, search, organizationType },
+      paramsSerializer: qs.stringify,
+    });
   },
+
   getOneByOrganizationId: (id) => {
     const url = `${pathname}/getOneByOrganizationId/${id}`;
     return axiosService.get(url);
   },
-
-  
 };
 
 export default universityApi;

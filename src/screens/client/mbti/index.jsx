@@ -188,11 +188,15 @@ const Introduce = styled.div`
         border-radius: 20px;
         text-align: justify;
         h3 {
+          color: var(--text-secondary-color);
           text-transform: capitalize;
           margin-bottom: 20px;
         }
       }
       .mbti-note {
+        h3 {
+          color: var(--secondary-color);
+        }
       }
     }
   }

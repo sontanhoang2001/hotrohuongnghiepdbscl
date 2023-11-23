@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { AlignLeftOutlined, UserOutlined, LogoutOutlined } from '@ant-design/icons';
 import { Button, Dropdown, Space } from 'antd';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
-import { selectIsLogin, selectProfile, logout } from '../../redux/authSlice';
+import { selectIsLogin, selectProfile, logout, selectLoginData } from '../../redux/authSlice';
 import { useDispatch, useSelector } from 'react-redux';
 
 const linkMenu = [
@@ -27,6 +27,46 @@ function Header() {
   const isLogin = useSelector(selectIsLogin);
   const [fullname, setFullName] = useState('');
   const [loginStatus, setLoginStatus] = useState(false);
+  const { role } = useSelector((state) => state.auth);
+
+  const navItemsByRole = {
+    ADMIN: (
+      <span
+        onClick={() => {
+          navigate('/admin');
+        }}
+      >
+        Dashboard
+      </span>
+    ),
+    ORGANIZATION: (
+      <span
+        onClick={() => {
+          navigate('/organization');
+        }}
+      >
+        Dashboard
+      </span>
+    ),
+    ADVISER: (
+      <span
+        onClick={() => {
+          navigate('/');
+        }}
+      >
+        profile
+      </span>
+    ),
+    STUDENT: (
+      <span
+        onClick={() => {
+          navigate('/thong-tin-ca-nhan');
+        }}
+      >
+        profile
+      </span>
+    ),
+  };
 
   useEffect(() => {
     setLoginStatus(isLogin ? true : false);
@@ -53,15 +93,7 @@ function Header() {
   const items = [
     {
       key: '1',
-      label: (
-        <span
-          onClick={() => {
-            navigate('thong-tin-ca-nhan');
-          }}
-        >
-          profile
-        </span>
-      ),
+      label: navItemsByRole[role],
       icon: <AlignLeftOutlined />,
     },
     {

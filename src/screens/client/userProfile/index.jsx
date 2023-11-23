@@ -16,18 +16,10 @@ import { isOtp, selectIsOtp, selectProfile } from '../../../redux/authSlice';
 import RequestOtp from '../../../components/requestOtp';
 import ChangePassword from '../../../components/changePassword';
 import { MarginTopContent } from '../../../globalStyles';
+import { useNavigate } from 'react-router-dom';
 
 function UserProfile() {
-  const sentOtp = useSelector(selectIsOtp);
-  const [id, setId] = useState();
-  const [avatar, setAvatar] = useState();
-  const [fullname, setFullname] = useState();
-  const [gender, setGender] = useState();
-  const [birthday, setBirthday] = useState();
-  const [address, setAddress] = useState();
-  const [addressDetail, setAddressDetail] = useState();
-  const [email, setEmail] = useState();
-  const [phone, setPhone] = useState();
+  const navigate = useNavigate();
   const [formattedDate, setFormattedDate] = useState();
 
   //trạng thái đóng/ mở modal
@@ -38,24 +30,17 @@ function UserProfile() {
   const [content, setContent] = useState(null);
   const [selectedKey, setSeletedKey] = useState();
   //gọi redux
+  const sentOtp = useSelector(selectIsOtp);
   const dispatch = useDispatch();
   const getProfile = useSelector(selectProfile);
 
   useEffect(() => {
-    setId(getProfile?.UserDetail?.id);
-    setAvatar(getProfile?.UserDetail?.avatar);
-    setFullname(getProfile?.UserDetail?.fullName);
-    setGender(getProfile?.UserDetail?.gender);
-    setBirthday(getProfile?.UserDetail?.birthday);
     //định dạng ngày sinh hiển thị
     setFormattedDate(
-      birthday != null && birthday !== undefined ? format(new Date(birthday), 'dd/MM/yyyy') : null,
+      getProfile?.UserDetail.birthday != null && getProfile?.UserDetail.birthday !== undefined
+        ? format(new Date(getProfile?.UserDetail.birthday), 'dd/MM/yyyy')
+        : 'dd/MM/yyyy',
     );
-
-    setAddress(getProfile?.UserDetail?.address);
-    setAddressDetail(getProfile?.UserDetail?.addressDetail);
-    setEmail(getProfile?.email);
-    setPhone(getProfile?.phone);
     if (sentOtp) {
       setOpen(false);
       dispatch(isOtp(false));
@@ -82,8 +67,10 @@ function UserProfile() {
       render: () => (
         <>
           <div className="author-info">
-            <Button>
-              <EyeOutlined /> Xem kết quả
+            <Button style={{ display: 'flex', justifyContent: 'center' }}>
+              <ViewIconStyled>
+                <EyeOutlined style={{ fontSize: `20px !important` }} /> Xem kết quả
+              </ViewIconStyled>
             </Button>
           </div>
         </>
@@ -99,12 +86,12 @@ function UserProfile() {
   ];
   return (
     <MarginTopContent className="container">
-      <Row gutter={[16, 16]}>
-        <Col xs={24} sm={24} md={24} lg={12}>
+      <Row gutter={[16, 16]} justify="center">
+        <Col xs={20} sm={20} md={20} lg={10}>
           <Card>
             <ProfileHeader>
-              {avatar && avatar != null ? (
-                <img src={avatar} alt="avatar" />
+              {getProfile?.UserDetail.avatar && getProfile?.UserDetail.avatar != null ? (
+                <img src={getProfile?.UserDetail.avatar} alt="avatar" />
               ) : (
                 <img src="./images/pngegg.png" alt="avatar" />
               )}
@@ -112,20 +99,20 @@ function UserProfile() {
               {/* <h4>{getInfo?.fullName}</h4> */}
 
               <div className="text-header">
-                <p className="full-name">{fullname}</p>
+                <p className="full-name">{getProfile?.UserDetail.fullName}</p>
                 <p>
                   Giới tính:{' '}
-                  {gender === 1 ? (
+                  {getProfile?.UserDetail.gender === 1 ? (
                     <span>
                       <ManOutlined style={{ color: `var(--primary-color)`, fontSize: `15px` }} />
                     </span>
-                  ) : gender === 2 ? (
+                  ) : getProfile?.UserDetail.gender === 2 ? (
                     <span>
                       <WomanOutlined
                         style={{ color: `var(--secondary-color)`, fontSize: `15px` }}
                       />
                     </span>
-                  ) : gender === 0 ? (
+                  ) : getProfile?.UserDetail.gender === 0 ? (
                     <img
                       src="./images/lgbt.svg"
                       alt="lgbt"
@@ -147,7 +134,7 @@ function UserProfile() {
                     />{' '}
                     - Điện Thoại
                   </p>
-                  <p className="underline">{phone}</p>
+                  <p className="underline">{getProfile?.UserDetail.phone}</p>
                 </Col>
                 <Col></Col>
               </Row>
@@ -160,7 +147,7 @@ function UserProfile() {
                     />{' '}
                     - E-Mail
                   </p>
-                  <p className="underline">{email}</p>
+                  <p className="underline">{getProfile?.UserDetail.email}</p>
                 </Col>
               </Row>
               <Row style={{ marginTop: 20 }}>
@@ -175,7 +162,7 @@ function UserProfile() {
 
                   <p></p>
                   <p className="underline">
-                    {address}, {addressDetail}
+                    {getProfile?.UserDetail.address}, {getProfile?.UserDetail.addressDetail}
                   </p>
                 </Col>
               </Row>
@@ -194,11 +181,11 @@ function UserProfile() {
             </BodyContent>
           </Card>
         </Col>
-        <Col xs={24} sm={24} md={24} lg={12}>
+        <Col xs={20} sm={20} md={20} lg={10}>
           <Card>
             <HistoryHeader>
               <h3>Lịch sử test MBTI</h3>
-              <Button>Kiểm tra MBTI</Button>
+              <Button onClick={() => navigate('/mbti-test')}>Kiểm tra MBTI</Button>
             </HistoryHeader>
             <Table dataSource={dataSource} columns={columns} pagination={false} />
           </Card>
@@ -216,17 +203,12 @@ function UserProfile() {
       </Modal>
       {/* xác thực otp */}
       <Modal centered open={openOtp} onCancel={() => setOpenOtp(false)} footer={null}>
-        <RequestOtp type={otpType} userId={id} sentOtp={sentOtp} />
+        <RequestOtp type={otpType} userId={getProfile?.UserDetail.id} sentOtp={sentOtp} />
       </Modal>
     </MarginTopContent>
   );
 }
-const ProfileCard = styled.div`
-  min-width: 500px;
-  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 
-  overflow: hidden;
-`;
 const ProfileHeader = styled.div`
   display: flex;
   align-items: center;
@@ -275,5 +257,15 @@ const HistoryHeader = styled.div`
   display: flex;
   justify-content: space-between;
   margin-bottom: 20px;
+`;
+
+const ViewIconStyled = styled.div`
+  .anticon-eye {
+    width: 20px !important;
+    svg {
+      width: 20px !important;
+      font-size: 20px !important;
+    }
+  }
 `;
 export default UserProfile;

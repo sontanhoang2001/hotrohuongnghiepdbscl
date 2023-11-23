@@ -73,7 +73,7 @@ function SignInV1() {
     if (profile != null && profile !== undefined) {
       const role = profile?.userData?.Role?.name;
       if (role === 'ADMIN') {
-        navigate('/admin/dashboard');
+        navigate('/admin');
       } else if (role === 'ORGANIZATION') {
         navigate('/organization');
       } else {

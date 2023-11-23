@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
-import { Button, Card, ConfigProvider, Input, List, Modal, Pagination } from 'antd';
+import { Button, ConfigProvider, Input, List, Pagination } from 'antd';
 
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { useDispatch, useSelector } from 'react-redux';
 import ImageCard from '../../../components/card/imageCard';
 import { HeadingTitle, MarginTopContent, SearchBox, Title } from '../../../globalStyles';
-import { news } from './news';
+
 import { Link } from 'react-router-dom';
 import {
   getAllPublicPosts,
@@ -23,23 +22,26 @@ function News() {
   const pendingState = useSelector(selectPostsPending);
   const getPosts = useSelector(selectPublicPosts);
   const ClientPosts = useSelector(selectClientPosts);
-
-  // goi redux
   const dispatch = useDispatch();
   useEffect(() => {
     //gọi api thông qua redux
     dispatch(getAllPublicPosts(ClientPosts));
   }, []);
-  console.log(getPosts);
 
   //hàm bắt sự kiện phân trang và làm mới lại api
   const handlePageChange = (page, pageSize) => {
     dispatch(getAllPublicPosts({ ...ClientPosts, page: page, size: pageSize }));
+    window.scrollTo(0, 200);
   };
   //tìm kiếm
-  const onSearch = debounce((e) => {
-    dispatch(getAllPublicPosts({ ...ClientPosts, search: e.target.value }));
+  const onSearchChange = debounce((e) => {
+    if (e.target.value === '') {
+      dispatch(getAllPublicPosts({ ...ClientPosts, search: e.target.value }));
+    }
   }, 500);
+  const onSearch = (value) => {
+    dispatch(getAllPublicPosts({ ...ClientPosts, search: value }));
+  };
 
   return (
     <div className="container">
@@ -49,9 +51,10 @@ function News() {
       </Title>
       <SearchBox>
         <ConfigProvider locale={viVN}>
-          <Input
-            placeholder="Tìm kiếm tin tức..."
-            onChange={onSearch}
+          <Input.Search
+            placeholder="Tìm kiếm..."
+            onChange={onSearchChange}
+            onSearch={onSearch}
             enterButton={
               <Button type="primary" style={{ height: 50 }}>
                 Tìm kiếm
@@ -70,13 +73,13 @@ function News() {
           pagination={false}
           //render content
           renderItem={(val, idx) => (
-            <div>
+            <div key={val.id}>
               <Link to={`/tin-tuc/${val.id}`}>
-                <ImageCard key={idx} title={val.title} src={`${val.image}`} />
+                <ImageCard title={val.title} src={`${val.image}`} />
               </Link>
             </div>
           )}
-        ></List>
+        />
         <Pagination
           current={ClientPosts.page}
           pageSize={ClientPosts.size}
