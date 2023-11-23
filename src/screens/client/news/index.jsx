@@ -75,7 +75,7 @@ function News() {
           renderItem={(val, idx) => (
             <div key={val.id}>
               <Link to={`/tin-tuc/${val.id}`}>
-                <ImageCard title={val.title} src={`${val.image}`} />
+                <ImageCard title={val.title} src={`${val.thumbnail}`} />
               </Link>
             </div>
           )}

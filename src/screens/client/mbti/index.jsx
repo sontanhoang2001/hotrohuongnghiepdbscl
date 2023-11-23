@@ -75,10 +75,10 @@ function MBTI() {
                   Mỗi yếu tố của 4 nhóm trên kết hợp với nhau tạo thành 16 nhóm tính cách MBTI MBTI
                   là một trong những bài trắc nghiệm tính cách phổ biến nhất thế giới với hơn 2
                   triệu người mới sử dụng mỗi năm và đặc biệt được ứng dụng trong các hoạt động
-                  tuyển dụng, đánh giá nhân sự, giáo dục, hướng nghiệp… Làm trắc nghiệm MBTI ở TopCV
-                  ngoài việc được phân loại tính cách theo 16 nhóm của phương pháp Myers-Briggs thì
-                  các dữ liệu thông tin sẽ được tổng hợp để đưa ra xu hướng nghề nghiệp phù hợp nhất
-                  với bạn.
+                  tuyển dụng, đánh giá nhân sự, giáo dục, hướng nghiệp… Làm trắc nghiệm MBTI ở TRUNG
+                  TÂM HƯỚNG NGHIỆP ĐBSCL ngoài việc được phân loại tính cách theo 16 nhóm của phương
+                  pháp Myers-Briggs thì các dữ liệu thông tin sẽ được tổng hợp để đưa ra xu hướng
+                  nghề nghiệp phù hợp nhất với bạn.
                 </p>
               </div>
 
@@ -112,9 +112,9 @@ function MBTI() {
                 <p style={{ padding: '20px' }}>
                   Kết quả của bài trắc nghiệm MBTI sau đây cung cấp thông tin để bạn có lựa chọn
                   nghề nghiệp thích hợp dựa trên các nhóm tính cách. Mọi dữ liệu đưa ra đều mang
-                  tính chất tham khảo, quyết định luôn ở trong tay chúng ta. TopCV sẽ luôn đồng hành
-                  cùng bạn trong mọi lựa chọn nghề nghiệp. Với một hành trang vững vàng thì tin
-                  tưởng rằng mọi kế hoạch đều sẽ thành công!
+                  tính chất tham khảo, quyết định luôn ở trong tay chúng ta. TRUNG TÂM HƯỚNG NGHIỆP
+                  ĐBSCL sẽ luôn đồng hành cùng bạn trong mọi lựa chọn nghề nghiệp. Với một hành
+                  trang vững vàng thì tin tưởng rằng mọi kế hoạch đều sẽ thành công!
                 </p>
               </div>
             </div>

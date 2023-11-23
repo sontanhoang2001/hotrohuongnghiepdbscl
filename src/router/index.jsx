@@ -50,7 +50,12 @@ function Router() {
       <Routes>
         <Route path="dang-nhap" element={<SignInV1 />} />
         <Route path="dang-ky" element={<SignUpV1 />} />
-        <Route path="/xac-nhan-dang-nhap" element={<OtpLogin />} />
+        <Route
+          path="/xac-nhan-dang-nhap"
+          element={<AuthWrapper roles={['STUDENT', 'ADMIN', 'ORGANIZATION']} />}
+        >
+          <Route index element={<OtpLogin />} />
+        </Route>
         {/* client */}
         <Route path="/" element={<App />}>
           <Route path="/postMBTI" element={<PostMBTI />} />
@@ -89,9 +94,7 @@ function Router() {
             <Route path="danh-sach-nguoi-dung" element={<User />} />
             <Route path="danh-sach-cau-hoi" element={<Mbti />} />
             <Route path="danh-cau-hoi-dong-hanh" element={<ManageCompanion />} />
-            <Route path="profile" element={<AuthWrapper roles={['ORGANIZATION']} />}>
-              <Route index element={<Profile />} />
-            </Route>
+            <Route path="profile" element={<Profile />} />
             <Route path="tin-nhan" element={<Chat />} />
             <Route path="danh-sach-tin-tuc" element={<ManageNews />} />
             <Route path="tao-bai-viet" element={<Posts />} />
@@ -102,6 +105,7 @@ function Router() {
             <Route index element={<OrganizationList />} />
             <Route path="dashboard" element={<Dashboard />} />
             <Route path=":id" element={<OrganizationProfile />} />
+            <Route path="profile" element={<Profile />} />
           </Route>
         </Route>
 
