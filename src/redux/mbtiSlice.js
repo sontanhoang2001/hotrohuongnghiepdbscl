@@ -97,7 +97,6 @@ export const getQuestionTodotestMbti = createAsyncThunk(
   async (payload, { rejectWithValue }) => {
     try {
       const rs = await mbtiApi.getQuestionTodotestMbti();
-      console.log(rs.data);
       return rs.data; // Đảm bảo kiểm tra API response và chọn dữ liệu cần thiết
     } catch (err) {
       // Xử lý lỗi và trả về thông báo hoặc giá trị mặc định
@@ -130,7 +129,6 @@ const mbtiSlice = createSlice({
         state.questionGroups = payload; // Lưu danh sách câu hỏi MBTI
       })
       .addCase(getMbtiQuestionGroup.rejected, (state, { payload }) => {
-        console.log(payload);
         state.pending = false;
       })
       //trạng thái của getMbtiQuestion pending - fulfilled - rejected
@@ -143,7 +141,6 @@ const mbtiSlice = createSlice({
         state.metaData = { page: payload.page, size: payload.size, total: payload.total };
       })
       .addCase(getMbtiQuestion.rejected, (state, { payload }) => {
-        console.log(payload);
         state.pending = false;
       })
       //trạng thái của addNewMbti pending - fulfilled - rejected
@@ -151,7 +148,6 @@ const mbtiSlice = createSlice({
         state.pending = true;
       })
       .addCase(addNewMbti.fulfilled, (state, { payload }) => {
-        console.log(payload);
         state.pending = false;
         message.success('Tạo câu hỏi thành công', 3);
       })
@@ -164,7 +160,6 @@ const mbtiSlice = createSlice({
         state.pending = true;
       })
       .addCase(updateMbti.fulfilled, (state, { payload }) => {
-        console.log(payload);
         state.pending = false;
         message.success('Cập nhật hỏi thành công', 3);
       })
@@ -205,7 +200,6 @@ const mbtiSlice = createSlice({
         state.data = payload; // Lưu danh sách câu hỏi MBTI
       })
       .addCase(getQuestionTodotestMbti.rejected, (state, { payload }) => {
-        console.log(payload);
         state.pending = false;
       });
   },

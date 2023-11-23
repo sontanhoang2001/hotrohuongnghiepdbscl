@@ -102,44 +102,26 @@ function Sidenav({ color }) {
       '3',
     ),
     getItem(
-      <NavLink to="/admin/danh-cau-hoi-dong-hanh">
-        <span className="icon">
-          <BookOutlined />
-        </span>
-        <span className="label">Đồng hành</span>
-      </NavLink>,
-      '4',
-    ),
-    getItem(
       <NavLink to="/admin/danh-sach-nguoi-dung">
         <span className="icon">
           <UserOutlined />
         </span>
         <span className="label">Người dùng</span>
       </NavLink>,
-      '5',
-    ),
-    getItem(
-      <NavLink to="/admin/danh-sach-tin-tuc">
-        <span className="icon">
-          <CopyOutlined />
-        </span>
-        <span className="label">Tin tức</span>
-      </NavLink>,
-      '6',
+      '4',
     ),
     getItem(
       <MeunuItem>
         <span className="label sidenav-title-content">Tài Khoản</span>
       </MeunuItem>,
-      '7',
+      '5',
     ),
     getItem(
       <NavLink to="/admin/profile">
         <span className="icon">{profile}</span>
         <span className="label">Profile</span>
       </NavLink>,
-      '8',
+      '6',
     ),
     getItem(
       <NavLink to="/admin/tin-nhan">
@@ -148,7 +130,7 @@ function Sidenav({ color }) {
         </span>
         <span className="label">Tin Nhắn</span>
       </NavLink>,
-      '9',
+      '7',
     ),
     getItem(
       <MeunuItem>
@@ -159,7 +141,7 @@ function Sidenav({ color }) {
           Đăng xuất
         </span>
       </MeunuItem>,
-      '10',
+      '8',
     ),
   ];
 

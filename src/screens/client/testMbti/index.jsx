@@ -1,416 +1,15 @@
 import React, { useState, useCallback, useEffect } from 'react';
 
 import styled from 'styled-components';
-import { Button, Popconfirm, message } from 'antd';
+import { Button, Popconfirm, Skeleton, Spin, message } from 'antd';
 import { mbtiDetail } from '../../../components/mbtiDetail/mbtiDetail';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  getQuestionTodotestMbti,
+  selectMbtiPending,
+  selectMbtiQuestions,
+} from '../../../redux/mbtiSlice';
 
-const mbtiQuestions = [
-  {
-    question: 'Tại một buổi tiệc, bạn sẽ',
-    options: [
-      {
-        id: 'I',
-        text: 'Chỉ giao tiếp với với một số ít người mà bạn đã quen',
-        flag: 0,
-      },
-      {
-        id: 'E',
-        text: 'Giao tiếp với nhiều người, kể cả người lạ',
-        flag: 1,
-      },
-    ],
-  },
-  {
-    question: 'Bạn thấy mình là người nghiêng về kiểu nào nhiều hơn?',
-    options: [
-      {
-        id: 'N',
-        text: 'Sáng tạo',
-        flag: 0,
-      },
-      {
-        id: 'S',
-        text: 'Thực tế',
-        flag: 1,
-      },
-    ],
-  },
-  {
-    question: 'Bạn nghĩ tình huống nào tồi tể hơn?',
-    options: [
-      {
-        id: 'N',
-        text: 'Cuộc sống của bạn thật nhàm chán và không bao giờ thay đổi',
-        flag: 0,
-      },
-      {
-        id: 'S',
-        text: 'Đầu óc của bạn cứ “bay bổng trên mây”',
-        flag: 1,
-      },
-    ],
-  },
-  {
-    question: 'Bạn sẽ bị ấn tượng hơn với',
-    options: [
-      {
-        id: 'N',
-        text: 'Những cảm xúc',
-        flag: 0,
-      },
-      {
-        id: 'S',
-        text: 'Các nguyên tắc',
-        flag: 1,
-      },
-    ],
-  },
-  {
-    question: 'Khi quyết định việc gì đó, bạn thường hay dựa vào:',
-    options: [
-      {
-        id: 'F',
-        text: 'Sự đồng cảm',
-        flag: 0,
-      },
-      {
-        id: 'T',
-        text: 'Sự thuyết phục',
-        flag: 1,
-      },
-    ],
-  },
-  {
-    question: 'Bạn thích làm việc theo kiểu nào nhiều hơn?',
-    options: [
-      {
-        id: 'F',
-        text: 'Tùy hứng',
-        flag: 0,
-      },
-      {
-        id: 'T',
-        text: 'Theo đúng thời hạn',
-        flag: 1,
-      },
-    ],
-  },
-  {
-    question: 'Bạn có khuynh hướng đưa ra các lựa chọn',
-    options: [
-      {
-        id: 'F',
-        text: 'Phần nào theo cảm nhận',
-        flag: 0,
-      },
-      {
-        id: 'T',
-        text: 'Rất cẩn thận',
-        flag: 1,
-      },
-    ],
-  },
-  {
-    question: 'Điều nào khiến bạn thấy thích thú hơn?',
-    options: [
-      {
-        id: 'N',
-        text: 'Những ý tưởng khả thi',
-        flag: 0,
-      },
-      {
-        id: 'S',
-        text: 'Những điều thực tế',
-        flag: 1,
-      },
-    ],
-  },
-  {
-    question: 'Khi đánh giá hoặc phán xét người khác, bạn thường hay dựa vào điều gì?',
-    options: [
-      {
-        id: 'N',
-        text: 'Hoàn cảnh',
-        flag: 0,
-      },
-      {
-        id: 'S',
-        text: 'Luật lệ và nguyên tắc',
-        flag: 1,
-      },
-    ],
-  },
-  {
-    question: 'Khi tiếp cận, tiếp xúc người khác, bạn nghiêng về hướng nào hơn?',
-    options: [
-      {
-        id: 'F',
-        text: 'Tiếp cận theo hướng sử dụng trải nghiệm cá nhân',
-        flag: 0,
-      },
-      {
-        id: 'T',
-        text: 'Tiếp cận theo hướng khách quan',
-        flag: 1,
-      },
-    ],
-  },
-  {
-    question: 'Phong cách của bạn nghiêng về hướng nào hơn?',
-    options: [
-      {
-        id: 'F',
-        text: 'Nhàn nhã, thoải mái',
-        flag: 0,
-      },
-      {
-        id: 'T',
-        text: 'Đúng giờ, nghiêm túc',
-        flag: 1,
-      },
-    ],
-  },
-  {
-    question: 'Bạn cảm thấy không thoải mái khi có những việc:',
-    options: [
-      {
-        id: 'P',
-        text: 'Đã quá hoàn thiện',
-        flag: 0,
-      },
-      {
-        id: 'J',
-        text: 'Chưa hoàn thiện',
-        flag: 1,
-      },
-    ],
-  },
-  {
-    question: 'Trong các mối quan hệ xã hội, bạn thường',
-    options: [
-      {
-        id: 'I',
-        text: 'Thường biết thông tin sau những người khác',
-        flag: 0,
-      },
-      {
-        id: 'E',
-        text: 'Luôn nắm bắt kịp thời thông tin về các vấn đề của mọi người',
-        flag: 1,
-      },
-    ],
-  },
-  {
-    question: 'Với các công việc thông thường, bạn nghiêng về cách:',
-    options: [
-      {
-        id: 'I',
-        text: 'Làm theo cách của riêng mình',
-        flag: 0,
-      },
-      {
-        id: 'E',
-        text: 'Làm theo cách thông thường',
-        flag: 1,
-      },
-    ],
-  },
-  {
-    question: 'Các nhà văn nên:',
-    options: [
-      {
-        id: 'N',
-        text: 'Diễn đạt sự việc bằng cách so sánh hay liên tưởng',
-        flag: 0,
-      },
-      {
-        id: 'S',
-        text: 'Viết những gì họ nghĩ và chân thật với những gì mình viết',
-        flag: 1,
-      },
-    ],
-  },
-  {
-    question: 'Điều gì lôi cuốn bạn hơn?',
-    options: [
-      {
-        id: 'N',
-        text: 'Sự hòa hợp trong các mối quan hệ của con người',
-        flag: 0,
-      },
-      {
-        id: 'S',
-        text: 'Tính nhất quán của tư duy, suy nghĩ',
-        flag: 1,
-      },
-    ],
-  },
-  {
-    question: 'Bạn cảm thấy thoải mái hơn khi đưa ra:',
-    options: [
-      {
-        id: 'F',
-        text: 'Những đánh giá, nhận xét một cách có ý nghĩa',
-        flag: 0,
-      },
-      {
-        id: 'T',
-        text: 'Những đánh giá, nhận xét một cách logic',
-        flag: 1,
-      },
-    ],
-  },
-  {
-    question: 'Bạn thích những điều:',
-    options: [
-      {
-        id: 'F',
-        text: 'Chưa xác định, chưa được quyết định',
-        flag: 0,
-      },
-      {
-        id: 'T',
-        text: 'Đã được sắp xếp, quyết định trước',
-        flag: 1,
-      },
-    ],
-  },
-  {
-    question: 'Bạn tự thấy mình:',
-    options: [
-      {
-        id: 'P',
-        text: 'Dễ gần, thoải mái',
-        flag: 0,
-      },
-      {
-        id: 'J',
-        text: 'Nghiêm túc, quyết đoán',
-        flag: 1,
-      },
-    ],
-  },
-  {
-    question: 'Khi nói chuyện điện thoại, bạn:',
-    options: [
-      {
-        id: 'I',
-        text: 'Chuẩn bị trước những điều sẽ nói',
-        flag: 0,
-      },
-      {
-        id: 'E',
-        text: 'Cứ gọi bình thường',
-        flag: 1,
-      },
-    ],
-  },
-  {
-    question: 'Những sự kiện trong thực tế',
-    options: [
-      {
-        id: 'I',
-        text: 'Nó là bằng chứng giải thích cho các quy tắc, quy luật',
-        flag: 0,
-      },
-      {
-        id: 'E',
-        text: 'Bản thân nó giải thích cho chính nó”',
-        flag: 1,
-      },
-    ],
-  },
-  {
-    question: 'Những người có tầm nhìn xa/người lo xa:',
-    options: [
-      {
-        id: 'N',
-        text: 'Khá thú vị',
-        flag: 0,
-      },
-      {
-        id: 'S',
-        text: 'Thường gây khó chịu cho người khác',
-        flag: 1,
-      },
-    ],
-  },
-  {
-    question: 'Bạn thường là người có:',
-    options: [
-      {
-        id: 'N',
-        text: 'Trái tim nóng',
-        flag: 0,
-      },
-      {
-        id: 'S',
-        text: 'Cái đầu lạnh',
-        flag: 1,
-      },
-    ],
-  },
-  {
-    question: 'Điều nào thì tồi tệ hơn?',
-    options: [
-      {
-        id: 'F',
-        text: 'Tàn nhẫn',
-        flag: 0,
-      },
-      {
-        id: 'T',
-        text: 'Không công bằng',
-        flag: 1,
-      },
-    ],
-  },
-  {
-    question: 'Các sự kiện nên xảy ra theo hướng:',
-    options: [
-      {
-        id: 'F',
-        text: 'Ngẫu nhiên và tự nhiên',
-        flag: 0,
-      },
-      {
-        id: 'T',
-        text: 'Được lựa chọn và cân nhắc kỹ lưỡng',
-        flag: 1,
-      },
-    ],
-  },
-  {
-    question: 'Bạn cảm thấy thoải mái hơn khi',
-    options: [
-      {
-        id: 'P',
-        text: 'Đang lựa chọn để mua',
-        flag: 0,
-      },
-      {
-        id: 'J',
-        text: 'Đã mua một thứ gì đó',
-        flag: 1,
-      },
-    ],
-  },
-  {
-    question: 'Trong công ty, bạn là người:',
-    options: [
-      {
-        id: 'I',
-        text: 'Đợi người khác bắt chuyện với mình',
-        flag: 0,
-      },
-      {
-        id: 'E',
-        text: 'Khởi xướng các câu chuyện',
-        flag: 1,
-      },
-    ],
-  },
-];
 // change value of question increase 1 or decrease 1, when click prev or next button
 const DIRECTION_PREV = -1;
 const DIRECTION_NEXT = 1;
@@ -423,9 +22,14 @@ const replaceAnswerImmutable = (index, answer, answers) => {
   return result;
 };
 function TestMbti() {
+  //gọi redux
+  const dispatch = useDispatch();
+  const getTodoTest = useSelector(selectMbtiQuestions);
+  const pendingState = useSelector(selectMbtiPending);
+
   //giá trị nhỏ nhất và giới hạn của gói câu hỏi, nhỏ nhất là 0, lớn nhất là số câu hỏi truyền vào (questions.length)
   const MIN_ACTIVE_QUESTION_INDEX = 0;
-  const MAX_ACTIVE_QUESTION_INDEX = mbtiQuestions.length;
+  const MAX_ACTIVE_QUESTION_INDEX = getTodoTest?.data.length;
 
   //tăng giảm giá trị của prev và next vởi -1 và 1
   const DIRECTION_PREV = -1;
@@ -440,13 +44,43 @@ function TestMbti() {
   // khai báo biến chứa thông tin kết quả mbti
   const [mbtiResult, setMbtiResult] = useState({});
   //khai báo thuộc tính của questions
-  const { question, options } = mbtiQuestions[selectedQuestionIndex];
-  // const { type, image, text, description } = mbtiDetail;
+
+  const { question, Answers } = getTodoTest?.data[selectedQuestionIndex] || {};
   //khai báo biến lưu trữ các lựa chọn
   const selectedAnswer = answers[selectedQuestionIndex];
-  const [currentSelectedAnswer, setCurrentSelectedAnswer] = useState();
   //khai báo tiến độ hoàn thành mặt định là fasle
   const [completed, setCompleted] = useState(false);
+  useEffect(() => {
+    dispatch(getQuestionTodotestMbti());
+    console.log(selectedAnswer);
+    const handleKeyPress = (event) => {
+      // Kiểm tra xem nút mũi tên nào được nhấn
+      switch (event.key) {
+        case 'ArrowLeft':
+          if (selectedQuestionIndex > MIN_ACTIVE_QUESTION_INDEX) {
+            onNavigationButtonClick(DIRECTION_PREV);
+          }
+
+          break;
+        case 'ArrowRight':
+          if (selectedAnswer !== undefined) {
+            onNavigationButtonClick(DIRECTION_NEXT);
+          }
+
+          break;
+        default:
+          break;
+      }
+    };
+
+    // Đăng ký sự kiện khi người dùng nhấn nút trên bàn phím
+    window.addEventListener('keydown', handleKeyPress);
+
+    // Hủy đăng ký sự kiện khi component bị unmount
+    return () => {
+      window.removeEventListener('keydown', handleKeyPress);
+    };
+  }, [selectedAnswer]);
 
   //khai báo hàm điều hướng tạo event cho nút prev và mext btn
   const onNavigationButtonClick = (direction) => {
@@ -470,21 +104,6 @@ function TestMbti() {
     );
   };
   const [desiredOptions, setDesiredOptions] = useState([]);
-
-  useEffect(() => {
-    // Đoạn mã lọc desiredOptions ở đây
-    const filteredOptions = mbtiQuestions.filter((question) => {
-      return question.options.some((option) => {
-        return option.id === 'E' && option.flag === 1;
-      });
-    });
-
-    // Cập nhật giá trị của desiredOptions sử dụng setDesiredOptions
-    setDesiredOptions(filteredOptions);
-
-    // In giá trị ra console
-    console.log(filteredOptions);
-  }, [mbtiQuestions]);
 
   //Extraversion (Hướng ngoại) / Introversion (Hướng nội)
   let countExtraversionType = answers.filter((id) => id === 'E').length;
@@ -623,22 +242,20 @@ function TestMbti() {
       {!completed ? (
         <MbtiBox className="container">
           <CurrentQuestion>
-            {/* current question */}
-
             <span>{selectedQuestionIndex + 1}</span>
-            {/* total question */}
             <span>/{MAX_ACTIVE_QUESTION_INDEX}</span>
           </CurrentQuestion>
+
           <Question>
             <h3>{question}</h3>
             <ul>
-              {options.map((answer, idx) => (
+              {Answers?.map((answer, idx) => (
                 <li
                   key={idx}
-                  className={selectedAnswer === answer.id ? 'selected-answer' : null}
-                  onClick={() => onAnswerClick(answer.id)}
+                  className={selectedAnswer === answer.value ? 'selected-answer' : null}
+                  onClick={() => onAnswerClick(answer.value)}
                 >
-                  {answer.text}
+                  {answer.answer}
                 </li>
               ))}
             </ul>
@@ -647,38 +264,44 @@ function TestMbti() {
           <ControllBtn>
             <div>
               <Button
+                size={'large'}
                 disabled={selectedQuestionIndex === 0}
                 onClick={() => onNavigationButtonClick(DIRECTION_PREV)}
               >
-                quay lại
+                Quay lại
               </Button>
             </div>
 
-            {selectedQuestionIndex >= mbtiQuestions.length - 1 ? (
+            {selectedQuestionIndex >= getTodoTest?.data.length - 1 ? (
               <div>
-                {
-                  <Popconfirm
-                    title="Bạn muốn kết thúc bài kiểm tra?"
-                    onConfirm={confirm}
-                    onCancel={cancel}
-                    okText="Yes"
-                    cancelText="No"
+                <Popconfirm
+                  title="Bạn muốn kết thúc bài kiểm tra?"
+                  onConfirm={confirm}
+                  onCancel={cancel}
+                  okText="Yes"
+                  cancelText="No"
+                >
+                  <Button
+                    type="primary"
+                    danger
+                    size={'large'}
+                    disabled={selectedAnswer === undefined}
                   >
-                    <Button type="primary" danger disabled={selectedAnswer === undefined}>
-                      kết thúc
-                    </Button>
-                  </Popconfirm>
-                }
+                    Kết thúc
+                  </Button>
+                </Popconfirm>
               </div>
             ) : (
               <div>
                 <Button
+                  size={'large'}
                   disabled={
-                    selectedQuestionIndex === mbtiQuestions.length || selectedAnswer === undefined
+                    selectedQuestionIndex === getTodoTest?.data.length ||
+                    selectedAnswer === undefined
                   }
                   onClick={() => onNavigationButtonClick(DIRECTION_NEXT)}
                 >
-                  tiếp tục
+                  Tiếp tục
                 </Button>
               </div>
             )}
@@ -719,6 +342,9 @@ const MbtiBox = styled.div`
   border-radius: 20px;
   padding: 2% 4%;
   margin-top: 3%;
+  margin-left: 3%;
+  margin-right: 3%;
+  font-size: 14pt;
 `;
 const CurrentQuestion = styled.div`
   width: 100%;
