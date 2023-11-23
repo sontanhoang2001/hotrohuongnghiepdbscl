@@ -57,9 +57,9 @@ const verificationText = {
 };
 
 function OrganizationProfile() {
-    //redux state
-    const dispatch = useDispatch();
-    const { pending, organization } = useSelector((state) => state.university);
+  //redux state
+  const dispatch = useDispatch();
+  const { pending, organization } = useSelector((state) => state.university);
 
   //Lấy thông tin tổ chức
   const { id } = useParams();
@@ -68,7 +68,6 @@ function OrganizationProfile() {
     setLoading(false);
   }, [dispatch, id]);
 
-    
   const [loading, setLoading] = useState(true);
 
   //Form yêu cầu xác thực tổ chức
@@ -109,7 +108,6 @@ function OrganizationProfile() {
         verifyFormRef.current?.setFieldsValue({
           fileAttached: imgUrl,
         });
-        console.log('uploaded', imgUrl);
       })
       .catch((err) => {
         onError({ message: err.message });
@@ -234,7 +232,7 @@ function OrganizationProfile() {
                 justifyContent: 'flex-end',
               }}
             >
-              {organization?.VerifyOrganization?.status === 0 && (
+              {organization?.VerifyOrganization?.status !== 1 && (
                 <Button
                   type="primary"
                   onClick={handleVerifyClick}
@@ -262,15 +260,18 @@ function OrganizationProfile() {
             label: 'Bài viết',
             key: '2',
             children: <Posts organizationId={id} />,
+            disabled: organization?.VerifyOrganization?.status !== 1,
           },
           {
             label: 'FAQS',
             key: '3',
             children: <Faqs organizationId={id} />,
+            disabled: organization?.VerifyOrganization?.status !== 1,
           },
           {
             label: 'Tin nhắn',
             key: '4',
+            disabled: organization?.VerifyOrganization?.status !== 1,
             children: (
               <Row>
                 <Col span={24} md={12} className="mb-24">

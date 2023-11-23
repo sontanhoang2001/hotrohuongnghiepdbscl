@@ -12,22 +12,23 @@ const mbtiApi = {
     return axiosService.get(url);
   },
   getAllQuestion: (params) => {
-    console.log('params',params)
+    console.log('params', params);
     const url = `${pathname}?page=${params.page}&size=${params.size}&search=${params.search}`;
     return axiosService.get(url);
   },
+
   createQuestion: (payload) => {
     const url = `/${pathname}/add`;
-    const rs = axiosService.post(url, {payload});
+    const rs = axiosService.post(url, payload); //truyền thẳng đối tượng thì gỡ {}
     return rs;
   },
   addNewMbti: (data) => {
     const url = `/${pathname}/add`;
-    return axiosService.post(url,data);
+    return axiosService.post(url, data);
   },
   updateMbti: (data) => {
     const url = `/${pathname}/edit/${data.id}`;
-    return axiosService.patch(url,data);
+    return axiosService.patch(url, data);
   },
   deleteMbti: (id) => {
     const url = `/${pathname}/delete/${id}`;
@@ -36,6 +37,11 @@ const mbtiApi = {
   restoreMbti: (id) => {
     const url = `/${pathname}/restore/${id}`;
     return axiosService.post(url);
+  },
+  //public data
+  getQuestionTodotestMbti: () => {
+    const url = `/${pathname}/get-question-todotestMbti`;
+    return axiosService.get(url);
   },
 };
 

@@ -1,19 +1,20 @@
-import React from 'react'
+import React from 'react';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
-const AuthWrapper = ({roles}) => {
-    const { role,isLogin } = useSelector(state => state.auth);
-    const location = useLocation();
+const AuthWrapper = ({ roles }) => {
+  const { role, isLogin } = useSelector((state) => state.auth);
+  const location = useLocation();
 
-    if (!isLogin) return <Navigate to="/login" state={{ from: location }} replace />
+  if (!isLogin && !roles?.some((r) => r === role))
+    return <Navigate to="/*" state={{ from: location }} replace />;
 
-    if (!roles?.some((r) => r===role)) {
-        
-        return <Navigate to="/" state={{ from: location }} replace />
-    }
+  // if (!roles?.some((r) => r===role)) {
 
-    return <Outlet />;
-}
+  //     return <Navigate to="/" state={{ from: location }} replace />
+  // }
 
- export default AuthWrapper;
+  return <Outlet />;
+};
+
+export default AuthWrapper;

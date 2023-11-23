@@ -1,19 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
-import { selectIsLogin, selectRole } from '../redux/authSlice';
-import { Navigate, Outlet } from 'react-router-dom';
-import Home from '../screens/admin/home';
-import Admin from '../screens/admin/home';
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
 
-const PrivateAdminRoute = () => {
-  const role = useSelector(selectRole);
-  const isLogin = useSelector(selectIsLogin);
+const PrivateRoute = ({ roles }) => {
+  const { role, isLogin } = useSelector((state) => state.auth);
+  const location = useLocation();
 
-  return isLogin && (role === 'ADMIN' || role === 'ORGANIZATION') ? (
-    <Home />
-  ) : (
-    <Navigate to={'/dang-nhap'} />
-  );
+  if (!isLogin && !roles?.some((r) => r === role)) {
+    return <Navigate to="/dang-nhap" state={{ from: location }} replace />;
+  }
+  return <Outlet />;
 };
 
-export default PrivateAdminRoute;
+export default PrivateRoute;

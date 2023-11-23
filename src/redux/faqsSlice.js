@@ -15,7 +15,7 @@ const initialState = {
     page: 1,
     size: 10,
     total: 0,
-    search:''
+    search: '',
   },
   faqs: [],
   currentFaqs: {},
@@ -119,15 +119,31 @@ export const restoreFaqs = createAsyncThunk(
     }
   },
 );
+// Lấy thông tin public của posts -------------
+export const getAllPublicFaqsApi = createAsyncThunk(
+  'faqs/getAllPublicFaqsApi',
+  async (payload, { rejectWithValue }) => {
+    try {
+      const rs = await faqsApi.getAllPublicFaqsApi(payload);
+      return rs.data.data;
+    } catch (error) {
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      } else {
+        return rejectWithValue(error.message);
+      }
+    }
+  },
+);
 
 // Tạo slice
 const faqsSlice = createSlice({
   name: 'faqs',
   initialState,
   reducers: {
-    setFaqsParams:(state,action)=>{
-      state.faqsParams={...state.faqsParams,...action.payload}
-    }
+    setFaqsParams: (state, action) => {
+      state.faqsParams = { ...state.faqsParams, ...action.payload };
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -219,9 +235,27 @@ const faqsSlice = createSlice({
       .addCase(getAllFAQS.rejected, (state, { payload }) => {
         state.pending = false;
         notification.error({ message: 'Lấy danh sách thất bại' });
+      }) //get all public faqs
+      .addCase(getAllPublicFaqsApi.pending, (state) => {
+        state.pending = true;
+      })
+      .addCase(getAllPublicFaqsApi.fulfilled, (state, { payload }) => {
+        state.pending = false;
+        state.faqsParams.page = payload.page;
+        state.faqsParams.size = payload.size;
+        state.faqsParams.total = payload.total;
+        state.data = payload;
+      })
+      .addCase(getAllPublicFaqsApi.rejected, (state, { payload }) => {
+        state.pending = false;
+        notification.error({ message: 'Lấy danh sách thất bại' });
       });
   },
 });
 
+export const selectPublicFAQS = (state) => state.faqs.data;
+export const selectFAQSPending = (state) => state.faqs.pending;
+export const selectFAQSParamsClient = (state) => state.faqs.faqsParams;
+
 export default faqsSlice.reducer;
-export const {setFaqsParams} = faqsSlice.actions;
+export const { setFaqsParams } = faqsSlice.actions;

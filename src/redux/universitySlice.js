@@ -13,7 +13,7 @@ const initialState = {
     page: 1,
     size: 9,
     total: 0,
-    type: 1,
+    organizationType: 1,
     search: '',
   },
   organizationParams: {
@@ -165,7 +165,6 @@ export const getAllPublicUniversityInfo = createAsyncThunk(
   async (payload, { rejectWithValue }) => {
     try {
       const rs = await universityApi.getAllPublicUniversityInfo(payload);
-
       return rs.data.data;
     } catch (error) {
       if (error.response && error.response.data.message) {
@@ -270,7 +269,6 @@ const universitySlice = createSlice({
       })
       .addCase(getOrganizationsById.fulfilled, (state, { payload }) => {
         state.pending = false;
-        console.log(payload);
         state.organization = payload.data;
       })
       .addCase(getOrganizationsById.rejected, (state, { payload }) => {
@@ -282,7 +280,6 @@ const universitySlice = createSlice({
       })
       .addCase(getOneByOrganizationId.fulfilled, (state, { payload }) => {
         state.pending = false;
-        console.log(payload);
         state.organization = payload.data;
       })
       .addCase(getOneByOrganizationId.rejected, (state, { payload }) => {
@@ -321,13 +318,10 @@ const universitySlice = createSlice({
       })
       .addCase(updateOrganization.fulfilled, (state, { payload }) => {
         state.pending = false;
-        console.log(payload);
         notification.success({ message: 'Cập nhật tổ chức thành công', duration: 3 });
       })
       .addCase(updateOrganization.rejected, (state, { payload }) => {
         state.pending = false;
-        console.log(payload.message);
-
         notification.error({ message: payload, duration: 3 });
       }) 
       //create

@@ -35,12 +35,17 @@ const postsApi = {
   },
   //pulic api
   getAllPublicPosts: ({ page, size, search }) => {
-    console.debug('search', search);
+    // console.debug('search', search);
     const url = `public/posts`;
     return axiosService.get(url, {
       params: { page, size, search },
       paramsSerializer: qs.stringify,
     });
+  },
+  getAllPublicPostsById: (id) => {
+    // console.debug('search', search);
+    const url = `public/posts/id/${id}`;
+    return axiosService.get(url);
   },
 };
 

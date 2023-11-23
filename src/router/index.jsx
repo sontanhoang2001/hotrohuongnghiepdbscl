@@ -63,7 +63,9 @@ function Router() {
           <Route path="thong-tin-cac-truong-dai-hoc" element={<Universities />} />
           <Route path="dong-hanh" element={<Companion />} />
           <Route path="quen-mat-khau" element={<ForgotPassword />} />
-          <Route path="thong-tin-ca-nhan" element={<UserProfile />} />
+          <Route path="thong-tin-ca-nhan" element={<AuthWrapper roles={['STUDENT']} />}>
+            <Route path="" element={<UserProfile />} />
+          </Route>
           <Route path="otp" element={<OtpByPhone />} />
           <Route path="authSocial" element={<AuthSocial />} />
           <Route path="otp-sdt" element={OtpByPhone} />
@@ -77,23 +79,28 @@ function Router() {
             </ProtectedLogin>
           }
         > */}
-        <Route path="/admin" element={<PrivateRoute />}>
-          <Route path="dashboard" element={<Dashboard />} />
-          <Route path="xac-minh" element={<VerifyOrganization />} />
-          {/* <Route index element={<Dashboard />} /> */}
-          <Route path="danh-sach-truong-hoc" element={<University />} />
-          <Route path="verification-requests" element={<OrganizationVerification />} />
-          <Route path="danh-sach-nguoi-dung" element={<User />} />
-          <Route path="danh-sach-cau-hoi" element={<Mbti />} />
-          <Route path="danh-cau-hoi-dong-hanh" element={<ManageCompanion />} />
-          <Route path="profile" element={<Profile />} />
-          <Route path="tin-nhan" element={<Chat />} />
-          <Route path="danh-sach-tin-tuc" element={<ManageNews />} />
-          <Route path="tao-bai-viet" element={<Posts />} />
+        <Route path="/admin" element={<AuthWrapper roles={['ADMIN']} />}>
+          <Route element={<AdminHome />}>
+            <Route index element={<Dashboard />} />
+            <Route path="xac-minh" element={<VerifyOrganization />} />
+            {/* <Route index element={<Dashboard />} /> */}
+            <Route path="danh-sach-truong-hoc" element={<University />} />
+            <Route path="verification-requests" element={<OrganizationVerification />} />
+            <Route path="danh-sach-nguoi-dung" element={<User />} />
+            <Route path="danh-sach-cau-hoi" element={<Mbti />} />
+            <Route path="danh-cau-hoi-dong-hanh" element={<ManageCompanion />} />
+            <Route path="profile" element={<AuthWrapper roles={['ORGANIZATION']} />}>
+              <Route index element={<Profile />} />
+            </Route>
+            <Route path="tin-nhan" element={<Chat />} />
+            <Route path="danh-sach-tin-tuc" element={<ManageNews />} />
+            <Route path="tao-bai-viet" element={<Posts />} />
+          </Route>
         </Route>
         <Route path="/organization" element={<AuthWrapper roles={['ORGANIZATION']} />}>
           <Route element={<AdminHome />}>
             <Route index element={<OrganizationList />} />
+            <Route path="dashboard" element={<Dashboard />} />
             <Route path=":id" element={<OrganizationProfile />} />
           </Route>
         </Route>

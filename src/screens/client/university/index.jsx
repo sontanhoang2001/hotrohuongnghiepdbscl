@@ -1,4 +1,4 @@
-import { Button, Input, List, Modal, Pagination, Space } from 'antd';
+import { Button, ConfigProvider, Input, List, Modal, Pagination, Space } from 'antd';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import ImageCard from '../../../components/card/imageCard';
@@ -12,6 +12,8 @@ import {
 import { SearchOutlined } from '@ant-design/icons';
 import { HeadingTitle, MarginTopContent, SearchBox, Title } from '../../../globalStyles';
 import Search from 'antd/es/input/Search';
+import { debounce } from 'lodash';
+import viVN from 'antd/lib/locale/vi_VN';
 
 function Universities() {
   const [open, setOpen] = useState(false);
@@ -29,22 +31,21 @@ function Universities() {
     //gọi api thông qua redux
     dispatch(getAllPublicUniversityInfo(clientParams));
   }, []);
-  console.log(getUniversity);
 
-  // console.log('card', cardSelected);
-  // console.log(getUniversity?.data[cardSelected].name);
   //hàm bắt sự kiện phân trang và làm mới lại api
   const handlePageChange = (page, pageSize) => {
-    console.log('page - pageSize', page, pageSize);
-
-    console.log(clientParams);
+    dispatch(getAllPublicUniversityInfo({ ...clientParams, page: page, size: pageSize }));
+    window.scrollTo(0, 200);
     // dispatch(getAllPublicUniversityInfo(clientParams));
-    console.log(getUniversity);
   };
   //tìm kiếm
+  const onSearchChange = debounce((e) => {
+    if (e.target.value === '') {
+      dispatch(getAllPublicUniversityInfo({ ...clientParams, search: e.target.value }));
+    }
+  }, 500);
   const onSearch = (value) => {
-    dispatch(getAllPublicUniversityInfo({ page: 1, search: value, type: 1 }));
-    setCardSelected(0);
+    dispatch(getAllPublicUniversityInfo({ ...clientParams, search: value }));
   };
 
   return (
@@ -54,17 +55,20 @@ function Universities() {
         <div className="underline"></div>
       </Title>
       <SearchBox>
-        <Input.Search
-          placeholder="Tìm kiếm câu hỏi"
-          onSearch={onSearch}
-          enterButton={
-            <Button type="primary" style={{ height: 50 }}>
-              Tìm kiếm
-            </Button>
-          }
-          allowClear
-          style={{ height: 50 }}
-        />
+        <ConfigProvider locale={viVN}>
+          <Input.Search
+            placeholder="Tìm kiếm..."
+            onSearch={onSearch}
+            onChange={onSearchChange}
+            enterButton={
+              <Button type="primary" style={{ height: 50 }}>
+                Tìm kiếm
+              </Button>
+            }
+            allowClear
+            style={{ height: 50 }}
+          />
+        </ConfigProvider>
       </SearchBox>
       <MarginTopContent>
         <List
@@ -87,9 +91,9 @@ function Universities() {
           )}
         ></List>
         <Pagination
-          current={clientParams.page}
-          pageSize={clientParams.size}
-          total={clientParams.total}
+          current={clientParams?.page}
+          pageSize={clientParams?.size}
+          total={clientParams?.total}
           onChange={handlePageChange}
           showQuickJumper
           showSizeChanger

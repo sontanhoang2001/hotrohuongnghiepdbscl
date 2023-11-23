@@ -73,7 +73,7 @@ function SignInV1() {
     //lấy role khi người dùng đăng nhập
     if (role) {      
       if (role === 'ADMIN') {
-        navigate('/admin/dashboard');
+        navigate('/admin');
       } else if (role === 'ORGANIZATION') {
         navigate('/organization');
       } else {
