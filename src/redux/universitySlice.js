@@ -122,12 +122,24 @@ export const deleteOrganization = createAsyncThunk(
     }
   },
 );
-// Cập nhật trạng thái xác thực
+// Cập nhật trạng thái xác thực --admin
+export const updateVerificationStatusByAdmin = createAsyncThunk(
+  'university/updateVerificationStatusByAdmin',
+  async (data, { rejectWithValue }) => {
+    try {
+      const rs = await universityApi.updateVerificationByAdmin(data);
+      return rs.data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  },
+);
+// Cập nhật trạng thái xác thực --org
 export const updateVerificationStatus = createAsyncThunk(
   'university/updateVerificationStatus',
   async (data, { rejectWithValue }) => {
     try {
-      const rs = await universityApi.updateVerificationStatus(data);
+      const rs = await universityApi.requestVerification(data);
       return rs.data;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -171,8 +183,9 @@ const universitySlice = createSlice({
   reducers: {
     getLocalOrganizationsById: (state, action) => {
       state.currentVerification = state.verifications.find(
-        (record) => record.id === action.payload,
+        (record) => record.id === action.payload
       );
+      console.log(action.payload,state.currentVerification,state.verifications);
     },
     setSize: (state, action) => {
       state.size = action.payload;
@@ -181,6 +194,18 @@ const universitySlice = createSlice({
 
   extraReducers: (builder) => {
     builder
+      //verification update by admin
+      .addCase(updateVerificationStatusByAdmin.pending, (state) => {
+        state.pending = true;
+      })
+      .addCase(updateVerificationStatusByAdmin.fulfilled, (state, { payload }) => {
+        state.pending = false;
+        notification.success({ message: 'Cập nhật trạng thái xác thực tổ chức thành công' });
+      })
+      .addCase(updateVerificationStatusByAdmin.rejected, (state, { payload }) => {
+        state.pending = false;
+        notification.error({ message: 'Cập nhật trạng thái xác thực tổ chức thất bại' });
+      })
       //verification update
       .addCase(updateVerificationStatus.pending, (state) => {
         state.pending = true;

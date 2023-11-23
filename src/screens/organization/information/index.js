@@ -57,11 +57,18 @@ const verificationText = {
 };
 
 function OrganizationProfile() {
-  const [imageURL, setImageURL] = useState(false);
-  const [loading, setLoading] = useState(true);
   //redux state
   const dispatch = useDispatch();
   const { pending, organization } = useSelector((state) => state.university);
+
+  //Lấy thông tin tổ chức
+  const { id } = useParams();
+  useEffect(() => {
+    dispatch(getOneByOrganizationId(id));
+    setLoading(false);
+  }, [dispatch, id]);
+
+  const [loading, setLoading] = useState(true);
 
   //Form yêu cầu xác thực tổ chức
   const [openVerifyForm, setOpenVerifyForm] = useState(false);
@@ -75,7 +82,11 @@ function OrganizationProfile() {
           fileAttached: 'https://blog.hocexcel.online/wp-content/uploads/2018/02/1-2.png',
           organizationId: organization.id,
         };
-        dispatch(updateVerificationStatus(formValues));
+
+        dispatch(updateVerificationStatus(formValues)).then(() => {
+          dispatch(getOneByOrganizationId(id));
+          setOpenUpdateForm(false);
+        });
       })
       .catch((errorInfo) => {})
       .finally(() => setOpenUpdateForm(false));
@@ -143,13 +154,6 @@ function OrganizationProfile() {
       formRef.current?.setFieldsValue({ ...formData });
     }, 500);
   };
-
-  //Lấy thông tin tổ chức
-  const { id } = useParams();
-  useEffect(() => {
-    dispatch(getOneByOrganizationId(id));
-    setLoading(false);
-  }, [dispatch, id]);
 
   const uploadButton = (
     <div className="ant-upload-text font-semibold text-dark">

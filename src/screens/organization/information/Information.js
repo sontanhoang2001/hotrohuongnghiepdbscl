@@ -126,7 +126,6 @@ const Information = () => {
       });
   };
   //huỷ preview
-  const handleCancel = () => setPreviewOpen(false);
   //hàm preview
   const handlePreview = async (file) => {
     if (!file.url && !file.preview) {
@@ -137,24 +136,7 @@ const Information = () => {
     setPreviewTitle(file.name || file.url.substring(file.url.lastIndexOf('/') + 1));
   };
 
-  //Form yêu cầu xác thực tổ chức
-  const [openVerifyForm, setOpenVerifyForm] = useState(false);
-  const verifyFormRef = useRef(null);
-  const handleVerifySubmitForm = () => {
-    verifyFormRef?.current
-      .validateFields()
-      .then((values) => {
-        //update
-        console.log('Received values of form: ', { ...values, id: organization.id });
-        // dispatch(updateOrganization(values));
-      })
-      .catch((errorInfo) => {})
-      .finally(() => setOpenUpdateForm(false));
-  };
-  const handleVerifyClick = () => {
-    //setid for verify form
-    setOpenVerifyForm(true);
-  };
+
 
   //Form cập nhật thông tin tổ chức
   const [openUpdateForm, setOpenUpdateForm] = useState(false);

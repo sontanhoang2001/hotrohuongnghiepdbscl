@@ -34,6 +34,10 @@ const mbtiApi = {
     const url = `/${pathname}/delete/${id}`;
     return axiosService.delete(url);
   },
+  restoreMbti: (id) => {
+    const url = `/${pathname}/restore/${id}`;
+    return axiosService.post(url);
+  },
 };
 
 export default mbtiApi;
