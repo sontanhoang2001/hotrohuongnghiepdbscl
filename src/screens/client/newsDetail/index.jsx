@@ -85,7 +85,7 @@ function NewsDetail() {
                 </Link>
               )} */}
               <Link to={`/tin-tuc/${val.id}`} onClick={() => handleOnClick(val.id)}>
-                <ImageCard title={val.title} src={`${val.image}`} />
+                <ImageCard title={val.title} src={`${val.thumbnail}`} />
               </Link>
             </Col>
           ))}

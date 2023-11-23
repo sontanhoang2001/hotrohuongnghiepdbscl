@@ -50,12 +50,7 @@ function Router() {
       <Routes>
         <Route path="dang-nhap" element={<SignInV1 />} />
         <Route path="dang-ky" element={<SignUpV1 />} />
-        <Route
-          path="/xac-nhan-dang-nhap"
-          element={<AuthWrapper roles={['STUDENT', 'ADMIN', 'ORGANIZATION']} />}
-        >
-          <Route index element={<OtpLogin />} />
-        </Route>
+        <Route path="/xac-nhan-dang-nhap" element={<OtpLogin />} />
         {/* client */}
         <Route path="/" element={<App />}>
           <Route path="/postMBTI" element={<PostMBTI />} />
