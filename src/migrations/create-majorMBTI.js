@@ -14,7 +14,7 @@ module.exports = {
       link: {
         type: Sequelize.STRING(555),
       },
-      universityId: {
+      organizationId: {
         type: Sequelize.INTEGER,
       },
       mbtiId: {

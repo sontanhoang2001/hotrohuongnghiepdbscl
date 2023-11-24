@@ -29,11 +29,10 @@ const middleware = {
   checkRole(allowedRoles) {
     return (req, res, next) => {
       const userRole = req.user.roleId;
-
       if (allowedRoles.includes(userRole)) {
         next();
       } else {
-        return responseHelper.sendResponse.UNAUTHORIZED(res, null, "You're not authenticated");
+        return responseHelper.sendResponse.UNAUTHORIZED(res, null);
       }
     };
   },

@@ -2,6 +2,9 @@ const Question = require('../models').Question;
 const Answer = require('../models').Answer;
 const QuestionGroup = require('../models').QuestionGroup;
 const MBTI = require('../models').MBTI;
+const TestHistory = require('../models').TestHistory;
+const MajorMBTI = require('../models').MajorMBTI;
+const Organization = require('../models').Organization;
 
 const sequelize = require('../database/connection_database');
 const { Op } = require('sequelize');
@@ -291,12 +294,101 @@ module.exports = {
 
   getAllPersonalityGroups: async () => {
     try {
-
       const mbti = await MBTI.findAll({
         attributes: ['id', 'name', 'description'],
       });
 
       return mbti;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  // Do test MBTI
+  createTestHistory: async (userId, mbtiId) => {
+    try {
+      // Tạo mới câu hỏi
+      const testHistoryPayload = { userId, mbtiId };
+      const testHistory = await TestHistory.create(testHistoryPayload);
+
+      return testHistory;
+    } catch (error) {
+      throw error; // Sau đó ném lỗi để xử lý ở phần gọi hàm
+    }
+  },
+  getAllTestHistory: async (userId, page, size) => {
+    try {
+      // Tính offset
+      const offset = (page - 1) * size;
+
+      const { count, rows } = await TestHistory.findAndCountAll({
+        where: { userId },
+        offset,
+        limit: size,
+        attributes: ['id', 'createdAt'],
+        include: [
+          {
+            model: MBTI,
+            attributes: ['id', 'name', 'description'],
+            include: [
+              {
+                model: MajorMBTI,
+                attributes: ['id', 'majorName', 'link'],
+                include: [
+                  {
+                    model: Organization,
+                    attributes: ['id', 'name'],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      });
+
+      // Chuẩn bị dữ liệu phân trang
+      const pagination = {
+        total: count,
+        page,
+        size,
+        data: rows,
+      };
+
+      return pagination;
+    } catch (error) {
+      throw error;
+    }
+  },
+  getTestHistoryById: async (userId, testHistoryId) => {
+    try {
+      const testHistory = await TestHistory.findByPk(testHistoryId, {
+        where: { userId },
+        attributes: ['id', 'createdAt'],
+        include: [
+          {
+            model: MBTI,
+            attributes: ['id', 'name', 'description'],
+            include: [
+              {
+                model: MajorMBTI,
+                attributes: ['id', 'majorName', 'link'],
+                include: [
+                  {
+                    model: Organization,
+                    attributes: ['id', 'name'],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      });
+
+      if (testHistory instanceof TestHistory) {
+        return testHistory.get();
+      }
+
+      return testHistory;
     } catch (error) {
       throw error;
     }

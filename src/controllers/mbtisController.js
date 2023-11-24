@@ -180,4 +180,57 @@ module.exports = {
       throw error;
     }
   },
+
+  // Do test MBTI
+  storeTestHistory: async (req, res) => {
+    try {
+      const userId = parseInt(req.user.id);
+      const mbtiId = req.query.mbtiId && parseInt(req.query.mbtiId);
+
+      if (!mbtiId) {
+        return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a full and valid parameter');
+      }
+
+      const createTestHistory = await mbtiService.createTestHistory(userId, mbtiId);
+      if (createTestHistory) {
+        return responseHelper.sendResponse.SUCCESS(res, createTestHistory);
+      }
+      return responseHelper.sendResponse.BAD_REQUEST(res, null);
+    } catch (error) {
+      responseHelper.sendResponse.SERVER_ERROR(res, null);
+    }
+  },
+
+  getAllTestHistory: async (req, res) => {
+    try {
+      let page = parseInt(req.query.page) || 1;
+      let size = parseInt(req.query.size) || 10;
+      let userId = req.user.id;
+
+      const testHistory = await mbtiService.getAllTestHistory(userId, page, size); // Gọi chức năng từ service
+      if (testHistory) {
+        return responseHelper.sendResponse.SUCCESS(res, testHistory);
+      }
+
+      return responseHelper.sendResponse.BAD_REQUEST(res, null);
+    } catch (error) {
+      responseHelper.sendResponse.SERVER_ERROR(res, null);
+      throw error;
+    }
+  },
+
+  getTestHistoryById: async (req, res) => {
+    try {
+      let userId = req.user.id;
+      const testHistoryId = parseInt(req.params.id);
+      const testHistory = await mbtiService.getTestHistoryById(userId, testHistoryId); // Gọi chức năng từ service
+      if (testHistory) {
+        return responseHelper.sendResponse.SUCCESS(res, testHistory);
+      }
+
+      return responseHelper.sendResponse.NOT_FOUND(res, null);
+    } catch (error) {
+      responseHelper.sendResponse.SERVER_ERROR(res, null);
+    }
+  },
 };

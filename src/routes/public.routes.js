@@ -10,6 +10,8 @@ const { getAllForPublic, getOrganizationByIdForPublic } = require('../controller
 const { getAllPostsForPublic, getPostsByIdForPublic } = require('../controllers/postsOrganizationController.js');
 
 const { getAllFaqsForPublic, getFaqsByIdForPublic } = require('../controllers/faqsController.js');
+
+const { newDoTestMBTI, getAllPersonalityGroups } = require('../controllers/mbtisController');
 //* Here I defined the methods
 
 // public - ai cũng có thể truy cập
@@ -24,4 +26,10 @@ router.get(postsRoutePrefix + '/id/:id', getPostsByIdForPublic);
 const faqsRoutePrefix = '/faqs';
 router.get(faqsRoutePrefix + '/', getAllFaqsForPublic);
 router.get(faqsRoutePrefix + '/id/:id', getFaqsByIdForPublic);
+
+// do test MBTI
+const mbtiRoutePrefix = '/mbti';
+router.get(mbtiRoutePrefix + '/get-question-todotestMbti', newDoTestMBTI);
+router.get(mbtiRoutePrefix + '/personality-groups', getAllPersonalityGroups);
+
 module.exports = router;

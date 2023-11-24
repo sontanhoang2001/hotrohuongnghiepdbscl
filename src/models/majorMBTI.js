@@ -11,13 +11,14 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       MajorMBTI.belongsTo(models.MBTI);
+      MajorMBTI.belongsTo(models.Organization);
     }
   }
   MajorMBTI.init(
     {
       majorName: DataTypes.STRING,
       link: DataTypes.STRING,
-      universityId: DataTypes.INTEGER,
+      organizationId: DataTypes.INTEGER,
       mbtiId: DataTypes.INTEGER,
     },
     {

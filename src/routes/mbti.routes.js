@@ -2,6 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const middleware = require('../middleware/verifyToken');
+const Roles = require('../config/role.js');
 
 //* Call the controller with the methods
 const {
@@ -13,8 +14,9 @@ const {
   restoreOneQuestion,
   getAllQuestionGroup,
   getQuestionGroupById,
-  newDoTestMBTI,
-  getAllPersonalityGroups
+  storeTestHistory,
+  getAllTestHistory,
+  getTestHistoryById,
 } = require('../controllers/mbtisController');
 
 //* Here I defined the methods
@@ -29,11 +31,11 @@ router.post('/restore/:id', restoreOneQuestion);
 router.get('/getAllQuestionGroup', getAllQuestionGroup);
 router.get('/getQuestionGroupById/:id', getQuestionGroupById);
 
+router.get('/getQuestionGroupById/:id', getQuestionGroupById);
 
-
-// do test MBTI
-router.get('/get-question-todotestMbti', newDoTestMBTI);
-router.get('/personality-groups', getAllPersonalityGroups);
-
+// do test mbti
+router.post('/storeTestHistory', middleware.verifyToken, middleware.checkRole([Roles.USER]), storeTestHistory);
+router.get('/getAllTestHistory', middleware.verifyToken, middleware.checkRole([Roles.USER]), getAllTestHistory);
+router.get('/getTestHistoryById/:id', middleware.verifyToken, middleware.checkRole([Roles.USER]), getTestHistoryById);
 
 module.exports = router;

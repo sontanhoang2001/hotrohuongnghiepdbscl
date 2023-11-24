@@ -15,6 +15,7 @@ module.exports = (sequelize, DataTypes) => {
       Organization.hasOne(models.Chat);
       Organization.hasMany(models.FAQs);
       Organization.hasMany(models.PostsOrganization);
+      Organization.hasMany(models.MajorMBTI);
       
       Organization.belongsToMany(models.User, { through: models.UserOrganization });
     }
