@@ -52,7 +52,7 @@ function NewsSection() {
             {getPostsTemp?.data.map((val, idx) => (
               <Col key={idx} xs={24} sm={24} md={12} lg={6}>
                 <Link to={`/tin-tuc/${val.id}`}>
-                  <ImageCard title={val.title} src={`${val.image}`} />
+                  <ImageCard title={val.title} src={`${val.thumbnail}`} />
                 </Link>
               </Col>
             ))}

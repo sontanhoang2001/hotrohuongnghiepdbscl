@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button, Card, Space, Spin, message } from 'antd';
+import { Button, Card, Col, Row, Space, Spin, message } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
 import RequestOtp from '../../components/requestOtp';
 import {
   isOtp,
+  logout,
   requestOtp,
   selectIsOtp,
   selectLoginData,
@@ -14,23 +15,23 @@ import {
   setIsSignup,
 } from '../../redux/authSlice';
 import { auth, RecaptchaVerifier, signInWithPhoneNumber } from '../../firebase/config';
+import { useNavigate } from 'react-router-dom';
 
 function OtpLogin() {
-  const dispatch = useDispatch();
-
   const [otpType, setOtpType] = useState('email');
   const [phone, setPhone] = useState('');
   const [hasPhone, setHasPhone] = useState(true);
   const [mail, setMail] = useState('');
   const [userId, setUserId] = useState('');
-
   const [open, setOpen] = useState(false); //thay đối giá trị đóng mở của của sổ
   const [loadinpage, setloadinpage] = useState(false);
+  const navigate = useNavigate();
+  //gọi redux
+  const dispatch = useDispatch();
 
   const getSignupData = useSelector(selectSignupData); //lấy thông tin người dùng đăng ký trong local storage
   const getUserData = useSelector(selectLoginData); //lấy thông tin người dùng đăng ký trong local storage
 
-  //gọi redux
   let pending = useSelector(selectPending);
   const sentOtp = useSelector(selectIsOtp);
 
@@ -93,6 +94,9 @@ function OtpLogin() {
   };
 
   useEffect(() => {
+    if (getSignupData?.email === null && getSignupData?.email === null) {
+      navigate('/404');
+    }
     setloadinpage(pending && pending != null ? true : false);
     if (getSignupData?.email === null || getSignupData?.email === undefined) {
       setMail(getUserData?.userData.email);
@@ -114,6 +118,10 @@ function OtpLogin() {
       dispatch(isOtp(false));
     }
   }, [pending, loadinpage, open, sentOtp, dispatch, phone, mail]);
+  const handelCancelOtp = () => {
+    navigate('/dang-ky');
+    dispatch(logout());
+  };
   // console.log(`+84${phone.substring(1)}`);
   return (
     <Spin spinning={loadinpage}>
@@ -153,25 +161,25 @@ function OtpLogin() {
                     <p>Hiện bạn chưa cập nhật số điện thoại</p>
                   )}
                 </Space>
-                <Button type="primary" onClick={() => handleOnclick('email')}>
-                  Gửi qua mail
-                </Button>
+                <Row gutter={[16, 16]}>
+                  <Col span={12}>
+                    <Button type="primary" block onClick={() => handleOnclick('email')}>
+                      Gửi qua mail
+                    </Button>
+                  </Col>
+                  <Col span={12}>
+                    <Button
+                      type="primary"
+                      disabled={hasPhone}
+                      block
+                      onClick={() => handleOnclick('phone')}
+                    >
+                      Gửi qua SĐT
+                    </Button>
+                  </Col>
+                </Row>
 
-                <Button
-                  type="primary"
-                  disabled={hasPhone}
-                  danger
-                  onClick={() => handleOnclick('phone')}
-                >
-                  Gửi qua SĐT
-                </Button>
-
-                <Button
-                  type="primary"
-                  disabled={hasPhone}
-                  danger
-                  onClick={() => handleOnclick('phone')}
-                >
+                <Button type="primary" block danger onClick={() => handelCancelOtp()}>
                   Huỷ
                 </Button>
               </div>

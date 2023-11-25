@@ -1,6 +1,7 @@
 import axiosService from './axiosClient';
 
 const pathname = 'mbtis';
+const publicPathname = 'public/mbti';
 
 const mbtiApi = {
   getQuestionGroups: () => {
@@ -40,7 +41,12 @@ const mbtiApi = {
   },
   //public data
   getQuestionTodotestMbti: () => {
-    const url = `/${pathname}/get-question-todotestMbti`;
+    const url = `/${publicPathname}/get-question-todotestMbti`;
+    return axiosService.get(url);
+  },
+
+  getGetAllpersonality: () => {
+    const url = `/${publicPathname}/personality-groups`;
     return axiosService.get(url);
   },
 };

@@ -1,11 +1,20 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { Button } from 'antd';
+import { Button, Card, Col, Row } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import { HeadingTitle, MarginTopContent, Title } from '../../../globalStyles';
+import { HeadingTitle, MarginTopContent, Title, size } from '../../../globalStyles';
+import { useDispatch, useSelector } from 'react-redux';
+import { getGetAllpersonality, selectMbtiQuestions } from '../../../redux/mbtiSlice';
 
 function MBTI() {
   const navigate = useNavigate();
+  // gọi redux
+  const dispatch = useDispatch();
+  const personality = useSelector(selectMbtiQuestions);
+  useEffect(() => {
+    dispatch(getGetAllpersonality());
+  }, []);
+  // console.log(personality);
   return (
     <div className="container">
       <MarginTopContent>
@@ -18,7 +27,7 @@ function MBTI() {
           <div className="intro-content">
             <div className="content">
               <div className="exp-image">
-                <img src="./images/mbti.jpg" alt="mbti" />
+                <img src="./images/mbti-banner.webp" alt="mbti" />
               </div>
               <div className="paragraph">
                 <p>
@@ -119,6 +128,22 @@ function MBTI() {
               </div>
             </div>
           </div>
+          <MBTIDetailStyled>
+            <h3>16 loại hình tính cách MBTI</h3>
+            <Row gutter={[16, 16]}>
+              {personality?.map((val, idx) => (
+                <Col key={idx} xs={14} sm={24} md={12} lg={12}>
+                  <Card className="personality-card">
+                    <div className="personality-img">
+                      <img src={val.image} alt="tính cách MBTI" />
+                    </div>
+                    <p className="personality-name">{val.name}</p>
+                    <p className="personality-description">{val.description}</p>
+                  </Card>
+                </Col>
+              ))}
+            </Row>
+          </MBTIDetailStyled>
         </Introduce>
       </MarginTopContent>
     </div>
@@ -139,7 +164,6 @@ const Introduce = styled.div`
     }
   }
   .intro-content {
-    margin-top: 20px;
     font-size: 1.2rem;
     /* text-align: justify;
     display: flex; */
@@ -148,7 +172,6 @@ const Introduce = styled.div`
       justify-content: center;
     }
     .content {
-      margin-top: 20px;
       margin-bottom: 20px;
       .paragraph,
       .mbti-note,
@@ -200,6 +223,36 @@ const Introduce = styled.div`
       }
     }
   }
+`;
+const MBTIDetailStyled = styled.div`
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+  h3 {
+    font-size: 1.6rem;
+    font-weight: 600;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    padding-left: 20px;
+    border-left: 10px solid var(--primary-color);
+    text-transform: uppercase;
+  }
+  .personality-card {
+    height: 100%;
+    .personality-name {
+      text-align: center;
+      font-weight: 800;
+      font-size: 20pt;
+      color: var(--primary-color);
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+    .personality-description {
+      text-align: justify;
+      font-size: 14pt;
+    }
+  }
+  /*  */
 `;
 
 export default MBTI;

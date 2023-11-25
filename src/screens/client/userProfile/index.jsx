@@ -33,8 +33,12 @@ function UserProfile() {
   const sentOtp = useSelector(selectIsOtp);
   const dispatch = useDispatch();
   const getProfile = useSelector(selectProfile);
+  const { role, status } = useSelector((state) => state.auth);
 
   useEffect(() => {
+    if (status === 0) {
+      navigate('/404');
+    }
     //định dạng ngày sinh hiển thị
     setFormattedDate(
       getProfile?.UserDetail.birthday != null && getProfile?.UserDetail.birthday !== undefined

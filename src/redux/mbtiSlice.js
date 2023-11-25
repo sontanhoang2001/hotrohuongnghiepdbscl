@@ -91,13 +91,31 @@ export const restoreMbti = createAsyncThunk('mbti/restoreMbti', async (id, { rej
   }
 });
 
-// Tạo một async thunk khôi phục câu hỏi MBTI
+// Tạo một async thunk lấy câu hỏi MBTI
 export const getQuestionTodotestMbti = createAsyncThunk(
   'mbti/getQuestionTodotestMbti',
   async (payload, { rejectWithValue }) => {
     try {
       const rs = await mbtiApi.getQuestionTodotestMbti();
-      return rs.data; // Đảm bảo kiểm tra API response và chọn dữ liệu cần thiết
+      console.log('redux>', rs.data.data);
+      return rs.data.data; // Đảm bảo kiểm tra API response và chọn dữ liệu cần thiết
+    } catch (err) {
+      // Xử lý lỗi và trả về thông báo hoặc giá trị mặc định
+      if (err.response && err.response.data.message) {
+        throw rejectWithValue(err.response.data.message);
+      } else {
+        throw rejectWithValue(err.message);
+      }
+    }
+  },
+);
+// Tạo một async thunk lấy 16 nhóm tính cách MBTI
+export const getGetAllpersonality = createAsyncThunk(
+  'mbti/getGetAllpersonality',
+  async (payload, { rejectWithValue }) => {
+    try {
+      const rs = await mbtiApi.getGetAllpersonality();
+      return rs.data.data; // Đảm bảo kiểm tra API response và chọn dữ liệu cần thiết
     } catch (err) {
       // Xử lý lỗi và trả về thông báo hoặc giá trị mặc định
       if (err.response && err.response.data.message) {
@@ -200,6 +218,17 @@ const mbtiSlice = createSlice({
         state.data = payload; // Lưu danh sách câu hỏi MBTI
       })
       .addCase(getQuestionTodotestMbti.rejected, (state, { payload }) => {
+        state.pending = false;
+      })
+      //trạng thái của getGetAllpersonality pending - fulfilled - rejected
+      .addCase(getGetAllpersonality.pending, (state) => {
+        state.pending = true;
+      })
+      .addCase(getGetAllpersonality.fulfilled, (state, { payload }) => {
+        state.pending = false;
+        state.data = payload; // Lưu danh sách câu hỏi MBTI
+      })
+      .addCase(getGetAllpersonality.rejected, (state, { payload }) => {
         state.pending = false;
       });
   },

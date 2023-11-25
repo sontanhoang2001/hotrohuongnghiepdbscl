@@ -1,5 +1,12 @@
 import styled from 'styled-components';
-
+export const size = {
+  // xs: '576px',
+  sm: '576',
+  md: '768px',
+  lg: '992px',
+  xl: '1200px',
+  xxl: '1600px',
+};
 export const MarginTopContent = styled.div`
   margin-top: 3%;
 `;

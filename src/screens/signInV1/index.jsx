@@ -64,7 +64,6 @@ function SignInV1() {
   const dispatch = useDispatch();
 
   let pending = useSelector(selectPending);
-  const profile = useSelector(selectLoginData);
   const { role, status } = useSelector((state) => state.auth);
 
   const navigate = useNavigate();
@@ -95,24 +94,6 @@ function SignInV1() {
     <>
       <Layout className="layout-default layout-signin">
         <Header />
-        {/* <Header>
-          <div className="header-col header-nav">
-            <Menu mode="horizontal" defaultSelectedKeys={['1']}>
-              <Menu.Item key="1">
-                <Link to="/">
-                  {template}
-                  <span>Trang Chủ</span>
-                </Link>
-              </Menu.Item>
-              <Menu.Item key="2">
-                <Link to="/dang-ky">
-                  {signup}
-                  <span> Đăng Ký</span>
-                </Link>
-              </Menu.Item>
-            </Menu>
-          </div>
-        </Header> */}
         <Content className="signin">
           <Row gutter={[24, 0]} justify="space-around">
             <Col xs={{ span: 24, offset: 0 }} lg={{ span: 6, offset: 2 }} md={{ span: 12 }}>

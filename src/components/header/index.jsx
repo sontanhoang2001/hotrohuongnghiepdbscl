@@ -27,7 +27,7 @@ function Header() {
   const isLogin = useSelector(selectIsLogin);
   const [fullname, setFullName] = useState('');
   const [loginStatus, setLoginStatus] = useState(false);
-  const { role } = useSelector((state) => state.auth);
+  const { role, status } = useSelector((state) => state.auth);
 
   const navItemsByRole = {
     ADMIN: (
@@ -69,8 +69,6 @@ function Header() {
   };
 
   useEffect(() => {
-    setLoginStatus(isLogin ? true : false);
-
     if (isLogin) {
       const getInfo = window.localStorage.getItem('userData');
       setFullName(JSON.parse(getInfo)?.UserDetail.fullName);
@@ -123,7 +121,7 @@ function Header() {
           <h1 className="brand">Trung Tâm Hướng Nghiệp ĐBSCL</h1>
 
           <div className="topbar-btn">
-            {loginStatus ? (
+            {isLogin && status === 1 ? (
               <Dropdown
                 menu={{
                   items,
