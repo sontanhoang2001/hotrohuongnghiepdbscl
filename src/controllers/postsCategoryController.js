@@ -1,9 +1,9 @@
-const majorMbtiService = require('../services/majorMbtiService');
+const postsCategoryService = require('../services/postsCategoryService');
 
 const responseHelper = require('../helpers/responseHelper');
 
 module.exports = {
-  createNewMajorMbti: async (req, res) => {
+  createNew: async (req, res) => {
     try {
       // const userId = parseInt(req.user.id);
       const majorMBTI = req.body;
@@ -12,7 +12,7 @@ module.exports = {
         return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a full and valid parameter');
       }
 
-      const createNew = await majorMbtiService.createNewMajorMbti(majorMBTI);
+      const createNew = await postsCategoryService.create(majorMBTI);
       if (createNew) {
         return responseHelper.sendResponse.SUCCESS(res, createNew, 'Bạn đã tạo mới ngành nghề cho MBTI thành công');
       }
@@ -21,7 +21,7 @@ module.exports = {
       responseHelper.sendResponse.SERVER_ERROR(res, null);
     }
   },
-  getAllMajorMbti: async (req, res) => {
+  getAll: async (req, res) => {
     try {
       let page = parseInt(req.query.page) || 1;
       let size = parseInt(req.query.size) || 10;
@@ -30,7 +30,7 @@ module.exports = {
       let organizationId = req.query.organizationId;
       let mbtiId = req.query.mbtiId;
 
-      const mbti = await majorMbtiService.getAllMajorMbti(page, size, search, deleted, organizationId, mbtiId); // Gọi chức năng từ service
+      const mbti = await postsCategoryService.getAll(page, size, search, deleted, organizationId, mbtiId); // Gọi chức năng từ service
       if (mbti) {
         return responseHelper.sendResponse.SUCCESS(res, mbti);
       }
@@ -41,10 +41,10 @@ module.exports = {
     }
   },
 
-  getMajorMbtiById: async (req, res) => {
+  getById: async (req, res) => {
     try {
       const majorMBTI_Id = parseInt(req.params.id);
-      const majorMBTI = await majorMbtiService.getMajorMbtById(majorMBTI_Id); // Gọi chức năng từ service
+      const majorMBTI = await postsCategoryService.getById(majorMBTI_Id); // Gọi chức năng từ service
       if (majorMBTI) {
         return responseHelper.sendResponse.SUCCESS(res, majorMBTI);
       }
@@ -55,7 +55,7 @@ module.exports = {
     }
   },
 
-  updateMajorMbti: async (req, res) => {
+  update: async (req, res) => {
     try {
       const majorMBTI_Id = parseInt(req.params.id);
       const majorMBTI = req.body;
@@ -68,7 +68,7 @@ module.exports = {
         return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a full and valid parameter');
       }
 
-      const UpdateMajorMBTI = await majorMbtiService.updateMajorMbti(majorMBTI_Id, majorMBTI);
+      const UpdateMajorMBTI = await postsCategoryService.update(majorMBTI_Id, majorMBTI);
       if (UpdateMajorMBTI) {
         return responseHelper.sendResponse.SUCCESS(res, null, 'Cập nhật nghành nghề cho MBTI thành công');
       }
@@ -79,14 +79,14 @@ module.exports = {
     }
   },
 
-  deleteOneMajorMbti: async (req, res) => {
+  deleteOne: async (req, res) => {
     try {
       const majorMBTI_Id = parseInt(req.params.id);
       if (isNaN(majorMBTI_Id)) {
         return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a valid majorMBTI Id as a parameter');
       }
 
-      const deleteMajorMBTI = await majorMbtiService.deleteMajorMbti(majorMBTI_Id);
+      const deleteMajorMBTI = await postsCategoryService.deleteOne(majorMBTI_Id);
       if (deleteMajorMBTI) {
         return responseHelper.sendResponse.SUCCESS(res, null, 'Thực hiện xóa nghành nghề cho MBTI thành công');
       }
@@ -99,14 +99,14 @@ module.exports = {
     }
   },
 
-  restoreOneMajorMbti: async (req, res) => {
+  restoreOne: async (req, res) => {
     try {
       const majorMBTI_Id = parseInt(req.params.id);
       if (isNaN(majorMBTI_Id)) {
         return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter a valid majorMBTI Id as a parameter');
       }
 
-      const deleteMajorMBTI = await majorMbtiService.restoreMajorMbti(majorMBTI_Id);
+      const deleteMajorMBTI = await postsCategoryService.restoreOne(majorMBTI_Id);
       if (deleteMajorMBTI) {
         return responseHelper.sendResponse.SUCCESS(res, null, 'Khôi phục nghành nghề cho MBTI thành công');
       }

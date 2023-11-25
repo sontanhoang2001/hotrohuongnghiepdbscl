@@ -34,9 +34,9 @@ const sendResponse = {
   // 400 Bad Request
   BAD_REQUEST: (res, data, message = "Syntax error or invalid data from the client") => sendApiResponse(res, 400, data, message),
   // 401 Unauthorized
-  UNAUTHORIZED: (res, data, message = "Access denied due to lack of permission") => sendApiResponse(res, 401, data, message),
+  UNAUTHORIZED: (res, data, message = "Unauthorized request. Invalid authentication") => sendApiResponse(res, 401, data, message),
   // 403 Forbidden
-  FORBIDDEN: (res, data, message = "Forbidden") => sendApiResponse(res, 403, data, message),
+  FORBIDDEN: (res, data, message = "Access forbidden. Server refuses to authorize the request") => sendApiResponse(res, 403, data, message),
   // 404 Not Found
   NOT_FOUND: (res, data, message = "Not found") => sendApiResponse(res, 404, data, message),
   // 405 Method Not Allowed

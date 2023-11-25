@@ -15,7 +15,6 @@ const {
   getAllOrganizationType,
   reqToVerifyOrganization,
   updateStatusVerifyOrganization,
-  getAllReqVerifyOrganization,
   getAllByUser,
   getOneByOrganizationId
 } = require('../controllers/organizationController');

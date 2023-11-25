@@ -1,36 +1,22 @@
-const Question = require('../models').Question;
-const Answer = require('../models').Answer;
-const QuestionGroup = require('../models').QuestionGroup;
-const MBTI = require('../models').MBTI;
-const MajorMBTI = require('../models').MajorMBTI;
-const Organization = require('../models').Organization;
+const PostsCategory = require('../models').PostsCategory;
 
-const sequelize = require('../database/connection_database');
 const { Op } = require('sequelize');
 
 module.exports = {
-  createNewMajorMbti: async (payload) => {
+  createNew: async (payload) => {
     try {
       // Tạo mới ngành nghề cho MBTI
-      const majorMBTI = await MajorMBTI.create(payload);
+      const majorMBTI = await PostsCategory.create(payload);
       return majorMBTI;
     } catch (error) {
       throw error; // Sau đó ném lỗi để xử lý ở phần gọi hàm
     }
   },
-  getAllMajorMbti: async (page, size, search, deleted, organizationId, mbtiId) => {
+  getAll: async (page, size, search, deleted) => {
     try {
       const where = {};
       if (search) {
-        where.majorName = { [Op.like]: `%${search}%` };
-      }
-
-      if (organizationId) {
-        where.organizationId = { [Op.eq]: organizationId };
-      }
-
-      if (mbtiId) {
-        where.mbtiId = { [Op.eq]: mbtiId };
+        where.name = { [Op.like]: `%${search}%` };
       }
 
       if (deleted) {
@@ -45,19 +31,7 @@ module.exports = {
         paranoid: false,
         offset,
         limit: size,
-        attributes: ['id', 'majorName', 'link', 'organizationId', 'mbtiId', 'deletedAt'],
-        include: [
-          {
-            model: Organization,
-            attributes: ['id', 'name'],
-            paranoid: false,
-          },
-          {
-            model: MBTI,
-            attributes: ['id', 'name', 'description', 'image'],
-            paranoid: false,
-          },
-        ],
+        attributes: ['id', 'name', 'description', '	createdAt', 'updatedAt	', 'deletedAt'],
       });
 
       // Chuẩn bị dữ liệu phân trang
@@ -73,23 +47,11 @@ module.exports = {
       throw error;
     }
   },
-  getMajorMbtById: async (majorMBTI_Id) => {
+  getById: async (majorMBTI_Id) => {
     try {
       const majorMBTI = await MajorMBTI.findByPk(majorMBTI_Id, {
         paranoid: false,
-        attributes: ['id', 'majorName', 'link', 'organizationId', 'mbtiId', 'deletedAt'],
-        include: [
-          {
-            model: Organization,
-            attributes: ['id', 'name'],
-            paranoid: false,
-          },
-          {
-            model: MBTI,
-            attributes: ['id', 'name', 'description', 'image'],
-            paranoid: false,
-          },
-        ],
+        attributes: ['id', 'name', 'description', '	createdAt', 'updatedAt	', 'deletedAt']
       });
 
       if (majorMBTI instanceof MajorMBTI) {
@@ -101,7 +63,7 @@ module.exports = {
       throw error;
     }
   },
-  updateMajorMbti: async (majorMBTI_Id, payload) => {
+  update: async (majorMBTI_Id, payload) => {
     try {
       // Update question
       const [numberOfAffectedRows] = await MajorMBTI.update(payload, {
@@ -119,7 +81,7 @@ module.exports = {
     }
   },
 
-  deleteMajorMbti: async (majorMBTI_Id) => {
+  deleteOne: async (majorMBTI_Id) => {
     try {
       // Destroy question
       const numberOfAffectedRows1 = await MajorMBTI.destroy({
@@ -137,7 +99,7 @@ module.exports = {
     }
   },
 
-  restoreMajorMbti: async (majorMBTI_Id) => {
+  restoreOne: async (majorMBTI_Id) => {
     try {
 
       // Destroy question

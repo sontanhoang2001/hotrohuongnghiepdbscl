@@ -2,6 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const middleware = require('../middleware/verifyToken');
+const Roles = require('../config/role.js');
 
 //* Call the controller with the methods
 const {
@@ -14,12 +15,12 @@ const {
 } = require('../controllers/majorMbtiController');
 
 //* Here I defined the methods
-router.get('/', getAllMajorMbti);
-router.get('/id/:id', getMajorMbtiById);
+router.get('/', middleware.verifyToken, middleware.checkRole([Roles.ADMIN]), getAllMajorMbti);
+router.get('/id/:id', middleware.verifyToken, middleware.checkRole([Roles.ADMIN]), getMajorMbtiById);
 
-router.post('/add', createNewMajorMbti);
-router.patch('/edit/:id', updateMajorMbti);
-router.delete('/delete/:id', deleteOneMajorMbti);
-router.post('/restore/:id', restoreOneMajorMbti);
+router.post('/add', middleware.verifyToken, middleware.checkRole([Roles.ADMIN]), createNewMajorMbti);
+router.patch('/edit/:id', middleware.verifyToken, middleware.checkRole([Roles.ADMIN]), updateMajorMbti);
+router.delete('/delete/:id', middleware.verifyToken, middleware.checkRole([Roles.ADMIN]), deleteOneMajorMbti);
+router.post('/restore/:id', middleware.verifyToken, middleware.checkRole([Roles.ADMIN]), restoreOneMajorMbti);
 
 module.exports = router;

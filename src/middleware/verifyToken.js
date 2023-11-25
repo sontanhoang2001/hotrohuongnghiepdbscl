@@ -12,11 +12,11 @@ const middleware = {
       const accessToken = token.split(' ')[1];
       jwt.verify(accessToken, process.env.JWT_ACCESS_KEY, (err, user) => {
         if (err) {
-          return responseHelper.sendResponse.FORBIDDEN(res, null, 'Token is not valid');
+          return responseHelper.sendResponse.UNAUTHORIZED(res, null, 'Token is not valid');
         }
 
         if (isNaN(user.id) || isNaN(user.roleId)) {
-          return responseHelper.sendResponse.FORBIDDEN(res, null, 'Token is not valid');
+          return responseHelper.sendResponse.UNAUTHORIZED(res, null, 'Token is not valid');
         }
 
         req.user = user;
@@ -32,7 +32,7 @@ const middleware = {
       if (allowedRoles.includes(userRole)) {
         next();
       } else {
-        return responseHelper.sendResponse.UNAUTHORIZED(res, null);
+        return responseHelper.sendResponse.FORBIDDEN(res, null);
       }
     };
   },
@@ -60,7 +60,7 @@ const middleware = {
         next();
       } else {
         // return responseHelper.sendResponse.UNAUTHORIZED(res, null, "You're not authenticated");
-        return responseHelper.sendResponse.UNAUTHORIZED(res, null);
+        return responseHelper.sendResponse.FORBIDDEN(res, null);
       }
     };
   },
