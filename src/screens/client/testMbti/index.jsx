@@ -62,6 +62,7 @@ function TestMbti() {
   const [completed, setCompleted] = useState(false);
 
   useEffect(() => {
+    console.log(selectedAnswer);
     const handleKeyPress = (event) => {
       // Kiểm tra xem nút mũi tên nào được nhấn
       switch (event.key) {
@@ -73,12 +74,10 @@ function TestMbti() {
 
           break;
         case 'ArrowRight':
-          console.log('tiếp tục');
-          console.log('indexQuestion', indexQuestion);
-          console.log('MAX_ACTIVE_QUESTION_INDEX', MAX_ACTIVE_QUESTION_INDEX);
-          console.log('DIRECTION_NEXT', DIRECTION_NEXT);
           if (selectedAnswer !== undefined) {
-            onNavigationButtonClick(DIRECTION_NEXT);
+            if (indexQuestion < MAX_ACTIVE_QUESTION_INDEX - 1) {
+              onNavigationButtonClick(DIRECTION_NEXT);
+            }
           }
 
           break;
@@ -103,7 +102,7 @@ function TestMbti() {
     return () => {
       window.removeEventListener('keydown', handleKeyPress);
     };
-  }, [indexQuestion]);
+  }, [indexQuestion, selectedAnswer]);
 
   //khai báo hàm điều hướng tạo event cho nút prev và mext btn
   const onNavigationButtonClick = (direction) => {
