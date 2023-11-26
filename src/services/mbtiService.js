@@ -393,4 +393,32 @@ module.exports = {
       throw error;
     }
   },
+
+  getMajorMBTIById: async (mbtiId) => {
+    try {
+      const major_mbti = await MBTI.findByPk(mbtiId, {
+        attributes: ['id', 'name', 'description'],
+        include: [
+          {
+            model: MajorMBTI,
+            attributes: ['id', 'majorName', 'link'],
+            include: [
+              {
+                model: Organization,
+                attributes: ['id', 'name'],
+              },
+            ],
+          },
+        ],
+      });
+
+      if (major_mbti instanceof MBTI) {
+        return major_mbti.get();
+      }
+
+      return major_mbti;
+    } catch (error) {
+      throw error;
+    }
+  },
 };

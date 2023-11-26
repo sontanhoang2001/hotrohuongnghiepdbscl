@@ -233,4 +233,19 @@ module.exports = {
       responseHelper.sendResponse.SERVER_ERROR(res, null);
     }
   },
+
+
+  getMajorMBTIById: async (req, res) => {
+    try {
+      const mbti_id = parseInt(req.params.id);
+      const major_mbti = await mbtiService.getMajorMBTIById(mbti_id); // Gọi chức năng từ service
+      if (major_mbti) {
+        return responseHelper.sendResponse.SUCCESS(res, major_mbti);
+      }
+
+      return responseHelper.sendResponse.NOT_FOUND(res, null);
+    } catch (error) {
+      responseHelper.sendResponse.SERVER_ERROR(res, null);
+    }
+  },
 };
