@@ -9,6 +9,8 @@ import {
   InboxOutlined,
   BookOutlined,
   ThunderboltOutlined,
+  UnorderedListOutlined,
+  WechatOutlined,
 } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../../redux/authSlice';
@@ -98,7 +100,7 @@ function Sidenav({ color }) {
         <span className="icon">
           <InboxOutlined />
         </span>
-        <span className="label">Câu hỏi</span>
+        <span className="label">Câu hỏi MBTI</span>
       </NavLink>,
       '3',
     ),
@@ -110,6 +112,24 @@ function Sidenav({ color }) {
         <span className="label">Gợi ý ngành nghề</span>
       </NavLink>,
       '4',
+    ),
+    getItem(
+      <NavLink to="/admin/loai-bai-viet">
+        <span className="icon">
+          <UnorderedListOutlined />
+        </span>
+        <span className="label">Thể loại bài viết</span>
+      </NavLink>,
+      '12',
+    ),
+    getItem(
+      <NavLink to="/admin/kenh-chat">
+        <span className="icon">
+          <WechatOutlined />
+        </span>
+        <span className="label">Kênh chat</span>
+      </NavLink>,
+      '13',
     ),
 
     getItem(
