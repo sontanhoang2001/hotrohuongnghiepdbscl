@@ -31,6 +31,8 @@ import University from '../screens/admin/university';
 import User from '../screens/admin/user';
 import Mbti from '../screens/admin/mbti';
 import Chat from '../screens/admin/Chat';
+import MajorMBTI from '../screens/admin/majorMBTI';
+
 import ManageNews from '../screens/admin/news';
 import ManageCompanion from '../screens/admin/companion';
 import PrivateRoute from './PrivateRoute';
@@ -88,11 +90,8 @@ function Router() {
             <Route path="verification-requests" element={<OrganizationVerification />} />
             <Route path="danh-sach-nguoi-dung" element={<User />} />
             <Route path="danh-sach-cau-hoi" element={<Mbti />} />
-            <Route path="danh-cau-hoi-dong-hanh" element={<ManageCompanion />} />
+            <Route path="goi-y-nganh-mbti" element={<MajorMBTI />} />
             <Route path="profile" element={<Profile />} />
-            <Route path="tin-nhan" element={<Chat />} />
-            <Route path="danh-sach-tin-tuc" element={<ManageNews />} />
-            <Route path="tao-bai-viet" element={<Posts />} />
           </Route>
         </Route>
         <Route path="/organization" element={<AuthWrapper roles={['ORGANIZATION']} />}>
