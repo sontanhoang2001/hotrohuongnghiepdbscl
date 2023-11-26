@@ -5,6 +5,8 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 // Tạo initialState cho slice
 const initialState = {
   data: null, // Danh sách câu hỏi MBTI
+  personality: null,
+  major: null,
   pending: false, // Trạng thái tải (pending, fulfilled, rejected)
   questionGroups: [],
   mbtiParams: { page: 1, size: 10, search: '' },
@@ -97,7 +99,6 @@ export const getQuestionTodotestMbti = createAsyncThunk(
   async (payload, { rejectWithValue }) => {
     try {
       const rs = await mbtiApi.getQuestionTodotestMbti();
-      console.log('redux>', rs.data.data);
       return rs.data.data; // Đảm bảo kiểm tra API response và chọn dữ liệu cần thiết
     } catch (err) {
       // Xử lý lỗi và trả về thông báo hoặc giá trị mặc định
@@ -115,6 +116,40 @@ export const getGetAllpersonality = createAsyncThunk(
   async (payload, { rejectWithValue }) => {
     try {
       const rs = await mbtiApi.getGetAllpersonality();
+      return rs.data.data; // Đảm bảo kiểm tra API response và chọn dữ liệu cần thiết
+    } catch (err) {
+      // Xử lý lỗi và trả về thông báo hoặc giá trị mặc định
+      if (err.response && err.response.data.message) {
+        throw rejectWithValue(err.response.data.message);
+      } else {
+        throw rejectWithValue(err.message);
+      }
+    }
+  },
+);
+// Tạo một async thunk lưu trữ test MBTI
+export const storeTestHistory = createAsyncThunk(
+  'mbti/storeTestHistory',
+  async (payload, { rejectWithValue }) => {
+    try {
+      const rs = await mbtiApi.storeTestHistory(payload);
+      return rs.data; // Đảm bảo kiểm tra API response và chọn dữ liệu cần thiết
+    } catch (err) {
+      // Xử lý lỗi và trả về thông báo hoặc giá trị mặc định
+      if (err.response && err.response.data.message) {
+        throw rejectWithValue(err.response.data.message);
+      } else {
+        throw rejectWithValue(err.message);
+      }
+    }
+  },
+);
+// Tạo một async thunk lưu trữ test MBTI
+export const getTestHistoryById = createAsyncThunk(
+  'mbti/getTestHistoryById',
+  async (payload, { rejectWithValue }) => {
+    try {
+      const rs = await mbtiApi.getTestHistoryById(payload);
       return rs.data.data; // Đảm bảo kiểm tra API response và chọn dữ liệu cần thiết
     } catch (err) {
       // Xử lý lỗi và trả về thông báo hoặc giá trị mặc định
@@ -226,9 +261,30 @@ const mbtiSlice = createSlice({
       })
       .addCase(getGetAllpersonality.fulfilled, (state, { payload }) => {
         state.pending = false;
-        state.data = payload; // Lưu danh sách câu hỏi MBTI
+        state.personality = payload; // Lưu danh sách câu hỏi MBTI
       })
       .addCase(getGetAllpersonality.rejected, (state, { payload }) => {
+        state.pending = false;
+      })
+      //trạng thái của storeTestHistory pending - fulfilled - rejected
+      .addCase(storeTestHistory.pending, (state) => {
+        state.pending = true;
+      })
+      .addCase(storeTestHistory.fulfilled, (state, { payload }) => {
+        state.pending = false;
+      })
+      .addCase(storeTestHistory.rejected, (state, { payload }) => {
+        state.pending = false;
+      })
+      //trạng thái của getTestHistoryById pending - fulfilled - rejected
+      .addCase(getTestHistoryById.pending, (state) => {
+        state.pending = true;
+      })
+      .addCase(getTestHistoryById.fulfilled, (state, { payload }) => {
+        state.pending = false;
+        state.major = payload;
+      })
+      .addCase(getTestHistoryById.rejected, (state, { payload }) => {
         state.pending = false;
       });
   },
@@ -239,6 +295,5 @@ export const selectMbtiPending = (state) => state.mbti.pending;
 export const selectMbtiToalRow = (state) => state.mbti.total;
 export const selectMbtiPage = (state) => state.mbti.page;
 export const selectMbtiPagesize = (state) => state.mbti.size;
-
 export const { setParams } = mbtiSlice.actions;
 export default mbtiSlice.reducer;

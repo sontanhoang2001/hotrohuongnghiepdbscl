@@ -93,12 +93,16 @@ function Mbti() {
       });
   };
   //hàm bắt event delete
-  const handleDelete = (id) => {    
-    dispatch(deleteMbti(id)).then(()=>{dispatch(getMbtiQuestion())});
+  const handleDelete = (id) => {
+    dispatch(deleteMbti(id)).then(() => {
+      dispatch(getMbtiQuestion());
+    });
   };
   //hàm bắt event delete
   const handleRestore = (id) => {
-    dispatch(restoreMbti(id)).then(()=>{dispatch(getMbtiQuestion())});
+    dispatch(restoreMbti(id)).then(() => {
+      dispatch(getMbtiQuestion());
+    });
   };
   //định dạng cột hiển thị
   const columns = useMemo(
@@ -321,7 +325,7 @@ function Mbti() {
               name="question"
               rules={[{ required: true, message: 'Nhập câu hỏi!' }]}
             >
-              <TextArea placeholder="Câu hỏi" autoSize={{ minRows: 3, maxRows: 5 }} />
+              <Input placeholder="Câu hỏi" />
             </Form.Item>
 
             <Form.List name="answers">
@@ -364,7 +368,7 @@ function Mbti() {
                         block
                         icon={<PlusCircleOutlined />}
                       >
-                        Thêm câu trả lời
+                        Thêm ngành
                       </Button>
                     </Form.Item>
                   )}

@@ -49,6 +49,14 @@ const mbtiApi = {
     const url = `/${publicPathname}/personality-groups`;
     return axiosService.get(url);
   },
+  storeTestHistory: (id) => {
+    const url = `/${pathname}/storeTestHistory?mbtiId=${id}`;
+    return axiosService.post(url);
+  },
+  getTestHistoryById: (id) => {
+    const url = `/${pathname}/getTestHistoryById/${id}`;
+    return axiosService.get(url);
+  },
 };
 
 export default mbtiApi;

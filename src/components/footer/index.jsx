@@ -1,3 +1,4 @@
+import { Col, Row } from 'antd';
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
@@ -117,21 +118,23 @@ function CLientFooter() {
 
   return (
     <Box>
-      <FooterBanner>
-        <img src="../images/logo/logo2.webp" alt="Trung Tâm Hướng Nghiệp ĐBSCL" />
-        <h1
-          style={{
-            color: 'var(--text-white-color)',
-            textAlign: 'center',
-            marginLeft: 10,
-          }}
-        >
-          Trung Tâm Hướng Nghiệp ĐBSCL
-        </h1>
-      </FooterBanner>
       <FooterContainer>
-        <Row>
-          <Column>
+        <Row gutter={[24, 16]}>
+          <Col xs={12} sm={12} md={12} lg={8} className="footer-col">
+            <FooterBanner>
+              <img src="../images/logo/logo2.webp" alt="Trung Tâm Hướng Nghiệp ĐBSCL" />
+              <h1
+                style={{
+                  color: 'var(--text-white-color)',
+                  textAlign: 'center',
+                  marginLeft: 10,
+                }}
+              >
+                Trung Tâm Hướng Nghiệp
+              </h1>
+            </FooterBanner>
+          </Col>
+          <Col xs={12} sm={12} md={12} lg={5}>
             <Heading>Thông Tin</Heading>
             <FooterLink>
               <NavLink to="thong-tin-cac-truong-dai-hoc">Các Trường Đại Học</NavLink>
@@ -142,15 +145,18 @@ function CLientFooter() {
             <FooterLink>
               <NavLink to="dong-hanh">Đồng Hành</NavLink>
             </FooterLink>
-          </Column>
-          <Column>
+          </Col>
+          <Col xs={12} sm={12} md={12} lg={5}>
             <Heading>Dịch vụ</Heading>
 
             <FooterLink>
               <NavLink>chuyên viên tư vấn</NavLink>
             </FooterLink>
-          </Column>
-          <Column>
+            <FooterLink>
+              <NavLink to="dong-hanh">Câu hỏi thắc mắc</NavLink>
+            </FooterLink>
+          </Col>
+          <Col xs={12} sm={12} md={12} lg={6}>
             <Heading>Social Media</Heading>
             <FooterLinkIcon>
               {facebook}
@@ -159,63 +165,106 @@ function CLientFooter() {
               {linkedin}
               {tiktok}
             </FooterLinkIcon>
-          </Column>
+          </Col>
+        </Row>
+        <Row gutter={[16, 16]}>
+          <Col
+            span={12}
+            style={{
+              fontSize: '18px',
+              fontWeight: 600,
+              color: `var(--text-white-color)`,
+              marginTop: 30,
+            }}
+          >
+            <p
+              style={{
+                fontSize: '18px',
+              }}
+            >
+              Địa chỉ liên hệ: số 8 đường Nguyễn Chánh,
+            </p>
+            <p
+              style={{
+                fontSize: '18px',
+              }}
+            >
+              phường Phú Tứ, Quận Cái Răng, T.p Cần Thơ
+            </p>
+            <p
+              style={{
+                fontSize: '18px',
+              }}
+            >
+              Hotline: 0939797979
+            </p>
+          </Col>
         </Row>
       </FooterContainer>
+      <FooterLine>
+        <div></div>
+      </FooterLine>
+      <Row>
+        <Col
+          span={24}
+          style={{ marginBottom: 20, color: `var(--text-white-color)`, textAlign: 'center' }}
+        >
+          <h2>Lưu ý: Mọi thông tin dùng để tham khảo!</h2>
+        </Col>
+      </Row>
     </Box>
   );
 }
 const Box = styled.div`
-  padding: 5% 2.5%;
   background: var(--footer-color);
-  // position: absolute;
   bottom: 0;
   width: 100%;
   margin-top: 60px;
-
-  @media (max-width: 1000px) {
-    // padding: 70px 30px;
-  }
-`;
-const FooterBanner = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  img {
-    max-width: 100px;
-  }
+  padding-top: 5%;
 `;
 
 const FooterContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  max-width: 1000px;
+  padding: 0 2.5%;
   margin: 0 auto;
+  .footer-col {
+  }
   /* background: red; */
 `;
 
-const Column = styled.div`
+const FooterBanner = styled.div`
   display: flex;
-  flex-direction: column;
-  text-align: left;
-  margin-left: 60px;
-`;
-
-const Row = styled.div`
-  display: grid;
-  grid-template-columns: repeat(3, minmax(185px, 1fr));
-  grid-gap: 20px;
-
-  @media (max-width: 1000px) {
-    grid-template-columns: repeat(2, minmax(200px, 1fr));
+  justify-content: flex-start;
+  align-items: center;
+  img {
+    max-width: 100px;
   }
 `;
+
+// const Column = styled.div`
+//   display: flex;
+//   flex-direction: column;
+//   text-align: left;
+//   margin-left: 60px;
+// `;
+
+// const Row = styled.div`
+//   display: grid;
+//   grid-template-columns: repeat(4, minmax(185px, 1fr));
+//   grid-gap: 20px;
+
+//   @media (max-width: 1000px) {
+//     grid-template-columns: repeat(2, minmax(200px, 1fr));
+//   }
+// `;
 
 const FooterLink = styled.div`
   margin-bottom: 20px;
   a {
     font-size: 18px;
+    font-weight: 600;
     color: var(--text-white-color);
     text-decoration: none;
     text-transform: capitalize;
@@ -246,6 +295,17 @@ const Heading = styled.p`
   margin-bottom: 15px;
   font-weight: bold;
   text-transform: uppercase;
+`;
+
+const FooterLine = styled.div`
+  margin-top: 20px;
+  height: 20px;
+  width: 100%;
+  div {
+    background: white;
+    width: 100%;
+    height: 5px;
+  }
 `;
 
 export default CLientFooter;

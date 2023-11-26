@@ -6,55 +6,48 @@ import {
   Button,
   Typography,
   Pagination,
-  List,
   Modal,
   Form,
   Input,
   Select,
   Popconfirm,
-  notification,
 } from 'antd';
 
-import {
-  DeleteOutlined,
-  EditOutlined,
-  CaretRightOutlined,
-  MinusCircleOutlined,
-  PlusCircleFilled,
-  PlusCircleOutlined,
-  UndoOutlined,
-} from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, PlusCircleFilled, UndoOutlined } from '@ant-design/icons';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useMemo, useState } from 'react';
-import {
-  addNewMbti,
-  getMbtiQuestion,
-  getMbtiQuestionGroup,
-  setParams,
-  updateMbti,
-} from '../../../redux/mbtiSlice';
+import { getGetAllpersonality } from '../../../redux/mbtiSlice';
 import React from 'react';
-import TextArea from 'antd/es/input/TextArea';
-import mbtiApi from '../../../api/mbtiApi';
 import Search from 'antd/es/input/Search';
+
 import {
-  createFaqs,
-  deleteFaqs,
-  getAllFAQS,
-  restoreFaqs,
-  setFaqsParams,
-  updateFaqs,
-} from '../../../redux/faqsSlice';
-import faqsApi from '../../../api/faqsApi';
+  createMajorMbti,
+  deleteMajorMbti,
+  getAllMajorMbti,
+  restoreMajorMbti,
+  updateMajorMbti,
+} from '../../../redux/majorMbtiSlice';
+import {
+  getAllPublicUniversityInfo,
+  selectUniversity,
+  selectclientParams,
+} from '../../../redux/universitySlice';
+import majorMbtiApi from '../../../api/majorMbtiApi';
+import { debounce } from 'lodash';
 
 const { Title } = Typography;
 
-function Faqs({ organizationId }) {
+function Faqs() {
   //gọi redux state
   const dispatch = useDispatch();
 
-  const { faqs,size,page,total,pending,faqsParams } = useSelector((state) => state.faqs);
+  const { data, mbtiParams, pending, page, size, total } = useSelector((state) => state.majorMbti);
+  const { personality } = useSelector((state) => state.mbti);
+  const clientParams = useSelector(selectclientParams);
+
+  const getUniversity = useSelector(selectUniversity); //page 1 size 10 init value redux
+
   //form
   // Filter `option.label` match the user type `input`
   const filterOption = (input, option) =>
@@ -65,19 +58,18 @@ function Faqs({ organizationId }) {
     formRef.current
       .validateFields()
       .then((values) => {
-        let formData = { ...values, organizationId: organizationId };
+        let formData = { ...values };
         if (!isEditing) {
-          //create
-          dispatch(createFaqs(formData)).then(()=>{
-            dispatch(getAllFAQS({ organizationId }));
+          dispatch(createMajorMbti(formData)).then(() => {
+            dispatch(getAllMajorMbti(mbtiParams));
+            setIsOpenModal(false);
           });
         } else {
-          //update
-          dispatch(updateFaqs(formData)).then(()=>{
-            dispatch(getAllFAQS({ organizationId }));
+          dispatch(updateMajorMbti(formData)).then(() => {
+            dispatch(getAllMajorMbti(mbtiParams));
+            setIsOpenModal(false);
           });
         }
-        
       })
       .catch((errorInfo) => {
         console.log('Form validation failed:', errorInfo);
@@ -90,12 +82,11 @@ function Faqs({ organizationId }) {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const handleEdit = (id) => {
     setProcessId(id);
-    faqsApi
-      .getById({ id, organizationId })
+    majorMbtiApi
+      .getMajorMbtiById(id)
       .then((res) => {
         setIsEditing(true);
         setIsOpenModal(true);
-
         setTimeout(() => {
           const question = res.data.data;
           formRef.current?.resetFields();
@@ -103,7 +94,6 @@ function Faqs({ organizationId }) {
             ...question,
           });
         }, 200);
-
         setProcessId(0);
       })
       .catch((error) => {
@@ -113,42 +103,89 @@ function Faqs({ organizationId }) {
   };
   //hàm bắt event delete
   const handleDelete = (id) => {
-    dispatch(deleteFaqs({ id, organizationId })).then(() => {
-      dispatch(getAllFAQS({ organizationId }));
+    dispatch(deleteMajorMbti(id)).then(() => {
+      dispatch(getAllMajorMbti(mbtiParams));
     });
   };
   //restore
   const handleRestore = (id) => {
-    dispatch(restoreFaqs({ id, organizationId })).then(() => {
-      dispatch(getAllFAQS({ organizationId }));
+    dispatch(restoreMajorMbti(id)).then(() => {
+      dispatch(getAllMajorMbti(mbtiParams));
     });
   };
+
+  //Lấy danh sách nhóm câu hỏi
+  useEffect(() => {
+    //gọi api thông qua redux
+    dispatch(getAllMajorMbti(mbtiParams));
+    dispatch(getAllPublicUniversityInfo(clientParams));
+    dispatch(getGetAllpersonality());
+  }, [dispatch]);
+  // useEffect(() => {
+  //   //gọi api thông qua redux
+  //   console.log(mbtiParams);
+  // }, [mbtiParams]);
+
+  const convertDataSource =
+    data?.map((item) => ({
+      key: item.id,
+      id: item.id,
+      majorName: item.majorName,
+      link: item.link,
+      organizationName: item.Organization?.name,
+      mbtiName: item.MBTI?.name,
+      deletedAt: item.deletedAt,
+    })) || [];
+  const selectOrganization =
+    getUniversity?.data?.map((item) => ({
+      value: item.id,
+      label: item.name,
+    })) || [];
+
+  const selectPersonality =
+    personality?.map((item) => ({
+      value: item.id,
+      label: item.name,
+    })) || [];
 
   //định dạng cột hiển thị
   const columns = useMemo(
     () => [
       {
-        title: 'STT',
-        dataIndex: 'id',
-        key: 'id',
-        width: 50,
-      },
-      {
-        title: 'Câu hỏi',
-        dataIndex: 'question',
-        key: 'question',
-        width: 300,
+        title: 'Tên ngành',
+        dataIndex: 'majorName',
+        key: 'majorName',
+
         render: (_, record) => (
           <div className="author-info">
-            <Title level={5}>{record.question}</Title>
+            <Title level={5}>{record.majorName}</Title>
           </div>
         ),
       },
       {
-        title: 'Trả lời',
-        dataIndex: 'answers',
-        key: 'answers',
-        render: (_, record) => <div className="author-info">{record.answer}</div>,
+        title: 'Đường dẫn',
+        dataIndex: 'link',
+        key: 'link',
+        render: (_, record) => (
+          <div className="author-info">
+            <a href={record.link} rel="noopener noreferrer" target="_blank">
+              {record.link}
+            </a>
+          </div>
+        ),
+      },
+      {
+        title: 'Tổ chức',
+        dataIndex: 'organization',
+        key: 'organization',
+        render: (_, record) => <div className="author-info">{record?.Organization?.name}</div>,
+        render: (_, record) => <div className="author-info">{record?.organizationName}</div>,
+      },
+      {
+        title: 'MBTI',
+        dataIndex: 'mbti',
+        key: 'mbti',
+        render: (_, record) => <div className="author-info">{record?.mbtiName}</div>,
       },
 
       {
@@ -191,25 +228,24 @@ function Faqs({ organizationId }) {
       },
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [handleDelete, handleEdit, faqs],
+    [handleDelete, handleEdit],
   );
-
-  //Lấy danh sách nhóm câu hỏi
-  useEffect(() => {
-    //gọi api thông qua redux
-    dispatch(getAllFAQS({ organizationId }));
-  }, [dispatch, organizationId,faqsParams]);
-
   //hàm phan trang
   const handlePageChange = (page, pageSize) => {
-    dispatch(setFaqsParams({ page: page, size: pageSize }));
+    // dispatch(setFaqsParams({ page: page, size: pageSize }));
+    dispatch(getAllMajorMbti({ ...mbtiParams, page: page, size: pageSize }));
   };
 
   //tìm kiếm
   const onSearch = (value, _e, info) => {
-    dispatch(setFaqsParams({ search: value, page: 1 }));
+    // dispatch(setFaqsParams({ search: value, page: 1 }));
+    dispatch(getAllMajorMbti({ ...mbtiParams, search: value, page: 1 }));
   };
-
+  const onSearchChange = debounce((e) => {
+    if (e.target.value === '') {
+      dispatch(getAllMajorMbti({ ...mbtiParams, search: e.target.value }));
+    }
+  }, 500);
   return (
     <React.Fragment>
       {/* Data list */}
@@ -231,7 +267,13 @@ function Faqs({ organizationId }) {
             </Button>
           </Col>
           <Col span={16}>
-            <Search placeholder="Tìm kiếm câu hỏi" onSearch={onSearch} enterButton="Tìm" />
+            <Search
+              placeholder="Tìm kiếm câu hỏi"
+              onSearch={onSearch}
+              onChange={onSearchChange}
+              enterButton="Tìm"
+              allowClear
+            />
           </Col>
           <Col xs="24" xl={24}>
             <Card
@@ -244,7 +286,7 @@ function Faqs({ organizationId }) {
                   bordered={true}
                   columns={columns}
                   loading={pending}
-                  dataSource={faqs}
+                  dataSource={convertDataSource}
                   pagination={false}
                   className="ant-border-space"
                 />
@@ -268,8 +310,7 @@ function Faqs({ organizationId }) {
         confirmLoading={pending}
         title={
           <p style={{ textAlign: 'center', margin: 0 }}>
-            {' '}
-            {(isEditing && 'Chỉnh sửa câu hỏi') || 'Thêm câu hỏi'}
+            {(isEditing && 'Chỉnh Ngành nghề') || 'Thêm ngành'}
           </p>
         }
         okText="Lưu"
@@ -286,18 +327,52 @@ function Faqs({ organizationId }) {
               <Input type="hidden" />
             </Form.Item>
             <Form.Item
-              label="Câu hỏi"
-              name="question"
-              rules={[{ required: true, message: 'Nhập câu hỏi!' }]}
+              label="Tên ngành"
+              name="majorName"
+              rules={[{ required: true, message: 'Nhập tên ngành' }]}
             >
-              <TextArea placeholder="Câu hỏi" autoSize={{ minRows: 3, maxRows: 5 }} />
+              <Input placeholder="Tên ngành" />
             </Form.Item>
             <Form.Item
-              label="Câu trả lời"
-              name="answer"
-              rules={[{ required: true, message: 'Nhập câu trả lời!' }]}
+              label="Địa chỉ truy cập"
+              name="link"
+              rules={[{ required: true, message: 'Nhập Đường dẫn' }]}
             >
-              <TextArea placeholder="Câu trả lời" autoSize={{ minRows: 3, maxRows: 5 }} />
+              <Input placeholder="link.com.vn" />
+            </Form.Item>
+            <Form.Item
+              label="Tổ chức"
+              name="organizationId"
+              rules={[
+                {
+                  required: true,
+                  message: 'Chưa chọn tổ chức',
+                },
+              ]}
+            >
+              <Select
+                placeholder="Chọn tổ chức"
+                options={selectOrganization}
+                allowClear
+                style={{ height: 40 }}
+              />
+            </Form.Item>
+            <Form.Item
+              label="MBTI"
+              name="mbtiId"
+              rules={[
+                {
+                  required: true,
+                  message: 'Chưa chọn MBTI',
+                },
+              ]}
+            >
+              <Select
+                placeholder="Chọn MBTI"
+                options={selectPersonality}
+                allowClear
+                style={{ height: 40 }}
+              />
             </Form.Item>
           </Form>
         </Card>
