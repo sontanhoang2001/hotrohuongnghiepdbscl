@@ -6,8 +6,8 @@ module.exports = {
   createNew: async (payload) => {
     try {
       // Tạo mới ngành nghề cho MBTI
-      const majorMBTI = await PostsCategory.create(payload);
-      return majorMBTI;
+      const postsCategory = await PostsCategory.create(payload);
+      return postsCategory;
     } catch (error) {
       throw error; // Sau đó ném lỗi để xử lý ở phần gọi hàm
     }
@@ -26,12 +26,12 @@ module.exports = {
       // Tính offset
       const offset = (page - 1) * size;
 
-      const { count, rows } = await MajorMBTI.findAndCountAll({
+      const { count, rows } = await PostsCategory.findAndCountAll({
         where,
         paranoid: false,
         offset,
         limit: size,
-        attributes: ['id', 'name', 'description', '	createdAt', 'updatedAt	', 'deletedAt'],
+        attributes: ['id', 'name', 'description', 'createdAt', 'updatedAt', 'deletedAt'],
       });
 
       // Chuẩn bị dữ liệu phân trang
@@ -47,27 +47,27 @@ module.exports = {
       throw error;
     }
   },
-  getById: async (majorMBTI_Id) => {
+  getById: async (postsCategory_id) => {
     try {
-      const majorMBTI = await MajorMBTI.findByPk(majorMBTI_Id, {
+      const postsCategory = await PostsCategory.findByPk(postsCategory_id, {
         paranoid: false,
-        attributes: ['id', 'name', 'description', '	createdAt', 'updatedAt	', 'deletedAt']
+        attributes: ['id', 'name', 'description', 'createdAt', 'updatedAt', 'deletedAt']
       });
 
-      if (majorMBTI instanceof MajorMBTI) {
-        return majorMBTI.get();
+      if (postsCategory instanceof PostsCategory) {
+        return postsCategory.get();
       }
 
-      return majorMBTI;
+      return postsCategory;
     } catch (error) {
       throw error;
     }
   },
-  update: async (majorMBTI_Id, payload) => {
+  update: async (postsCategory_id, payload) => {
     try {
       // Update question
-      const [numberOfAffectedRows] = await MajorMBTI.update(payload, {
-        where: { id: majorMBTI_Id },
+      const [numberOfAffectedRows] = await PostsCategory.update(payload, {
+        where: { id: postsCategory_id },
       });
 
       // Kiểm tra số lượng dòng bị ảnh hưởng bởi câu lệnh update cho câu hỏi
@@ -81,11 +81,11 @@ module.exports = {
     }
   },
 
-  deleteOne: async (majorMBTI_Id) => {
+  deleteOne: async (postsCategory_id) => {
     try {
       // Destroy question
-      const numberOfAffectedRows1 = await MajorMBTI.destroy({
-        where: { id: majorMBTI_Id },
+      const numberOfAffectedRows1 = await PostsCategory.destroy({
+        where: { id: postsCategory_id },
       });
 
       // Kiểm tra số lượng dòng bị ảnh hưởng bởi câu lệnh update cho câu hỏi
@@ -99,12 +99,12 @@ module.exports = {
     }
   },
 
-  restoreOne: async (majorMBTI_Id) => {
+  restoreOne: async (postsCategory_id) => {
     try {
 
       // Destroy question
-      const numberOfAffectedRows1 = await MajorMBTI.restore({
-        where: { id: majorMBTI_Id },
+      const numberOfAffectedRows1 = await PostsCategory.restore({
+        where: { id: postsCategory_id },
       });
 
       // Kiểm tra số lượng dòng bị ảnh hưởng bởi câu lệnh update cho câu hỏi
