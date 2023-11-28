@@ -5,7 +5,6 @@ import BannerSection from './bannerSection';
 function Home() {
   return (
     <div>
-      {/* <Test /> */}
       <BannerSection />
       <NewsSection />
     </div>

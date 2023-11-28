@@ -19,7 +19,7 @@ function BannerSection() {
     initialSlide: 0,
     dots: false,
     autoplay: true,
-    autoplaySpeed: 4000,
+    autoplaySpeed: 5000,
     pauseOnHover: false,
     focusOnSelect: true,
     centerPadding: '0',
@@ -39,11 +39,10 @@ function BannerSection() {
                   style={{
                     width: '100%',
                     height: 'calc(100vh - 320px)',
-                    position: 'relative',
                     backgroundPosition: 'center',
                     backgroundRepeat: 'no-repeat',
                     backgroundSize: 'cover',
-                    backgroundImage: `url(./images/mbti/${val.image})`,
+                    backgroundImage: `url(${val.image})`,
                     backgroundColor: 'var(--text-secondary-color)',
                   }}
                   className="banner-image"
@@ -160,9 +159,9 @@ const BannerContainer = styled.div`
         }
       }
       .slide-active {
-        opacity: 1;
+        /* opacity: 1; */
         transform: scale(1);
-        filter: blur(0);
+        /* filter: blur(0); */
         transition: 0.7s ease-in-out;
       }
     }
