@@ -307,7 +307,6 @@ function Sidenav({ color }) {
     <>
       <div className="brand">
         <p>Trung Tâm Hướng Nghiệp</p>
-        <p>ĐBSCL</p>
       </div>
       <hr />
       <Menu defaultSelectedKeys={['1']} mode="inline" items={navItemsByRole[role]} />

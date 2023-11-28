@@ -5,9 +5,12 @@ import { Button, Popconfirm, Skeleton, Spin, message } from 'antd';
 import { mbtiDetail } from '../../../components/mbtiDetail/mbtiDetail';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  getGetAllpersonality,
   getQuestionTodotestMbti,
+  getTestHistoryById,
   selectMbtiPending,
   selectMbtiQuestions,
+  storeTestHistory,
 } from '../../../redux/mbtiSlice';
 
 // change value of question increase 1 or decrease 1, when click prev or next button
@@ -27,14 +30,12 @@ function TestMbti() {
   const dispatch = useDispatch();
   const getTodoTest = useSelector(selectMbtiQuestions);
   const pendingState = useSelector(selectMbtiPending);
-
+  const { personality, major } = useSelector((state) => state.mbti);
+  const { isLogin } = useSelector((state) => state.auth);
   useEffect(() => {
     dispatch(getQuestionTodotestMbti());
+    dispatch(getGetAllpersonality());
   }, []);
-
-  useEffect(() => {
-    console.log('pendingState', pendingState);
-  }, [pendingState]);
 
   //giá trị nhỏ nhất và giới hạn của gói câu hỏi, nhỏ nhất là 0, lớn nhất là số câu hỏi truyền vào (questions.length)
   const MIN_ACTIVE_QUESTION_INDEX = 0;
@@ -62,12 +63,10 @@ function TestMbti() {
   const [completed, setCompleted] = useState(false);
 
   useEffect(() => {
-    console.log(selectedAnswer);
     const handleKeyPress = (event) => {
       // Kiểm tra xem nút mũi tên nào được nhấn
       switch (event.key) {
         case 'ArrowLeft':
-          console.log('trở về ');
           if (indexQuestion > MIN_ACTIVE_QUESTION_INDEX) {
             onNavigationButtonClick(DIRECTION_PREV);
           }
@@ -82,7 +81,6 @@ function TestMbti() {
 
           break;
         case 'Enter':
-          console.log('enter nè ');
           if (selectedAnswer !== undefined) {
             if (indexQuestion < MAX_ACTIVE_QUESTION_INDEX - 1) {
               onNavigationButtonClick(DIRECTION_NEXT);
@@ -252,7 +250,14 @@ function TestMbti() {
 
   const handleSubmit = useCallback(() => {
     const mbtiType = calculateMBTIType(answers);
-    setMbtiResult(getTypeDetail(mbtiType));
+    console.log(personality);
+    setMbtiResult(personality.find((detail) => detail.name === mbtiType));
+    console.log(mbtiResult.id);
+    if (isLogin) {
+      dispatch(storeTestHistory(mbtiResult.id));
+    }
+    // dispatch(getTestHistoryById(mbtiResult.id));
+    console.log(major);
     setCompleted(true);
     // console.log(mbtiType);
   }, [answers, calculateMBTIType]);
@@ -276,21 +281,21 @@ function TestMbti() {
 
             <Question>
               <h3>
-                {' '}
                 {getTodoTest && getTodoTest[indexQuestion]
                   ? getTodoTest[indexQuestion].question
                   : ''}
               </h3>
               <ul>
-                {getTodoTest?.[indexQuestion]?.Answers.map((answer, idx) => (
-                  <li
-                    key={idx}
-                    className={selectedAnswer === answer.value ? 'selected-answer' : null}
-                    onClick={() => onAnswerClick(answer.value)}
-                  >
-                    {answer.answer}
-                  </li>
-                ))}
+                {getTodoTest &&
+                  getTodoTest?.[indexQuestion]?.Answers?.map((answer, idx) => (
+                    <li
+                      key={idx}
+                      className={selectedAnswer === answer.value ? 'selected-answer' : null}
+                      onClick={() => onAnswerClick(answer.value)}
+                    >
+                      {answer.answer}
+                    </li>
+                  ))}
               </ul>
             </Question>
 
@@ -342,10 +347,10 @@ function TestMbti() {
           <>
             <ShowResult className="container">
               <h3 className="result-title">kết quả của bạn</h3>
-              <img src={`./images/mbti/${mbtiResult.image}`} alt="mbtitype" />
+              <img src={`${mbtiResult.image}`} alt="mbtitype" />
               <div className="mbti-description">
-                <h3>{mbtiResult.id}</h3>
-                <h3 style={{ color: 'var(--primary-color)' }}>{mbtiResult.text}</h3>
+                {/* <h3>{mbtiResult.name}</h3> */}
+                <h3 style={{ color: 'var(--primary-color)' }}>{mbtiResult.name}</h3>
                 <p>{mbtiResult.description}</p>
               </div>
               <h3>Công việc phù hợp với {mbtiResult.id}</h3>

@@ -10,7 +10,8 @@ function MBTI() {
   const navigate = useNavigate();
   // gọi redux
   const dispatch = useDispatch();
-  const personality = useSelector(selectMbtiQuestions);
+  const { personality } = useSelector((state) => state.mbti);
+
   useEffect(() => {
     dispatch(getGetAllpersonality());
   }, []);
@@ -131,17 +132,18 @@ function MBTI() {
           <MBTIDetailStyled>
             <h3>16 loại hình tính cách MBTI</h3>
             <Row gutter={[16, 16]}>
-              {personality?.map((val, idx) => (
-                <Col key={idx} xs={14} sm={24} md={12} lg={12}>
-                  <Card className="personality-card">
-                    <div className="personality-img">
-                      <img src={val.image} alt="tính cách MBTI" />
-                    </div>
-                    <p className="personality-name">{val.name}</p>
-                    <p className="personality-description">{val.description}</p>
-                  </Card>
-                </Col>
-              ))}
+              {personality &&
+                personality?.map((val, idx) => (
+                  <Col key={idx} xs={14} sm={24} md={12} lg={12}>
+                    <Card className="personality-card">
+                      <div className="personality-img">
+                        <img src={val.image} alt="tính cách MBTI" />
+                      </div>
+                      <p className="personality-name">{val.name}</p>
+                      <p className="personality-description">{val.description}</p>
+                    </Card>
+                  </Col>
+                ))}
             </Row>
           </MBTIDetailStyled>
         </Introduce>

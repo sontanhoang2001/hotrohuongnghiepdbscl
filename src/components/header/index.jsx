@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { AlignLeftOutlined, UserOutlined, LogoutOutlined } from '@ant-design/icons';
-import { Button, Dropdown, Space } from 'antd';
+import { AlignLeftOutlined, UserOutlined, LogoutOutlined, MenuOutlined } from '@ant-design/icons';
+import { Button, Drawer, Dropdown, Space } from 'antd';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { selectIsLogin, selectProfile, logout, selectLoginData } from '../../redux/authSlice';
 import { useDispatch, useSelector } from 'react-redux';
@@ -28,6 +28,16 @@ function Header() {
   const [fullname, setFullName] = useState('');
   const [loginStatus, setLoginStatus] = useState(false);
   const { role, status } = useSelector((state) => state.auth);
+
+  const [drawerVisible, setDrawerVisible] = useState(false);
+
+  const showDrawer = () => {
+    setDrawerVisible(true);
+  };
+
+  const onCloseDrawer = () => {
+    setDrawerVisible(false);
+  };
 
   const navItemsByRole = {
     ADMIN: (
@@ -118,9 +128,10 @@ function Header() {
       <div className="top-nav">
         <div className="topbar">
           {/* brand name and topbar button */}
-          <h1 className="brand">Trung Tâm Hướng Nghiệp ĐBSCL</h1>
+          <h1 className="brand">Trung Tâm Hướng Nghiệp</h1>
 
           <div className="topbar-btn">
+            <Button type="text" onClick={showDrawer} icon={<MenuOutlined />} />
             {isLogin && status === 1 ? (
               <Dropdown
                 menu={{
@@ -168,6 +179,32 @@ function Header() {
           </ul>
         </nav>
       </div>
+      {/* Ant Design Drawer */}
+      <Drawer
+        placement="right"
+        closable={false}
+        onClose={onCloseDrawer}
+        visible={drawerVisible}
+        style={{ backgroundColor: 'var(--primary-color)' }}
+      >
+        {/* Customize the content of the drawer with your navigation links */}
+        <DrawerNav>
+          <nav className="links">
+            <ul>
+              {linkMenu.map((val, idx) => (
+                <li key={idx} onClick={onCloseDrawer}>
+                  <NavLink
+                    to={val.to}
+                    className={({ isActive }) => (isActive ? 'link-actived' : '')}
+                  >
+                    {val.title}
+                  </NavLink>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </DrawerNav>
+      </Drawer>
     </Nav>
   );
 }
@@ -270,6 +307,44 @@ const Nav = styled.header`
             border-bottom: 1px solid var(--text-hover-color);
             line-height: 10px;
           }
+        }
+      }
+    }
+  }
+`;
+
+const DrawerNav = styled.nav`
+  /* background-color: var(--primary-color); */
+  .links {
+    width: 100%;
+    height: 50px;
+    ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      li {
+        text-transform: capitalize;
+        text-decoration: none;
+        text-align: left;
+        font-weight: 600;
+        font-size: 1.2rem;
+        cursor: pointer;
+        padding: 12px 20px;
+        a {
+          text-decoration: none;
+          color: var(--text-color);
+          transition: 0.2s ease-in-out;
+          &:hover {
+            color: var(--text-hover-color);
+            border-bottom: 1px solid var(--text-hover-color);
+            line-height: 10px;
+          }
+        }
+
+        .link-actived {
+          color: var(--text-hover-color);
+          border-bottom: 1px solid var(--text-hover-color);
+          line-height: 10px;
         }
       }
     }

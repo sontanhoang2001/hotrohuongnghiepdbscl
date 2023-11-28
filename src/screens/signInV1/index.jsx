@@ -78,6 +78,7 @@ function SignInV1() {
         navigate('/admin');
       } else if (role === 'ORGANIZATION') {
         navigate('/organization');
+        window.location.reload();
       } else {
         navigate('/');
       }
