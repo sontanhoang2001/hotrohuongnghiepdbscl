@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button, Card, Col, Row, Space, Spin, message } from 'antd';
+import { Button, Card, Col, Radio, Row, Space, Spin, message, Form } from 'antd';
+import { InputOTP } from 'antd-input-otp';
 import { CloseOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
-import RequestOtp from '../../components/requestOtp';
 import {
   isOtp,
   logout,
@@ -13,17 +14,20 @@ import {
   selectPending,
   selectSignupData,
   setIsSignup,
+  authOTP,
 } from '../../redux/authSlice';
-import { useNavigate } from 'react-router-dom';
+import { auth, RecaptchaVerifier, signInWithPhoneNumber } from '../../firebase/config';
 
 function OtpLogin() {
   const [otpType, setOtpType] = useState('email');
   const [phone, setPhone] = useState('');
-  const [hasPhone, setHasPhone] = useState(true);
-  const [mail, setMail] = useState('');
-  const [userId, setUserId] = useState('');
-  const [open, setOpen] = useState(false); //thay đối giá trị đóng mở của của sổ
   const [loadinpage, setloadinpage] = useState(false);
+  const [result, setResult] = useState('');
+  const location = useLocation();
+  const [form] = Form.useForm();
+
+  const [beginSendOTP, setBeginSendOTP] = useState(false); //thay đối giá trị đóng mở của của sổ
+
   const navigate = useNavigate();
   //gọi redux
   const dispatch = useDispatch();
@@ -32,66 +36,138 @@ function OtpLogin() {
   const getUserData = useSelector(selectLoginData); //lấy thông tin người dùng đăng ký trong local storage
 
   let pending = useSelector(selectPending);
-  const sentOtp = useSelector(selectIsOtp);
+  const authOtpSuccess = useSelector(selectIsOtp);
 
-
-
-  const handleOnclick = (type) => {
-    setOtpType(type);
-
-
-    //   setUserId(getUserData?.userData.UserDetail.id);
-    // } else {
-    //   setUserId(getSignupData?.id);
-    // }
-    // const getUserID = getSignupData?.id;
-
-    if (type === 'email') {
+  const handleSendOTP = () => {
+    if (otpType === 'email') {
+      setBeginSendOTP(true);
+      console.log('send email...');
       const requestData = {
-        userId: getUserData.userData.id,
-        type: type,
+        userId: getUserData.id,
+        type: otpType,
       };
 
       dispatch(requestOtp(requestData));
-    } else if (type === 'phone') {
-      setOpen(true);
-      setloadinpage(true);
-      // Add a timeout to stop spinning after 3 seconds
+    } else if (otpType === 'phone') {
+      setBeginSendOTP(true);
+
+      let phoneNumber = `+84${getUserData.phone.substring(1)}`;
+      console.log('bắt đầu gửi OTP qua sđt: ', phoneNumber);
       setTimeout(() => {
-        setloadinpage(false);
-      }, 3000);
+        signin(phoneNumber);
+      }, 5000)
     }
   };
-  // otp bằng số điện thoại
-  const [otp, setOtp] = useState('');
-  const [step, setStep] = useState('INPUT_PHONE_NUMBER');
-  const [result, setResult] = useState('');
 
-  // useEffect(() => {
-  //   if (getSignupData?.email === null && getSignupData?.email === null) {
-  //     navigate('/404');
-  //   }
-  //   setloadinpage(pending && pending != null ? true : false);
-  //   if (getSignupData?.email === null || getSignupData?.email === undefined) {
-  //     setMail(getUserData?.userData?.email);
-  //     setPhone(getUserData?.userData?.phone);
-  //     setUserId(getUserData?.userData?.UserDetail?.id);
-  //   } else {
-  //     setMail(getSignupData?.email);
-  //     setPhone(getSignupData?.phone);
-  //     setUserId(getSignupData?.id);
-  //   }
+  const signin = (phoneNumber) => {
+    try {
+      if (phoneNumber === '') return;
 
-  //   if (phone != null && phone !== undefined && phone !== '') {
-  //     setHasPhone(false);
-  //   }
+      let verify = new RecaptchaVerifier(auth, 'recaptcha-container', {
+        size: 'invisible',
+      });
 
-  //   dispatch(setIsSignup(false)); // Chỉ dispatch khi chưa dispatch lần nào
-  //   if (sentOtp) {
-  //     setOpen(true);
-  //     dispatch(isOtp(false));
-  //   }
-  // }, [pending, loadinpage, open, sentOtp, dispatch, phone, mail]);
+      signInWithPhoneNumber(auth, phoneNumber, verify)
+        .then((result) => {
+          console.log('result: ', result);
+          setResult(result);
+        })
+        .catch((err) => {
+          console.log('error o trong', err);
+
+          console.log(err);
+        });
+    } catch (error) {
+      console.log('error', error);
+      console.log('hết hạn');
+      message.error('Gửi mã xác thực OTP đã hết hạn!', 3);
+    }
+  };
+
+  //hàm xác thựcn otp bằng số điện thoại
+  const ValidateOtpByPhone = (otp) => {
+    if (otp.length < 6) {
+      message.error('Bạn chưa nhập đủ mã OTP', 3);
+    }
+
+    if (otp === null) return;
+
+    return new Promise((resolve, reject) => {
+      return result
+        .confirm(otp)
+        .then((result) => {
+          resolve(result);
+        })
+        .catch((err) => {
+          // console.log('Incorrect code');
+          reject(err);
+        });
+    });
+  };
+
+  useEffect(() => {
+    if (authOtpSuccess === true) {
+      localStorage.removeItem('userSignupData');
+      navigate('/dang-nhap', {replace: true});
+    }
+  }, [authOtpSuccess]);
+
+  //hàm sử lý khi người dùng submit
+  const handleFinish = (values) => {
+    // The value will be array of string
+    // Check the field if there is no value, or value is undefined/empty string
+    const { otp } = values;
+
+    //kiểm tra otp có đúng định dạng hay không
+    //khác undefined
+    //khác chuỗi rỗng
+    //khác null
+    if (!otp || otp.includes(undefined) || otp.includes('')) {
+      return form.setFields([
+        {
+          name: 'otp',
+          errors: ['mã xác nhận không hợp lệ!!!'],
+        },
+      ]);
+    }
+
+    //chuyển đổi mảng otp sang chuỗi
+    const otpString = otp.join('');
+
+    // tạo giá trị request cho api
+
+    console.log('getUserData.id', getUserData?.id);
+    if (getUserData.id) {
+      if (otpType === 'email') {
+        console.log('userId', getUserData?.id);
+
+        const formData = {
+          userId: getUserData?.id,
+          type: otpType,
+          otpCode: otpString,
+        };
+
+        dispatch(authOTP(formData));
+      } else if (otpType === 'phone') {
+        const formData = {
+          userId: getUserData?.id,
+          type: otpType,
+          otpCode: '',
+        };
+
+        // Update status active for user
+        ValidateOtpByPhone(otpString)
+          .then((result) => {
+            if (result) {
+              dispatch(authOTP(formData));
+            }
+          })
+          .catch(() => {
+            message.error('Xác thực OTP thất bại!', 3);
+          });
+      }
+    }
+  };
 
   const handelCancelOtp = () => {
     navigate('/dang-ky');
@@ -102,54 +178,43 @@ function OtpLogin() {
     <Spin spinning={loadinpage}>
       <Container>
         {/* dùng toán tử 3 ngôi thay đổi của sổ khi giá trị open thây đổi */}
-        {open === false ? (
+        {beginSendOTP === false ? (
           <Card style={{ boxShadow: `rgba(0, 0, 0, 0.24) 0px 3px 8px` }}>
             <div className="box">
-              <h3 className="box-title">Lấy mã xác nhận</h3>
+              <h3 className="box-title">Xác thực OTP</h3>
               <div className="group-btn-send-otp">
                 <Space direction="vertical" size="middle">
-                  <p>
-                    Otp sẽ được gửi qua mail:{' '}
-                    <u style={{ color: `var(--secondary-color)` }}>{getUserData.email}</u>
-                  </p>
-                  {!hasPhone ? (
-                    <div>
-                      Otp sẽ được gửi qua SĐT:{' '}
-                      <u style={{ color: `var(--secondary-color)` }}> {phone}</u>
-                      {/* {step === 'INPUT_PHONE_NUMBER' && (
-                        <div>
-                          <input
-                            value={phoneNumber}
-                            onChange={(e) => {
-                              setPhoneNumber(e.target.value);
-                            }}
-                            placeholder="phone number"
-                          />
-                          <br />
-                          <br />
-                          <div id="recaptcha-container"></div>
-                          <button onClick={signin}>Send OTP</button>
-                        </div>
-                      )} */}
-                    </div>
-                  ) : (
-                    <p>Hiện bạn chưa cập nhật số điện thoại</p>
-                  )}
+                  <p>Otp sẽ được gửi qua :</p>
+                  <Radio.Group onChange={(e) => setOtpType(e.target.value)} value={otpType}>
+                    <Space direction="vertical">
+                      {getUserData.phone && (
+                        <Radio value={'email'}>
+                          email:{' '}
+                          <span style={{ color: `var(--secondary-color)` }}>
+                            {getUserData.email}
+                          </span>
+                        </Radio>
+                      )}
+                      {getUserData.phone && (
+                        <Radio value={'phone'}>
+                          số điện thoại:{' '}
+                          <span style={{ color: `var(--secondary-color)` }}>
+                            {getUserData.phone}
+                          </span>
+                        </Radio>
+                      )}
+                    </Space>
+                  </Radio.Group>
                 </Space>
-                <Row gutter={[16, 16]}>
-                  <Col span={12}>
-                    <Button type="primary" block onClick={() => handleOnclick('email')}>
-                      Gửi qua mail
-                    </Button>
-                  </Col>
-                  <Col span={12}>
+                <Row gutter={[16, 16]} style={{ marginTop: '1rem' }}>
+                  <Col span={24}>
                     <Button
                       type="primary"
-                      disabled={hasPhone}
+                      disabled={!getUserData?.email}
                       block
-                      onClick={() => handleOnclick('phone')}
+                      onClick={() => handleSendOTP()}
                     >
-                      Gửi qua SĐT
+                      Nhận mã xác thực
                     </Button>
                   </Col>
                 </Row>
@@ -167,12 +232,34 @@ function OtpLogin() {
                 type="link"
                 shape="round"
                 className="close-btn"
-                onClick={() => setOpen(!open)}
+                onClick={() => setBeginSendOTP(!beginSendOTP)}
               >
                 <CloseOutlined />
               </Button>
             </div>
-            <RequestOtp type={otpType} userId={userId} sentOtp={sentOtp} phone={phone} />
+            {/* <RequestOtp type={otpType} userId={userId} sentOtp={sentOtp} phone={phone} /> */}
+            <OtpContainer>
+              <main>
+                <section className="request-otp-box">
+                  <h2 className="otp-title">nhập mã xác nhận</h2>
+                  <Form form={form} onFinish={handleFinish}>
+                    <Form.Item
+                      name="otp"
+                      className="center-error-message"
+                      rules={[{ validator: async () => Promise.resolve() }]}
+                    >
+                      <InputOTP name="otp" autoFocus inputType="numeric" length={6} />
+                    </Form.Item>
+                    <div id="recaptcha-container"></div>
+                    <Form.Item noStyle>
+                      <Button block htmlType="submit" type="primary" className="otp-send-btn">
+                        Gửi
+                      </Button>
+                    </Form.Item>
+                  </Form>
+                </section>
+              </main>
+            </OtpContainer>
           </OtpRequestCard>
         )}
       </Container>
@@ -217,6 +304,39 @@ const Container = styled.div`
         margin-left: 5px;
         margin-right: 5px;
       }
+    }
+  }
+`;
+
+const OtpContainer = styled.div`
+  .request-otp-box {
+    align-items: center;
+    .otp-title {
+      text-align: center;
+      text-transform: capitalize;
+      margin: 0 0 2rem;
+    }
+    .input-classname {
+      margin: 0 10px;
+    }
+
+    .wrapper-classname {
+      gap: 4px;
+      margin-bottom: 24px;
+    }
+    .center-error-message:where(.ant-form-item) .ant-form-item-explain-error {
+      text-align: center;
+    }
+    .otp-send-btn,
+    .otp-resend-btn {
+      text-transform: capitalize;
+      margin-top: 10px;
+      margin-left: 5px;
+      margin-right: 5px;
+    }
+    .g-btn-send-otp {
+      display: flex;
+      width: 100%;
     }
   }
 `;

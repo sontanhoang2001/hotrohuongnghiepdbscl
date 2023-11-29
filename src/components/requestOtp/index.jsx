@@ -117,10 +117,10 @@ function RequestOtp(props) {
     // tạo giá trị request cho api
     if (getUserData.userData.id) {
       if (type === 'email') {
-        console.log('userId', getUserData.userData.id);
+        console.log('userId', getUserData?.id);
 
         const formData = {
-          userId: getUserData.userData.id,
+          userId: getUserData?.id,
           type: props.type,
           otpCode: otpString,
         };

@@ -45,7 +45,7 @@ const initialState = {
   error: null,
   isLogin: statusLogin,
   isSignup: false,
-  otp: false,
+  authOtpSuccess: false,
   message: null,
   role: parsedUserDatalocalStorage?.Role.name || null,
   status: parsedUserDatalocalStorage?.status || null,
@@ -112,10 +112,9 @@ export const requestOtp = createAsyncThunk(
       return rs.data.message;
     } catch (err) {
       if (err.response && err.response.data.message) {
-        console.log(err.response.data.message);
-        throw rejectWithValue(err.response.data.message);
+        return rejectWithValue(err.response.data.message);
       } else {
-        throw rejectWithValue(err.message);
+        return rejectWithValue(err.message);
       }
     }
   },
@@ -129,9 +128,9 @@ export const authOTP = createAsyncThunk(
       return rs.data.message;
     } catch (err) {
       if (err.response && err.response.data.message) {
-        throw rejectWithValue(err.response);
+        return rejectWithValue(err.response.data.message);
       } else {
-        throw rejectWithValue(err.message);
+        return rejectWithValue(err.message);
       }
     }
   },
@@ -237,8 +236,6 @@ export const authSlice = createSlice({
       })
       .addCase(requestOtp.fulfilled, (state, { payload }) => {
         state.pending = false;
-        state.data = payload;
-        state.otp = true;
         message.success('Mã otp đã gửi đến mail của bạn', 3);
       })
       .addCase(requestOtp.rejected, (state, { payload }) => {
@@ -253,13 +250,14 @@ export const authSlice = createSlice({
       })
       .addCase(authOTP.fulfilled, (state, { payload }) => {
         state.pending = false;
-        state.data = payload;
         state.otp = true;
+        message.success(payload, 3);
       })
       .addCase(authOTP.rejected, (state, { payload }) => {
         state.pending = false;
         state.error = payload;
         state.otp = false;
+        console.log("message", payload);
         message.error(payload, 3);
       })
       //trạng thái của authEmtail pending - fulfilled - rejected
