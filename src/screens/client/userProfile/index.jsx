@@ -171,50 +171,6 @@ function UserProfile() {
               }}
             />
             <BodyContent>
-              {/* <Descriptions>
-                <Descriptions.Item
-                  label={
-                    <Space>
-                      <PhoneOutlined
-                        className="profile-icon"
-                        style={{ color: 'var(--primary-color)' }}
-                      />
-                      <span>SĐT</span>{' '}
-                    </Space>
-                  }
-                  span={3}
-                >
-                  {getProfile?.phone}
-                </Descriptions.Item>
-                <Descriptions.Item
-                  label={
-                    <Space>
-                      <MailOutlined
-                        className="profile-icon"
-                        style={{ color: 'var(--primary-color)' }}
-                      />
-                      <span>Email</span>{' '}
-                    </Space>
-                  }
-                  span={3}
-                >
-                  {getProfile?.email}
-                </Descriptions.Item>
-                <Descriptions.Item
-                  label={
-                    <Space>
-                      <HomeOutlined
-                        className="profile-icon"
-                        style={{ color: 'var(--primary-color)' }}
-                      />
-                      <span>Địa chỉ</span>{' '}
-                    </Space>
-                  }
-                  span={3}
-                >
-                  {getProfile?.UserDetail?.address}, {getProfile?.UserDetail?.addressDetail}
-                </Descriptions.Item>
-              </Descriptions> */}
               <Row style={{ marginTop: 20 }}>
                 <Col span={24}>
                   <p>
@@ -314,13 +270,13 @@ function UserProfile() {
         {/* <img src={`${getAllTestHistory?.data.}`} alt="mbtitype" /> */}
 
         {/* gọi api */}
-        {renderedHistoryMBTI && (
+        {major && (
           <>
             <div className="mbti-description">
-              <h3 style={{ color: 'var(--primary-color)' }}>{major.MBTI.MajorMBTIs.name}</h3>
-              <p>{major.MBTI.MajorMBTIs.description}</p>
+              <h3 style={{ color: 'var(--primary-color)' }}>{major.MBTI.name}</h3>
+              <p>{major.MBTI.description}</p>
             </div>
-            <h3>Công việc phù hợp với {major.MBTI.MajorMBTIs.name}</h3>
+            <h3>Công việc phù hợp với {major.MBTI.name}</h3>
             <div>
               <ul style={{ padding: 10 }}>
                 {major.MBTI.MajorMBTIs.map((majorMBTI) => (
