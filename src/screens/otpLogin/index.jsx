@@ -108,7 +108,7 @@ function OtpLogin() {
   useEffect(() => {
     if (authOtpSuccess === true) {
       localStorage.removeItem('userSignupData');
-      navigate('/dang-nhap', { replace: true });
+      window.location.href = '/dang-nhap';
     }
   }, [authOtpSuccess]);
 
