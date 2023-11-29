@@ -31,13 +31,19 @@ function TestMbti() {
   const dispatch = useDispatch();
   const getTodoTest = useSelector(selectMbtiQuestions);
   const pendingState = useSelector(selectMbtiPending);
+
   const { personality, major, historyPargams, dataHistory } = useSelector((state) => state.mbti);
   const { isLogin } = useSelector((state) => state.auth);
   useEffect(() => {
     dispatch(getQuestionTodotestMbti());
     dispatch(getGetAllpersonality());
     dispatch(getAllTestHistory(historyPargams));
+    // dispatch(getTestHistoryById(1));
   }, []);
+
+  useEffect(() => {
+    // console.log(major);
+  }, [major]);
 
   //giá trị nhỏ nhất và giới hạn của gói câu hỏi, nhỏ nhất là 0, lớn nhất là số câu hỏi truyền vào (questions.length)
   const MIN_ACTIVE_QUESTION_INDEX = 0;
@@ -246,6 +252,8 @@ function TestMbti() {
   const handleSubmit = useCallback(() => {
     const mbtiType = calculateMBTIType(answers);
     setMbtiResult(personality.find((detail) => detail.name === mbtiType));
+    console.log(personality.find((detail) => detail.name === mbtiType).id);
+    dispatch(getTestHistoryById(mbtiResult.id));
     if (isLogin) {
       dispatch(storeTestHistory(mbtiResult.id));
     }
@@ -347,7 +355,7 @@ function TestMbti() {
               <h3>Nghành nghề phù hợp với bạn</h3>
               <SuggestContent>
                 <div>
-                  {dataHistory?.data[0].MBTI.MajorMBTIs.map((majorMBTI) => (
+                  {major?.MBTI?.MajorMBTIs?.map((majorMBTI) => (
                     <span key={majorMBTI.id}>
                       <a href={majorMBTI.link} target="_blank" rel="noopener noreferrer">
                         {majorMBTI.majorName} - {majorMBTI.Organization.name}
