@@ -17,7 +17,11 @@ import RequestOtp from '../../../components/requestOtp';
 import ChangePassword from '../../../components/changePassword';
 import { MarginTopContent } from '../../../globalStyles';
 import { useNavigate } from 'react-router-dom';
-import { getAllTestHistory, selectMbtiQuestions } from '../../../redux/mbtiSlice';
+import {
+  getAllTestHistory,
+  getTestHistoryById,
+  selectMbtiQuestions,
+} from '../../../redux/mbtiSlice';
 
 function UserProfile() {
   const navigate = useNavigate();
@@ -38,11 +42,12 @@ function UserProfile() {
   const getProfile = useSelector(selectLoginData);
   // const dataHistory = useSelector(selectMbtiQuestions);
   const { role, status } = useSelector((state) => state.auth);
-  const { pending, historyPargams, dataHistory } = useSelector((state) => state.mbti);
+  const { pending, historyPargams, dataHistory, major } = useSelector((state) => state.mbti);
   const [renderedHistoryMBTI, setRenderedHistoryMBT] = useState(false);
 
   useEffect(() => {
     dispatch(getAllTestHistory(historyPargams));
+    dispatch(getTestHistoryById(1));
     if (status === 0) {
       navigate('/404');
     }
@@ -60,15 +65,21 @@ function UserProfile() {
   }, [dispatch, openOtp, open, sentOtp, getProfile]);
 
   useEffect(() => {
-    if (!pending && dataHistory?.length) {
+    // console.log(major);
+  }, [major]);
+
+  useEffect(() => {
+    if (!pending && major?.length) {
       // Đã fetch xong data và component đã render
       setRenderedHistoryMBT(true);
     }
-  }, [pending, dataHistory]);
+    console.log();
+  }, [pending, dataHistory, major]);
 
   const handleView = (id) => {
     setOpen1(true);
     console.log('select History id', id);
+    dispatch(getTestHistoryById(id));
     setSelectedHistoryIndex(id);
   };
   const columns = [
@@ -303,16 +314,18 @@ function UserProfile() {
         style={{ overflowY: 'auto' }}
       >
         {/* <img src={`${getAllTestHistory?.data.}`} alt="mbtitype" /> */}
+
+        {/* gọi api */}
         {renderedHistoryMBTI && (
           <>
             <div className="mbti-description">
-              <h3 style={{ color: 'var(--primary-color)' }}>{dataHistory?.data[0].MBTI.name}</h3>
-              <p>{dataHistory?.data[0].MBTI.description}</p>
+              <h3 style={{ color: 'var(--primary-color)' }}>{major.MBTI.MajorMBTIs.name}</h3>
+              <p>{major.MBTI.MajorMBTIs.description}</p>
             </div>
-            <h3>Công việc phù hợp với {dataHistory?.data[0].MBTI.name}</h3>
+            <h3>Công việc phù hợp với {major.MBTI.MajorMBTIs.name}</h3>
             <div>
               <ul style={{ padding: 10 }}>
-                {dataHistory?.data[0].MBTI.MajorMBTIs.map((majorMBTI) => (
+                {major.MBTI.MajorMBTIs.map((majorMBTI) => (
                   <li key={majorMBTI.id}>{majorMBTI.majorName}</li>
                 ))}
               </ul>
