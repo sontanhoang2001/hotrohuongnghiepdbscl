@@ -282,7 +282,7 @@ function TestMbti() {
             <Question>
               <h3>
                 {getTodoTest && getTodoTest[indexQuestion]
-                  ? getTodoTest[indexQuestion].question
+                  ? getTodoTest[indexQuestion]?.question
                   : ''}
               </h3>
               <ul>
@@ -390,8 +390,6 @@ const CurrentQuestion = styled.div`
 
 const Question = styled.div`
   width: fit-content;
-  margin-left: auto;
-  margin-right: auto;
   ul {
     list-style-type: none;
     padding-left: 20px;

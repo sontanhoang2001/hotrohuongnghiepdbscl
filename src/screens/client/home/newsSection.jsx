@@ -9,7 +9,7 @@ import {
   selectPublicPosts,
   selectPublicPostsTempData,
 } from '../../../redux/postsSlice';
-import { Button, Col, Row, Skeleton, Spin } from 'antd';
+import { Button, Card, Col, Row, Skeleton, Spin } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
 import { DoubleRightOutlined } from '@ant-design/icons';
 
@@ -48,22 +48,22 @@ function NewsSection() {
           <h3>tin tức</h3>
         </Title>
         <Spin spinning={pendingState}>
-          <Row gutter={[8, 16]}>
+          <Row gutter={[16, 24]}>
             {getPostsTemp?.data.map((val, idx) => (
               <Col key={idx} xs={24} sm={24} md={12} lg={6}>
-                <Link to={`/tin-tuc/${val.id}`}>
-                  <ImageCard title={val.title} src={`${val.thumbnail}`} />
+                <Link to={`/tin-tuc/${val.id}`} onClick={() => window.scrollTo(0, 0)}>
+                  <ImageCard src={val.thumbnail} title={val.title} />
                 </Link>
               </Col>
             ))}
           </Row>
+          <Row justify={'end'} style={{ marginTop: 10 }}>
+            <Button type="link" onClick={() => navigate('/tin-tuc/')} style={{ fontSize: `14pt` }}>
+              Xem thêm
+              <DoubleRightOutlined />
+            </Button>
+          </Row>
         </Spin>
-        <NewFooterStyled>
-          <Button type="link" onClick={() => navigate('/tin-tuc/')} style={{ fontSize: `14pt` }}>
-            Xem thêm
-            <DoubleRightOutlined />
-          </Button>
-        </NewFooterStyled>
       </div>
     </div>
   );
@@ -80,10 +80,5 @@ const Title = styled.div`
     text-transform: uppercase;
     margin: 5px;
   }
-`;
-const NewFooterStyled = styled.div`
-  display: flex;
-  justify-content: end;
-  margin-right: 3%;
 `;
 export default NewsSection;

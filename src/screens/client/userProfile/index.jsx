@@ -1,4 +1,4 @@
-import { Card, Table, Button, Modal, Row, Col } from 'antd';
+import { Card, Table, Button, Modal, Row, Col, Descriptions, List, Space } from 'antd';
 import {
   HomeOutlined,
   MailOutlined,
@@ -12,11 +12,12 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import EditMail from './editMail';
 import { useDispatch, useSelector } from 'react-redux';
-import { isOtp, selectIsOtp, selectProfile } from '../../../redux/authSlice';
+import { isOtp, selectIsOtp, selectLoginData } from '../../../redux/authSlice';
 import RequestOtp from '../../../components/requestOtp';
 import ChangePassword from '../../../components/changePassword';
 import { MarginTopContent } from '../../../globalStyles';
 import { useNavigate } from 'react-router-dom';
+import { getAllTestHistory, selectMbtiQuestions } from '../../../redux/mbtiSlice';
 
 function UserProfile() {
   const navigate = useNavigate();
@@ -32,10 +33,13 @@ function UserProfile() {
   //gọi redux
   const sentOtp = useSelector(selectIsOtp);
   const dispatch = useDispatch();
-  const getProfile = useSelector(selectProfile);
+  const getProfile = useSelector(selectLoginData);
+  const getHistoryTest = useSelector(selectMbtiQuestions);
   const { role, status } = useSelector((state) => state.auth);
+  const { pending, mbtiParams } = useSelector((state) => state.mbti);
 
   useEffect(() => {
+    dispatch(getAllTestHistory(mbtiParams));
     if (status === 0) {
       navigate('/404');
     }
@@ -51,6 +55,7 @@ function UserProfile() {
       setOpenOtp(true);
     }
   }, [dispatch, openOtp, open, sentOtp, getProfile]);
+  console.log(getHistoryTest);
 
   const columns = [
     {
@@ -88,6 +93,29 @@ function UserProfile() {
       result: 'ISTJ',
     },
   ];
+
+  const items = [
+    {
+      key: '1',
+      label: 'Họ và Tên',
+      children: getProfile?.UserDetail?.fullName,
+    },
+    {
+      key: '2',
+      label: 'SĐT',
+      children: getProfile?.phone,
+    },
+    {
+      key: '3',
+      label: 'Email',
+      children: getProfile?.email,
+    },
+    {
+      key: '5',
+      label: 'Địa chỉ',
+      children: `${getProfile?.UserDetail?.address}, ${getProfile?.UserDetail?.addressDetail}`,
+    },
+  ];
   return (
     <MarginTopContent className="container">
       <Row gutter={[16, 16]} justify="center">
@@ -103,20 +131,20 @@ function UserProfile() {
               {/* <h4>{getInfo?.fullName}</h4> */}
 
               <div className="text-header">
-                <p className="full-name">{getProfile?.UserDetail.fullName}</p>
+                <p className="full-name">{getProfile?.UserDetail?.fullName}</p>
                 <p>
                   Giới tính:{' '}
-                  {getProfile?.UserDetail.gender === 1 ? (
+                  {getProfile?.UserDetail?.gender === 1 ? (
                     <span>
                       <ManOutlined style={{ color: `var(--primary-color)`, fontSize: `15px` }} />
                     </span>
-                  ) : getProfile?.UserDetail.gender === 2 ? (
+                  ) : getProfile?.UserDetail?.gender === 2 ? (
                     <span>
                       <WomanOutlined
                         style={{ color: `var(--secondary-color)`, fontSize: `15px` }}
                       />
                     </span>
-                  ) : getProfile?.UserDetail.gender === 0 ? (
+                  ) : getProfile?.UserDetail?.gender === 0 ? (
                     <img
                       src="./images/lgbt.svg"
                       alt="lgbt"
@@ -128,8 +156,53 @@ function UserProfile() {
                 </p>
               </div>
             </ProfileHeader>
+            <hr style={{ border: `1px solid transparent`, borderColor: 'rgb(217, 217, 217)' }} />
             <BodyContent>
-              <Row style={{ marginTop: 20 }}>
+              <Descriptions>
+                <Descriptions.Item
+                  label={
+                    <Space>
+                      <PhoneOutlined
+                        className="profile-icon"
+                        style={{ color: 'var(--primary-color)' }}
+                      />
+                      <span>SĐT</span>{' '}
+                    </Space>
+                  }
+                  span={3}
+                >
+                  {getProfile?.phone}
+                </Descriptions.Item>
+                <Descriptions.Item
+                  label={
+                    <Space>
+                      <MailOutlined
+                        className="profile-icon"
+                        style={{ color: 'var(--primary-color)' }}
+                      />
+                      <span>Email</span>{' '}
+                    </Space>
+                  }
+                  span={3}
+                >
+                  {getProfile?.email}
+                </Descriptions.Item>
+                <Descriptions.Item
+                  label={
+                    <Space>
+                      <HomeOutlined
+                        className="profile-icon"
+                        style={{ color: 'var(--primary-color)' }}
+                      />
+                      <span>Địa chỉ</span>{' '}
+                    </Space>
+                  }
+                  span={3}
+                >
+                  {getProfile?.UserDetail?.address}, {getProfile?.UserDetail?.addressDetail}
+                </Descriptions.Item>
+              </Descriptions>
+              {/* <Row style={{ marginTop: 20 }}>
                 <Col span={24}>
                   <p>
                     <PhoneOutlined
@@ -138,7 +211,7 @@ function UserProfile() {
                     />{' '}
                     - Điện Thoại
                   </p>
-                  <p className="underline">{getProfile?.UserDetail.phone}</p>
+                  <p className="underline">{getProfile?.phone}</p>
                 </Col>
                 <Col></Col>
               </Row>
@@ -151,7 +224,7 @@ function UserProfile() {
                     />{' '}
                     - E-Mail
                   </p>
-                  <p className="underline">{getProfile?.UserDetail.email}</p>
+                  <p className="underline">{getProfile?.email}</p>
                 </Col>
               </Row>
               <Row style={{ marginTop: 20 }}>
@@ -166,7 +239,7 @@ function UserProfile() {
 
                   <p></p>
                   <p className="underline">
-                    {getProfile?.UserDetail.address}, {getProfile?.UserDetail.addressDetail}
+                    {getProfile?.UserDetail?.address}, {getProfile?.UserDetail?.addressDetail}
                   </p>
                 </Col>
               </Row>
@@ -181,7 +254,7 @@ function UserProfile() {
                     Cập nhật thông tin
                   </Button>
                 </Col>
-              </Row>
+              </Row> */}
             </BodyContent>
           </Card>
         </Col>

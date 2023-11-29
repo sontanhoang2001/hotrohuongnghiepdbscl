@@ -10,6 +10,7 @@ const initialState = {
   pending: false, // Trạng thái tải (pending, fulfilled, rejected)
   questionGroups: [],
   mbtiParams: { page: 1, size: 10, search: '' },
+  history: { page: 1, size: 10 },
   metaData: { page: 1, size: 10, total: 1 },
   search: '',
 };
@@ -161,6 +162,22 @@ export const getTestHistoryById = createAsyncThunk(
     }
   },
 );
+// Tạo một async thunk lấy lịch sử làm test từ DB
+export const getAllTestHistory = createAsyncThunk(
+  'mbti/getAllTestHistory',
+  async (payload, { rejectWithValue }) => {
+    try {
+      const rs = await mbtiApi.getAllTestHistory(payload);
+      return rs.data.data;
+    } catch (error) {
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      } else {
+        return rejectWithValue(error.message);
+      }
+    }
+  },
+);
 
 // Tạo slice
 const mbtiSlice = createSlice({
@@ -285,6 +302,18 @@ const mbtiSlice = createSlice({
         state.major = payload;
       })
       .addCase(getTestHistoryById.rejected, (state, { payload }) => {
+        state.pending = false;
+      })
+      //all history test
+      .addCase(getAllTestHistory.pending, (state) => {
+        state.pending = true;
+      })
+      .addCase(getAllTestHistory.fulfilled, (state, { payload }) => {
+        state.pending = false;
+        state.data = payload;
+        state.history = { page: payload.page, size: payload.size };
+      })
+      .addCase(getAllTestHistory.rejected, (state, { payload }) => {
         state.pending = false;
       });
   },

@@ -57,6 +57,13 @@ const mbtiApi = {
     const url = `/${pathname}/getTestHistoryById/${id}`;
     return axiosService.get(url);
   },
+  getAllTestHistory: ({ page, size }) => {
+    const url = `/${pathname}getAllTestHistory`;
+    return axiosService.get(url, {
+      params: { page, size },
+      // paramsSerializer: qs.stringify,
+    });
+  },
 };
 
 export default mbtiApi;
