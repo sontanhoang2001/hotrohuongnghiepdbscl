@@ -45,7 +45,7 @@ const initialState = {
   error: null,
   isLogin: statusLogin,
   isSignup: false,
-  authOtpSuccess: false,
+  otp: false,
   message: null,
   role: parsedUserDatalocalStorage?.Role.name || null,
   status: parsedUserDatalocalStorage?.status || null,
