@@ -30,7 +30,6 @@ function UserProfile() {
   //trạng thái đóng/ mở modal
   const [open, setOpen] = useState(false);
   const [open1, setOpen1] = useState(false);
-  const [selectedHistoryIndex, setSelectedHistoryIndex] = useState(0);
   const [openOtp, setOpenOtp] = useState(false);
   const [otpType, setOtpType] = useState('email');
 
@@ -80,7 +79,6 @@ function UserProfile() {
     setOpen1(true);
     console.log('select History id', id);
     dispatch(getTestHistoryById(id));
-    setSelectedHistoryIndex(id);
   };
   const columns = [
     {
