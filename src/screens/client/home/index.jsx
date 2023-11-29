@@ -6,8 +6,7 @@ import { ContainerStyled } from '../../../globalStyles';
 function Home() {
   return (
     <ContainerStyled>
-      {/* <Test /> */}
-      {/* <BannerSection /> */}
+      <BannerSection />
       <NewsSection />
     </ContainerStyled>
   );
