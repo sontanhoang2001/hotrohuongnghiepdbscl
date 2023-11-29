@@ -220,7 +220,7 @@ function OrganizationList() {
   const convertedData = useMemo(
     () =>
       joinedOrganizations?.map((university, index) => {
-        console.log(university);
+        // console.log(university);
         return {
           key: index.toString(),
           id: university?.id,
@@ -274,7 +274,7 @@ function OrganizationList() {
         formRef.current?.setFieldsValue({
           image: imgUrl,
         });
-        console.log('uploaded', imgUrl);
+        // console.log('uploaded', imgUrl);
       })
       .catch((err) => {
         onError({ message: err.message });
@@ -308,7 +308,7 @@ function OrganizationList() {
       .then((values) => {
         //create
         const formValues = { ...values, userId: profile.id };
-        console.log(formValues);
+        // console.log(formValues);
         dispatch(createOrganizationAsync(formValues)).then(() => {
           dispatch(getAllOrganizationsByUser());
           setOpenUpdateForm(false);

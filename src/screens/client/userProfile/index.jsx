@@ -57,7 +57,6 @@ function UserProfile() {
       setOpenOtp(true);
     }
   }, [dispatch, openOtp, open, sentOtp, getProfile]);
-  console.log(dataHistory?.data[0]);
 
   const columns = [
     {

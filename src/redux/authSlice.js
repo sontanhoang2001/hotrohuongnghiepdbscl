@@ -56,13 +56,13 @@ export const signinAsync = createAsyncThunk(
   async (userLoginData, { rejectWithValue }) => {
     try {
       const rs = await authApi.signin(userLoginData);
-      console.log(rs.data.data);
+      // console.log(rs.data.data);
       // The value we return becomes the `fulfilled` action payload
       const dataUser = {
         ...rs.data.data,
       };
 
-      console.log('>>> rs', rs.data.data);
+      // console.log('>>> rs', rs.data.data);
       // console.log('>>> rs', dataUser);
 
       localStorage.setItem('accessToken', rs.data.data.accessToken);
@@ -88,7 +88,6 @@ export const signupAsync = createAsyncThunk(
       const dataUser = {
         ...rs.data.data,
       };
-      console.log('signupData', rs.data.data);
 
       localStorage.setItem('userSignupData', JSON.stringify(dataUser));
 
@@ -199,7 +198,6 @@ export const authSlice = createSlice({
         state.error = null;
       })
       .addCase(signinAsync.fulfilled, (state, { payload }) => {
-        console.log(payload);
         state.pending = false;
         state.data = payload.userData;
         state.authToken = payload.accessToken;
@@ -258,7 +256,6 @@ export const authSlice = createSlice({
         state.pending = false;
         state.error = payload;
         state.otp = false;
-        console.log('message', payload);
         message.error(payload, 3);
       })
       //trạng thái của authEmtail pending - fulfilled - rejected

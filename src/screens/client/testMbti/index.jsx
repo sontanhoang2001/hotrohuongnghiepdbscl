@@ -245,16 +245,12 @@ function TestMbti() {
 
   const handleSubmit = useCallback(() => {
     const mbtiType = calculateMBTIType(answers);
-    console.log(personality);
     setMbtiResult(personality.find((detail) => detail.name === mbtiType));
-    console.log(mbtiResult.id);
     if (isLogin) {
       dispatch(storeTestHistory(mbtiResult.id));
     }
     // dispatch(getTestHistoryById(mbtiResult.id));
-    console.log(major);
     setCompleted(true);
-    // console.log(mbtiType);
   }, [answers, calculateMBTIType]);
 
   const confirm = (e) => {

@@ -29,10 +29,6 @@ import { useEffect, useMemo } from 'react';
 const { Title } = Typography;
 
 function University() {
-  //hàm bắt event edit
-  const handleEdit = (id) => {
-    console.log(id);
-  };
   //hàm bắt event delete
   const handleDelete = (id) => {
     dispatch(deleteOrganization(id));

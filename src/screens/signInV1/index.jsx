@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectLoginData, selectPending, signinAsync } from '../../redux/authSlice';
 import Header from '../../components/header';
 function onChange(checked) {
-  console.log(`switch to ${checked}`);
+  // console.log(`switch to ${checked}`);
 }
 const { Title } = Typography;
 const { Footer, Content } = Layout;
@@ -87,7 +87,7 @@ function SignInV1() {
       }
     }
   }, [navigate, role, status]);
-  console.log(status);
+  // console.log(status);
 
   const onFinish = (values) => {
     const { remember, ...inputedUserData } = values;
