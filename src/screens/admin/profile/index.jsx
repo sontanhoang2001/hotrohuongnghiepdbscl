@@ -188,7 +188,7 @@ function Profile() {
 
                 <div className="avatar-info">
                   <h4 className="font-semibold m-0">{getProfile?.UserDetail?.fullName}</h4>
-                  <p>CEO / Co-Founder</p>
+                  <p>{getProfile?.email}</p>
                 </div>
               </Avatar.Group>
             </Col>
@@ -200,7 +200,7 @@ function Profile() {
         <Col span={24} md={12} className="mb-24">
           <Card
             bordered={false}
-            title={<h6 className="font-semibold m-0">Thong tin cá nhân</h6>}
+            title={<h6 className="font-semibold m-0">Thông tin cá nhân</h6>}
             className="header-solid h-full card-profile-information"
             extra={<Button type="link">{pencil}</Button>}
             bodyStyle={{ paddingTop: 0, paddingBottom: 16 }}
@@ -231,7 +231,7 @@ function Profile() {
             </Descriptions>
           </Card>
         </Col>
-        <Col span={24} md={12} className="mb-24">
+        {/* <Col span={24} md={12} className="mb-24">
           <Card
             bordered={false}
             title={<h6 className="font-semibold m-0">Conversations</h6>}
@@ -254,7 +254,7 @@ function Profile() {
               )}
             />
           </Card>
-        </Col>
+        </Col> */}
       </Row>
     </>
   );

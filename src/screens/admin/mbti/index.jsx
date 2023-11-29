@@ -76,6 +76,7 @@ function Mbti() {
     mbtiApi
       .getQuestionById(id)
       .then((res) => {
+
         const question = res.data.data;
         formRef.current?.resetFields();
         formRef.current?.setFieldsValue({
