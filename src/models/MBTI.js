@@ -16,6 +16,7 @@ module.exports = (sequelize, DataTypes) => {
   MBTI.init(
     {
       name: DataTypes.STRING,
+      label: DataTypes.STRING,
       description: DataTypes.STRING,
       image: DataTypes.STRING,
     },

@@ -295,7 +295,7 @@ module.exports = {
   getAllPersonalityGroups: async () => {
     try {
       const mbti = await MBTI.findAll({
-        attributes: ['id', 'name', 'description', 'image'],
+        attributes: ['id', 'name', 'label', 'description', 'image'],
       });
 
       return mbti;

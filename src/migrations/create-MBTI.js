@@ -11,6 +11,9 @@ module.exports = {
       name: {
         type: Sequelize.STRING(555)
       },
+      label: {
+        type: Sequelize.STRING(50),
+      },
       description: {
         type: Sequelize.STRING
       },
