@@ -39,6 +39,7 @@ function UserProfile() {
   // const dataHistory = useSelector(selectMbtiQuestions);
   const { role, status } = useSelector((state) => state.auth);
   const { pending, historyPargams, dataHistory } = useSelector((state) => state.mbti);
+  const [renderedHistoryMBTI, setRenderedHistoryMBT] = useState(false);
 
   useEffect(() => {
     dispatch(getAllTestHistory(historyPargams));
@@ -58,6 +59,18 @@ function UserProfile() {
     }
   }, [dispatch, openOtp, open, sentOtp, getProfile]);
 
+  useEffect(() => {
+    if (!pending && dataHistory?.length) {
+      // Đã fetch xong data và component đã render
+      setRenderedHistoryMBT(true);
+    }
+  }, [pending, dataHistory]);
+
+  const handleView = (id) => {
+    setOpen1(true);
+    console.log('select History id', id);
+    setSelectedHistoryIndex(id);
+  };
   const columns = [
     {
       title: 'Thời Gian',
@@ -76,12 +89,12 @@ function UserProfile() {
     {
       key: 'view',
       width: '33%',
-      render: () => (
+      render: (_, record) => (
         <>
           <div className="author-info">
             <Button
               style={{ display: 'flex', justifyContent: 'center' }}
-              onClick={() => setOpen1(true)}
+              onClick={() => handleView(record.id)}
             >
               <ViewIconStyled>
                 <EyeOutlined style={{ fontSize: `20px !important` }} /> Xem kết quả
@@ -290,19 +303,22 @@ function UserProfile() {
         style={{ overflowY: 'auto' }}
       >
         {/* <img src={`${getAllTestHistory?.data.}`} alt="mbtitype" /> */}
-        <div className="mbti-description">
-          {/* <h3>{mbtiResult.name}</h3> */}
-          <h3 style={{ color: 'var(--primary-color)' }}>{dataHistory?.data[0].MBTI.name}</h3>
-          <p>{dataHistory?.data[0].MBTI.description}</p>
-        </div>
-        <h3>Công việc phù hợp với {dataHistory?.data[0].MBTI.name}</h3>
-        <div>
-          <ul style={{ padding: 10 }}>
-            {dataHistory?.data[0].MBTI.MajorMBTIs.map((majorMBTI) => (
-              <li key={majorMBTI.id}>{majorMBTI.majorName}</li>
-            ))}
-          </ul>
-        </div>
+        {renderedHistoryMBTI && (
+          <>
+            <div className="mbti-description">
+              <h3 style={{ color: 'var(--primary-color)' }}>{dataHistory?.data[0].MBTI.name}</h3>
+              <p>{dataHistory?.data[0].MBTI.description}</p>
+            </div>
+            <h3>Công việc phù hợp với {dataHistory?.data[0].MBTI.name}</h3>
+            <div>
+              <ul style={{ padding: 10 }}>
+                {dataHistory?.data[0].MBTI.MajorMBTIs.map((majorMBTI) => (
+                  <li key={majorMBTI.id}>{majorMBTI.majorName}</li>
+                ))}
+              </ul>
+            </div>
+          </>
+        )}
       </Modal>
     </MarginTopContent>
   );
