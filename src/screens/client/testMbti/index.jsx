@@ -5,6 +5,7 @@ import { Button, Popconfirm, Skeleton, Spin, message } from 'antd';
 import { mbtiDetail } from '../../../components/mbtiDetail/mbtiDetail';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  getAllTestHistory,
   getGetAllpersonality,
   getQuestionTodotestMbti,
   getTestHistoryById,
@@ -30,11 +31,12 @@ function TestMbti() {
   const dispatch = useDispatch();
   const getTodoTest = useSelector(selectMbtiQuestions);
   const pendingState = useSelector(selectMbtiPending);
-  const { personality, major } = useSelector((state) => state.mbti);
+  const { personality, major, historyPargams, dataHistory } = useSelector((state) => state.mbti);
   const { isLogin } = useSelector((state) => state.auth);
   useEffect(() => {
     dispatch(getQuestionTodotestMbti());
     dispatch(getGetAllpersonality());
+    dispatch(getAllTestHistory(historyPargams));
   }, []);
 
   //giá trị nhỏ nhất và giới hạn của gói câu hỏi, nhỏ nhất là 0, lớn nhất là số câu hỏi truyền vào (questions.length)
@@ -111,13 +113,6 @@ function TestMbti() {
         MAX_ACTIVE_QUESTION_INDEX,
       ),
     );
-    // setSelectedQuestionIndex((currentSelectedQuestionIndex) =>
-    //   limitWithinBoundaries(
-    //     currentSelectedQuestionIndex + direction,
-    //     MIN_ACTIVE_QUESTION_INDEX,
-    //     MAX_ACTIVE_QUESTION_INDEX,
-    //   ),
-    // );
   };
 
   //khai báo hàm lưu giá trị câu trả lời của người dùng bởi sự kiện click
@@ -353,15 +348,17 @@ function TestMbti() {
                 <h3 style={{ color: 'var(--primary-color)' }}>{mbtiResult.name}</h3>
                 <p>{mbtiResult.description}</p>
               </div>
-              <h3>Công việc phù hợp với {mbtiResult.id}</h3>
+              <h3>Công việc phù hợp với {mbtiResult.name}</h3>
               <SuggestContent>
                 <div>
-                  <span>Kỹ thuật phần mềm (Software Engineering)</span>
-                  <span>Kỹ thuật phần mềm (Software Engineering)</span>
-                  <span>Kỹ thuật phần mềm (Software Engineering)</span>
-                  <span>Kỹ thuật phần mềm (Software Engineering)</span>
-                  <span>Kỹ thuật phần mềm (Software Engineering)</span>
-                  <span>Kỹ thuật phần mềm (Software Engineering)</span>
+                  {dataHistory?.data[0].MBTI.MajorMBTIs.map((majorMBTI) => (
+                    <span key={majorMBTI.id}>{majorMBTI.majorName}</span>
+                  ))}
+                  {/* <div>adfadf</div>
+                  <div>adfadf</div>
+                  <div>adfadf</div>
+                  <div>adfadf</div>
+                  <div>adfadf</div> */}
                 </div>
               </SuggestContent>
             </ShowResult>
