@@ -38,7 +38,7 @@ if (
 
 const initialState = {
   authToken: null,
-  data: null,
+  data: parsedUserDatalocalStorage || null,
   profile: parsedUserDatalocalStorage || null,
   signupData: parsedSignupDatalocalStorage || null,
   pending: false,
@@ -68,7 +68,7 @@ export const signinAsync = createAsyncThunk(
       localStorage.setItem('accessToken', rs.data.data.accessToken);
       localStorage.setItem('userData', JSON.stringify(dataUser.userData));
 
-      return dataUser;
+      return dataUser.userData;
     } catch (err) {
       if (err.response && err.response.data.message) {
         throw rejectWithValue(err.response.data.message);

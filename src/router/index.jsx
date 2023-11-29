@@ -4,6 +4,8 @@ import { Counter } from '../redux/counter/Counter';
 import App from '../App';
 import NotFound from '../screens/404/notfound';
 import OtpLogin from '../screens/otpLogin';
+import TermsOfService from '../screens/termsOfService';
+
 //đăng ký và đăng nhập
 import SignInV1 from '../screens/signInV1';
 import SignUpV1 from '../screens/signupV1';
@@ -53,6 +55,7 @@ function Router() {
         <Route path="dang-nhap" element={<SignInV1 />} />
         <Route path="dang-ky" element={<SignUpV1 />} />
         <Route path="/xac-nhan-dang-nhap" element={<OtpLogin />} />
+
         {/* client */}
         <Route path="/" element={<App />}>
           <Route path="/postMBTI" element={<PostMBTI />} />
@@ -70,7 +73,8 @@ function Router() {
           </Route>
           <Route path="otp" element={<OtpByPhone />} />
           <Route path="authSocial" element={<AuthSocial />} />
-          <Route path="otp-sdt" element={OtpByPhone} />
+          {/* <Route path="otp-sdt" element={OtpByPhone} /> */}
+          <Route path="/dieu-khoan-dich-vu" element={<TermsOfService />} />
         </Route>
         {/* admin */}
         {/* <Route

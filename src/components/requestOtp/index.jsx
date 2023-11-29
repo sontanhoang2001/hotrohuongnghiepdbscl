@@ -3,40 +3,84 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Button, Form, Spin, message } from 'antd';
 import { InputOTP } from 'antd-input-otp';
 import styled from 'styled-components';
-import { authOTP } from '../../redux/authSlice';
+import { selectLoginData, authOTP } from '../../redux/authSlice';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { auth, RecaptchaVerifier, signInWithPhoneNumber } from '../../firebase/config';
 
 function RequestOtp(props) {
-  const { type, userId, sentOtp } = props;
+  const getUserData = useSelector(selectLoginData); //lấy thông tin người dùng đăng ký trong local storage
+
+  const { type, userId, sentOtp, phone } = props;
   const [form] = Form.useForm();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  console.log(type);
   const [step, setStep] = useState('INPUT_PHONE_NUMBER');
   const [result, setResult] = useState('');
 
-  //hàm xác thựcn otp bằng số điện thoại
-  const ValidateOtpByPhone = (otp) => {
+  useEffect(() => {
+    if (type === 'phone') {
+      let phoneNumber = `+84${phone.substring(1)}`;
+      console.log('bắt đầu gửi OTP qua sđt: ', phoneNumber);
+      signin(phoneNumber);
+    }
+  }, [type]);
+
+  const signin = (phoneNumber) => {
     try {
-      console.log('Xác thực OTP từ ng dùng');
+      if (phoneNumber === '') return;
 
-      if (otp === null) return;
+      let verify = new RecaptchaVerifier(auth, 'recaptcha-container', {
+        size: 'invisible',
+      });
 
-      result
-        .confirm(otp)
+      signInWithPhoneNumber(auth, phoneNumber, verify)
         .then((result) => {
-          setStep('VERIFY_SUCCESS');
+          console.log('result: ', result);
+          setResult(result);
+          // setStep('VERIFY_OTP');
+
+          // Xác thực thành công thì gọi API server của mình để cập nhật trạng thái active cho account
+          // gọi api => authOTP  ở đây
+
+          //   {
+          //     "userId" : 14,
+          //     "type" : "phone",
+          //     "otpCode": ""
+          // }
+          // gọi api => authOTP thành công thì chuyển hướng, cái này tùy anh code
         })
         .catch((err) => {
-          console.log('Incorrect code');
-          message.success('Nhập sai mã OTP', 3);
+          console.log('error o trong', err);
+
+          console.log(err);
         });
     } catch (error) {
+      console.log('error', error);
       console.log('hết hạn');
-      message.success('Otp quá hạn', 3);
+      message.error('Gửi mã xác thực OTP đã hết hạn!', 3);
     }
+  };
+
+  //hàm xác thựcn otp bằng số điện thoại
+  const ValidateOtpByPhone = (otp) => {
+    if (otp.length < 6) {
+      message.error('Bạn chưa nhập đủ mã OTP', 3);
+    }
+
+    if (otp === null) return;
+
+    return new Promise((resolve, reject) => {
+      return result
+        .confirm(otp)
+        .then((result) => {
+          resolve(result);
+        })
+        .catch((err) => {
+          // console.log('Incorrect code');
+          reject(err);
+        });
+    });
   };
 
   useEffect(() => {
@@ -47,6 +91,7 @@ function RequestOtp(props) {
       }
     }
   }, [sentOtp, navigate, location]);
+
   //hàm sử lý khi người dùng submit
   const handleFinish = (values) => {
     // The value will be array of string
@@ -70,18 +115,37 @@ function RequestOtp(props) {
     const otpString = otp.join('');
 
     // tạo giá trị request cho api
-    const formData = {
-      userId: props.userId,
-      type: props.type,
-      otpCode: otpString,
-    };
-    console.log(formData);
-    if (type === 'email') {
-      dispatch(authOTP(formData));
+    if (getUserData.userData.id) {
+      if (type === 'email') {
+        console.log('userId', getUserData.userData.id);
+
+        const formData = {
+          userId: getUserData.userData.id,
+          type: props.type,
+          otpCode: otpString,
+        };
+
+        dispatch(authOTP(formData));
+      } else if (type === 'phone') {
+        const formData = {
+          userId: props.userId,
+          type: props.type,
+          otpCode: '',
+        };
+
+        // Update status active for user
+        ValidateOtpByPhone(otpString)
+          .then((result) => {
+            if (result) {
+              dispatch(authOTP(formData));
+            }
+          })
+          .catch(() => {
+            message.error('Xác thực OTP thất bại!', 3);
+          });
+      }
     }
-    if (type === 'phone') {
-      ValidateOtpByPhone(sentOtp);
-    }
+    message.error('Xác thực OTP thất bại!', 3);
   };
 
   return (
@@ -97,16 +161,10 @@ function RequestOtp(props) {
             >
               <InputOTP name="otp" autoFocus inputType="numeric" length={6} />
             </Form.Item>
-
+            <div id="recaptcha-container"></div>
             <Form.Item noStyle>
               <Button block htmlType="submit" type="primary" className="otp-send-btn">
                 Gửi
-              </Button>
-            </Form.Item>
-
-            <Form.Item noStyle>
-              <Button block className="otp-resend-btn">
-                gửi lại mã xác thực
               </Button>
             </Form.Item>
           </Form>

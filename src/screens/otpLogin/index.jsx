@@ -14,7 +14,6 @@ import {
   selectSignupData,
   setIsSignup,
 } from '../../redux/authSlice';
-import { auth, RecaptchaVerifier, signInWithPhoneNumber } from '../../firebase/config';
 import { useNavigate } from 'react-router-dom';
 
 function OtpLogin() {
@@ -35,25 +34,26 @@ function OtpLogin() {
   let pending = useSelector(selectPending);
   const sentOtp = useSelector(selectIsOtp);
 
+
+
   const handleOnclick = (type) => {
     setOtpType(type);
 
-    if (getSignupData === null || getSignupData === undefined) {
-      setUserId(getUserData?.userData.UserDetail.id);
-    } else {
-      setUserId(getSignupData?.id);
-    }
+
+    //   setUserId(getUserData?.userData.UserDetail.id);
+    // } else {
+    //   setUserId(getSignupData?.id);
+    // }
     // const getUserID = getSignupData?.id;
-    const requestData = {
-      userId: userId,
-      type: type,
-    };
-    console.log(requestData);
 
-    dispatch(requestOtp(requestData));
+    if (type === 'email') {
+      const requestData = {
+        userId: getUserData.userData.id,
+        type: type,
+      };
 
-    if (type === 'phone') {
-      signin();
+      dispatch(requestOtp(requestData));
+    } else if (type === 'phone') {
       setOpen(true);
       setloadinpage(true);
       // Add a timeout to stop spinning after 3 seconds
@@ -63,61 +63,36 @@ function OtpLogin() {
     }
   };
   // otp bằng số điện thoại
-  const [phoneNumber, setPhoneNumber] = useState('');
   const [otp, setOtp] = useState('');
   const [step, setStep] = useState('INPUT_PHONE_NUMBER');
   const [result, setResult] = useState('');
 
-  // setPhoneNumber(`+84${phone.substring(1)}`);
-  const signin = () => {
-    try {
-      console.log('bắt đầu gửi OTP qua sđt');
-      message.success('Đã gửi OTP qua sđt', 3);
-      if (phoneNumber === '') return;
+  // useEffect(() => {
+  //   if (getSignupData?.email === null && getSignupData?.email === null) {
+  //     navigate('/404');
+  //   }
+  //   setloadinpage(pending && pending != null ? true : false);
+  //   if (getSignupData?.email === null || getSignupData?.email === undefined) {
+  //     setMail(getUserData?.userData?.email);
+  //     setPhone(getUserData?.userData?.phone);
+  //     setUserId(getUserData?.userData?.UserDetail?.id);
+  //   } else {
+  //     setMail(getSignupData?.email);
+  //     setPhone(getSignupData?.phone);
+  //     setUserId(getSignupData?.id);
+  //   }
 
-      let verify = new RecaptchaVerifier(auth, 'recaptcha-container', {
-        size: 'invisible',
-      });
+  //   if (phone != null && phone !== undefined && phone !== '') {
+  //     setHasPhone(false);
+  //   }
 
-      signInWithPhoneNumber(auth, phoneNumber, verify)
-        .then((result) => {
-          console.log('result: ', result);
-          setResult(result);
-          setStep('VERIFY_OTP');
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    } catch (error) {
-      console.log('hết hạn');
-    }
-  };
+  //   dispatch(setIsSignup(false)); // Chỉ dispatch khi chưa dispatch lần nào
+  //   if (sentOtp) {
+  //     setOpen(true);
+  //     dispatch(isOtp(false));
+  //   }
+  // }, [pending, loadinpage, open, sentOtp, dispatch, phone, mail]);
 
-  useEffect(() => {
-    if (getSignupData?.email === null && getSignupData?.email === null) {
-      navigate('/404');
-    }
-    setloadinpage(pending && pending != null ? true : false);
-    if (getSignupData?.email === null || getSignupData?.email === undefined) {
-      setMail(getUserData?.userData.email);
-      setPhone(getUserData?.userData.phone);
-      setUserId(getUserData?.userData.UserDetail.id);
-    } else {
-      setMail(getSignupData?.email);
-      setPhone(getSignupData?.phone);
-      setUserId(getSignupData?.id);
-    }
-
-    if (phone != null && phone !== undefined && phone !== '') {
-      setHasPhone(false);
-    }
-
-    dispatch(setIsSignup(false)); // Chỉ dispatch khi chưa dispatch lần nào
-    if (sentOtp) {
-      setOpen(true);
-      dispatch(isOtp(false));
-    }
-  }, [pending, loadinpage, open, sentOtp, dispatch, phone, mail]);
   const handelCancelOtp = () => {
     navigate('/dang-ky');
     dispatch(logout());
@@ -135,7 +110,7 @@ function OtpLogin() {
                 <Space direction="vertical" size="middle">
                   <p>
                     Otp sẽ được gửi qua mail:{' '}
-                    <u style={{ color: `var(--secondary-color)` }}>{mail}</u>
+                    <u style={{ color: `var(--secondary-color)` }}>{getUserData.email}</u>
                   </p>
                   {!hasPhone ? (
                     <div>
@@ -197,7 +172,7 @@ function OtpLogin() {
                 <CloseOutlined />
               </Button>
             </div>
-            <RequestOtp type={otpType} userId={userId} sentOtp={sentOtp} />
+            <RequestOtp type={otpType} userId={userId} sentOtp={sentOtp} phone={phone} />
           </OtpRequestCard>
         )}
       </Container>
