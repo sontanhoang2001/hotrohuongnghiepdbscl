@@ -41,7 +41,7 @@ function OtpLogin() {
   const handleSendOTP = () => {
     if (otpType === 'email') {
       setBeginSendOTP(true);
-      console.log('send email...');
+      // console.log('send email...');
       const requestData = {
         userId: getUserData.id,
         type: otpType,
@@ -52,10 +52,10 @@ function OtpLogin() {
       setBeginSendOTP(true);
 
       let phoneNumber = `+84${getUserData.phone.substring(1)}`;
-      console.log('bắt đầu gửi OTP qua sđt: ', phoneNumber);
+      // console.log('bắt đầu gửi OTP qua sđt: ', phoneNumber);
       setTimeout(() => {
         signin(phoneNumber);
-      }, 5000)
+      }, 5000);
     }
   };
 
@@ -69,7 +69,7 @@ function OtpLogin() {
 
       signInWithPhoneNumber(auth, phoneNumber, verify)
         .then((result) => {
-          console.log('result: ', result);
+          // console.log('result: ', result);
           setResult(result);
         })
         .catch((err) => {
@@ -108,7 +108,7 @@ function OtpLogin() {
   useEffect(() => {
     if (authOtpSuccess === true) {
       localStorage.removeItem('userSignupData');
-      navigate('/dang-nhap', {replace: true});
+      navigate('/dang-nhap', { replace: true });
     }
   }, [authOtpSuccess]);
 

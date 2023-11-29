@@ -57,7 +57,6 @@ function UserProfile() {
       setOpenOtp(true);
     }
   }, [dispatch, openOtp, open, sentOtp, getProfile]);
-  console.log(dataHistory?.data[0]);
 
   const columns = [
     {
@@ -287,7 +286,8 @@ function UserProfile() {
         open={open1}
         onCancel={() => setOpen1(false)}
         footer={null}
-        width={300}
+        width={500}
+        style={{ overflowY: 'auto' }}
       >
         {/* <img src={`${getAllTestHistory?.data.}`} alt="mbtitype" /> */}
         <div className="mbti-description">
