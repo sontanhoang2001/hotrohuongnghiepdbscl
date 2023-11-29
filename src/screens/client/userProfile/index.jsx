@@ -273,10 +273,10 @@ function UserProfile() {
         {major && (
           <>
             <div className="mbti-description">
-              <h3 style={{ color: 'var(--primary-color)' }}>{major.MBTI.MajorMBTIs.name}</h3>
-              <p>{major.MBTI.MajorMBTIs.description}</p>
+              <h3 style={{ color: 'var(--primary-color)' }}>{major.MBTI.name}</h3>
+              <p>{major.MBTI.description}</p>
             </div>
-            <h3>Công việc phù hợp với {major.MBTI.MajorMBTIs.name}</h3>
+            <h3>Công việc phù hợp với {major.MBTI.name}</h3>
             <div>
               <ul style={{ padding: 10 }}>
                 {major.MBTI.MajorMBTIs.map((majorMBTI) => (
