@@ -1,23 +1,30 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { Button, Card, Col, Row } from 'antd';
+import { Button, Card, Col, Empty, Row, Spin } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import { HeadingTitle, MarginTopContent, Title, size } from '../../../globalStyles';
+import {
+  ContainerStyled,
+  HeadingTitle,
+  MarginTopContent,
+  Title,
+  size,
+} from '../../../globalStyles';
 import { useDispatch, useSelector } from 'react-redux';
 import { getGetAllpersonality, selectMbtiQuestions } from '../../../redux/mbtiSlice';
+import ImageCard from '../../../components/card/imageCard';
 
 function MBTI() {
   const navigate = useNavigate();
   // gọi redux
   const dispatch = useDispatch();
-  const { personality } = useSelector((state) => state.mbti);
+  const { personality, pending } = useSelector((state) => state.mbti);
 
   useEffect(() => {
     dispatch(getGetAllpersonality());
   }, []);
   // console.log(personality);
   return (
-    <div className="container">
+    <ContainerStyled>
       <MarginTopContent>
         <Introduce>
           <Title>
@@ -82,13 +89,13 @@ function MBTI() {
                   <li>Cách thức và Hành động: Nguyên tắc (Judgment) - Linh hoạt (Perception)</li>
                 </ul>
                 <p style={{ marginTop: '20px' }}>
-                  Mỗi yếu tố của 4 nhóm trên kết hợp với nhau tạo thành 16 nhóm tính cách MBTI MBTI
+                  Mỗi yếu tố của 4 nhóm trên kết hợp với nhau tạo thành 16 nhóm tính cách MBTI. Nó
                   là một trong những bài trắc nghiệm tính cách phổ biến nhất thế giới với hơn 2
                   triệu người mới sử dụng mỗi năm và đặc biệt được ứng dụng trong các hoạt động
                   tuyển dụng, đánh giá nhân sự, giáo dục, hướng nghiệp… Làm trắc nghiệm MBTI ở TRUNG
-                  TÂM HƯỚNG NGHIỆP ĐBSCL ngoài việc được phân loại tính cách theo 16 nhóm của phương
-                  pháp Myers-Briggs thì các dữ liệu thông tin sẽ được tổng hợp để đưa ra xu hướng
-                  nghề nghiệp phù hợp nhất với bạn.
+                  TÂM HƯỚNG NGHIỆP ngoài việc được phân loại tính cách theo 16 nhóm của phương pháp
+                  Myers-Briggs thì các dữ liệu thông tin sẽ được tổng hợp để đưa ra xu hướng nghề
+                  nghiệp phù hợp nhất với bạn.
                 </p>
               </div>
 
@@ -123,15 +130,15 @@ function MBTI() {
                   Kết quả của bài trắc nghiệm MBTI sau đây cung cấp thông tin để bạn có lựa chọn
                   nghề nghiệp thích hợp dựa trên các nhóm tính cách. Mọi dữ liệu đưa ra đều mang
                   tính chất tham khảo, quyết định luôn ở trong tay chúng ta. TRUNG TÂM HƯỚNG NGHIỆP
-                  ĐBSCL sẽ luôn đồng hành cùng bạn trong mọi lựa chọn nghề nghiệp. Với một hành
-                  trang vững vàng thì tin tưởng rằng mọi kế hoạch đều sẽ thành công!
+                  sẽ luôn đồng hành cùng bạn trong mọi lựa chọn nghề nghiệp. Với một hành trang vững
+                  vàng thì tin tưởng rằng mọi kế hoạch đều sẽ thành công!
                 </p>
               </div>
             </div>
           </div>
           <MBTIDetailStyled>
             <h3>16 loại hình tính cách MBTI</h3>
-            <Row gutter={[16, 16]}>
+            {/* <Row gutter={[16, 16]}>
               {personality &&
                 personality?.map((val, idx) => (
                   <Col key={idx} xs={14} sm={24} md={12} lg={12}>
@@ -144,11 +151,32 @@ function MBTI() {
                     </Card>
                   </Col>
                 ))}
-            </Row>
+            </Row> */}
+            <Spin spinning={pending}>
+              {personality ? (
+                <Row gutter={[24, 34]}>
+                  {personality?.map((val, idx) => (
+                    <Col key={idx} xs={24} sm={24} md={12} lg={12}>
+                      <ImageCard
+                        src={`${val?.image}`}
+                        title={val?.name}
+                        titleColor={`var(--primary-color)`}
+                        personality={true}
+                        description={val.description}
+                      />
+                    </Col>
+                  ))}
+                </Row>
+              ) : (
+                <Row align={'middle'} justify={'center'}>
+                  <Empty description={<h3>Không có dữ liệu</h3>} />
+                </Row>
+              )}
+            </Spin>
           </MBTIDetailStyled>
         </Introduce>
       </MarginTopContent>
-    </div>
+    </ContainerStyled>
   );
 }
 const Introduce = styled.div`

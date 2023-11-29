@@ -120,21 +120,16 @@ function CLientFooter() {
     <Box>
       <FooterContainer>
         <Row gutter={[24, 16]}>
-          <Col xs={12} sm={12} md={12} lg={8} className="footer-col">
+          <Col xs={12} sm={12} md={12} lg={7} className="footer-col">
             <FooterBanner>
               <img src="../images/logo/logo2.webp" alt="Trung Tâm Hướng Nghiệp ĐBSCL" />
-              <h1
-                style={{
-                  color: 'var(--text-white-color)',
-                  textAlign: 'center',
-                  marginLeft: 10,
-                }}
-              >
-                Trung Tâm Hướng Nghiệp
-              </h1>
+              <div className="footer-brand-name">
+                <h1>Trung Tâm</h1>
+                <h1>Hướng Nghiệp</h1>
+              </div>
             </FooterBanner>
           </Col>
-          <Col xs={12} sm={12} md={12} lg={5}>
+          <Col xs={12} sm={12} md={12} lg={6}>
             <Heading>Thông Tin</Heading>
             <FooterLink>
               <NavLink to="thong-tin-cac-truong-dai-hoc">Các Trường Đại Học</NavLink>
@@ -146,7 +141,7 @@ function CLientFooter() {
               <NavLink to="dong-hanh">Đồng Hành</NavLink>
             </FooterLink>
           </Col>
-          <Col xs={12} sm={12} md={12} lg={5}>
+          <Col xs={12} sm={12} md={12} lg={6}>
             <Heading>Dịch vụ</Heading>
 
             <FooterLink>
@@ -156,7 +151,7 @@ function CLientFooter() {
               <NavLink to="dong-hanh">Câu hỏi thắc mắc</NavLink>
             </FooterLink>
           </Col>
-          <Col xs={12} sm={12} md={12} lg={6}>
+          <Col xs={12} sm={12} md={12} lg={5}>
             <Heading>Social Media</Heading>
             <FooterLinkIcon>
               {facebook}
@@ -240,6 +235,15 @@ const FooterBanner = styled.div`
   align-items: center;
   img {
     max-width: 100px;
+  }
+  .footer-brand-name {
+    width: 100%;
+    h1 {
+      color: var(--text-white-color);
+      text-align: center;
+      margin-left: 10;
+      font-size: 24;
+    }
   }
 `;
 

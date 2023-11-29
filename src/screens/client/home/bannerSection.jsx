@@ -165,6 +165,9 @@ const BannerContainer = styled.div`
         filter: blur(0);
         transition: 0.7s ease-in-out;
       }
+      @media (max-width: 1500px) {
+        padding-top: 40px;
+      }
     }
   }
 `;

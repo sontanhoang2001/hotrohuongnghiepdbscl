@@ -16,6 +16,13 @@ const initialState = {
     organizationType: 1,
     search: '',
   },
+  organiztionPublic: {
+    page: 1,
+    size: 9,
+    total: 0,
+    organizationType: 2,
+    search: '',
+  },
   organizationParams: {
     page: 1,
     size: 10,
@@ -200,9 +207,9 @@ const universitySlice = createSlice({
   reducers: {
     getLocalOrganizationsById: (state, action) => {
       state.currentVerification = state.verifications.find(
-        (record) => record.id === action.payload
+        (record) => record.id === action.payload,
       );
-      console.log(action.payload,state.currentVerification,state.verifications);
+      console.log(action.payload, state.currentVerification, state.verifications);
     },
     setSize: (state, action) => {
       state.size = action.payload;
@@ -323,7 +330,7 @@ const universitySlice = createSlice({
       .addCase(updateOrganization.rejected, (state, { payload }) => {
         state.pending = false;
         notification.error({ message: payload, duration: 3 });
-      }) 
+      })
       //create
       .addCase(createOrganizationAsync.pending, (state) => {
         state.pending = true;
@@ -351,6 +358,13 @@ const universitySlice = createSlice({
         state.clientParams.total = payload.total;
         state.clientParams.search = payload.search;
         state.clientParams.type = payload.type;
+        state.organiztionPublic = {
+          size: payload,
+          page: payload.page,
+          totl: payload.total,
+          search: payload.search,
+          type: payload.type,
+        };
       })
       .addCase(getAllPublicUniversityInfo.rejected, (state, { payload }) => {
         state.pending = false;

@@ -18,7 +18,7 @@ const majorMbtiApi = {
   // delete
   deleteMajorMbti: (id) => {
     const url = `/${pathname}/delete/${id}`;
-    return axiosService.post(url);
+    return axiosService.delete(url);
   },
   //restore
   restoreMajorMbti: (id) => {

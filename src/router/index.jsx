@@ -45,6 +45,7 @@ import Posts from '../screens/admin/posts';
 import AuthWrapper from './AuthWrapper';
 import AdminHome from '../screens/admin/home';
 import OrganizationVerification from '../screens/admin/organizationverification/OrganizationVerification';
+import OrganiztionPublic from '../screens/client/organization';
 
 function Router() {
   return (
@@ -63,6 +64,7 @@ function Router() {
           <Route path="trach-nghiem-tinh-cach" element={<MBTI />} />
           <Route path="mbti-test" element={<TestMbti />} />
           <Route path="thong-tin-cac-truong-dai-hoc" element={<Universities />} />
+          <Route path="thong-tin-cac-doanh-nghiep" element={<OrganiztionPublic />} />
           <Route path="dong-hanh" element={<Companion />} />
           <Route path="quen-mat-khau" element={<ForgotPassword />} />
           <Route path="thong-tin-ca-nhan" element={<AuthWrapper roles={['STUDENT']} />}>

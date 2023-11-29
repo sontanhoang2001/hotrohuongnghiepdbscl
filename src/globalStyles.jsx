@@ -7,6 +7,16 @@ export const size = {
   xl: '1200px',
   xxl: '1600px',
 };
+export const ContainerStyled = styled.div`
+  --bs-gutter-x: 15rem;
+  --bs-gutter-y: 0;
+  width: 100%;
+  padding-right: calc(var(--bs-gutter-x) * 0.5);
+  padding-left: calc(var(--bs-gutter-x) * 0.5);
+  margin-right: auto;
+  margin-left: auto;
+  margin-top: 3%;
+`;
 export const MarginTopContent = styled.div`
   margin-top: 3%;
 `;

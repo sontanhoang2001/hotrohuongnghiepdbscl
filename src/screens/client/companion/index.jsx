@@ -1,5 +1,11 @@
 import React from 'react';
-import { HeadingTitle, MarginTopContent, SearchBox, Title } from '../../../globalStyles';
+import {
+  ContainerStyled,
+  HeadingTitle,
+  MarginTopContent,
+  SearchBox,
+  Title,
+} from '../../../globalStyles';
 import { Button, Card, Col, ConfigProvider, Input, List, Pagination, Row, Skeleton } from 'antd';
 import styled from 'styled-components';
 import viVN from 'antd/lib/locale/vi_VN';
@@ -40,7 +46,7 @@ function Companion() {
     dispatch(getAllPublicFaqsApi({ ...faqsParams, search: value }));
   };
   return (
-    <div className="container">
+    <ContainerStyled className="container">
       <div>
         <Title>
           <HeadingTitle>các câu hỏi thường gặp</HeadingTitle>
@@ -69,7 +75,7 @@ function Companion() {
         <MarginTopContent>
           <Row justify="center">
             <Col span={20}>
-              <Skeleton
+              {/* <Skeleton
                 loading={pendingState}
                 active
                 title={false}
@@ -77,54 +83,70 @@ function Companion() {
                   rows: 4,
                 }}
                 style={{ marginTop: `3%` }}
-              >
-                {/* <List
+              > */}
+              {/* <List
                   dataSource={data}
                   renderItem={(val, idx) => <div key={idx}>{val.question}</div>}
                 /> */}
+              <List
+                grid={{ column: 1 }}
+                itemLayout="horizontal"
+                dataSource={getFaqs?.data}
+                pagination={false}
+                loading={pendingState}
+                //render content
+                renderItem={(val, idx) => (
+                  <List.Item>
+                    <Card
+                      // key={idx}
+                      style={{ marginTop: 20, boxShadow: `rgba(0, 0, 0, 0.24) 0px 3px 8px` }}
+                    >
+                      <h4>Câu hỏi: {val?.question}</h4>
+                      <br />
+                      <p style={{ textAlign: 'justify' }}>
+                        <b>Giải đáp:</b> {val?.answer}
+                      </p>
+                    </Card>
+                  </List.Item>
+                )}
+              />
+              {pendingState && (
                 <List
                   grid={{ column: 1 }}
                   itemLayout="horizontal"
                   dataSource={getFaqs?.data}
                   pagination={false}
+                  loading={pendingState}
                   //render content
                   renderItem={(val, idx) => (
-                    <List.Item>
-                      <Card
-                        // key={idx}
-                        style={{ marginTop: 20, boxShadow: `rgba(0, 0, 0, 0.24) 0px 3px 8px` }}
-                      >
-                        <h4>Câu hỏi: {val?.question}</h4>
-                        <br />
-                        <p style={{ textAlign: 'justify' }}>
-                          <b>Giải đáp:</b> {val?.answer}
-                        </p>
-                      </Card>
-                    </List.Item>
+                    <div style={{ textAlign: 'center', marginTop: 20 }}>
+                      <Skeleton active title={false} paragraph={{ rows: 4 }} />
+                    </div>
                   )}
                 />
-                <Pagination
-                  current={faqsParams?.page}
-                  pageSize={faqsParams?.size}
-                  total={faqsParams?.total}
-                  onChange={handlePageChange}
-                  showQuickJumper
-                  showSizeChanger
-                  onShowSizeChange={handlePageChange}
-                  style={{ marginTop: 20, marginBottom: 20 }}
-                />
-              </Skeleton>
+              )}
+              <Pagination
+                current={faqsParams?.page}
+                pageSize={faqsParams?.size}
+                total={faqsParams?.total}
+                onChange={handlePageChange}
+                showQuickJumper
+                showSizeChanger
+                onShowSizeChange={handlePageChange}
+                style={{ marginTop: 20, marginBottom: 20 }}
+              />
+              {/* </Skeleton> */}
             </Col>
           </Row>
         </MarginTopContent>
       </div>
-    </div>
+    </ContainerStyled>
   );
 }
 const SearchBar = styled.div`
   height: 300px;
   width: 100%;
-  background: url('../images/arrows-2980845.jpg');
+  background: url('../images/dong_hanh.jpg');
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;

@@ -1,6 +1,6 @@
 import React, { Component, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Layout, Menu, Button, Row, Col, Typography, Form, Input, Switch } from 'antd';
+import { Layout, Menu, Button, Row, Col, Typography, Form, Input, Switch, Spin } from 'antd';
 import signinbg from '../../assets/images/img-signin.jpg';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectLoginData, selectPending, signinAsync } from '../../redux/authSlice';
@@ -63,7 +63,7 @@ const signup = [
 function SignInV1() {
   const dispatch = useDispatch();
 
-  let pending = useSelector(selectPending);
+  let pendingState = useSelector(selectPending);
   const { role, status } = useSelector((state) => state.auth);
 
   const navigate = useNavigate();
@@ -83,7 +83,7 @@ function SignInV1() {
         navigate('/');
       }
     }
-  }, [pending, navigate, role, status]);
+  }, [navigate, role, status]);
   console.log(status);
 
   const onFinish = (values) => {
@@ -102,65 +102,67 @@ function SignInV1() {
               <Title className="font-regular text-muted" level={5}>
                 Nhập Email và mật khẩu để đăng nhập
               </Title>
-              <Form
-                name="signin"
-                className="row-col"
-                initialValues={{
-                  username: '',
-                  password: '',
-                  remember: true,
-                }}
-                onFinish={onFinish}
-                layout="vertical"
-                scrollToFirstError
-              >
-                <Form.Item
-                  className="username"
-                  label="Tên Đăng Nhập"
-                  name="username"
-                  rules={[
-                    {
-                      required: true,
-                      message: 'Chưa nhập tên đăng nhập',
-                    },
-                  ]}
+              <Spin spinning={pendingState}>
+                <Form
+                  name="signin"
+                  className="row-col"
+                  initialValues={{
+                    username: '',
+                    password: '',
+                    remember: true,
+                  }}
+                  onFinish={onFinish}
+                  layout="vertical"
+                  scrollToFirstError
                 >
-                  <Input placeholder="Tên Đăng nhập" style={{ height: 50 }} />
-                </Form.Item>
+                  <Form.Item
+                    className="username"
+                    label="Tên Đăng Nhập"
+                    name="username"
+                    rules={[
+                      {
+                        required: true,
+                        message: 'Chưa nhập tên đăng nhập',
+                      },
+                    ]}
+                  >
+                    <Input placeholder="Tên Đăng nhập" style={{ height: 50 }} />
+                  </Form.Item>
 
-                <Form.Item
-                  className="username"
-                  label="Mật Khẩu"
-                  name="password"
-                  rules={[
-                    {
-                      required: true,
-                      message: 'Chưa nhập mật khẩu',
-                    },
-                  ]}
-                >
-                  <Input.Password placeholder="Mật Khẩu" />
-                </Form.Item>
+                  <Form.Item
+                    className="username"
+                    label="Mật Khẩu"
+                    name="password"
+                    rules={[
+                      {
+                        required: true,
+                        message: 'Chưa nhập mật khẩu',
+                      },
+                    ]}
+                  >
+                    <Input.Password placeholder="Mật Khẩu" />
+                  </Form.Item>
 
-                <Form.Item name="remember" className="aligin-center" valuePropName="checked">
-                  <div>
-                    <Switch defaultChecked onChange={onChange} />
-                    <span style={{ marginLeft: 8 }}>Lưu Đăng Nhập</span>
-                  </div>
-                </Form.Item>
+                  <Form.Item name="remember" className="aligin-center" valuePropName="checked">
+                    <div>
+                      <Switch defaultChecked onChange={onChange} />
+                      <span style={{ marginLeft: 8 }}>Lưu Đăng Nhập</span>
+                    </div>
+                  </Form.Item>
 
-                <Form.Item>
-                  <Button type="primary" htmlType="submit" style={{ width: '100%' }}>
-                    Đăng Nhập
-                  </Button>
-                </Form.Item>
-                <p className="font-semibold text-muted">
-                  Bạn chưa có tài khoản?{' '}
-                  <Link to="/dang-ky" className="text-dark font-bold">
-                    Đăng ký ngay
-                  </Link>
-                </p>
-              </Form>
+                  <Form.Item>
+                    <Button type="primary" htmlType="submit" style={{ width: '100%' }}>
+                      Đăng Nhập
+                    </Button>
+                  </Form.Item>
+                  <p className="font-semibold text-muted">
+                    Bạn chưa có tài khoản?{' '}
+                    <Link to="/dang-ky" className="text-dark font-bold">
+                      Đăng ký ngay
+                    </Link>
+                  </p>
+                </Form>
+              </Spin>
             </Col>
             <Col
               className="sign-img"
