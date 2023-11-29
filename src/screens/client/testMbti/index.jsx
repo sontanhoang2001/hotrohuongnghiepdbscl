@@ -5,13 +5,12 @@ import { Button, Popconfirm, Skeleton, Spin, message } from 'antd';
 import { mbtiDetail } from '../../../components/mbtiDetail/mbtiDetail';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  getAllTestHistory,
-  getGetAllpersonality,
+  getMajorMBTIById,
   getQuestionTodotestMbti,
-  getTestHistoryById,
   selectMbtiPending,
   selectMbtiQuestions,
   storeTestHistory,
+  getGetAllpersonality,
 } from '../../../redux/mbtiSlice';
 
 // change value of question increase 1 or decrease 1, when click prev or next button
@@ -32,12 +31,11 @@ function TestMbti() {
   const getTodoTest = useSelector(selectMbtiQuestions);
   const pendingState = useSelector(selectMbtiPending);
 
-  const { personality, major, historyPargams, dataHistory } = useSelector((state) => state.mbti);
+  const { personality, major, personalityById } = useSelector((state) => state.mbti);
   const { isLogin } = useSelector((state) => state.auth);
   useEffect(() => {
     dispatch(getQuestionTodotestMbti());
     dispatch(getGetAllpersonality());
-    dispatch(getAllTestHistory(historyPargams));
     // dispatch(getTestHistoryById(1));
   }, []);
 
@@ -249,11 +247,27 @@ function TestMbti() {
     return typeDetail || {};
   };
 
+  // useEffect(() => {
+  //   if (personality) {
+  //     handleSubmit();
+  //   }
+  // }, [personality]);
+
   const handleSubmit = useCallback(() => {
+    //tổng kết quả từ bài làm thành 4 chữ cái
     const mbtiType = calculateMBTIType(answers);
-    setMbtiResult(personality.find((detail) => detail.name === mbtiType));
-    console.log(personality.find((detail) => detail.name === mbtiType).id);
-    dispatch(getTestHistoryById(mbtiResult.id));
+    // const mbtiTypeFake = 'ENTP';
+    // console.log('personality', personality);
+
+    const result = personality?.find((p) => p.name === mbtiType);
+
+    const mbtiResult_id = result.id;
+    console.log(mbtiResult_id);
+
+    // setMbtiResult(personality?.find((detail) => detail?.name === mbtiType));
+
+    dispatch(getMajorMBTIById(mbtiResult_id));
+    console.log(personalityById);
     if (isLogin) {
       dispatch(storeTestHistory(mbtiResult.id));
     }
@@ -346,16 +360,16 @@ function TestMbti() {
           <>
             <ShowResult className="container">
               <h3 className="result-title">kết quả của bạn</h3>
-              <img src={`${mbtiResult.image}`} alt="mbtitype" />
+              <img src={`${personalityById?.image}`} alt="mbtitype" />
               <div className="mbti-description">
                 {/* <h3>{mbtiResult.name}</h3> */}
-                <h3 style={{ color: 'var(--primary-color)' }}>{mbtiResult.name}</h3>
-                <p>{mbtiResult.description}</p>
+                <h3 style={{ color: 'var(--primary-color)' }}>{personalityById?.name}</h3>
+                <p>{personalityById?.description}</p>
               </div>
               <h3>Nghành nghề phù hợp với bạn</h3>
               <SuggestContent>
                 <div>
-                  {major?.MBTI?.MajorMBTIs?.map((majorMBTI) => (
+                  {personalityById?.MajorMBTIs?.map((majorMBTI) => (
                     <span key={majorMBTI.id}>
                       <a href={majorMBTI.link} target="_blank" rel="noopener noreferrer">
                         {majorMBTI.majorName} - {majorMBTI.Organization.name}
