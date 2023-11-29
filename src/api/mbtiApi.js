@@ -64,6 +64,10 @@ const mbtiApi = {
       // paramsSerializer: qs.stringify,
     });
   },
+  getMajorMBTIById: (id) => {
+    const url = `/${publicPathname}/getMajorMBTIById/${id}`;
+    return axiosService.get(url);
+  },
 };
 
 export default mbtiApi;

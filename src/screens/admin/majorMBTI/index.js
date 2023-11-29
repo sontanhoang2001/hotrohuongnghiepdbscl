@@ -263,7 +263,7 @@ function Faqs() {
               size="large"
             >
               <PlusCircleFilled />
-              &nbsp; Tạo câu hỏi
+              &nbsp; Thêm mới
             </Button>
           </Col>
           <Col span={16}>
@@ -292,9 +292,9 @@ function Faqs() {
                 />
               </div>
               <Pagination
-                current={page}
-                pageSize={size}
-                total={total}
+                current={mbtiParams?.page}
+                pageSize={mbtiParams?.size}
+                total={mbtiParams?.total}
                 onChange={handlePageChange}
                 showQuickJumper
                 showSizeChanger

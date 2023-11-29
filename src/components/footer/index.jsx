@@ -122,7 +122,7 @@ function CLientFooter() {
         <Row gutter={[24, 16]}>
           <Col xs={12} sm={12} md={12} lg={7} className="footer-col">
             <FooterBanner>
-              <img src="../images/logo/logo2.webp" alt="Trung Tâm Hướng Nghiệp ĐBSCL" />
+              <img src="../images/logo/logo.png" alt="Trung Tâm Hướng Nghiệp ĐBSCL" />
               <div className="footer-brand-name">
                 <h1>Trung Tâm</h1>
                 <h1>Hướng Nghiệp</h1>

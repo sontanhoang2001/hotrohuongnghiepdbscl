@@ -48,13 +48,6 @@ function University() {
     dispatch(getAllUniversity(payload));
   }, []);
 
-  const filterData = (data) =>
-    data.map((item) => ({
-      key: item,
-      value: item,
-      text: item,
-    }));
-
   const convertedData = useMemo(
     () =>
       getUniversity?.data.map((university, index) => {
@@ -82,11 +75,6 @@ function University() {
         fixed: 'left',
         dataIndex: 'name',
         key: 'name',
-        filters: filterData(
-          convertedData
-            .map((item) => item.name)
-            .filter((value, index, self) => self.indexOf(value) === index),
-        ),
         render: (record) => (
           <Avatar.Group>
             <Avatar
@@ -103,8 +91,6 @@ function University() {
             </div>
           </Avatar.Group>
         ),
-        onFilter: (value, record) => record.name.indexOf(value) === 0,
-        sorter: (a, b) => a.name.length - b.name.length,
       },
       {
         title: 'Rank',

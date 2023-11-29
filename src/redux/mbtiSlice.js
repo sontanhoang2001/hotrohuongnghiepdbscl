@@ -6,6 +6,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 const initialState = {
   data: null, // Danh sách câu hỏi MBTI
   dataHistory: null,
+  personalityById: null,
   personality: null,
   major: null,
   pending: false, // Trạng thái tải (pending, fulfilled, rejected)
@@ -179,6 +180,22 @@ export const getAllTestHistory = createAsyncThunk(
     }
   },
 );
+// Tạo một async thunk lay major theo id
+export const getMajorMBTIById = createAsyncThunk(
+  'mbti/getMajorMBTIById',
+  async (payload, { rejectWithValue }) => {
+    try {
+      const rs = await mbtiApi.getMajorMBTIById(payload);
+      return rs.data.data;
+    } catch (error) {
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      } else {
+        return rejectWithValue(error.message);
+      }
+    }
+  },
+);
 
 // Tạo slice
 const mbtiSlice = createSlice({
@@ -187,6 +204,9 @@ const mbtiSlice = createSlice({
   reducers: {
     setParams: (state, action) => {
       state.mbtiParams = { ...state.mbtiParams, ...action.payload };
+    },
+    setPersonality: (state, action) => {
+      state.personality = action;
     },
   },
   extraReducers: (builder) => {
@@ -315,6 +335,18 @@ const mbtiSlice = createSlice({
         state.historyPargams = { page: payload.page, size: payload.size };
       })
       .addCase(getAllTestHistory.rejected, (state, { payload }) => {
+        state.pending = false;
+      })
+      //all history test
+      .addCase(getMajorMBTIById.pending, (state) => {
+        state.pending = true;
+      })
+      .addCase(getMajorMBTIById.fulfilled, (state, { payload }) => {
+        state.pending = false;
+        state.personalityById = payload;
+        state.historyPargams = { page: payload.page, size: payload.size };
+      })
+      .addCase(getMajorMBTIById.rejected, (state, { payload }) => {
         state.pending = false;
       });
   },
