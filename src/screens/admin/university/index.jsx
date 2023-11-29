@@ -33,6 +33,47 @@ function University() {
   const handleDelete = (id) => {
     dispatch(deleteOrganization(id));
   };
+
+  //goi redux
+  const dispatch = useDispatch();
+  const page = useSelector(selectUniversityPage);
+  const size = useSelector(selectUniversityPagesize);
+  const Totalpage = useSelector(selectUniversityToalRow);
+  const getUniversity = useSelector(selectUniversity);
+  const pendingState = useSelector(selectUniversityPending);
+
+  useEffect(() => {
+    const payload = { page, size };
+    //gọi api thông qua redux
+    dispatch(getAllUniversity(payload));
+  }, []);
+
+  const filterData = (data) =>
+    data.map((item) => ({
+      key: item,
+      value: item,
+      text: item,
+    }));
+
+  const convertedData = useMemo(
+    () =>
+      getUniversity?.data.map((university, index) => {
+        return {
+          key: index.toString(),
+          id: university.OrganizationDetail.id,
+          name: university,
+          rank: university.OrganizationDetail.rank,
+          url: university.OrganizationDetail.url,
+          address: university.OrganizationDetail.address,
+          province: university.OrganizationDetail.province,
+          phone: university.OrganizationDetail.phone,
+          lat: university.OrganizationDetail.lat,
+          long: university.OrganizationDetail.long,
+          description: university.OrganizationDetail.description,
+        };
+      }),
+    [getUniversity],
+  );
   //định dạng cột hiển thị
   const columns = useMemo(
     () => [
@@ -41,6 +82,11 @@ function University() {
         fixed: 'left',
         dataIndex: 'name',
         key: 'name',
+        filters: filterData(
+          convertedData
+            .map((item) => item.name)
+            .filter((value, index, self) => self.indexOf(value) === index),
+        ),
         render: (record) => (
           <Avatar.Group>
             <Avatar
@@ -57,6 +103,8 @@ function University() {
             </div>
           </Avatar.Group>
         ),
+        onFilter: (value, record) => record.name.indexOf(value) === 0,
+        sorter: (a, b) => a.name.length - b.name.length,
       },
       {
         title: 'Rank',
@@ -167,41 +215,6 @@ function University() {
     ],
     [],
   );
-
-  //goi redux
-  const dispatch = useDispatch();
-  const page = useSelector(selectUniversityPage);
-  const size = useSelector(selectUniversityPagesize);
-  const Totalpage = useSelector(selectUniversityToalRow);
-  const getUniversity = useSelector(selectUniversity);
-  const pendingState = useSelector(selectUniversityPending);
-
-  useEffect(() => {
-    const payload = { page, size };
-    //gọi api thông qua redux
-    dispatch(getAllUniversity(payload));
-  }, []);
-
-  const convertedData = useMemo(
-    () =>
-      getUniversity?.data.map((university, index) => {
-        return {
-          key: index.toString(),
-          id: university.OrganizationDetail.id,
-          name: university,
-          rank: university.OrganizationDetail.rank,
-          url: university.OrganizationDetail.url,
-          address: university.OrganizationDetail.address,
-          province: university.OrganizationDetail.province,
-          phone: university.OrganizationDetail.phone,
-          lat: university.OrganizationDetail.lat,
-          long: university.OrganizationDetail.long,
-          description: university.OrganizationDetail.description,
-        };
-      }),
-    [getUniversity],
-  );
-
   //hàm phan trang
   const handlePageChange = (page, pageSize) => {
     const payload = { page, pageSize };
