@@ -202,11 +202,10 @@ export const authSlice = createSlice({
       .addCase(signinAsync.fulfilled, (state, { payload }) => {
         state.pending = false;
         state.data = payload;
-        state.profile = payload?.userData;
         state.authToken = payload.token;
-        state.isLogin = payload?.userData.status === 1 ? true : false;
-        state.role = payload?.userData.Role.name || null;
-        state.status = payload?.userData.status;
+        state.isLogin = payload.status === 1 ? true : false;
+        state.role = payload.Role.name || null;
+        state.status = payload?.status;
       })
 
       .addCase(signinAsync.rejected, (state, { payload }) => {

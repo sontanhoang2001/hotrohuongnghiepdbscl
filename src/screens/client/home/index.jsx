@@ -5,10 +5,12 @@ import { ContainerStyled } from '../../../globalStyles';
 
 function Home() {
   return (
-    <ContainerStyled>
-      <BannerSection />
-      <NewsSection />
-    </ContainerStyled>
+    <>
+      <ContainerStyled>
+        <BannerSection />
+        <NewsSection />
+      </ContainerStyled>
+    </>
   );
 }
 
