@@ -397,7 +397,7 @@ module.exports = {
   getMajorMBTIById: async (mbtiId) => {
     try {
       const major_mbti = await MBTI.findByPk(mbtiId, {
-        attributes: ['id', 'name', 'description'],
+        attributes: ['id', 'name', 'description', 'image'],
         include: [
           {
             model: MajorMBTI,
