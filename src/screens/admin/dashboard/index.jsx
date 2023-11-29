@@ -126,29 +126,29 @@ function Dashboard() {
   ];
   const count = [
     {
-      today: 'Today’s Sales',
-      title: '$53,000',
+      today: 'Tổng người dùng',
+      title: '995,200',
+      persent: '+30%',
+      icon: profile,
+      bnb: 'bnb2',
+    },
+    {
+      today: 'Tổ trường học',
+      title: '340',
       persent: '+30%',
       icon: dollor,
       bnb: 'bnb2',
     },
     {
-      today: 'Today’s Users',
-      title: '3,200',
-      persent: '+20%',
-      icon: profile,
-      bnb: 'bnb2',
-    },
-    {
-      today: 'New Clients',
-      title: '+1,200',
+      today: 'Tổng Cty/doanh nghiệp',
+      title: '250',
       persent: '-20%',
       icon: heart,
       bnb: 'redtext',
     },
     {
-      today: 'New Orders',
-      title: '$13,200',
+      today: 'Tổ số yêu cầu tổ chức',
+      title: '130',
       persent: '10%',
       icon: cart,
       bnb: 'bnb2',
@@ -344,11 +344,11 @@ function Dashboard() {
         </Row>
 
         <Row gutter={[24, 0]}>
-          <Col xs={24} sm={24} md={12} lg={12} xl={10} className="mb-24">
+          {/* <Col xs={24} sm={24} md={12} lg={12} xl={10} className="mb-24">
             <Card bordered={false} className="criclebox h-full">
               <Echart />
             </Card>
-          </Col>
+          </Col> */}
           <Col xs={24} sm={24} md={12} lg={12} xl={14} className="mb-24">
             <Card bordered={false} className="criclebox h-full">
               <LineChart />
