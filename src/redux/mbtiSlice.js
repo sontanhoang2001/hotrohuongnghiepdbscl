@@ -5,12 +5,13 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 // Tạo initialState cho slice
 const initialState = {
   data: null, // Danh sách câu hỏi MBTI
+  dataHistory: null,
   personality: null,
   major: null,
   pending: false, // Trạng thái tải (pending, fulfilled, rejected)
   questionGroups: [],
   mbtiParams: { page: 1, size: 10, search: '' },
-  history: { page: 1, size: 10 },
+  historyPargams: { page: 1, size: 10 },
   metaData: { page: 1, size: 10, total: 1 },
   search: '',
 };
@@ -310,8 +311,8 @@ const mbtiSlice = createSlice({
       })
       .addCase(getAllTestHistory.fulfilled, (state, { payload }) => {
         state.pending = false;
-        state.data = payload;
-        state.history = { page: payload.page, size: payload.size };
+        state.dataHistory = payload;
+        state.historyPargams = { page: payload.page, size: payload.size };
       })
       .addCase(getAllTestHistory.rejected, (state, { payload }) => {
         state.pending = false;

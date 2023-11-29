@@ -25,6 +25,8 @@ function UserProfile() {
 
   //trạng thái đóng/ mở modal
   const [open, setOpen] = useState(false);
+  const [open1, setOpen1] = useState(false);
+  const [selectedHistoryIndex, setSelectedHistoryIndex] = useState(0);
   const [openOtp, setOpenOtp] = useState(false);
   const [otpType, setOtpType] = useState('email');
 
@@ -34,18 +36,18 @@ function UserProfile() {
   const sentOtp = useSelector(selectIsOtp);
   const dispatch = useDispatch();
   const getProfile = useSelector(selectLoginData);
-  const getHistoryTest = useSelector(selectMbtiQuestions);
+  // const dataHistory = useSelector(selectMbtiQuestions);
   const { role, status } = useSelector((state) => state.auth);
-  const { pending, mbtiParams } = useSelector((state) => state.mbti);
+  const { pending, historyPargams, dataHistory } = useSelector((state) => state.mbti);
 
   useEffect(() => {
-    dispatch(getAllTestHistory(mbtiParams));
+    dispatch(getAllTestHistory(historyPargams));
     if (status === 0) {
       navigate('/404');
     }
     //định dạng ngày sinh hiển thị
     setFormattedDate(
-      getProfile?.UserDetail.birthday != null && getProfile?.UserDetail.birthday !== undefined
+      getProfile?.UserDetail?.birthday
         ? format(new Date(getProfile?.UserDetail.birthday), 'dd/MM/yyyy')
         : 'dd/MM/yyyy',
     );
@@ -55,20 +57,22 @@ function UserProfile() {
       setOpenOtp(true);
     }
   }, [dispatch, openOtp, open, sentOtp, getProfile]);
-  console.log(getHistoryTest);
+  console.log(dataHistory?.data[0]);
 
   const columns = [
     {
       title: 'Thời Gian',
-      dataIndex: 'date',
-      key: 'date',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
       width: '33%',
+      render: (createdAt) => format(new Date(createdAt), 'dd/MM/yyyy HH:mm'),
     },
     {
       title: 'Kết quả',
-      dataIndex: 'result',
-      key: 'result',
+      dataIndex: 'MBTI',
+      key: 'MBTI.name',
       width: '33%',
+      render: (record) => record.name,
     },
     {
       key: 'view',
@@ -76,7 +80,10 @@ function UserProfile() {
       render: () => (
         <>
           <div className="author-info">
-            <Button style={{ display: 'flex', justifyContent: 'center' }}>
+            <Button
+              style={{ display: 'flex', justifyContent: 'center' }}
+              onClick={() => setOpen1(true)}
+            >
               <ViewIconStyled>
                 <EyeOutlined style={{ fontSize: `20px !important` }} /> Xem kết quả
               </ViewIconStyled>
@@ -86,36 +93,15 @@ function UserProfile() {
       ),
     },
   ];
-  const dataSource = [
-    {
-      key: '1',
-      date: 'Mike',
-      result: 'ISTJ',
-    },
-  ];
 
-  const items = [
-    {
-      key: '1',
-      label: 'Họ và Tên',
-      children: getProfile?.UserDetail?.fullName,
-    },
-    {
-      key: '2',
-      label: 'SĐT',
-      children: getProfile?.phone,
-    },
-    {
-      key: '3',
-      label: 'Email',
-      children: getProfile?.email,
-    },
-    {
-      key: '5',
-      label: 'Địa chỉ',
-      children: `${getProfile?.UserDetail?.address}, ${getProfile?.UserDetail?.addressDetail}`,
-    },
-  ];
+  // const convertDataSource =
+  //   getAllTestHistory?.data?.map((item) => ({
+  //     key: item.id,
+  //     id: item.id,
+  //     createdAt: item.createdAt,
+  //     MBTI: item.MBTI.name,
+  //   })) || [];
+
   return (
     <MarginTopContent className="container">
       <Row gutter={[16, 16]} justify="center">
@@ -156,9 +142,15 @@ function UserProfile() {
                 </p>
               </div>
             </ProfileHeader>
-            <hr style={{ border: `1px solid transparent`, borderColor: 'rgb(217, 217, 217)' }} />
+            <hr
+              style={{
+                border: `1px solid transparent`,
+                borderColor: 'rgb(217, 217, 217)',
+                marginTop: 20,
+              }}
+            />
             <BodyContent>
-              <Descriptions>
+              {/* <Descriptions>
                 <Descriptions.Item
                   label={
                     <Space>
@@ -201,8 +193,8 @@ function UserProfile() {
                 >
                   {getProfile?.UserDetail?.address}, {getProfile?.UserDetail?.addressDetail}
                 </Descriptions.Item>
-              </Descriptions>
-              {/* <Row style={{ marginTop: 20 }}>
+              </Descriptions> */}
+              <Row style={{ marginTop: 20 }}>
                 <Col span={24}>
                   <p>
                     <PhoneOutlined
@@ -254,7 +246,7 @@ function UserProfile() {
                     Cập nhật thông tin
                   </Button>
                 </Col>
-              </Row> */}
+              </Row>
             </BodyContent>
           </Card>
         </Col>
@@ -264,7 +256,13 @@ function UserProfile() {
               <h3>Lịch sử test MBTI</h3>
               <Button onClick={() => navigate('/mbti-test')}>Kiểm tra MBTI</Button>
             </HistoryHeader>
-            <Table dataSource={dataSource} columns={columns} pagination={false} />
+
+            <Table
+              loading={pending}
+              dataSource={dataHistory?.data}
+              columns={columns}
+              pagination={false}
+            />
           </Card>
         </Col>
       </Row>
@@ -281,6 +279,30 @@ function UserProfile() {
       {/* xác thực otp */}
       <Modal centered open={openOtp} onCancel={() => setOpenOtp(false)} footer={null}>
         <RequestOtp type={otpType} userId={getProfile?.UserDetail.id} sentOtp={sentOtp} />
+      </Modal>
+      {/*  */}
+      <Modal
+        title={'Kết quả'}
+        centered
+        open={open1}
+        onCancel={() => setOpen1(false)}
+        footer={null}
+        width={300}
+      >
+        {/* <img src={`${getAllTestHistory?.data.}`} alt="mbtitype" /> */}
+        <div className="mbti-description">
+          {/* <h3>{mbtiResult.name}</h3> */}
+          <h3 style={{ color: 'var(--primary-color)' }}>{dataHistory?.data[0].MBTI.name}</h3>
+          <p>{dataHistory?.data[0].MBTI.description}</p>
+        </div>
+        <h3>Công việc phù hợp với {dataHistory?.data[0].MBTI.name}</h3>
+        <div>
+          <ul style={{ padding: 10 }}>
+            {dataHistory?.data[0].MBTI.MajorMBTIs.map((majorMBTI) => (
+              <li key={majorMBTI.id}>{majorMBTI.majorName}</li>
+            ))}
+          </ul>
+        </div>
       </Modal>
     </MarginTopContent>
   );

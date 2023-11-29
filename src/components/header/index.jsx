@@ -123,7 +123,7 @@ function Header() {
       <Nav>
         {/* logo image */}
         <div className="brand-logo">
-          <img src="./images/logo/logo2.webp" alt="home" onClick={() => navigate('/')} />
+          <img src="./images/logo/logo.png" alt="home" onClick={() => navigate('/')} />
         </div>
         <div className="top-nav">
           <div className="topbar">
@@ -234,8 +234,9 @@ const Nav = styled.header`
     justify-content: center;
     width: 120px;
     position: absolute;
+    top: 9px;
     img {
-      height: 100px;
+      height: 80px;
       cursor: pointer;
       /* @media (max-width: 768px) {
         font-size: 1.6rem;
@@ -251,14 +252,14 @@ const Nav = styled.header`
     align-items: center;
     flex-direction: column;
     width: 100vw;
-    height: 120px;
+    height: 150px;
     .topbar {
       background-color: #ffffff;
       display: flex;
       align-items: center;
       justify-content: space-between;
       width: 100%;
-      height: 70px;
+      height: 100px;
       .brand {
         display: flex;
         margin-top: 0;
@@ -354,33 +355,9 @@ const Nav = styled.header`
           }
         }
       }
-      /* @media (max-width: 992px) {
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-        border-bottom: 2px solid var(--text-hover-color);
-        height: 50px;
-
-        ul {
-          display: none;
-        }
-        .bugger-btn {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-      } */
-      /* @media (max-width: 1400px) {
-        height: 110px;
-        ul {
-          width: 80%;
-          margin-left: auto;
-          margin-right: auto;
-        }
-      } */
     }
     @media (max-width: 992px) {
-      height: 120px;
+      height: 150px;
       .links {
         display: flex;
         justify-content: flex-end;
@@ -398,8 +375,8 @@ const Nav = styled.header`
         }
       }
     }
-    @media screen and (min-width: 992px) and (max-width: 1509px) {
-      height: 180px;
+    @media screen and (min-width: 992px) and (max-width: 1200px) {
+      height: 210px;
       .links {
         height: 110px;
         ul {

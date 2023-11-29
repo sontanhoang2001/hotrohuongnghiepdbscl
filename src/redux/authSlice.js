@@ -56,19 +56,19 @@ export const signinAsync = createAsyncThunk(
   async (userLoginData, { rejectWithValue }) => {
     try {
       const rs = await authApi.signin(userLoginData);
-      console.log(rs.data);
+      console.log(rs.data.data);
       // The value we return becomes the `fulfilled` action payload
       const dataUser = {
         ...rs.data.data,
       };
 
-      // console.log('>>> rs', rs.data.data);
+      console.log('>>> rs', rs.data.data);
       // console.log('>>> rs', dataUser);
 
       localStorage.setItem('accessToken', rs.data.data.accessToken);
       localStorage.setItem('userData', JSON.stringify(dataUser.userData));
 
-      return dataUser.userData;
+      return dataUser;
     } catch (err) {
       if (err.response && err.response.data.message) {
         throw rejectWithValue(err.response.data.message);
@@ -199,12 +199,13 @@ export const authSlice = createSlice({
         state.error = null;
       })
       .addCase(signinAsync.fulfilled, (state, { payload }) => {
+        console.log(payload);
         state.pending = false;
-        state.data = payload;
-        state.authToken = payload.token;
-        state.isLogin = payload.status === 1 ? true : false;
-        state.role = payload.Role.name || null;
-        state.status = payload?.status;
+        state.data = payload.userData;
+        state.authToken = payload.accessToken;
+        state.isLogin = payload.userData.status === 1 ? true : false;
+        state.role = payload.userData.Role.name || null;
+        state.status = payload.userData.status;
       })
 
       .addCase(signinAsync.rejected, (state, { payload }) => {
@@ -257,7 +258,7 @@ export const authSlice = createSlice({
         state.pending = false;
         state.error = payload;
         state.otp = false;
-        console.log("message", payload);
+        console.log('message', payload);
         message.error(payload, 3);
       })
       //trạng thái của authEmtail pending - fulfilled - rejected

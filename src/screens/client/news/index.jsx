@@ -113,7 +113,7 @@ function News() {
         <Spin spinning={pendingState} size="large">
           <Row gutter={[16, 24]}>
             {getPosts?.data?.map((val, idx) => (
-              <Col key={idx} xs={24} sm={24} md={12} lg={8}>
+              <Col key={idx} span={24} md={24} lg={12} xl={8}>
                 <Link to={`/tin-tuc/${val.id}`} onClick={() => window.scrollTo(0, 0)} replace>
                   <ImageCard src={`${val?.thumbnail}`} title={val?.title} />
                 </Link>

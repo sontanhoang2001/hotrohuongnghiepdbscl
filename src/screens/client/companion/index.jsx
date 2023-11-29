@@ -55,39 +55,26 @@ function Companion() {
         <SearchBar>
           <SearchBarContent>
             <SearchBox>
-              <ConfigProvider locale={viVN}>
-                <Input.Search
-                  placeholder="Tìm kiếm..."
-                  onChange={onSearchChange}
-                  onSearch={onSearch}
-                  enterButton={
-                    <Button type="primary" style={{ height: 50 }}>
-                      Tìm kiếm
-                    </Button>
-                  }
-                  allowClear
-                  style={{ height: 50 }}
-                />
-              </ConfigProvider>
+              {/* <ConfigProvider locale={viVN}> */}
+              <Input.Search
+                placeholder="Tìm kiếm..."
+                onChange={onSearchChange}
+                onSearch={onSearch}
+                enterButton={
+                  <Button type="primary" style={{ height: 50 }}>
+                    Tìm kiếm
+                  </Button>
+                }
+                allowClear
+                style={{ height: 50 }}
+              />
+              {/* </ConfigProvider> */}
             </SearchBox>
           </SearchBarContent>
         </SearchBar>
         <MarginTopContent>
           <Row justify="center">
             <Col span={20}>
-              {/* <Skeleton
-                loading={pendingState}
-                active
-                title={false}
-                paragraph={{
-                  rows: 4,
-                }}
-                style={{ marginTop: `3%` }}
-              > */}
-              {/* <List
-                  dataSource={data}
-                  renderItem={(val, idx) => <div key={idx}>{val.question}</div>}
-                /> */}
               <List
                 grid={{ column: 1 }}
                 itemLayout="horizontal"
@@ -110,21 +97,6 @@ function Companion() {
                   </List.Item>
                 )}
               />
-              {pendingState && (
-                <List
-                  grid={{ column: 1 }}
-                  itemLayout="horizontal"
-                  dataSource={getFaqs?.data}
-                  pagination={false}
-                  loading={pendingState}
-                  //render content
-                  renderItem={(val, idx) => (
-                    <div style={{ textAlign: 'center', marginTop: 20 }}>
-                      <Skeleton active title={false} paragraph={{ rows: 4 }} />
-                    </div>
-                  )}
-                />
-              )}
               <Pagination
                 current={faqsParams?.page}
                 pageSize={faqsParams?.size}
