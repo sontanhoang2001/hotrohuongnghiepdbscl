@@ -71,21 +71,35 @@ function Mbti() {
   const [isEditing, setIsEditing] = useState(false);
   const [processId, setProcessId] = useState(0);
   const [isOpenModal, setIsOpenModal] = useState(false);
+
+  const handelCreate = () => {
+    formRef.current?.resetFields();
+    setIsEditing(false);
+    setIsOpenModal(true);
+  };
   const handleEdit = (id) => {
     setProcessId(id);
     mbtiApi
       .getQuestionById(id)
       .then((res) => {
-
-        const question = res.data.data;
-        formRef.current?.resetFields();
-        formRef.current?.setFieldsValue({
-          ...question,
-          answers: question.Answers,
-          question_group_id: question.QuestionGroup.id,
-        });
         setIsEditing(true);
         setIsOpenModal(true);
+        // const question = res.data.data;
+        // formRef.current?.resetFields();
+        // formRef.current?.setFieldsValue({
+        //   ...question,
+        //   answers: question.Answers,
+        //   question_group_id: question.QuestionGroup.id,
+        // });
+        setTimeout(() => {
+          const question = res.data.data;
+          formRef.current?.resetFields();
+          formRef.current?.setFieldsValue({
+            ...question,
+            answers: question.Answers,
+            question_group_id: question.QuestionGroup.id,
+          });
+        }, 200);
         setProcessId(0);
       })
       .catch((error) => {
@@ -244,11 +258,7 @@ function Mbti() {
           <Col span={8} style={{ display: 'flex', justifyContent: 'start' }}>
             <Button
               style={{ padding: '0 1rem' }}
-              onClick={() => {
-                formRef.current?.resetFields();
-                setIsEditing(false);
-                setIsOpenModal(true);
-              }}
+              onClick={() => handelCreate()}
               type="primary"
               size="large"
             >
