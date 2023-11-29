@@ -76,11 +76,14 @@ function SignInV1() {
     if (role && status === 1) {
       if (role === 'ADMIN') {
         navigate('/admin');
+        window.location.reload();
       } else if (role === 'ORGANIZATION') {
         navigate('/organization');
         window.location.reload();
+        window.location.reload();
       } else {
         navigate('/');
+        window.location.reload();
       }
     }
   }, [navigate, role, status]);

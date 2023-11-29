@@ -55,7 +55,7 @@ function NewsDetail() {
                 {/* <p>{getPosts?.content}</p> */}
                 <div dangerouslySetInnerHTML={{ __html: getPosts?.content }} />
               </NewsContent>
-              <Button type="primary" onClick={() => navigate('/tin-tuc')} style={{ marginTop: 20 }}>
+              <Button type="primary" onClick={() => navigate(-2)} style={{ marginTop: 20 }}>
                 Quay lại
               </Button>
               <div></div>

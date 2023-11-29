@@ -142,9 +142,15 @@ function UserProfile() {
                 </p>
               </div>
             </ProfileHeader>
-            <hr style={{ border: `1px solid transparent`, borderColor: 'rgb(217, 217, 217)' }} />
+            <hr
+              style={{
+                border: `1px solid transparent`,
+                borderColor: 'rgb(217, 217, 217)',
+                marginTop: 20,
+              }}
+            />
             <BodyContent>
-              <Descriptions>
+              {/* <Descriptions>
                 <Descriptions.Item
                   label={
                     <Space>
@@ -187,8 +193,8 @@ function UserProfile() {
                 >
                   {getProfile?.UserDetail?.address}, {getProfile?.UserDetail?.addressDetail}
                 </Descriptions.Item>
-              </Descriptions>
-              {/* <Row style={{ marginTop: 20 }}>
+              </Descriptions> */}
+              <Row style={{ marginTop: 20 }}>
                 <Col span={24}>
                   <p>
                     <PhoneOutlined
@@ -240,7 +246,7 @@ function UserProfile() {
                     Cập nhật thông tin
                   </Button>
                 </Col>
-              </Row> */}
+              </Row>
             </BodyContent>
           </Card>
         </Col>
@@ -250,6 +256,7 @@ function UserProfile() {
               <h3>Lịch sử test MBTI</h3>
               <Button onClick={() => navigate('/mbti-test')}>Kiểm tra MBTI</Button>
             </HistoryHeader>
+
             <Table
               loading={pending}
               dataSource={dataHistory?.data}

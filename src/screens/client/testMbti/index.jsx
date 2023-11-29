@@ -348,11 +348,15 @@ function TestMbti() {
                 <h3 style={{ color: 'var(--primary-color)' }}>{mbtiResult.name}</h3>
                 <p>{mbtiResult.description}</p>
               </div>
-              <h3>Công việc phù hợp với {mbtiResult.name}</h3>
+              <h3>Nghành nghề phù hợp với bạn</h3>
               <SuggestContent>
                 <div>
                   {dataHistory?.data[0].MBTI.MajorMBTIs.map((majorMBTI) => (
-                    <span key={majorMBTI.id}>{majorMBTI.majorName}</span>
+                    <span key={majorMBTI.id}>
+                      <a href={majorMBTI.link} target="_blank" rel="noopener noreferrer">
+                        {majorMBTI.majorName} - {majorMBTI.Organization.name}
+                      </a>
+                    </span>
                   ))}
                   {/* <div>adfadf</div>
                   <div>adfadf</div>
@@ -474,6 +478,10 @@ const SuggestContent = styled.div`
     padding: 10px 10px;
 
     margin: 5px;
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
   }
   span:nth-child(odd) {
     background: var(--primary-color);
