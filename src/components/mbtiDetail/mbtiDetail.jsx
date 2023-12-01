@@ -65,13 +65,6 @@ export const mbtiDetail = {
         'Nhóm tính cách này thường có những quan điểm mạnh mẽ, đặc biệt là khi liên quan đến các vấn đề mà họ cho là thực sự quan trọng trong cuộc sống, vì vậy nếu nhóm INFJ đấu tranh vì điều gì đó, lý do chính là họ tin vào lý tưởng của chính mình.',
     },
     {
-      id: 'ENFP',
-      image: 'ENFP.svg',
-      text: 'Người Truyền Cảm Hứng/ Người Dẫn Dắt',
-      description:
-        'Họ thường rất tò mò, duy tâm và khá bí ẩn vì họ tìm kiếm ý nghĩa và thực sự quan tâm đến động cơ của người khác, vì vậy họ thấy cuộc sống rất rộng lớn và có nhiều câu đố chưa được giải mã mà trong đó mọi thứ đều liên hệ với nhau.',
-    },
-    {
       id: 'ISTJ',
       image:
         'https://firebasestorage.googleapis.com/v0/b/upload-file-5908d.appspot.com/o/mbti%2FISTJ.svg?alt=media&token=1caa8011-d3b0-4b75-bf3a-be8626e53614',
