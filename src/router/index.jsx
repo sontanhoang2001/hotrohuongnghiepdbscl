@@ -106,6 +106,7 @@ function Router() {
             <Route path="dashboard" element={<Dashboard />} />
             <Route path=":id" element={<OrganizationProfile />} />
             <Route path="profile" element={<Profile />} />
+            <Route path="tin-nhan" element={<Chat />} />
           </Route>
         </Route>
 

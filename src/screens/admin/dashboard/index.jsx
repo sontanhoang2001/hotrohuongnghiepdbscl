@@ -133,7 +133,7 @@ function Dashboard() {
       bnb: 'bnb2',
     },
     {
-      today: 'Tổ trường học',
+      today: 'Tổng trường học',
       title: '340',
       persent: '+30%',
       icon: dollor,
@@ -147,7 +147,7 @@ function Dashboard() {
       bnb: 'redtext',
     },
     {
-      today: 'Tổ số yêu cầu tổ chức',
+      today: 'Tổng số yêu cầu tổ chức',
       title: '130',
       persent: '10%',
       icon: cart,

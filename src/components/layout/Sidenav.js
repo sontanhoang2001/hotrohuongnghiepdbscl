@@ -113,24 +113,6 @@ function Sidenav({ color }) {
       </NavLink>,
       '4',
     ),
-    getItem(
-      <NavLink to="/admin/loai-bai-viet">
-        <span className="icon">
-          <UnorderedListOutlined />
-        </span>
-        <span className="label">Thể loại bài viết</span>
-      </NavLink>,
-      '12',
-    ),
-    getItem(
-      <NavLink to="/admin/kenh-chat">
-        <span className="icon">
-          <WechatOutlined />
-        </span>
-        <span className="label">Kênh chat</span>
-      </NavLink>,
-      '13',
-    ),
 
     getItem(
       <NavLink to="/admin/danh-sach-nguoi-dung">

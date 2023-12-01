@@ -365,7 +365,17 @@ function Mbti() {
                         {...restField}
                         name={[name, 'value']}
                         label="Giá trị"
-                        rules={[{ required: true, message: 'Vui lòng nhập giá trị' }]}
+                        rules={[
+                          { required: true, message: 'Vui lòng nhập giá trị' },
+                          {
+                            max: 1,
+                            message: 'giá trị câu trả lời không quá 1 ký tự',
+                          },
+                          {
+                            pattern: /^[EISNTJP]$/,
+                            message: 'Giá trị phải là 1 ký tự thuộc E,I,S,N,T,J,P',
+                          },
+                        ]}
                       >
                         <Input size="large" placeholder="Câu trả lời" />
                       </Form.Item>
@@ -379,7 +389,7 @@ function Mbti() {
                         block
                         icon={<PlusCircleOutlined />}
                       >
-                        Thêm ngành
+                        Thêm câu trả lời
                       </Button>
                     </Form.Item>
                   )}
