@@ -123,7 +123,7 @@ function Header() {
       <Nav>
         {/* logo image */}
         <div className="brand-logo">
-          <img src="./images/logo/logo.png" alt="home" onClick={() => navigate('/')} />
+          <img src={`../images/logo/logo.png`} alt="home" onClick={() => navigate('/')} />
         </div>
         <div className="top-nav">
           <div className="topbar">

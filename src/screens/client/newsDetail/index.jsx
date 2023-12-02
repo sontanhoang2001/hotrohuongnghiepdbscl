@@ -81,7 +81,7 @@ function NewsDetail() {
 
       <NewsFooterStyled>
         <Title>
-          <HeadingTitle>{getPosts?.title}</HeadingTitle>
+          <HeadingTitle>tin mới</HeadingTitle>
           <div className="underline"></div>
         </Title>
         <Spin spinning={pendingState}>
@@ -133,10 +133,17 @@ const NewsContent = styled.div`
       text-align: justify;
       line-height: 50px;
     }
-    figure {
+    table {
+      width: 100%;
+    }
+    figure,
+    div table tbody tr td div figure {
       text-align: center;
       margin-top: 30px;
       margin-bottom: 30px;
+    }
+    div table tbody tr td p {
+      text-align: center;
     }
   }
 `;
