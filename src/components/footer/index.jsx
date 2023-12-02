@@ -132,23 +132,26 @@ function CLientFooter() {
           <Col xs={12} sm={12} md={12} lg={6}>
             <Heading>Thông Tin</Heading>
             <FooterLink>
-              <NavLink to="thong-tin-cac-truong-dai-hoc">Các Trường Đại Học</NavLink>
+              <NavLink to="thong-tin-cac-truong-dai-hoc" onClick={() => window.scrollTo(0, 0)}>
+                Các Trường Đại Học
+              </NavLink>
             </FooterLink>
             <FooterLink>
-              <NavLink to="trach-nghiem-tinh-cach">Phương Pháp trác nghiệm</NavLink>
-            </FooterLink>
-            <FooterLink>
-              <NavLink to="dong-hanh">Đồng Hành</NavLink>
+              <NavLink to="trach-nghiem-tinh-cach" onClick={() => window.scrollTo(0, 0)}>
+                Phương Pháp trác nghiệm
+              </NavLink>
             </FooterLink>
           </Col>
           <Col xs={12} sm={12} md={12} lg={6}>
             <Heading>Dịch vụ</Heading>
 
             <FooterLink>
-              <NavLink>chuyên viên tư vấn</NavLink>
+              <NavLink onClick={() => window.scrollTo(0, 0)}>chuyên viên tư vấn</NavLink>
             </FooterLink>
             <FooterLink>
-              <NavLink to="dong-hanh">Câu hỏi thắc mắc</NavLink>
+              <NavLink to="dong-hanh" onClick={() => window.scrollTo(0, 0)}>
+                Câu hỏi thắc mắc
+              </NavLink>
             </FooterLink>
           </Col>
           <Col xs={12} sm={12} md={12} lg={5}>
