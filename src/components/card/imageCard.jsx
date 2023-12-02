@@ -11,18 +11,29 @@ function ImageCard(props) {
         style={{ height: `100%` }}
       >
         {props.personality ? (
-          <p
-            style={{
-              textAlign: `center`,
-              fontWeight: 800,
-              fontSize: '20pt',
-              color: `var(--primary-color)`,
-              marginTop: 10,
-              marginBottom: 10,
-            }}
-          >
-            {props.title}
-          </p>
+          <>
+            <p
+              style={{
+                textAlign: `center`,
+                fontWeight: 800,
+                fontSize: '20pt',
+                color: `var(--primary-color)`,
+                marginBottom: 10,
+              }}
+            >
+              <h2> {props.title}</h2>
+            </p>
+            <p
+              style={{
+                textAlign: `center`,
+                fontWeight: 600,
+                fontSize: '16pt',
+                marginBottom: 10,
+              }}
+            >
+              {props.label}
+            </p>
+          </>
         ) : (
           <Meta title={props.title} style={{ marginTop: 10, textAlign: 'center' }} />
         )}

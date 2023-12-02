@@ -153,13 +153,14 @@ function MBTI() {
                 ))}
             </Row> */}
             <Spin spinning={pending}>
-              {personality ? (
+              {personality && personality ? (
                 <Row gutter={[24, 34]}>
-                  {personality?.map((val, idx) => (
+                  {personality.map((val, idx) => (
                     <Col key={idx} xs={24} sm={24} md={12} lg={12}>
                       <ImageCard
-                        src={`${val?.image}`}
-                        title={val?.name}
+                        src={`${val.image}`}
+                        title={val.name}
+                        label={val.label}
                         titleColor={`var(--primary-color)`}
                         personality={true}
                         description={val.description}

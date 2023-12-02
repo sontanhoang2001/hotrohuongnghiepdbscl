@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 
 import styled from 'styled-components';
-import { Button, Popconfirm, Skeleton, Spin, message } from 'antd';
+import { Button, Card, Col, Popconfirm, Row, Skeleton, Spin, message } from 'antd';
 import { mbtiDetail } from '../../../components/mbtiDetail/mbtiDetail';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -12,6 +12,7 @@ import {
   storeTestHistory,
   getGetAllpersonality,
 } from '../../../redux/mbtiSlice';
+import { ContainerStyled } from '../../../globalStyles';
 
 // change value of question increase 1 or decrease 1, when click prev or next button
 const DIRECTION_PREV = -1;
@@ -260,9 +261,8 @@ function TestMbti() {
     // console.log('personality', personality);
 
     const result = personality?.find((p) => p.name === mbtiType);
-
+    setMbtiResult(result);
     const mbtiResult_id = result.id;
-    console.log(mbtiResult_id);
 
     // setMbtiResult(personality?.find((detail) => detail?.name === mbtiType));
 
@@ -282,7 +282,7 @@ function TestMbti() {
   const cancel = (e) => {};
 
   return (
-    <>
+    <ContainerStyled>
       <Spin spinning={pendingState}>
         {/* hiển thị thay đổi khi giá trị completed thay đổi */}
         {!completed ? (
@@ -358,36 +358,40 @@ function TestMbti() {
         ) : (
           // điều kiện else
           <>
-            <ShowResult className="container">
-              <h3 className="result-title">kết quả của bạn</h3>
-              <img src={`${personalityById?.image}`} alt="mbtitype" />
-              <div className="mbti-description">
-                {/* <h3>{mbtiResult.name}</h3> */}
-                <h3 style={{ color: 'var(--primary-color)' }}>{personalityById?.name}</h3>
-                <p>{personalityById?.description}</p>
-              </div>
-              <h3>Nghành nghề phù hợp với bạn</h3>
-              <SuggestContent>
-                <div>
-                  {personalityById?.MajorMBTIs?.map((majorMBTI) => (
-                    <span key={majorMBTI.id}>
-                      <a href={majorMBTI.link} target="_blank" rel="noopener noreferrer">
-                        {majorMBTI.majorName} - {majorMBTI.Organization.name}
-                      </a>
-                    </span>
-                  ))}
-                  {/* <div>adfadf</div>
-                  <div>adfadf</div>
-                  <div>adfadf</div>
-                  <div>adfadf</div>
-                  <div>adfadf</div> */}
-                </div>
-              </SuggestContent>
-            </ShowResult>
+            {personalityById && personalityById ? (
+              <ShowResult>
+                <Row gutter={[16, 16]} justify={'center'}>
+                  <Col span={16}>
+                    <h3 className="result-title">kết quả của bạn</h3>
+                    <img src={`${personalityById.image}`} alt="mbtitype" />
+                    <div className="mbti-description">
+                      <h3 style={{ color: 'var(--primary-color)' }}>{personalityById.name}</h3>
+                      <h3>{mbtiResult.label}</h3>
+                      <p>{personalityById.description}</p>
+                    </div>
+
+                    <h3 style={{ marginTop: 20 }}>Nghành nghề phù hợp với bạn</h3>
+                    <SuggestContent>
+                      <div>
+                        {personalityById.MajorMBTIs.map((majorMBTI) => (
+                          <span key={majorMBTI.id}>
+                            <a href={majorMBTI.link} target="_blank" rel="noopener noreferrer">
+                              {majorMBTI.majorName} - {majorMBTI.Organization.name}
+                            </a>
+                          </span>
+                        ))}
+                      </div>
+                    </SuggestContent>
+                  </Col>
+                </Row>
+              </ShowResult>
+            ) : (
+              <Card loading={true} style={{ width: `100%` }} />
+            )}
           </>
         )}
       </Spin>
-    </>
+    </ContainerStyled>
   );
 }
 
@@ -448,12 +452,12 @@ const ControllBtn = styled.div`
   }
 `;
 const ShowResult = styled.div`
-  display: flex;
-  flex-direction: column;
+  /* display: flex;
+  flex-direction: column; */
   transition: 2s ease-in;
-  width: 400px;
-  margin-left: auto;
-  margin-right: auto;
+  /* width: 400px; */
+  /* margin-left: auto;
+  margin-right: auto; */
   margin-top: 40px;
 
   .result-title {
