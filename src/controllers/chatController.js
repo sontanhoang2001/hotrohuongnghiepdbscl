@@ -17,15 +17,16 @@ module.exports = {
   getAllChats: async (req, res) => {
     try {
       const userId = req.user.id;
-      const organizationId = req.query.organizationId && parseInt(req.query.organizationId);
-      const beforeId = req.query.beforeId && parseInt(req.query.beforeId);
-      const size = req.query.size && parseInt(req.query.size);
+      const page = (req.query.page && parseInt(req.query.page)) || 1;
+      const size = (req.query.size && parseInt(req.query.size)) || 10;
 
-      if (isNaN(organizationId) || isNaN(beforeId)) {
+      const organizationId = req.query.organizationId && parseInt(req.query.organizationId);
+
+      if (isNaN(organizationId)) {
         return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter full parameter');
       }
 
-      const chatMessage = await chatService.getAllChats(userId, organizationId, beforeId, size); // Gọi chức năng từ service
+      const chatMessage = await chatService.getAllChats(userId, organizationId, page, size); // Gọi chức năng từ service
       if (chatMessage) {
         return responseHelper.sendResponse.SUCCESS(res, chatMessage);
       }

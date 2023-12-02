@@ -20,16 +20,14 @@ module.exports = {
     }
   },
 
-  getAllChats: async (userId, organizationId, beforeId, size) => {
+  getAllChats: async (userId, organizationId, page, size) => {
     try {
       // Tính offset
-      let offset = 0;
-      let order = [['id', 'ASC']];
+      const offset = (page - 1) * size;
+      let order = [['id', 'DESC']];
 
       // Tìm DS chatId thuộc tổ chức
       const listChatId = await Chat.findAll({
-        offset,
-        limit: size,
         where: {
           userId: {
             [Op.not]: userId,
@@ -40,9 +38,12 @@ module.exports = {
         raw: true,
       });
       const arrayChatId = listChatId.map((chat) => chat.id);
-      // console.log('arrayChatId', arrayChatId);
+      console.log('arrayChatId', arrayChatId);
 
       const latestMessages = await Messages.findAll({
+        order,
+        limit: size,
+        offset,
         attributes: ['senderId', [Sequelize.fn('MAX', Sequelize.col('id')), 'latestChatId']],
         where: {
           chatId: { [Op.in]: arrayChatId },
@@ -56,26 +57,7 @@ module.exports = {
       const arrayLatestMessageId = latestMessages.map((chat) => chat.latestChatId);
       console.log('arrayLatestMessageId', arrayLatestMessageId);
 
-      // if (beforeId !== -1) {
-      //   // tìm vị trí của message có id = beforeId
-
-      //   const beforeMessageIndex = await Messages.count({
-      //     where: {
-      //       chatId: { [Op.in]: arrayChatId },
-      //       senderId: {
-      //         [Op.not]: userId,
-      //       },
-      //     },
-      //   });
-
-      //   console.log('beforeMessageIndex', beforeMessageIndex);
-
-      //   offset = Math.max(0, beforeMessageIndex - size);
-      // } else {
-      //   order = [['id', 'DESC']];
-      // }
-
-      // Tìm findAll ds tin nhắn mới nhất thuộc [chatId]
+      // Hiện thị thông tin đầy đủ của list Chat gần nhất
       const listChatRecently = await Messages.findAll({
         where: {
           id: { [Op.in]: arrayLatestMessageId },
@@ -88,6 +70,15 @@ module.exports = {
           'status',
           'chatId',
           'createdAt',
+          [
+            Sequelize.literal(`(
+              SELECT fullName
+              FROM user_detail AS UserDetail
+              WHERE
+              UserDetail.userId = Messages.senderId
+            )`),
+            'senderFullName',
+          ],
           [
             Sequelize.literal(`(
               SELECT fullName
@@ -247,7 +238,7 @@ module.exports = {
         ],
       });
 
-      console.log('chat >>>', chat);
+      // console.log('chat >>>', chat);
 
       const chatExists = !!chat && chat.length > 0;
       if (!chatExists) {

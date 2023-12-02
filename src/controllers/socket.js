@@ -14,6 +14,8 @@ async function handleConnection(socket, io) {
       socket.emit('joinRoomStatus', true);
       socket.join(chatId);
     } else {
+      socket.emit('joinRoomStatus', false);
+      
       console.log(`kết nối đến chatId ${chatId} thất bại`);
       socket.emit('error', `kết nối đến chatId ${chatId} thất bại`);
       // socket.emit('error', 'Invalid chatId code');
