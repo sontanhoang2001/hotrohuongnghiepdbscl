@@ -7,6 +7,7 @@ import userReducer from '../redux/userSlice';
 import universityReducer from '../redux/universitySlice';
 import faqsReducer from '../redux/faqsSlice';
 import postsReducer from '../redux/postsSlice';
+import chatReducer from '../redux/chatSlice';
 
 
 export const store = configureStore({
@@ -18,7 +19,8 @@ export const store = configureStore({
     user: userReducer,
     university: universityReducer,
     faqs:faqsReducer,
-    posts:postsReducer
+    posts:postsReducer,
+    chat:chatReducer
   },
   // middleware: [authMiddleware],
 });
