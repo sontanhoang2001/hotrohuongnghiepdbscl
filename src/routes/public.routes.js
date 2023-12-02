@@ -5,7 +5,11 @@ const middleware = require('../middleware/verifyToken.js');
 const Roles = require('../config/role.js');
 
 //* Call the controller with the methods
-const { getAllForPublic, getOrganizationByIdForPublic } = require('../controllers/organizationController.js');
+const {
+  getAllForPublic,
+  getOrganizationByIdForPublic,
+  getAllForPublicToSelectList,
+} = require('../controllers/organizationController.js');
 
 const { getAllPostsForPublic, getPostsByIdForPublic } = require('../controllers/postsOrganizationController.js');
 
@@ -18,6 +22,7 @@ const { newDoTestMBTI, getAllPersonalityGroups, getMajorMBTIById } = require('..
 const organizationRoutePrefix = '/organization';
 router.get(organizationRoutePrefix + '/', getAllForPublic);
 router.get(organizationRoutePrefix + '/id/:id', getOrganizationByIdForPublic);
+router.get(organizationRoutePrefix + '/selectList', getAllForPublicToSelectList);
 
 const postsRoutePrefix = '/posts';
 router.get(postsRoutePrefix + '/', getAllPostsForPublic);

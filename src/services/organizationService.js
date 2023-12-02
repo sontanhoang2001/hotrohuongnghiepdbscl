@@ -123,7 +123,7 @@ module.exports = {
       if (isAdmin) {
         paranoidBool = false;
       }
-      
+
       const organization = await Organization.findOne({
         where: { id: organizationId },
         attributes: ['id', 'name', 'deletedAt'],
@@ -553,6 +553,26 @@ module.exports = {
       });
 
       console.log('organization', organization);
+      return organization;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  getAllForPublicToSelectList: async (organizationTypeId) => {
+    try {
+      const where = {};
+
+      if (organizationTypeId) {
+        where.organizationTypeId = organizationTypeId;
+      }
+
+      // Tính offset
+      const organization = await Organization.findAll({
+        where,
+        attributes: ['id', 'name'],
+      });
+
       return organization;
     } catch (error) {
       throw error;

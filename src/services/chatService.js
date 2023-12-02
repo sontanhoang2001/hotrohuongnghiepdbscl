@@ -24,23 +24,6 @@ module.exports = {
       // Tính offset
       let offset = 0;
       let order = [['id', 'ASC']];
-      if (beforeId !== -1) {
-        // tìm vị trí của message có id = beforeId
-
-        const beforeMessageIndex = await Messages.count({
-          where: {
-            id: {
-              [Op.lt]: beforeId,
-            },
-          },
-        });
-
-        console.log('beforeMessageIndex', beforeMessageIndex);
-
-        offset = Math.max(0, beforeMessageIndex - size);
-      } else {
-        order = [['id', 'DESC']];
-      }
 
       // Tìm DS chatId thuộc tổ chức
       const listChatId = await Chat.findAll({
@@ -56,6 +39,7 @@ module.exports = {
         raw: true,
       });
       const arrayChatId = listChatId.map((chat) => chat.id);
+      // console.log('arrayChatId', arrayChatId);
 
       const latestMessages = await Messages.findAll({
         attributes: ['senderId', [Sequelize.fn('MAX', Sequelize.col('id')), 'latestChatId']],
@@ -71,6 +55,25 @@ module.exports = {
       const arrayLatestMessageId = latestMessages.map((chat) => chat.latestChatId);
       console.log('arrayLatestMessageId', arrayLatestMessageId);
 
+      // if (beforeId !== -1) {
+      //   // tìm vị trí của message có id = beforeId
+
+      //   const beforeMessageIndex = await Messages.count({
+      //     where: {
+      //       chatId: { [Op.in]: arrayChatId },
+      //       senderId: {
+      //         [Op.not]: userId,
+      //       },
+      //     },
+      //   });
+
+      //   console.log('beforeMessageIndex', beforeMessageIndex);
+
+      //   offset = Math.max(0, beforeMessageIndex - size);
+      // } else {
+      //   order = [['id', 'DESC']];
+      // }
+
       // Tìm findAll ds tin nhắn mới nhất thuộc [chatId]
       const listChatRecently = await Messages.findAll({
         where: {
@@ -78,6 +81,7 @@ module.exports = {
         },
         raw: true,
         attributes: [
+          'id',
           'content',
           'type',
           'status',
@@ -95,7 +99,7 @@ module.exports = {
         ],
       });
 
-      console.log('listChatRecently', listChatRecently);
+      // console.log('listChatRecently', listChatRecently);
 
       // xong ra kết quả
 
@@ -133,19 +137,6 @@ module.exports = {
       //       order: [['createdAt', 'DESC']],
       //     },
       //   ],
-      // });
-
-      // const listChat = await Messages.findAll({
-      //   offset,
-      //   limit: size,
-      //   where: {
-      //     senderId: {
-      //       [Op.not]: userId,
-      //     },
-      //   },
-      //   order: [['createdAt', 'DESC']],
-      //   attributes: ['id', 'senderId', 'reciverId', 'content', 'status', 'createdAt'],
-      //   group: ['senderId'],
       // });
 
       return listChatRecently;

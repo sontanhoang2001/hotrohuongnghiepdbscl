@@ -347,4 +347,19 @@ module.exports = {
       responseHelper.sendResponse.SERVER_ERROR(res, null);
     }
   },
+
+  getAllForPublicToSelectList: async (req, res) => {
+    try {
+      let organizationTypeId = req.query.organizationType;
+
+      const listUniversity = await organizationService.getAllForPublicToSelectList(organizationTypeId); // Gọi chức năng từ service
+      if (listUniversity) {
+        return responseHelper.sendResponse.SUCCESS(res, listUniversity);
+      }
+
+      return responseHelper.sendResponse.BAD_REQUEST(res, null);
+    } catch (error) {
+      responseHelper.sendResponse.SERVER_ERROR(res, null);
+    }
+  },
 };
