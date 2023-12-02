@@ -2,6 +2,7 @@ const User = require('../models').User;
 const Messages = require('../models').Messages;
 const Chat = require('../models').Chat;
 const UserDetail = require('../models').UserDetail;
+const Organization = require('../models').Organization;
 
 // const sequelize = require('../database/connection_database');
 const { Op, Sequelize } = require('sequelize');
@@ -217,9 +218,31 @@ module.exports = {
         order = [['id', 'DESC']];
       }
 
+      // const organization = await Organization.findByPk(organizationId, {
+      //   attributes: ['name'],
+      //   raw: true,
+      // });
+
+      // console.log('organization', organization.name);
+
       const chat = await Chat.findAll({
         where: { userId, organizationId },
-        attributes: ['id', 'status', 'userId', 'organizationId', 'createdAt'],
+        attributes: [
+          'id',
+          'status',
+          'userId',
+          'organizationId',
+          'createdAt',
+          [
+            Sequelize.literal(`(
+            SELECT name
+            FROM organization AS Organization
+            WHERE
+            Organization.id = Chat.organizationId
+          )`),
+            'organizationName',
+          ],
+        ],
         include: [
           {
             offset,
@@ -230,6 +253,8 @@ module.exports = {
           },
         ],
       });
+
+      console.log('chat >>>', chat);
 
       const chatExists = !!chat && chat.length > 0;
       if (!chatExists) {
