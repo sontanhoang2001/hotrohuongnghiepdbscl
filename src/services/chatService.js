@@ -131,7 +131,14 @@ module.exports = {
       //   ],
       // });
 
-      return listChatRecently;
+      const pagination = {
+        total: count,
+        page,
+        size,
+        data: rows,
+      };
+
+      return pagination;
     } catch (error) {
       throw error;
     }
@@ -225,6 +232,15 @@ module.exports = {
             Organization.id = Chat.organizationId
           )`),
             'organizationName',
+          ],
+          [
+            Sequelize.literal(`(
+            SELECT image
+            FROM organization_detail AS OrganizationDetail
+            WHERE
+            OrganizationDetail.id = Chat.organizationId
+          )`),
+            'organizationAvatar',
           ],
         ],
         include: [

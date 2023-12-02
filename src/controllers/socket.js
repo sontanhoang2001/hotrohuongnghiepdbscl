@@ -11,13 +11,11 @@ async function handleConnection(socket, io) {
     const checkIsValidChatId = await chatController.isValidChatId(chatId);
     if (checkIsValidChatId) {
       console.log(`${userId} >>> Đã kết nối đến chatId: ${chatId}`);
-      socket.emit('joinRoomStatus', true);
+      socket.emit('joinRoomStatus', { status: true, data: null, message: `Đã kết nối đến chatId: ${chatId}` });
       socket.join(chatId);
     } else {
-      socket.emit('joinRoomStatus', false);
-      
+      socket.emit('joinRoomStatus', { status: false, data: null, message: `Đã kết nối đến chatId: ${chatId} thất bại` });
       console.log(`kết nối đến chatId ${chatId} thất bại`);
-      socket.emit('error', `kết nối đến chatId ${chatId} thất bại`);
       // socket.emit('error', 'Invalid chatId code');
     }
   });
