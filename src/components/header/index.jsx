@@ -312,6 +312,7 @@ const Nav = styled.header`
       height: 50px;
       background-color: var(--primary-color);
       ul {
+        height: 100%;
         list-style-type: none;
         margin: 0;
         padding: 0;
