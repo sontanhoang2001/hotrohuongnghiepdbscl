@@ -7,6 +7,7 @@ import userReducer from '../redux/userSlice';
 import universityReducer from '../redux/universitySlice';
 import faqsReducer from '../redux/faqsSlice';
 import postsReducer from '../redux/postsSlice';
+import chatReducer from '../redux/chatSlice';
 import majorMbtiReducer from '../redux/majorMbtiSlice';
 
 export const store = configureStore({
@@ -19,6 +20,7 @@ export const store = configureStore({
     university: universityReducer,
     faqs: faqsReducer,
     posts: postsReducer,
+    chat:chatReducer,
     majorMbti: majorMbtiReducer,
   },
   // middleware: [authMiddleware],
