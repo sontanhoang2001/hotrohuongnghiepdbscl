@@ -7,10 +7,11 @@ const customerRoutes = require('./routes/customers.routes');
 const userRoutes = require('./routes/users.routes');
 const organizationRoutes = require('./routes/organization.routes');
 const mbtiRoutes = require('./routes/mbti.routes');
-const PostsOrganization = require('./routes/postsOrganization.routes');
-const FaqsOrganization = require('./routes/faqsOrganization.routes');
-const MajorMBTI = require('./routes/majorMbti.routes');
-const PostsCategory = require('./routes/postsCategory.routes');
+const PostsOrganizationRouters = require('./routes/postsOrganization.routes');
+const FaqsOrganizationRouters = require('./routes/faqsOrganization.routes');
+const MajorMBTIRouters = require('./routes/majorMbti.routes');
+const PostsCategoryRouters = require('./routes/postsCategory.routes');
+const chatRouters = require('./routes/chat.routes');
 
 const Public = require('./routes/public.routes');
 
@@ -26,11 +27,11 @@ const router = (app) => {
     app.use('/api/v1/users', userRoutes);
     app.use('/api/v1/organization', organizationRoutes);
     app.use('/api/v1/mbtis', mbtiRoutes);
-    app.use('/api/v1/PostsOrganization', PostsOrganization);
-    app.use('/api/v1/faqsOrganization', FaqsOrganization);
-    app.use('/api/v1/majorMbti', MajorMBTI);
-    app.use('/api/v1/postsCategory', PostsCategory);
-
+    app.use('/api/v1/PostsOrganization', PostsOrganizationRouters);
+    app.use('/api/v1/faqsOrganization', FaqsOrganizationRouters);
+    app.use('/api/v1/majorMbti', MajorMBTIRouters);
+    app.use('/api/v1/postsCategory', PostsCategoryRouters);
+    app.use('/api/v1/chat', chatRouters);
 
     app.use('/api/v1/public', Public);
 

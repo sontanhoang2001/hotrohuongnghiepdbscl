@@ -12,13 +12,16 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       reciverId: {
-        type: Sequelize.INTEGER
-      },
-      adviserId : {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull: true,
+        defaultValue: null
       },
       content: {
         type: Sequelize.STRING
+      },
+      type: {
+        type: Sequelize.INTEGER,
+        defaultValue: 1
       },
       status: {
         type: Sequelize.INTEGER,
@@ -32,7 +35,7 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       },
-      updateAt: {
+      updatedAt: {
         allowNull: false,
         type: Sequelize.DATE
       },

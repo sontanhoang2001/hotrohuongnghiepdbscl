@@ -5,6 +5,9 @@ const morgan = require('morgan');
 const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser');
 const router = require('./router');
+const http = require('http'); // Import http module
+const socketIo = require('socket.io'); // Import socket.io module
+const socketController = require('./controllers/socket');
 
 // require('./database/connection_database');
 
@@ -17,7 +20,6 @@ dotenv.config();
 const port = process.env.PORT;
 // console.log(port);
 
-
 //* Middlewares
 app.use(morgan('dev'));
 
@@ -26,11 +28,16 @@ app.use(morgan('dev'));
 const allowedOrigins = ['http://localhost:3000', 'http://localhost:3001', 'https://hotrohuongnghiepdbscl.web.app'];
 app.use(cors({ origin: allowedOrigins })); // Replace with the appropriate origin
 
+const server = http.createServer(app);
+const io = socketIo(server, {
+  cors: {
+    origin: '*',
+  },
+});
 
-// app.use((req, res, next) => {
-//   res.setHeader('Cache-Control', 'no-store');
-//   next();
-// });
+io.on("connection", (socket) => {
+  socketController.handleConnection(socket, io);
+});
 
 /**
  * * Parse request of content-type: application/json
@@ -43,9 +50,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 //* Routes
-router(app);
+router(app, io);
 
 //* Starting the server
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`Server running in port ${port}`);
 });

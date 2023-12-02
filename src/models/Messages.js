@@ -17,17 +17,15 @@ module.exports = (sequelize, DataTypes) => {
     {
       senderId: DataTypes.INTEGER,
       reciverId: DataTypes.INTEGER,
-      adviserId: DataTypes.INTEGER,
       content: DataTypes.STRING,
+      type: DataTypes.INTEGER,
       status: DataTypes.INTEGER,
       chatId: DataTypes.INTEGER,
-
     },
     {
       sequelize,
       modelName: 'Messages',
       tableName: 'messages',
-      paranoid: true
     },
   );
   return Messages;

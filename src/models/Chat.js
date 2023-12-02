@@ -10,22 +10,20 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Chat.hasMany(models.Messages);
-      Chat.hasMany(models.UserChat);
+      Chat.belongsTo(models.User);
       Chat.belongsTo(models.Organization);
     }
   }
   Chat.init(
     {
-      name: DataTypes.STRING,
-      avatar: DataTypes.STRING,
-      description: DataTypes.STRING,
       status: DataTypes.INTEGER,
+      userId: DataTypes.INTEGER,
       organizationId: DataTypes.INTEGER,
     },
     {
       sequelize,
       modelName: 'Chat',
-      tableName: 'Chat',
+      tableName: 'chat',
       paranoid: true
     },
   );

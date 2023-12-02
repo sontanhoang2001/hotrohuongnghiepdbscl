@@ -8,17 +8,11 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      name: {
-        type: Sequelize.STRING(255)
-      },
-      avatar: {
-        type: Sequelize.STRING(555)
-      },
-      description: {
-        type: Sequelize.STRING(500)
-      },
       status: {
         type: Sequelize.INTEGER(1)
+      },
+      userId: {
+        type: Sequelize.INTEGER
       },
       organizationId: {
         type: Sequelize.INTEGER

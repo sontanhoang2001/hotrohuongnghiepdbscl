@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
       User.hasOne(models.UserDetail);
       User.belongsTo(models.Role);
       User.hasMany(models.Messages);
-      User.hasMany(models.UserChat);
+      User.hasMany(models.Chat);
       User.hasOne(models.VerifyOrganization);
       User.hasMany(models.PostsOrganization);
       User.hasMany(models.TestHistory);
