@@ -58,7 +58,7 @@ module.exports = {
       console.log('arrayLatestMessageId', arrayLatestMessageId);
 
       // Hiện thị thông tin đầy đủ của list Chat gần nhất
-      const listChatRecently = await Messages.findAll({
+      const { count, rows } = await Messages.findAndCountAll({
         where: {
           id: { [Op.in]: arrayLatestMessageId },
         },
@@ -81,12 +81,12 @@ module.exports = {
           ],
           [
             Sequelize.literal(`(
-              SELECT fullName
+              SELECT avatar
               FROM user_detail AS UserDetail
               WHERE
               UserDetail.userId = Messages.senderId
             )`),
-            'senderFullName',
+            'senderAvatar',
           ],
         ],
       });

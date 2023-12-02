@@ -87,7 +87,7 @@ module.exports = {
     try {
       const payload = {
         chatId: data.chatId,
-        senderId: data.userId,
+        senderId: data.senderId,
         reciverId: data.reciverId,
         content: data.content,
         type: data.type,
