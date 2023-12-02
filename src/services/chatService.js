@@ -4,7 +4,7 @@ const Chat = require('../models').Chat;
 const UserDetail = require('../models').UserDetail;
 
 // const sequelize = require('../database/connection_database');
-const { Op, where } = require('sequelize');
+const { Op, Sequelize } = require('sequelize');
 
 module.exports = {
   isValidChatId: async (chatId) => {
@@ -27,26 +27,82 @@ module.exports = {
       if (beforeId !== -1) {
         // tìm vị trí của message có id = beforeId
 
-        const beforeMessageIndex = await Chat.count({
+        const beforeMessageIndex = await Messages.count({
           where: {
             id: {
-                   //     userId: {
-      //       [Op.not]: userId,
-      //     },
               [Op.lt]: beforeId,
             },
           },
         });
+
+        console.log('beforeMessageIndex', beforeMessageIndex);
 
         offset = Math.max(0, beforeMessageIndex - size);
       } else {
         order = [['id', 'DESC']];
       }
 
-      // const listChat = await Chat.findAll({
+      // Tìm DS chatId thuộc tổ chức
+      const listChatId = await Chat.findAll({
+        offset,
+        limit: size,
+        where: {
+          userId: {
+            [Op.not]: userId,
+          },
+          organizationId,
+        },
+        attributes: ['id'],
+        raw: true,
+      });
+      const arrayChatId = listChatId.map((chat) => chat.id);
+
+      const latestMessages = await Messages.findAll({
+        attributes: ['senderId', [Sequelize.fn('MAX', Sequelize.col('id')), 'latestChatId']],
+        where: {
+          chatId: { [Op.in]: arrayChatId },
+          senderId: {
+            [Op.not]: userId,
+          },
+        },
+        group: ['senderId'],
+        raw: true,
+      });
+      const arrayLatestMessageId = latestMessages.map((chat) => chat.latestChatId);
+      console.log('arrayLatestMessageId', arrayLatestMessageId);
+
+      // Tìm findAll ds tin nhắn mới nhất thuộc [chatId]
+      const listChatRecently = await Messages.findAll({
+        where: {
+          id: { [Op.in]: arrayLatestMessageId },
+        },
+        raw: true,
+        attributes: [
+          'content',
+          'type',
+          'status',
+          'chatId',
+          'createdAt',
+          [
+            Sequelize.literal(`(
+              SELECT fullName
+              FROM user_detail AS UserDetail
+              WHERE
+              UserDetail.userId = Messages.senderId
+            )`),
+            'senderFullName',
+          ],
+        ],
+      });
+
+      console.log('listChatRecently', listChatRecently);
+
+      // xong ra kết quả
+
+      // const listChatRecently = await Chat.findAll({
       //   offset,
       //   limit: size,
-      //   order,
+      //   // order,
       //   where: {
       //     organizationId: organizationId,
       //     userId: {
@@ -72,21 +128,27 @@ module.exports = {
       //         },
       //       },
       //       limit: 1,
-      //       order: [['createdAt', 'DESC']],
       //       model: Messages,
       //       attributes: ['id', 'senderId', 'reciverId', 'content', 'status', 'createdAt'],
+      //       order: [['createdAt', 'DESC']],
       //     },
       //   ],
       // });
 
-      const listChat = await Messages.findAll({
-        offset,
-        limit: size,
-        order: [['createdAt', 'DESC']],
-        attributes: ['id', 'senderId', 'reciverId', 'content', 'status', 'createdAt'],
-      });
+      // const listChat = await Messages.findAll({
+      //   offset,
+      //   limit: size,
+      //   where: {
+      //     senderId: {
+      //       [Op.not]: userId,
+      //     },
+      //   },
+      //   order: [['createdAt', 'DESC']],
+      //   attributes: ['id', 'senderId', 'reciverId', 'content', 'status', 'createdAt'],
+      //   group: ['senderId'],
+      // });
 
-      return listChat;
+      return listChatRecently;
     } catch (error) {
       throw error;
     }
@@ -123,7 +185,7 @@ module.exports = {
             limit: size,
             order,
             model: Messages,
-            attributes: ['id', 'senderId', 'reciverId', 'content', 'status', 'chatId', 'createdAt'],
+            attributes: ['id', 'senderId', 'reciverId', 'content', 'type', 'status', 'chatId', 'createdAt'],
           },
         ],
       });
@@ -173,7 +235,7 @@ module.exports = {
             limit: size,
             order,
             model: Messages,
-            attributes: ['id', 'senderId', 'reciverId', 'content', 'status', 'chatId', 'createdAt'],
+            attributes: ['id', 'senderId', 'reciverId', 'content', 'type', 'status', 'chatId', 'createdAt'],
           },
         ],
       });
@@ -191,7 +253,7 @@ module.exports = {
                 limit: size,
                 order,
                 model: Messages,
-                attributes: ['id', 'senderId', 'reciverId', 'content', 'status', 'chatId', 'createdAt'],
+                attributes: ['id', 'senderId', 'reciverId', 'content', 'type', 'status', 'chatId', 'createdAt'],
               },
             ],
           });
