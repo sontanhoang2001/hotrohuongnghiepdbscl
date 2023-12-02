@@ -29,14 +29,44 @@ import { useEffect, useMemo } from 'react';
 const { Title } = Typography;
 
 function University() {
-  //hàm bắt event edit
-  const handleEdit = (id) => {
-    console.log(id);
-  };
   //hàm bắt event delete
   const handleDelete = (id) => {
     dispatch(deleteOrganization(id));
   };
+
+  //goi redux
+  const dispatch = useDispatch();
+  const page = useSelector(selectUniversityPage);
+  const size = useSelector(selectUniversityPagesize);
+  const Totalpage = useSelector(selectUniversityToalRow);
+  const getUniversity = useSelector(selectUniversity);
+  const pendingState = useSelector(selectUniversityPending);
+
+  useEffect(() => {
+    const payload = { page, size };
+    //gọi api thông qua redux
+    dispatch(getAllUniversity(payload));
+  }, []);
+
+  const convertedData = useMemo(
+    () =>
+      getUniversity?.data.map((university, index) => {
+        return {
+          key: index.toString(),
+          id: university.OrganizationDetail.id,
+          name: university,
+          rank: university.OrganizationDetail.rank,
+          url: university.OrganizationDetail.url,
+          address: university.OrganizationDetail.address,
+          province: university.OrganizationDetail.province,
+          phone: university.OrganizationDetail.phone,
+          lat: university.OrganizationDetail.lat,
+          long: university.OrganizationDetail.long,
+          description: university.OrganizationDetail.description,
+        };
+      }),
+    [getUniversity],
+  );
   //định dạng cột hiển thị
   const columns = useMemo(
     () => [
@@ -127,7 +157,7 @@ function University() {
         title: 'Mô tả',
         key: 'description',
         width: 100,
-        render: (record) => (<span>{record.description}</span>)
+        render: (record) => <span>{record.description}</span>,
       },
       {
         title: 'Link',
@@ -158,11 +188,10 @@ function University() {
               title="Xác nhận xóa"
               description="Xác nhận xóa tổ chức?"
               okText="Xóa"
-              
               onConfirm={() => handleDelete(record.id)}
               cancelText="Hủy"
             >
-              <Button danger title='Khóa tổ chức'>
+              <Button danger title="Khóa tổ chức">
                 <LockFilled />
               </Button>
             </Popconfirm>
@@ -172,41 +201,6 @@ function University() {
     ],
     [],
   );
-
-  //goi redux
-  const dispatch = useDispatch();
-  const page = useSelector(selectUniversityPage);
-  const size = useSelector(selectUniversityPagesize);
-  const Totalpage = useSelector(selectUniversityToalRow);
-  const getUniversity = useSelector(selectUniversity);
-  const pendingState = useSelector(selectUniversityPending);
-
-  useEffect(() => {
-    const payload = { page, size };
-    //gọi api thông qua redux
-    dispatch(getAllUniversity(payload));
-  }, []);
-
-  const convertedData = useMemo(
-    () =>
-      getUniversity?.data.map((university, index) => {
-        return {
-          key: index.toString(),
-          id: university.OrganizationDetail.id,
-          name: university,
-          rank: university.OrganizationDetail.rank,
-          url: university.OrganizationDetail.url,
-          address: university.OrganizationDetail.address,
-          province: university.OrganizationDetail.province,
-          phone: university.OrganizationDetail.phone,
-          lat: university.OrganizationDetail.lat,
-          long: university.OrganizationDetail.long,
-          description: university.OrganizationDetail.description,
-        };
-      }),
-    [getUniversity],
-  );
-
   //hàm phan trang
   const handlePageChange = (page, pageSize) => {
     const payload = { page, pageSize };
@@ -218,11 +212,7 @@ function University() {
       <div className="tabled">
         <Row gutter={[24, 0]}>
           <Col xs="24" xl={24}>
-            <Card
-              bordered={false}
-              className="criclebox tablespace mb-24"
-              title="Danh sách trường học"
-            >
+            <Card bordered={false} className="criclebox tablespace mb-24" title="Danh sách tổ chức">
               <div className="table-responsive">
                 <Table
                   bordered={true}

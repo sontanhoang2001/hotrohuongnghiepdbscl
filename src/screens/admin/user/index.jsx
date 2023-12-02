@@ -19,13 +19,13 @@ import dayjs from 'dayjs';
 const { Title } = Typography;
 
 function User() {
-    //gọi redux
-    const dispatch = useDispatch();
-    const page = useSelector(selectUserPage);
-    const size = useSelector(selectUserSizePage);
-    const Totalpage = useSelector(selectUserTotalRow);
-    const getAllUser = useSelector(selectUser);
-    const pendingState = useSelector(selectUserPending);
+  //gọi redux
+  const dispatch = useDispatch();
+  const page = useSelector(selectUserPage);
+  const size = useSelector(selectUserSizePage);
+  const Totalpage = useSelector(selectUserTotalRow);
+  const getAllUser = useSelector(selectUser);
+  const pendingState = useSelector(selectUserPending);
 
   //hàm bắt event edit
   const handleEdit = (id) => {
@@ -33,7 +33,7 @@ function User() {
   };
   //hàm bắt event delete
   const handleDelete = (id) => {
-    dispatch(deleleUserAsync(id)).then(()=>{
+    dispatch(deleleUserAsync(id)).then(() => {
       const payload = { page, size };
       //gọi api thông qua redux
       dispatch(getAllUserAsync(payload));
@@ -41,7 +41,7 @@ function User() {
   };
   //hàm bắt event restore
   const handleRestore = (id) => {
-    dispatch(restoreUserAsync(id)).then(()=>{
+    dispatch(restoreUserAsync(id)).then(() => {
       const payload = { page, size };
       //gọi api thông qua redux
       dispatch(getAllUserAsync(payload));
@@ -53,7 +53,7 @@ function User() {
       title: 'Email',
       dataIndex: 'email',
       key: 'email',
-      fixed:"left",
+      fixed: 'left',
       render: (record) => (
         <div className="author-info">
           <Title level={5}>{record}</Title>
@@ -63,7 +63,7 @@ function User() {
     {
       title: 'Loại người dùng',
       dataIndex: 'RoleId',
-      
+
       key: 'RoleId',
       render: (record) => {
         let tagColor, tagContent;
@@ -103,7 +103,7 @@ function User() {
         );
       },
     },
-    
+
     {
       title: 'Loại tài khoản',
       dataIndex: 'account_type',
@@ -147,7 +147,7 @@ function User() {
           )}
         </>
       ),
-    },    
+    },
     {
       title: 'SĐT',
       dataIndex: 'phone',
@@ -158,23 +158,14 @@ function User() {
         </div>
       ),
     },
-    {
-      title: 'Mã xác thực',
-      dataIndex: 'authCode',
-      key: 'authCode',
-      render: (record) => (
-        <div className="author-info">
-          <Title level={5}>{record}</Title>
-        </div>
-      ),
-    },
+
     {
       title: 'Ngày khởi tạo',
       dataIndex: 'createdAt',
       key: 'createdAt',
       render: (record) => (
         <div className="author-info">
-          <Title level={5}>{dayjs(record).format("DD-MM-YYYY")}</Title>
+          <Title level={5}>{dayjs(record).format('DD-MM-YYYY')}</Title>
         </div>
       ),
     },
@@ -184,37 +175,35 @@ function User() {
       key: 'updatedAt',
       render: (record) => (
         <div className="author-info">
-          <Title level={5}>{dayjs(record).format("DD-MM-YYYY")}</Title>
+          <Title level={5}>{dayjs(record).format('DD-MM-YYYY')}</Title>
         </div>
       ),
     },
 
-    {
-      key: 'action',
-      fixed:'right',
-      render: (record) => (
-        <>
-          <div className="author-info">
-            <Button type="text">
-              <EditOutlined onClick={() => handleEdit(record.id)} style={{ color: 'green' }} />
-            </Button>
-            {record.deletedAt === null && (
-              <Button type="text" danger onClick={() => handleDelete(record.id)}>
-                <DeleteOutlined />
-              </Button>
-            )}
-            {record.deletedAt !== null && (
-              <Button type="text" onClick={() => handleRestore(record.id)}>
-                <UndoOutlined />
-              </Button>
-            )}
-          </div>
-        </>
-      ),
-    },
+    // {
+    //   key: 'action',
+    //   fixed:'right',
+    //   render: (record) => (
+    //     <>
+    //       <div className="author-info">
+    //         <Button type="text">
+    //           <EditOutlined onClick={() => handleEdit(record.id)} style={{ color: 'green' }} />
+    //         </Button>
+    //         {record.deletedAt === null && (
+    //           <Button type="text" danger onClick={() => handleDelete(record.id)}>
+    //             <DeleteOutlined />
+    //           </Button>
+    //         )}
+    //         {record.deletedAt !== null && (
+    //           <Button type="text" onClick={() => handleRestore(record.id)}>
+    //             <UndoOutlined />
+    //           </Button>
+    //         )}
+    //       </div>
+    //     </>
+    //   ),
+    // },
   ];
-
-
 
   useEffect(() => {
     const payload = { page, size };
@@ -224,7 +213,7 @@ function User() {
   const convertedData = getAllUser?.data.map((user, index) => {
     return {
       key: index.toString(),
-      id:user.id,
+      id: user.id,
       account_type: user.account_type,
       status: user.status,
       RoleId: user.RoleId,
@@ -233,12 +222,12 @@ function User() {
       authCode: user.authCode,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
-      deletedAt:user.deletedAt
+      deletedAt: user.deletedAt,
     };
   });
   //hàm phan trang
   const handlePageChange = (page, pageSize) => {
-    const payload = { page, size: 7};
+    const payload = { page, size: 7 };
     dispatch(getAllUserAsync(payload));
   };
 

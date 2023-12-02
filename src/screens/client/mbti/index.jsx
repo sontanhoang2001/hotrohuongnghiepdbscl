@@ -1,13 +1,30 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { Button } from 'antd';
+import { Button, Card, Col, Empty, Row, Spin } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import { HeadingTitle, MarginTopContent, Title } from '../../../globalStyles';
+import {
+  ContainerStyled,
+  HeadingTitle,
+  MarginTopContent,
+  Title,
+  size,
+} from '../../../globalStyles';
+import { useDispatch, useSelector } from 'react-redux';
+import { getGetAllpersonality, selectMbtiQuestions } from '../../../redux/mbtiSlice';
+import ImageCard from '../../../components/card/imageCard';
 
 function MBTI() {
   const navigate = useNavigate();
+  // gọi redux
+  const dispatch = useDispatch();
+  const { personality, pending } = useSelector((state) => state.mbti);
+
+  useEffect(() => {
+    dispatch(getGetAllpersonality());
+  }, []);
+  // console.log(personality);
   return (
-    <div className="container">
+    <ContainerStyled>
       <MarginTopContent>
         <Introduce>
           <Title>
@@ -18,7 +35,7 @@ function MBTI() {
           <div className="intro-content">
             <div className="content">
               <div className="exp-image">
-                <img src="./images/mbti.jpg" alt="mbti" />
+                <img src="./images/mbti-banner.webp" alt="mbti" />
               </div>
               <div className="paragraph">
                 <p>
@@ -72,13 +89,13 @@ function MBTI() {
                   <li>Cách thức và Hành động: Nguyên tắc (Judgment) - Linh hoạt (Perception)</li>
                 </ul>
                 <p style={{ marginTop: '20px' }}>
-                  Mỗi yếu tố của 4 nhóm trên kết hợp với nhau tạo thành 16 nhóm tính cách MBTI MBTI
+                  Mỗi yếu tố của 4 nhóm trên kết hợp với nhau tạo thành 16 nhóm tính cách MBTI. Nó
                   là một trong những bài trắc nghiệm tính cách phổ biến nhất thế giới với hơn 2
                   triệu người mới sử dụng mỗi năm và đặc biệt được ứng dụng trong các hoạt động
-                  tuyển dụng, đánh giá nhân sự, giáo dục, hướng nghiệp… Làm trắc nghiệm MBTI ở TopCV
-                  ngoài việc được phân loại tính cách theo 16 nhóm của phương pháp Myers-Briggs thì
-                  các dữ liệu thông tin sẽ được tổng hợp để đưa ra xu hướng nghề nghiệp phù hợp nhất
-                  với bạn.
+                  tuyển dụng, đánh giá nhân sự, giáo dục, hướng nghiệp… Làm trắc nghiệm MBTI ở TRUNG
+                  TÂM HƯỚNG NGHIỆP ngoài việc được phân loại tính cách theo 16 nhóm của phương pháp
+                  Myers-Briggs thì các dữ liệu thông tin sẽ được tổng hợp để đưa ra xu hướng nghề
+                  nghiệp phù hợp nhất với bạn.
                 </p>
               </div>
 
@@ -112,16 +129,55 @@ function MBTI() {
                 <p style={{ padding: '20px' }}>
                   Kết quả của bài trắc nghiệm MBTI sau đây cung cấp thông tin để bạn có lựa chọn
                   nghề nghiệp thích hợp dựa trên các nhóm tính cách. Mọi dữ liệu đưa ra đều mang
-                  tính chất tham khảo, quyết định luôn ở trong tay chúng ta. TopCV sẽ luôn đồng hành
-                  cùng bạn trong mọi lựa chọn nghề nghiệp. Với một hành trang vững vàng thì tin
-                  tưởng rằng mọi kế hoạch đều sẽ thành công!
+                  tính chất tham khảo, quyết định luôn ở trong tay chúng ta. TRUNG TÂM HƯỚNG NGHIỆP
+                  sẽ luôn đồng hành cùng bạn trong mọi lựa chọn nghề nghiệp. Với một hành trang vững
+                  vàng thì tin tưởng rằng mọi kế hoạch đều sẽ thành công!
                 </p>
               </div>
             </div>
           </div>
+          <MBTIDetailStyled>
+            <h3>16 loại hình tính cách MBTI</h3>
+            {/* <Row gutter={[16, 16]}>
+              {personality &&
+                personality?.map((val, idx) => (
+                  <Col key={idx} xs={14} sm={24} md={12} lg={12}>
+                    <Card className="personality-card">
+                      <div className="personality-img">
+                        <img src={val.image} alt="tính cách MBTI" />
+                      </div>
+                      <p className="personality-name">{val.name}</p>
+                      <p className="personality-description">{val.description}</p>
+                    </Card>
+                  </Col>
+                ))}
+            </Row> */}
+            <Spin spinning={pending}>
+              {personality && personality ? (
+                <Row gutter={[24, 34]}>
+                  {personality.map((val, idx) => (
+                    <Col key={idx} xs={24} sm={24} md={12} lg={12}>
+                      <ImageCard
+                        src={`${val.image}`}
+                        title={val.name}
+                        label={val.label}
+                        titleColor={`var(--primary-color)`}
+                        personality={true}
+                        description={val.description}
+                      />
+                    </Col>
+                  ))}
+                </Row>
+              ) : (
+                <Row align={'middle'} justify={'center'}>
+                  <Empty description={<h3>Không có dữ liệu</h3>} />
+                </Row>
+              )}
+            </Spin>
+          </MBTIDetailStyled>
         </Introduce>
       </MarginTopContent>
-    </div>
+    </ContainerStyled>
   );
 }
 const Introduce = styled.div`
@@ -139,7 +195,6 @@ const Introduce = styled.div`
     }
   }
   .intro-content {
-    margin-top: 20px;
     font-size: 1.2rem;
     /* text-align: justify;
     display: flex; */
@@ -148,7 +203,6 @@ const Introduce = styled.div`
       justify-content: center;
     }
     .content {
-      margin-top: 20px;
       margin-bottom: 20px;
       .paragraph,
       .mbti-note,
@@ -200,6 +254,36 @@ const Introduce = styled.div`
       }
     }
   }
+`;
+const MBTIDetailStyled = styled.div`
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+  h3 {
+    font-size: 1.6rem;
+    font-weight: 600;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    padding-left: 20px;
+    border-left: 10px solid var(--primary-color);
+    text-transform: uppercase;
+  }
+  .personality-card {
+    height: 100%;
+    .personality-name {
+      text-align: center;
+      font-weight: 800;
+      font-size: 20pt;
+      color: var(--primary-color);
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+    .personality-description {
+      text-align: justify;
+      font-size: 14pt;
+    }
+  }
+  /*  */
 `;
 
 export default MBTI;

@@ -7,6 +7,9 @@ import { mbtiDetail } from '../../../components/mbtiDetail/mbtiDetail';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { getGetAllpersonality } from '../../../redux/mbtiSlice';
 
 function BannerSection() {
   const [slideIndex, setSlideIndex] = useState(0);
@@ -19,7 +22,7 @@ function BannerSection() {
     initialSlide: 0,
     dots: false,
     autoplay: true,
-    autoplaySpeed: 4000,
+    autoplaySpeed: 5000,
     pauseOnHover: false,
     focusOnSelect: true,
     centerPadding: '0',
@@ -27,34 +30,40 @@ function BannerSection() {
       setSlideIndex(next);
     },
   };
+  // gọi redux
+  const dispatch = useDispatch();
+  const { personality, pending } = useSelector((state) => state.mbti);
+
+  useEffect(() => {
+    dispatch(getGetAllpersonality());
+  }, []);
   return (
     <BannerContainer>
       {/* banner slide */}
       <div className="container">
         <Slider {...settings} className="banner-container">
-          {mbtiDetail.details.map((val, idx) => (
-            <div className={idx === slideIndex ? 'slide slide-active' : 'slide'} key={idx}>
-              <div className="slide-box">
-                <div
-                  style={{
-                    width: '100%',
-                    height: 'calc(100vh - 320px)',
-                    position: 'relative',
-                    backgroundPosition: 'center',
-                    backgroundRepeat: 'no-repeat',
-                    backgroundSize: 'cover',
-                    backgroundImage: `url(./images/mbti/${val.image})`,
-                    backgroundColor: 'var(--text-secondary-color)',
-                  }}
-                  className="banner-image"
-                ></div>
-                {/* job name name */}
-                <div className={idx === slideIndex ? 'job-name job-name-active' : 'job-name'}>
-                  <span>{val.text}</span>
+          {personality &&
+            personality.map((val, idx) => (
+              <div className={idx === slideIndex ? 'slide slide-active' : 'slide'} key={idx}>
+                <div className="slide-box">
+                  <div
+                    style={{
+                      width: '100%',
+                      height: 'calc(100vh - 320px)',
+                      backgroundPosition: 'center',
+                      backgroundRepeat: 'no-repeat',
+                      backgroundSize: 'cover',
+                      backgroundImage: `url(${val.image})`,
+                      backgroundColor: 'var(--text-secondary-color)',
+                    }}
+                    className="banner-image"
+                  ></div>
+                  <div className={idx === slideIndex ? 'job-name job-name-active' : 'job-name'}>
+                    <span>{val.label}</span>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
         </Slider>
       </div>
       {/* end banner slide */}
@@ -160,10 +169,13 @@ const BannerContainer = styled.div`
         }
       }
       .slide-active {
-        opacity: 1;
+        /* opacity: 1; */
         transform: scale(1);
-        filter: blur(0);
+        /* filter: blur(0); */
         transition: 0.7s ease-in-out;
+      }
+      @media (max-width: 1500px) {
+        padding-top: 40px;
       }
     }
   }
@@ -171,12 +183,10 @@ const BannerContainer = styled.div`
 //end banner section
 
 const Question = styled.div`
-  /* display: flex;
-  text-align: center; */
   position: absolute;
   left: 0;
   bottom: 20px;
-  width: 100vw;
+  width: 100%;
   .banner-row {
     display: flex;
     justify-content: center;

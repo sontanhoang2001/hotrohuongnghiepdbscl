@@ -107,10 +107,10 @@ function SignUpV1() {
           <Spin spinning={pendingState}>
             <Card
               className="card-signup header-solid h-full ant-card pt-0"
-              title={<h5>Register With</h5>}
+              title={<h5>Đăng ký với</h5>}
               bordered="false"
             >
-              <div className="sign-up-gateways">
+              {/* <div className="sign-up-gateways">
                 <Button type="false">
                   <img src={logo1} alt="logo 1" />
                 </Button>
@@ -119,7 +119,7 @@ function SignUpV1() {
                   <img src={logo3} alt="logo 3" />
                 </Button>
               </div>
-              <p className="text-center my-25 font-semibold text-muted">Or</p>
+              <p className="text-center my-25 font-semibold text-muted">Hoặc</p> */}
               <Form
                 name="register"
                 initialValues={{
@@ -305,16 +305,16 @@ function SignUpV1() {
                       },
                       {
                         value: '2',
-                        label: 'Trường học',
+                        label: 'Tổ chức(Trường Đại Học - Công Ty)',
                       },
-                      {
-                        value: '3',
-                        label: 'Doanh nghiệp - Công ty',
-                      },
-                      {
-                        value: '4',
-                        label: 'Tư vấn viên - Cố vấn',
-                      },
+                      // {
+                      //   value: '3',
+                      //   label: 'Doanh nghiệp - Công ty',
+                      // },
+                      // {
+                      //   value: '4',
+                      //   label: 'Tư vấn viên - Cố vấn',
+                      // },
                     ]}
                     style={{ height: 50 }}
                   />
@@ -334,7 +334,7 @@ function SignUpV1() {
                   ]}
                 >
                   <Checkbox>
-                    Chấp nhận <a href="">Các điều khoản và Điều kiện</a>
+                    Chấp nhận <Link to={`/dieu-khoan-dich-vu`}replace>Các điều khoản và Điều kiện</Link>
                   </Checkbox>
                 </Form.Item>
                 <Form.Item>

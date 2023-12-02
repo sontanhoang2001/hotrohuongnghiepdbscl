@@ -4,6 +4,8 @@ import { Counter } from '../redux/counter/Counter';
 import App from '../App';
 import NotFound from '../screens/404/notfound';
 import OtpLogin from '../screens/otpLogin';
+import TermsOfService from '../screens/termsOfService';
+
 //đăng ký và đăng nhập
 import SignInV1 from '../screens/signInV1';
 import SignUpV1 from '../screens/signupV1';
@@ -31,6 +33,8 @@ import University from '../screens/admin/university';
 import User from '../screens/admin/user';
 import Mbti from '../screens/admin/mbti';
 import Chat from '../screens/admin/Chat';
+import MajorMBTI from '../screens/admin/majorMBTI';
+
 import ManageNews from '../screens/admin/news';
 import ManageCompanion from '../screens/admin/companion';
 import PrivateRoute from './PrivateRoute';
@@ -43,6 +47,7 @@ import Posts from '../screens/admin/posts';
 import AuthWrapper from './AuthWrapper';
 import AdminHome from '../screens/admin/home';
 import OrganizationVerification from '../screens/admin/organizationverification/OrganizationVerification';
+import OrganiztionPublic from '../screens/client/organization';
 
 function Router() {
   return (
@@ -51,6 +56,7 @@ function Router() {
         <Route path="dang-nhap" element={<SignInV1 />} />
         <Route path="dang-ky" element={<SignUpV1 />} />
         <Route path="/xac-nhan-dang-nhap" element={<OtpLogin />} />
+
         {/* client */}
         <Route path="/" element={<App />}>
           <Route path="/postMBTI" element={<PostMBTI />} />
@@ -61,6 +67,7 @@ function Router() {
           <Route path="trach-nghiem-tinh-cach" element={<MBTI />} />
           <Route path="mbti-test" element={<TestMbti />} />
           <Route path="thong-tin-cac-truong-dai-hoc" element={<Universities />} />
+          <Route path="thong-tin-cac-doanh-nghiep" element={<OrganiztionPublic />} />
           <Route path="dong-hanh" element={<Companion />} />
           <Route path="quen-mat-khau" element={<ForgotPassword />} />
           <Route path="thong-tin-ca-nhan" element={<AuthWrapper roles={['STUDENT']} />}>
@@ -68,7 +75,8 @@ function Router() {
           </Route>
           <Route path="otp" element={<OtpByPhone />} />
           <Route path="authSocial" element={<AuthSocial />} />
-          <Route path="otp-sdt" element={OtpByPhone} />
+          {/* <Route path="otp-sdt" element={OtpByPhone} /> */}
+          <Route path="/dieu-khoan-dich-vu" element={<TermsOfService />} />
         </Route>
         {/* admin */}
         {/* <Route
@@ -88,13 +96,8 @@ function Router() {
             <Route path="verification-requests" element={<OrganizationVerification />} />
             <Route path="danh-sach-nguoi-dung" element={<User />} />
             <Route path="danh-sach-cau-hoi" element={<Mbti />} />
-            <Route path="danh-cau-hoi-dong-hanh" element={<ManageCompanion />} />
-            <Route path="profile" element={<AuthWrapper roles={['ORGANIZATION']} />}>
-              <Route index element={<Profile />} />
-            </Route>
-            <Route path="tin-nhan" element={<Chat />} />
-            <Route path="danh-sach-tin-tuc" element={<ManageNews />} />
-            <Route path="tao-bai-viet" element={<Posts />} />
+            <Route path="goi-y-nganh-mbti" element={<MajorMBTI />} />
+            <Route path="profile" element={<Profile />} />
           </Route>
         </Route>
         <Route path="/organization" element={<AuthWrapper roles={['ORGANIZATION']} />}>
@@ -102,6 +105,8 @@ function Router() {
             <Route index element={<OrganizationList />} />
             <Route path="dashboard" element={<Dashboard />} />
             <Route path=":id" element={<OrganizationProfile />} />
+            <Route path="profile" element={<Profile />} />
+            <Route path="tin-nhan" element={<Chat />} />
           </Route>
         </Route>
 

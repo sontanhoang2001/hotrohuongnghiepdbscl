@@ -8,6 +8,7 @@ import { size } from 'lodash';
 // Tạo initialState cho slice
 const initialState = {
   data: null,
+  category: null,
   tempData: null,
   pending: false,
   status: 'idle',
@@ -19,6 +20,7 @@ const initialState = {
     size: 9,
     search: '',
     total: 0,
+    postsCategoryId: null,
   },
   tempClientPosts: {
     page: 1,
@@ -148,6 +150,7 @@ export const getAllPublicPosts = createAsyncThunk(
     }
   },
 );
+// Lấy thông tin public của all public
 export const getAllPublicPostsTemp = createAsyncThunk(
   'posts/getAllPublicPostsTemp',
   async (payload, { rejectWithValue }) => {
@@ -163,11 +166,28 @@ export const getAllPublicPostsTemp = createAsyncThunk(
     }
   },
 );
+// Lấy thông tin public của category
 export const getAllPublicPostsById = createAsyncThunk(
   'posts/getAllPublicPostsById',
   async (payload, { rejectWithValue }) => {
     try {
       const rs = await postsApi.getAllPublicPostsById(payload);
+      return rs.data.data;
+    } catch (error) {
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      } else {
+        return rejectWithValue(error.message);
+      }
+    }
+  },
+);
+
+export const getAllPostsCategory = createAsyncThunk(
+  'posts/getAllPostsCategory',
+  async (payload, { rejectWithValue }) => {
+    try {
+      const rs = await postsApi.getAllPostsCategory(payload);
       return rs.data.data;
     } catch (error) {
       if (error.response && error.response.data.message) {
@@ -187,7 +207,6 @@ const postsSlice = createSlice({
       state.currentPost = {};
     },
     setPostParams: (state, action) => {
-      console.log('changed params', action.payload);
       state.postsParams = { ...state.postsParams, ...action.payload };
     },
     setTempData: (state, action) => {
@@ -204,7 +223,6 @@ const postsSlice = createSlice({
         state.status = 'idle';
         state.currentPost = { ...state.currentPost, deletedAt: null };
         notification.success({ message: 'Đã khôi phục bài viết' });
-        console.log(payload);
       })
       .addCase(restorePost.rejected, (state, { payload }) => {
         state.status = 'idle';
@@ -218,8 +236,6 @@ const postsSlice = createSlice({
         state.status = 'idle';
         state.currentPost = { ...state.currentPost, deletedAt: payload.data.deletedAt };
         notification.success({ message: 'Đã xóa bài viết' });
-
-        console.log(payload);
       })
       .addCase(deletePost.rejected, (state, { payload }) => {
         state.status = 'idle';
@@ -232,8 +248,6 @@ const postsSlice = createSlice({
       .addCase(getPostById.fulfilled, (state, { payload }) => {
         state.currentPost = payload.data;
         state.status = 'idle';
-
-        console.log(payload);
       })
       .addCase(getPostById.rejected, (state, { payload }) => {
         state.status = 'idle';
@@ -249,7 +263,6 @@ const postsSlice = createSlice({
         state.size = payload.size;
         state.total = payload.total;
         state.posts = payload.data;
-        console.log(payload);
       })
       .addCase(getAllPosts.rejected, (state, { payload }) => {
         state.pending = false;
@@ -267,6 +280,7 @@ const postsSlice = createSlice({
         state.clientPosts.size = payload.size;
         state.clientPosts.total = payload.total;
         state.clientPosts.search = payload.search;
+        state.clientPosts.postsCategoryId = payload.postsCategoryId;
       })
       .addCase(getAllPublicPosts.rejected, (state, { payload }) => {
         state.pending = false;
@@ -292,6 +306,16 @@ const postsSlice = createSlice({
       })
       .addCase(getAllPublicPostsById.rejected, (state, { payload }) => {
         state.pending = false;
+      }) //all catefory
+      .addCase(getAllPostsCategory.pending, (state) => {
+        state.pending = true;
+      })
+      .addCase(getAllPostsCategory.fulfilled, (state, { payload }) => {
+        state.pending = false;
+        state.category = payload;
+      })
+      .addCase(getAllPostsCategory.rejected, (state, { payload }) => {
+        state.pending = false;
       })
       //create update
       .addCase(createPost.pending, (state) => {
@@ -301,7 +325,7 @@ const postsSlice = createSlice({
       .addCase(createPost.fulfilled, (state, { payload }) => {
         state.pending = false;
         state.status = 'idle';
-        console.log(payload);
+
         notification.success({ message: 'Tạo bài viết thành công' });
       })
       .addCase(createPost.rejected, (state, { payload }) => {
@@ -317,7 +341,7 @@ const postsSlice = createSlice({
       .addCase(updatePost.fulfilled, (state, { payload }) => {
         state.pending = false;
         state.status = 'idle';
-        console.log(payload);
+
         notification.success({ message: 'Cập nhật bài viết thành công' });
       })
       .addCase(updatePost.rejected, (state, { payload }) => {

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { HeadingTitle, MarginTopContent, Title } from '../../../globalStyles';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { Button, Col, Row, Skeleton } from 'antd';
+import { Button, Col, Empty, Row, Skeleton, Spin } from 'antd';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -18,7 +18,6 @@ function NewsDetail() {
   // ----------
   const navigate = useNavigate();
   const params = useParams();
-  const [temp, setTemp] = useState();
   // goi redux
   const dispatch = useDispatch();
   const pendingState = useSelector(selectPostsPending);
@@ -27,13 +26,13 @@ function NewsDetail() {
   const { tempClientPosts } = useSelector((state) => state.posts);
   useEffect(() => {
     //gọi api thông qua redux
-    dispatch(getAllPublicPostsById(1));
+    dispatch(getAllPublicPostsById(params.newsId));
     dispatch(getAllPublicPostsTemp(tempClientPosts));
   }, []);
 
   const handleOnClick = (id) => {
-    dispatch(getAllPublicPostsById(id));
     window.scrollTo(0, 0);
+    dispatch(getAllPublicPostsById(id));
   };
   return (
     <>
@@ -43,7 +42,7 @@ function NewsDetail() {
           rows: 10,
         }}
         active
-        style={{ marginTop: `3%`, margin: `0 3%` }}
+        style={{ paddingTop: `3%`, margin: `0 3%` }}
       >
         <Title>
           <HeadingTitle>{getPosts?.title}</HeadingTitle>
@@ -53,9 +52,10 @@ function NewsDetail() {
           <Col span={22}>
             <MarginTopContent>
               <NewsContent>
-                <p>{getPosts?.content}</p>
+                {/* <p>{getPosts?.content}</p> */}
+                <div dangerouslySetInnerHTML={{ __html: getPosts?.content }} />
               </NewsContent>
-              <Button type="primary" onClick={() => navigate(-2)}>
+              <Button type="primary" onClick={() => navigate(-2)} style={{ marginTop: 20 }}>
                 Quay lại
               </Button>
               <div></div>
@@ -69,35 +69,27 @@ function NewsDetail() {
           <HeadingTitle>{getPosts?.title}</HeadingTitle>
           <div className="underline"></div>
         </Title>
-        <Row gutter={[8, 16]}>
-          {getPostsTemp?.data.map((val, idx) => (
-            <Col key={idx} xs={24} sm={24} md={12} lg={6}>
-              {/* {pendingState ? (
-                <Skeleton.Image
-                  shape={'square'}
-                  active={pendingState}
-                  style={{ marginTop: 60, width: 300, height: 300 }}
-                />
-              ) : (
-                <Link to={`/tin-tuc/${val.id}`}>
-                  <ImageCard title={val.title} src={`${val.image}`} />
-                </Link>
-              )} */}
-              <Link to={`/tin-tuc/${val.id}`} onClick={() => handleOnClick(val.id)}>
-                <ImageCard title={val.title} src={`${val.image}`} />
-              </Link>
-            </Col>
-          ))}
-        </Row>
+        <Spin spinning={pendingState}>
+          {getPostsTemp?.data ? (
+            <Row gutter={[16, 24]} style={{ marginTop: 30 }}>
+              {getPostsTemp?.data?.map((val, idx) => (
+                <Col key={idx} xs={24} sm={24} md={12} lg={6}>
+                  <Link to={`/tin-tuc/${val.id}`} onClick={() => handleOnClick(val.id)}>
+                    <ImageCard src={`${val?.thumbnail}`} title={val?.title} />
+                  </Link>
+                </Col>
+              ))}
+            </Row>
+          ) : (
+            <Row align={'middle'} justify={'center'}>
+              <Empty description={<h3>Không có dữ liệu</h3>} />
+            </Row>
+          )}
+        </Spin>
       </NewsFooterStyled>
     </>
   );
 }
-
-const NewsTitle = styled.div`
-  text-transform: uppercase;
-  text-align: center;
-`;
 
 const NewsContent = styled.div`
   margin-top: 3%;

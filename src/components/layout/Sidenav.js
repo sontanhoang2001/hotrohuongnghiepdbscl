@@ -8,6 +8,9 @@ import {
   CommentOutlined,
   InboxOutlined,
   BookOutlined,
+  ThunderboltOutlined,
+  UnorderedListOutlined,
+  WechatOutlined,
 } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../../redux/authSlice';
@@ -97,10 +100,20 @@ function Sidenav({ color }) {
         <span className="icon">
           <InboxOutlined />
         </span>
-        <span className="label">Câu hỏi</span>
+        <span className="label">Câu hỏi MBTI</span>
       </NavLink>,
       '3',
     ),
+    getItem(
+      <NavLink to="/admin/goi-y-nganh-mbti">
+        <span className="icon">
+          <ThunderboltOutlined />
+        </span>
+        <span className="label">Gợi ý ngành nghề</span>
+      </NavLink>,
+      '4',
+    ),
+
     getItem(
       <NavLink to="/admin/danh-sach-nguoi-dung">
         <span className="icon">
@@ -108,27 +121,18 @@ function Sidenav({ color }) {
         </span>
         <span className="label">Người dùng</span>
       </NavLink>,
-      '4',
+      '5',
     ),
     getItem(
       <MeunuItem>
         <span className="label sidenav-title-content">Tài Khoản</span>
       </MeunuItem>,
-      '5',
+      '6',
     ),
     getItem(
       <NavLink to="/admin/profile">
         <span className="icon">{profile}</span>
         <span className="label">Profile</span>
-      </NavLink>,
-      '6',
-    ),
-    getItem(
-      <NavLink to="/admin/tin-nhan">
-        <span className="icon">
-          <CommentOutlined />
-        </span>
-        <span className="label">Tin Nhắn</span>
       </NavLink>,
       '7',
     ),
@@ -169,7 +173,7 @@ function Sidenav({ color }) {
       '3',
     ),
     getItem(
-      <NavLink to="/organization/2">
+      <NavLink to="/organization/profile">
         <span className="icon">{profile}</span>
         <span className="label">Profile</span>
       </NavLink>,
@@ -285,7 +289,6 @@ function Sidenav({ color }) {
     <>
       <div className="brand">
         <p>Trung Tâm Hướng Nghiệp</p>
-        <p>ĐBSCL</p>
       </div>
       <hr />
       <Menu defaultSelectedKeys={['1']} mode="inline" items={navItemsByRole[role]} />

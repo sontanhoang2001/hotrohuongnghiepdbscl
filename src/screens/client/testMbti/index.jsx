@@ -1,14 +1,18 @@
 import React, { useState, useCallback, useEffect } from 'react';
 
 import styled from 'styled-components';
-import { Button, Popconfirm, Skeleton, Spin, message } from 'antd';
+import { Button, Card, Col, Popconfirm, Row, Skeleton, Spin, message } from 'antd';
 import { mbtiDetail } from '../../../components/mbtiDetail/mbtiDetail';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  getMajorMBTIById,
   getQuestionTodotestMbti,
   selectMbtiPending,
   selectMbtiQuestions,
+  storeTestHistory,
+  getGetAllpersonality,
 } from '../../../redux/mbtiSlice';
+import { ContainerStyled } from '../../../globalStyles';
 
 // change value of question increase 1 or decrease 1, when click prev or next button
 const DIRECTION_PREV = -1;
@@ -23,13 +27,27 @@ const replaceAnswerImmutable = (index, answer, answers) => {
 };
 function TestMbti() {
   //gọi redux
+  const [indexQuestion, setIndexQuestion] = useState(0);
   const dispatch = useDispatch();
   const getTodoTest = useSelector(selectMbtiQuestions);
   const pendingState = useSelector(selectMbtiPending);
 
+  const { personality, major, personalityById } = useSelector((state) => state.mbti);
+  const { isLogin } = useSelector((state) => state.auth);
+  useEffect(() => {
+    dispatch(getQuestionTodotestMbti());
+    dispatch(getGetAllpersonality());
+    // dispatch(getTestHistoryById(1));
+  }, []);
+
+  useEffect(() => {
+    // console.log(major);
+  }, [major]);
+
   //giá trị nhỏ nhất và giới hạn của gói câu hỏi, nhỏ nhất là 0, lớn nhất là số câu hỏi truyền vào (questions.length)
   const MIN_ACTIVE_QUESTION_INDEX = 0;
-  const MAX_ACTIVE_QUESTION_INDEX = getTodoTest?.data.length;
+  const MAX_ACTIVE_QUESTION_INDEX = getTodoTest?.length;
+  // const MAX_ACTIVE_QUESTION_INDEX = getTodoTest?.data.length? ;
 
   //tăng giảm giá trị của prev và next vởi -1 và 1
   const DIRECTION_PREV = -1;
@@ -45,26 +63,35 @@ function TestMbti() {
   const [mbtiResult, setMbtiResult] = useState({});
   //khai báo thuộc tính của questions
 
-  const { question, Answers } = getTodoTest?.data[selectedQuestionIndex] || {};
+  // const { question, Answers } = getTodoTest?.data[selectedQuestionIndex];
   //khai báo biến lưu trữ các lựa chọn
-  const selectedAnswer = answers[selectedQuestionIndex];
+  const selectedAnswer = answers[indexQuestion];
   //khai báo tiến độ hoàn thành mặt định là fasle
   const [completed, setCompleted] = useState(false);
+
   useEffect(() => {
-    dispatch(getQuestionTodotestMbti());
-    console.log(selectedAnswer);
     const handleKeyPress = (event) => {
       // Kiểm tra xem nút mũi tên nào được nhấn
       switch (event.key) {
         case 'ArrowLeft':
-          if (selectedQuestionIndex > MIN_ACTIVE_QUESTION_INDEX) {
+          if (indexQuestion > MIN_ACTIVE_QUESTION_INDEX) {
             onNavigationButtonClick(DIRECTION_PREV);
           }
 
           break;
         case 'ArrowRight':
           if (selectedAnswer !== undefined) {
-            onNavigationButtonClick(DIRECTION_NEXT);
+            if (indexQuestion < MAX_ACTIVE_QUESTION_INDEX - 1) {
+              onNavigationButtonClick(DIRECTION_NEXT);
+            }
+          }
+
+          break;
+        case 'Enter':
+          if (selectedAnswer !== undefined) {
+            if (indexQuestion < MAX_ACTIVE_QUESTION_INDEX - 1) {
+              onNavigationButtonClick(DIRECTION_NEXT);
+            }
           }
 
           break;
@@ -80,11 +107,11 @@ function TestMbti() {
     return () => {
       window.removeEventListener('keydown', handleKeyPress);
     };
-  }, [selectedAnswer]);
+  }, [indexQuestion, selectedAnswer]);
 
   //khai báo hàm điều hướng tạo event cho nút prev và mext btn
   const onNavigationButtonClick = (direction) => {
-    setSelectedQuestionIndex((currentSelectedQuestionIndex) =>
+    setIndexQuestion((currentSelectedQuestionIndex) =>
       limitWithinBoundaries(
         currentSelectedQuestionIndex + direction,
         MIN_ACTIVE_QUESTION_INDEX,
@@ -99,9 +126,7 @@ function TestMbti() {
     const answer = e;
     if (!answer) return;
 
-    setAnswers((currentAnswers) =>
-      replaceAnswerImmutable(selectedQuestionIndex, answer, currentAnswers),
-    );
+    setAnswers((currentAnswers) => replaceAnswerImmutable(indexQuestion, answer, currentAnswers));
   };
   const [desiredOptions, setDesiredOptions] = useState([]);
 
@@ -223,11 +248,31 @@ function TestMbti() {
     return typeDetail || {};
   };
 
+  // useEffect(() => {
+  //   if (personality) {
+  //     handleSubmit();
+  //   }
+  // }, [personality]);
+
   const handleSubmit = useCallback(() => {
+    //tổng kết quả từ bài làm thành 4 chữ cái
     const mbtiType = calculateMBTIType(answers);
-    setMbtiResult(getTypeDetail(mbtiType));
+    // const mbtiTypeFake = 'ENTP';
+    // console.log('personality', personality);
+
+    const result = personality?.find((p) => p.name === mbtiType);
+    setMbtiResult(result);
+    const mbtiResult_id = result.id;
+
+    // setMbtiResult(personality?.find((detail) => detail?.name === mbtiType));
+
+    dispatch(getMajorMBTIById(mbtiResult_id));
+    console.log(personalityById);
+    if (isLogin) {
+      dispatch(storeTestHistory(mbtiResult.id));
+    }
+    // dispatch(getTestHistoryById(mbtiResult.id));
     setCompleted(true);
-    // console.log(mbtiType);
   }, [answers, calculateMBTIType]);
 
   const confirm = (e) => {
@@ -237,102 +282,116 @@ function TestMbti() {
   const cancel = (e) => {};
 
   return (
-    <>
-      {/* hiển thị thay đổi khi giá trị completed thay đổi */}
-      {!completed ? (
-        <MbtiBox className="container">
-          <CurrentQuestion>
-            <span>{selectedQuestionIndex + 1}</span>
-            <span>/{MAX_ACTIVE_QUESTION_INDEX}</span>
-          </CurrentQuestion>
+    <ContainerStyled>
+      <Spin spinning={pendingState}>
+        {/* hiển thị thay đổi khi giá trị completed thay đổi */}
+        {!completed ? (
+          <MbtiBox className="container">
+            <CurrentQuestion>
+              <span>{indexQuestion + 1}</span>
+              <span>/{MAX_ACTIVE_QUESTION_INDEX}</span>
+            </CurrentQuestion>
 
-          <Question>
-            <h3>{question}</h3>
-            <ul>
-              {Answers?.map((answer, idx) => (
-                <li
-                  key={idx}
-                  className={selectedAnswer === answer.value ? 'selected-answer' : null}
-                  onClick={() => onAnswerClick(answer.value)}
-                >
-                  {answer.answer}
-                </li>
-              ))}
-            </ul>
-          </Question>
+            <Question>
+              <h3>
+                {getTodoTest && getTodoTest[indexQuestion]
+                  ? getTodoTest[indexQuestion]?.question
+                  : ''}
+              </h3>
+              <ul>
+                {getTodoTest &&
+                  getTodoTest?.[indexQuestion]?.Answers?.map((answer, idx) => (
+                    <li
+                      key={idx}
+                      className={selectedAnswer === answer.value ? 'selected-answer' : null}
+                      onClick={() => onAnswerClick(answer.value)}
+                    >
+                      {answer.answer}
+                    </li>
+                  ))}
+              </ul>
+            </Question>
 
-          <ControllBtn>
-            <div>
-              <Button
-                size={'large'}
-                disabled={selectedQuestionIndex === 0}
-                onClick={() => onNavigationButtonClick(DIRECTION_PREV)}
-              >
-                Quay lại
-              </Button>
-            </div>
-
-            {selectedQuestionIndex >= getTodoTest?.data.length - 1 ? (
-              <div>
-                <Popconfirm
-                  title="Bạn muốn kết thúc bài kiểm tra?"
-                  onConfirm={confirm}
-                  onCancel={cancel}
-                  okText="Yes"
-                  cancelText="No"
-                >
-                  <Button
-                    type="primary"
-                    danger
-                    size={'large'}
-                    disabled={selectedAnswer === undefined}
-                  >
-                    Kết thúc
-                  </Button>
-                </Popconfirm>
-              </div>
-            ) : (
+            <ControllBtn>
               <div>
                 <Button
                   size={'large'}
-                  disabled={
-                    selectedQuestionIndex === getTodoTest?.data.length ||
-                    selectedAnswer === undefined
-                  }
-                  onClick={() => onNavigationButtonClick(DIRECTION_NEXT)}
+                  disabled={indexQuestion === 0}
+                  onClick={() => onNavigationButtonClick(DIRECTION_PREV)}
                 >
-                  Tiếp tục
+                  Quay lại
                 </Button>
               </div>
+
+              {indexQuestion >= getTodoTest?.length - 1 ? (
+                <div>
+                  <Popconfirm
+                    title="Bạn muốn kết thúc bài kiểm tra?"
+                    onConfirm={confirm}
+                    onCancel={cancel}
+                    okText="Yes"
+                    cancelText="No"
+                  >
+                    <Button
+                      type="primary"
+                      danger
+                      size={'large'}
+                      disabled={selectedAnswer === undefined}
+                    >
+                      Kết thúc
+                    </Button>
+                  </Popconfirm>
+                </div>
+              ) : (
+                <div>
+                  <Button
+                    size={'large'}
+                    disabled={indexQuestion === getTodoTest?.length || selectedAnswer === undefined}
+                    onClick={() => onNavigationButtonClick(DIRECTION_NEXT)}
+                  >
+                    Tiếp tục
+                  </Button>
+                </div>
+              )}
+            </ControllBtn>
+          </MbtiBox>
+        ) : (
+          // điều kiện else
+          <>
+            {personalityById && personalityById ? (
+              <ShowResult>
+                <Row gutter={[16, 16]} justify={'center'}>
+                  <Col span={16}>
+                    <h3 className="result-title">kết quả của bạn</h3>
+                    <img src={`${personalityById.image}`} alt="mbtitype" />
+                    <div className="mbti-description">
+                      <h3 style={{ color: 'var(--primary-color)' }}>{personalityById.name}</h3>
+                      <h3>{mbtiResult.label}</h3>
+                      <p>{personalityById.description}</p>
+                    </div>
+
+                    <h3 style={{ marginTop: 20 }}>Nghành nghề phù hợp với bạn</h3>
+                    <SuggestContent>
+                      <div>
+                        {personalityById.MajorMBTIs.map((majorMBTI) => (
+                          <span key={majorMBTI.id}>
+                            <a href={majorMBTI.link} target="_blank" rel="noopener noreferrer">
+                              {majorMBTI.majorName} - {majorMBTI.Organization.name}
+                            </a>
+                          </span>
+                        ))}
+                      </div>
+                    </SuggestContent>
+                  </Col>
+                </Row>
+              </ShowResult>
+            ) : (
+              <Card loading={true} style={{ width: `100%` }} />
             )}
-          </ControllBtn>
-        </MbtiBox>
-      ) : (
-        // điều kiện else
-        <>
-          <ShowResult className="container">
-            <h3 className="result-title">kết quả của bạn</h3>
-            <img src={`./images/mbti/${mbtiResult.image}`} alt="mbtitype" />
-            <div className="mbti-description">
-              <h3>{mbtiResult.id}</h3>
-              <h3 style={{ color: 'var(--primary-color)' }}>{mbtiResult.text}</h3>
-              <p>{mbtiResult.description}</p>
-            </div>
-            <h3>Công việc phù hợp với {mbtiResult.id}</h3>
-            <SuggestContent>
-              <div>
-                <span>Kỹ thuật phần mềm (Software Engineering)</span>
-                <span>Kỹ thuật phần mềm (Software Engineering)</span>
-                <span>Kỹ thuật phần mềm (Software Engineering)</span>
-                <span>Kỹ thuật phần mềm (Software Engineering)</span>
-                <span>Kỹ thuật phần mềm (Software Engineering)</span>
-                <span>Kỹ thuật phần mềm (Software Engineering)</span>
-              </div>
-            </SuggestContent>
-          </ShowResult>
-        </>
-      )}
-    </>
+          </>
+        )}
+      </Spin>
+    </ContainerStyled>
   );
 }
 
@@ -354,8 +413,6 @@ const CurrentQuestion = styled.div`
 
 const Question = styled.div`
   width: fit-content;
-  margin-left: auto;
-  margin-right: auto;
   ul {
     list-style-type: none;
     padding-left: 20px;
@@ -395,12 +452,12 @@ const ControllBtn = styled.div`
   }
 `;
 const ShowResult = styled.div`
-  display: flex;
-  flex-direction: column;
+  /* display: flex;
+  flex-direction: column; */
   transition: 2s ease-in;
-  width: 400px;
-  margin-left: auto;
-  margin-right: auto;
+  /* width: 400px; */
+  /* margin-left: auto;
+  margin-right: auto; */
   margin-top: 40px;
 
   .result-title {
@@ -443,6 +500,10 @@ const SuggestContent = styled.div`
     padding: 10px 10px;
 
     margin: 5px;
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
   }
   span:nth-child(odd) {
     background: var(--primary-color);

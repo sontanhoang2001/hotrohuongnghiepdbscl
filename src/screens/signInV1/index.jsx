@@ -1,12 +1,12 @@
 import React, { Component, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Layout, Menu, Button, Row, Col, Typography, Form, Input, Switch } from 'antd';
+import { Layout, Menu, Button, Row, Col, Typography, Form, Input, Switch, Spin } from 'antd';
 import signinbg from '../../assets/images/img-signin.jpg';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectLoginData, selectPending, signinAsync } from '../../redux/authSlice';
 import Header from '../../components/header';
 function onChange(checked) {
-  console.log(`switch to ${checked}`);
+  // console.log(`switch to ${checked}`);
 }
 const { Title } = Typography;
 const { Footer, Content } = Layout;
@@ -63,24 +63,31 @@ const signup = [
 function SignInV1() {
   const dispatch = useDispatch();
 
-  let pending = useSelector(selectPending);
-  const profile = useSelector(selectLoginData);
-  const {role}=useSelector(state=>state.auth);
+  let pendingState = useSelector(selectPending);
+  const { role, status } = useSelector((state) => state.auth);
 
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (status === 0) {
+      navigate('/xac-nhan-dang-nhap');
+    }
     //lấy role khi người dùng đăng nhập
-    if (role) {      
+    if (role && status === 1) {
       if (role === 'ADMIN') {
         navigate('/admin');
+        window.location.reload();
       } else if (role === 'ORGANIZATION') {
         navigate('/organization');
+        window.location.reload();
+        window.location.reload();
       } else {
         navigate('/');
+        window.location.reload();
       }
     }
-  }, [pending, navigate, role]);
+  }, [navigate, role, status]);
+  // console.log(status);
 
   const onFinish = (values) => {
     const { remember, ...inputedUserData } = values;
@@ -91,24 +98,6 @@ function SignInV1() {
     <>
       <Layout className="layout-default layout-signin">
         <Header />
-        {/* <Header>
-          <div className="header-col header-nav">
-            <Menu mode="horizontal" defaultSelectedKeys={['1']}>
-              <Menu.Item key="1">
-                <Link to="/">
-                  {template}
-                  <span>Trang Chủ</span>
-                </Link>
-              </Menu.Item>
-              <Menu.Item key="2">
-                <Link to="/dang-ky">
-                  {signup}
-                  <span> Đăng Ký</span>
-                </Link>
-              </Menu.Item>
-            </Menu>
-          </div>
-        </Header> */}
         <Content className="signin">
           <Row gutter={[24, 0]} justify="space-around">
             <Col xs={{ span: 24, offset: 0 }} lg={{ span: 6, offset: 2 }} md={{ span: 12 }}>
@@ -116,65 +105,67 @@ function SignInV1() {
               <Title className="font-regular text-muted" level={5}>
                 Nhập Email và mật khẩu để đăng nhập
               </Title>
-              <Form
-                name="signin"
-                className="row-col"
-                initialValues={{
-                  username: '',
-                  password: '',
-                  remember: true,
-                }}
-                onFinish={onFinish}
-                layout="vertical"
-                scrollToFirstError
-              >
-                <Form.Item
-                  className="username"
-                  label="Tên Đăng Nhập"
-                  name="username"
-                  rules={[
-                    {
-                      required: true,
-                      message: 'Chưa nhập tên đăng nhập',
-                    },
-                  ]}
+              <Spin spinning={pendingState}>
+                <Form
+                  name="signin"
+                  className="row-col"
+                  initialValues={{
+                    username: '',
+                    password: '',
+                    remember: true,
+                  }}
+                  onFinish={onFinish}
+                  layout="vertical"
+                  scrollToFirstError
                 >
-                  <Input placeholder="Tên Đăng nhập" style={{ height: 50 }} />
-                </Form.Item>
+                  <Form.Item
+                    className="username"
+                    label="Tên Đăng Nhập"
+                    name="username"
+                    rules={[
+                      {
+                        required: true,
+                        message: 'Chưa nhập tên đăng nhập',
+                      },
+                    ]}
+                  >
+                    <Input placeholder="Tên Đăng nhập" style={{ height: 50 }} />
+                  </Form.Item>
 
-                <Form.Item
-                  className="username"
-                  label="Mật Khẩu"
-                  name="password"
-                  rules={[
-                    {
-                      required: true,
-                      message: 'Chưa nhập mật khẩu',
-                    },
-                  ]}
-                >
-                  <Input.Password placeholder="Mật Khẩu" />
-                </Form.Item>
+                  <Form.Item
+                    className="username"
+                    label="Mật Khẩu"
+                    name="password"
+                    rules={[
+                      {
+                        required: true,
+                        message: 'Chưa nhập mật khẩu',
+                      },
+                    ]}
+                  >
+                    <Input.Password placeholder="Mật Khẩu" />
+                  </Form.Item>
 
-                <Form.Item name="remember" className="aligin-center" valuePropName="checked">
-                  <div>
-                    <Switch defaultChecked onChange={onChange} />
-                    <span style={{ marginLeft: 8 }}>Lưu Đăng Nhập</span>
-                  </div>
-                </Form.Item>
+                  <Form.Item name="remember" className="aligin-center" valuePropName="checked">
+                    <div>
+                      <Switch defaultChecked onChange={onChange} />
+                      <span style={{ marginLeft: 8 }}>Lưu Đăng Nhập</span>
+                    </div>
+                  </Form.Item>
 
-                <Form.Item>
-                  <Button type="primary" htmlType="submit" style={{ width: '100%' }}>
-                    Đăng Nhập
-                  </Button>
-                </Form.Item>
-                <p className="font-semibold text-muted">
-                  Bạn chưa có tài khoản?{' '}
-                  <Link to="/dang-ky" className="text-dark font-bold">
-                    Đăng ký ngay
-                  </Link>
-                </p>
-              </Form>
+                  <Form.Item>
+                    <Button type="primary" htmlType="submit" style={{ width: '100%' }}>
+                      Đăng Nhập
+                    </Button>
+                  </Form.Item>
+                  <p className="font-semibold text-muted">
+                    Bạn chưa có tài khoản?{' '}
+                    <Link to="/dang-ky" className="text-dark font-bold">
+                      Đăng ký ngay
+                    </Link>
+                  </p>
+                </Form>
+              </Spin>
             </Col>
             <Col
               className="sign-img"

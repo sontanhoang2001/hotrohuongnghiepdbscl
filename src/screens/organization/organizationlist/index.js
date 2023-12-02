@@ -79,27 +79,29 @@ function OrganizationList() {
   const columns = useMemo(
     () => [
       {
+        title: '#',
+        fixed: 'left',
+        dataIndex: 'image',
+        key: 'image',
+        render: (record) => (
+          <Avatar.Group>
+            <Avatar className="shape-avatar" shape="square" size={40} src={record}></Avatar>
+          </Avatar.Group>
+        ),
+      },
+      {
         title: 'Tên',
         fixed: 'left',
         dataIndex: 'name',
         key: 'name',
-        render: (record) => (
-          <Avatar.Group>
-            <Avatar
-              className="shape-avatar"
-              shape="square"
-              size={40}
-              src={record.OrganizationDetail.image}
-            ></Avatar>
-            <div className="avatar-info">
-              {/* <Title level={5}>{university.name}</Title> */}
-              <Title level={5}>{record.name}</Title>
-              <p>{record.OrganizationDetail.email}</p>
-              {/* <p>{university.OrganizationDetail.email}</p> */}
-            </div>
-          </Avatar.Group>
-        ),
       },
+      {
+        title: 'Tên',
+        fixed: 'left',
+        dataIndex: 'email',
+        key: 'emil',
+      },
+
       {
         title: 'Rank',
         dataIndex: 'rank',
@@ -165,7 +167,7 @@ function OrganizationList() {
         title: 'Mô tả',
         key: 'description',
         width: 100,
-        render: (record) => <span>{record.description}</span>,
+        render: (record) => <span>{record?.description}</span>,
       },
       {
         title: 'Link',
@@ -188,7 +190,7 @@ function OrganizationList() {
         width: 100,
         render: (record) => (
           <>
-            <Link to={`/organization/${record.id}`}>
+            <Link to={`/organization/${record?.id}`}>
               <Button title="Xem chi tiết">
                 <InfoCircleFilled />
               </Button>
@@ -218,18 +220,23 @@ function OrganizationList() {
   const convertedData = useMemo(
     () =>
       joinedOrganizations?.map((university, index) => {
+        // console.log(university);
         return {
           key: index.toString(),
-          id: university.OrganizationDetail.id,
-          name: university,
-          rank: university.OrganizationDetail.rank,
-          url: university.OrganizationDetail.url,
-          address: university.OrganizationDetail.address,
-          province: university.OrganizationDetail.province,
-          phone: university.OrganizationDetail.phone,
-          lat: university.OrganizationDetail.lat,
-          long: university.OrganizationDetail.long,
-          description: university.OrganizationDetail.description,
+          id: university?.id,
+
+          image: university.OrganizationDetail.image,
+          demo: university.OrganizationDetail,
+          email: university.OrganizationDetail.email,
+          name: university?.name,
+          rank: university?.OrganizationDetail?.rank,
+          url: university?.OrganizationDetail?.url,
+          address: university?.OrganizationDetail?.address,
+          province: university?.OrganizationDetail?.province,
+          phone: university?.OrganizationDetail?.phone,
+          lat: university?.OrganizationDetail?.lat,
+          long: university?.OrganizationDetail?.long,
+          description: university?.OrganizationDetail?.description,
         };
       }),
     [joinedOrganizations],
@@ -267,7 +274,7 @@ function OrganizationList() {
         formRef.current?.setFieldsValue({
           image: imgUrl,
         });
-        console.log('uploaded', imgUrl);
+        // console.log('uploaded', imgUrl);
       })
       .catch((err) => {
         onError({ message: err.message });
@@ -300,8 +307,8 @@ function OrganizationList() {
       .validateFields()
       .then((values) => {
         //create
-        const formValues={...values,userId:profile.id}
-        console.log(formValues);
+        const formValues = { ...values, userId: profile.id };
+        // console.log(formValues);
         dispatch(createOrganizationAsync(formValues)).then(() => {
           dispatch(getAllOrganizationsByUser());
           setOpenUpdateForm(false);

@@ -8,7 +8,7 @@ import universityReducer from '../redux/universitySlice';
 import faqsReducer from '../redux/faqsSlice';
 import postsReducer from '../redux/postsSlice';
 import chatReducer from '../redux/chatSlice';
-
+import majorMbtiReducer from '../redux/majorMbtiSlice';
 
 export const store = configureStore({
   reducer: {
@@ -18,9 +18,10 @@ export const store = configureStore({
     mbti: mbtiReducer,
     user: userReducer,
     university: universityReducer,
-    faqs:faqsReducer,
-    posts:postsReducer,
-    chat:chatReducer
+    faqs: faqsReducer,
+    posts: postsReducer,
+    chat:chatReducer,
+    majorMbti: majorMbtiReducer,
   },
   // middleware: [authMiddleware],
 });

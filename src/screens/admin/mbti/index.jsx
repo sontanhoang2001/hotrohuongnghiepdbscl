@@ -71,20 +71,35 @@ function Mbti() {
   const [isEditing, setIsEditing] = useState(false);
   const [processId, setProcessId] = useState(0);
   const [isOpenModal, setIsOpenModal] = useState(false);
+
+  const handelCreate = () => {
+    formRef.current?.resetFields();
+    setIsEditing(false);
+    setIsOpenModal(true);
+  };
   const handleEdit = (id) => {
     setProcessId(id);
     mbtiApi
       .getQuestionById(id)
       .then((res) => {
-        const question = res.data.data;
-        formRef.current?.resetFields();
-        formRef.current?.setFieldsValue({
-          ...question,
-          answers: question.Answers,
-          question_group_id: question.QuestionGroup.id,
-        });
         setIsEditing(true);
         setIsOpenModal(true);
+        // const question = res.data.data;
+        // formRef.current?.resetFields();
+        // formRef.current?.setFieldsValue({
+        //   ...question,
+        //   answers: question.Answers,
+        //   question_group_id: question.QuestionGroup.id,
+        // });
+        setTimeout(() => {
+          const question = res.data.data;
+          formRef.current?.resetFields();
+          formRef.current?.setFieldsValue({
+            ...question,
+            answers: question.Answers,
+            question_group_id: question.QuestionGroup.id,
+          });
+        }, 200);
         setProcessId(0);
       })
       .catch((error) => {
@@ -93,12 +108,16 @@ function Mbti() {
       });
   };
   //hàm bắt event delete
-  const handleDelete = (id) => {    
-    dispatch(deleteMbti(id)).then(()=>{dispatch(getMbtiQuestion())});
+  const handleDelete = (id) => {
+    dispatch(deleteMbti(id)).then(() => {
+      dispatch(getMbtiQuestion());
+    });
   };
   //hàm bắt event delete
   const handleRestore = (id) => {
-    dispatch(restoreMbti(id)).then(()=>{dispatch(getMbtiQuestion())});
+    dispatch(restoreMbti(id)).then(() => {
+      dispatch(getMbtiQuestion());
+    });
   };
   //định dạng cột hiển thị
   const columns = useMemo(
@@ -239,11 +258,7 @@ function Mbti() {
           <Col span={8} style={{ display: 'flex', justifyContent: 'start' }}>
             <Button
               style={{ padding: '0 1rem' }}
-              onClick={() => {
-                formRef.current?.resetFields();
-                setIsEditing(false);
-                setIsOpenModal(true);
-              }}
+              onClick={() => handelCreate()}
               type="primary"
               size="large"
             >
@@ -321,7 +336,7 @@ function Mbti() {
               name="question"
               rules={[{ required: true, message: 'Nhập câu hỏi!' }]}
             >
-              <TextArea placeholder="Câu hỏi" autoSize={{ minRows: 3, maxRows: 5 }} />
+              <Input placeholder="Câu hỏi" />
             </Form.Item>
 
             <Form.List name="answers">
@@ -350,7 +365,17 @@ function Mbti() {
                         {...restField}
                         name={[name, 'value']}
                         label="Giá trị"
-                        rules={[{ required: true, message: 'Vui lòng nhập giá trị' }]}
+                        rules={[
+                          { required: true, message: 'Vui lòng nhập giá trị' },
+                          {
+                            max: 1,
+                            message: 'giá trị câu trả lời không quá 1 ký tự',
+                          },
+                          {
+                            pattern: /^[EISNTJP]$/,
+                            message: 'Giá trị phải là 1 ký tự thuộc E,I,S,N,T,J,P',
+                          },
+                        ]}
                       >
                         <Input size="large" placeholder="Câu trả lời" />
                       </Form.Item>

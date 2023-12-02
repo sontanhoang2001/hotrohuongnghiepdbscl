@@ -34,17 +34,19 @@ const postsApi = {
     return axiosService.post(url);
   },
   //pulic api
-  getAllPublicPosts: ({ page, size, search }) => {
-    // console.debug('search', search);
+  getAllPublicPosts: ({ page, size, search, postsCategoryId }) => {
     const url = `public/posts`;
     return axiosService.get(url, {
-      params: { page, size, search },
-      paramsSerializer: qs.stringify,
+      params: { page, size, search, postsCategoryId },
+      // paramsSerializer: qs.stringify,
     });
   },
   getAllPublicPostsById: (id) => {
-    // console.debug('search', search);
     const url = `public/posts/id/${id}`;
+    return axiosService.get(url);
+  },
+  getAllPostsCategory: (id) => {
+    const url = `postsOrganization/getAllPostsCategory`;
     return axiosService.get(url);
   },
 };

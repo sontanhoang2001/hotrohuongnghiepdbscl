@@ -1,6 +1,7 @@
 import axiosService from './axiosClient';
 
 const pathname = 'mbtis';
+const publicPathname = 'public/mbti';
 
 const mbtiApi = {
   getQuestionGroups: () => {
@@ -40,7 +41,31 @@ const mbtiApi = {
   },
   //public data
   getQuestionTodotestMbti: () => {
-    const url = `/${pathname}/get-question-todotestMbti`;
+    const url = `/${publicPathname}/get-question-todotestMbti`;
+    return axiosService.get(url);
+  },
+
+  getGetAllpersonality: () => {
+    const url = `/${publicPathname}/personality-groups`;
+    return axiosService.get(url);
+  },
+  storeTestHistory: (id) => {
+    const url = `/${pathname}/storeTestHistory?mbtiId=${id}`;
+    return axiosService.post(url);
+  },
+  getTestHistoryById: (id) => {
+    const url = `/${pathname}/getTestHistoryById/${id}`;
+    return axiosService.get(url);
+  },
+  getAllTestHistory: ({ page, size }) => {
+    const url = `/${pathname}/getAllTestHistory`;
+    return axiosService.get(url, {
+      params: { page, size },
+      // paramsSerializer: qs.stringify,
+    });
+  },
+  getMajorMBTIById: (id) => {
+    const url = `/${publicPathname}/getMajorMBTIById/${id}`;
     return axiosService.get(url);
   },
 };

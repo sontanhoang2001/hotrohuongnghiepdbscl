@@ -219,9 +219,9 @@ function Posts() {
                   },
                   ({ getFieldValue }) => ({
                     validator(_, value) {
-                      console.log(value?.$d);
-                      console.log('Date', new Date());
-                      console.log(isBefore(value?.$d, new Date()));
+                      // console.log(value?.$d);
+                      // console.log('Date', new Date());
+                      // console.log(isBefore(value?.$d, new Date()));
 
                       if (isToday(value?.$d)) {
                         return Promise.resolve();
