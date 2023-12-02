@@ -218,13 +218,6 @@ module.exports = {
         order = [['id', 'DESC']];
       }
 
-      // const organization = await Organization.findByPk(organizationId, {
-      //   attributes: ['name'],
-      //   raw: true,
-      // });
-
-      // console.log('organization', organization.name);
-
       const chat = await Chat.findAll({
         where: { userId, organizationId },
         attributes: [
@@ -262,7 +255,22 @@ module.exports = {
         if (createChat) {
           const chat = await Chat.findAll({
             where: { userId, organizationId },
-            attributes: ['id', 'status', 'userId', 'organizationId', 'createdAt'],
+            attributes: [
+              'id',
+              'status',
+              'userId',
+              'organizationId',
+              'createdAt',
+              [
+                Sequelize.literal(`(
+              SELECT name
+              FROM organization AS Organization
+              WHERE
+              Organization.id = Chat.organizationId
+            )`),
+                'organizationName',
+              ],
+            ],
             include: [
               {
                 offset,
