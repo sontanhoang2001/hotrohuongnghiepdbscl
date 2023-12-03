@@ -30,11 +30,6 @@ import { useEffect, useMemo } from 'react';
 const { Title } = Typography;
 
 function University() {
-  //hàm bắt event delete
-  const handleDelete = (id) => {
-    dispatch(deleteOrganization(id));
-  };
-
   //goi redux
   const dispatch = useDispatch();
   const page = useSelector(selectUniversityPage);

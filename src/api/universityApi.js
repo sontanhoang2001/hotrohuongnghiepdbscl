@@ -47,7 +47,7 @@ const universityApi = {
     return axiosService.patch(url, data);
   },
   getAllOrganizationsByUser: () => {
-    const url = `${pathname}/getAllByUser?page=1&size=100`;
+    const url = `${pathname}/getAllByUser?page=1&size=100&order=asc`;
     return axiosService.get(url);
   },
   //client public api
