@@ -253,7 +253,7 @@ function SignUpV1() {
                   ]}
                   className="no-star"
                 >
-                  <Input placeholder="Số Điện Thoại" style={{ height: 50 }} />
+                  <Input placeholder="0909090909" style={{ height: 50 }} />
                 </Form.Item>
                 {/* ----------------end phone---------------- */}
                 {/* ----------------begin gender---------------- */}

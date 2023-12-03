@@ -57,6 +57,7 @@ export const getAllOrganizationsByUser = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const rs = await universityApi.getAllOrganizationsByUser();
+      console.log(rs.data.data);
       return rs.data.data;
     } catch (error) {
       if (error.response && error.response.data.message) {
@@ -353,13 +354,15 @@ const universitySlice = createSlice({
       .addCase(getAllPublicUniversityInfo.fulfilled, (state, { payload }) => {
         state.pending = false;
         state.data = payload;
-        state.clientParams.page = payload.page;
-        state.clientParams.size = payload.size;
-        state.clientParams.total = payload.total;
-        state.clientParams.search = payload.search;
-        state.clientParams.type = payload.type;
+        state.clientParams = {
+          size: payload.size,
+          page: payload.page,
+          totl: payload.total,
+          search: payload.search,
+          type: payload.type,
+        };
         state.organiztionPublic = {
-          size: payload,
+          size: payload.size,
           page: payload.page,
           totl: payload.total,
           search: payload.search,

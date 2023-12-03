@@ -338,11 +338,7 @@ function OrganizationList() {
             </Button>
           </Col>
           <Col xs="24" xl={24}>
-            <Card
-              bordered={false}
-              className="criclebox tablespace mb-24"
-              title="Danh sách trường học"
-            >
+            <Card bordered={false} className="criclebox tablespace mb-24" title="Tốc chức của bạn">
               <div className="table-responsive">
                 <Table
                   bordered={true}
@@ -468,7 +464,20 @@ function OrganizationList() {
                 <Form.Item
                   label="Số điện thoại"
                   name="phone"
-                  rules={[{ required: true, message: 'Nhập số điện thoại!' }]}
+                  rules={[
+                    {
+                      min: 10,
+                      message: 'sđt chưa đủ 10 số',
+                    },
+                    {
+                      max: 10,
+                      message: 'Độ dài sdt không quá 10 số',
+                    },
+                    {
+                      pattern: /^\d+$/,
+                      message: 'Số điện thoại phải là số',
+                    },
+                  ]}
                 >
                   <Input placeholder="Số điện thoại" />
                 </Form.Item>
