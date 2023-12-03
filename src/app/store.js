@@ -23,5 +23,5 @@ export const store = configureStore({
     chat:chatReducer,
     majorMbti: majorMbtiReducer,
   },
-  // middleware: [authMiddleware],
+  
 });

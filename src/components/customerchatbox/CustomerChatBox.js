@@ -1,12 +1,32 @@
-import { CommentOutlined } from '@ant-design/icons';
-import { Drawer, FloatButton, Input, Select } from 'antd';
-import React from 'react';
+import { CommentOutlined, SmileOutlined } from '@ant-design/icons';
+import {
+  ConfigProvider,
+  Divider,
+  Drawer,
+  FloatButton,
+  Input,
+  List,
+  Select,
+  Skeleton,
+  Spin,
+} from 'antd';
+import React, { useRef } from 'react';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { MessageContent, YourMessageContent } from './../../globalStyles';
 import { useEffect } from 'react';
-import { getStudentMessageByChatId } from '../../redux/chatSlice';
+import {
+  getStudentMessageByChatId,
+  loadMoreStudentMessageByChatId,
+  pushMessage,
+  setCurrentOrgId,
+} from '../../redux/chatSlice';
+import socketIOClient from 'socket.io-client';
+import InfiniteScroll from 'react-infinite-scroll-component';
+import { getAllPublicUniversityInfo } from '../../redux/universitySlice';
+import { debounce } from 'lodash';
+import { calculateNewValue } from '@testing-library/user-event/dist/utils';
 
 const filterOption = (input, option) =>
   (option?.label ?? '').toLowerCase().includes(input.toLowerCase());
@@ -49,23 +69,26 @@ const paperPlane = [
   </svg>,
 ];
 const CustomerChatBox = () => {
+  const apiHost = process.env.REACT_APP_API_URL;
+  const host = apiHost.substring(0, apiHost.indexOf('/api'));
   const dispatch = useDispatch();
-  const { messages } = useSelector((state) => state.chat);
-  const [open, setOpen] = useState(false);
+  //redux state
+  const {
+    messages,
+    status,
+    currentOrgId,
+    currentChatMessagesCount,
+    currentChatId,
+    currentOrgName,
+    currentOrgAvt,
+  } = useSelector((state) => state.chat);
   const { profile } = useSelector((state) => state.auth);
-  const [openSelect, setOpenSelect] = useState(true);
-  const OPTIONS = ['Dh Can tho', 'DH Nam CT', 'DH ', 'Helicopters'];
-  const [selectedOrganization, setSelectedOrganization] = useState('');
-  const [selectedUniversity, setSelectedUniversity] = useState('');
+  const { data: organizations } = useSelector((state) => state.university);
 
-  const onChangeOrganization = (checked) => {
-    setOpenSelect(checked);
-    setSelectedOrganization(checked);
-  };
-  const onChangeUniversity = (checked) => {
-    setOpenSelect(checked);
-    setSelectedUniversity(checked);
-  };
+  const [open, setOpen] = useState(false);
+  const [message, setMessage] = useState('');
+  const [sendingMessage, setsendingMessage] = useState(false);
+
   const showDrawer = () => {
     setOpen(true);
   };
@@ -73,13 +96,127 @@ const CustomerChatBox = () => {
     setOpen(false);
   };
 
-    //Lây danh sách tổ chức
-    useEffect(() => {
-        dispatch(getStudentMessageByChatId({ organizationId: 1, beforeId: -1 }));
-      }, [dispatch]);
+  //Lấy danh sách tổ chức
+  const [orgSearchValue, setOrgSearchValue] = useState('');
+
+  const handleChangeOrganization = (newValue) => {
+    if (newValue) dispatch(setCurrentOrgId(newValue));
+  };
+
+  const handleSearchChange = (newValue) => {
+    setOrgSearchValue(newValue);
+  };
+  useEffect(() => {
+    dispatch(
+      getAllPublicUniversityInfo({
+        page: 1,
+        size: 100,
+        search: orgSearchValue,
+        organizationType: 1,
+      }),
+    );
+  }, [dispatch, orgSearchValue]);
+
+  //Lấy danh sách tin nhắn
+  useEffect(() => {
+    if (currentOrgId !== 0)
+      dispatch(getStudentMessageByChatId({ organizationId: currentOrgId, beforeId: -1 }));
+  }, [currentOrgId, dispatch]);
+
+  //Handle change chat input
+  const handleChange = (e) => {
+    setMessage(e.target.value);
+  };
+
+  //Send message funtion
+  const sendMessage = () => {
+    if (message) {
+      const msg = {
+        content: message,
+        senderId: profile.id,
+        chatId: currentChatId,
+        type: 1,
+        // reciverId: currentOrgId || null,
+        reciverId: null,
+      };
+      socketRef.current.emit('chatMessage', msg);
+      //socketRef.current.emit("sendDataClient", msg);
+      setsendingMessage(true);
+      setMessage('');
+    }
+  };
+
+  //Send message when press enter
+  const onEnterPress = (e) => {
+    if (e.keyCode === 13 && e.shiftKey === false) {
+      sendMessage();
+    }
+  };
+  //scroll to last message
+
+  const scrollToBottom = () => {
+    chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
+  };
+
+  //Chat
+  // const handleChangeOrganization = (checked) => {};
+  const socketRef = useRef();
+  const messagesRef = useRef();
+
+  //Initialize socket io
+  useEffect(() => {
+    socketRef.current = socketIOClient.connect(host);
+    console.log('host:', host);
+    // socketRef.current.on("getId", (data) => {
+    //   setId(data);
+    // });
+
+    socketRef.current.on('newMessage', (dataGot) => {
+      dispatch(pushMessage(dataGot));
+      scrollToBottom();
+      setsendingMessage(false);
+      console.log('Got data:', dataGot);
+    });
+
+    socketRef.current.on('joinRoomStatus', (status) => {
+      console.log(status);
+    });
+
+    socketRef.current.on('error', (er) => {
+      console.log('er', er);
+    });
+
+    //Join into first chat room
+    if (currentChatId !== null) {
+      const msg = {
+        userId: profile.id,
+        chatId: currentChatId,
+      };
+      console.log(msg);
+      socketRef.current.emit('joinRoom', msg);
+    }
+
+    return () => {
+      socketRef.current.disconnect();
+    };
+  }, [currentChatId, dispatch, host, profile.id]);
+
+  //Load more messages
+  const chatBoxRef = useRef();
+  const loadMoreData = () => {
+    dispatch(loadMoreStudentMessageByChatId()).then(() => {
+      chatBoxRef.current.scrollTop += 500;
+    });
+  };
+
   return (
     <>
-      <FloatButton icon={<CommentOutlined  size='large'/>} type="primary" onClick={showDrawer}>
+      <FloatButton
+        icon={<CommentOutlined size="large" />}
+        size="large"
+        type="primary"
+        onClick={showDrawer}
+      >
         Open
       </FloatButton>
       <Drawer
@@ -94,45 +231,77 @@ const CustomerChatBox = () => {
           showSearch
           placeholder="Chọn tổ chức"
           optionFilterProp="children"
-          onChange={onChangeOrganization}
+          onChange={handleChangeOrganization}
           filterOption={filterOption}
-          options={[
-            {
-              value: 'Company',
-              label: 'Tổ chức',
-            },
-            {
-              value: 'University',
-              label: 'Trường học',
-            },
-          ]}
+          onSearch={debounce(handleSearchChange, 500)}
+          options={organizations?.data?.map((org) => ({
+            label: org.name,
+            value: org.id,
+          }))}
           allowClear
           style={{ width: '100%', height: 50, marginBottom: 20 }}
         />
-
-        <ChatBox>
-          <ContactBar>
-            <div className="contact-pic">
-              <img src="./images/4939493.png" alt="Nguyen Thi B"></img>
+        {currentOrgId !== 0 && (
+          <ChatBox>
+            <ContactBar>
+              <div className="contact-pic">
+                <img src={currentOrgAvt ?? './images/4939493.png'} alt={currentOrgName}></img>
+              </div>
+              <div className="contact-name">{currentOrgName}</div>
+            </ContactBar>
+            <div
+              id="scrollableDiv"
+              ref={chatBoxRef}
+              style={{
+                height: 500,
+                overflow: 'auto',
+                padding: '0 16px',
+                display: 'flex',
+                flexDirection: 'column-reverse',
+              }}
+            >
+              <InfiniteScroll
+                dataLength={messages.length}
+                next={loadMoreData}
+                hasMore={messages.length < currentChatMessagesCount}
+                inverse={true}
+                scrollableTarget="scrollableDiv"
+              >
+                <ConfigProvider
+                  renderEmpty={() => (
+                    <div style={{ textAlign: 'center' }}>
+                      <SmileOutlined style={{ fontSize: 20 }} />
+                      <p>Bắt đầu chat với {currentOrgName}</p>
+                    </div>
+                  )}
+                >
+                  <List
+                    dataSource={messages}
+                    renderItem={(mess, idx) =>
+                      (mess.senderId === profile.id && (
+                        <YourMessageContent key={idx}>{mess.content}</YourMessageContent>
+                      )) || <MessageContent key={idx}>{mess.content}</MessageContent>
+                    }
+                  />
+                </ConfigProvider>
+              </InfiniteScroll>
             </div>
-            <div className="contact-name">Nguyen Thi B</div>
-          </ContactBar>
-          <Messages>
-            {messages &&
-              messages.map(
-                (mess) =>
-                  (mess.senderId === profile.id && (
-                    <YourMessageContent>{mess.content}</YourMessageContent>
-                  )) || <MessageContent>{mess.content}</MessageContent>,
-              )}
-          </Messages>
 
-          <FooterChat>
-            <span className="smile-face">{smileFace}</span>
-            <Input placeholder="Nhập nội dung..." style={{ height: 50 }} />
-            <span className="paper-plane"> {paperPlane}</span>
-          </FooterChat>
-        </ChatBox>
+            <FooterChat>
+              <span className="smile-face">{smileFace}</span>
+              <Input
+                placeholder="Nhập nội dung..."
+                onKeyDown={onEnterPress}
+                onChange={handleChange}
+                style={{ height: 50 }}
+                value={message}
+              />
+              <span onClick={sendMessage} className="paper-plane" style={{ cursor: 'pointer' }}>
+                {((sendingMessage || status === 'fetchingMesssages') && <Spin />) || paperPlane}
+              </span>
+            </FooterChat>
+          </ChatBox>
+        )}
       </Drawer>
     </>
   );
@@ -145,13 +314,12 @@ const LabelName = styled.label`
 `;
 const ChatBox = styled.div`
   display: flex;
-  height: 90%;
+  height: 86%;
   flex-direction: column;
   justify-content: space-between;
   z-index: 2;
   box-sizing: border-box;
   border-radius: 20px;
-
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
   background: #f7f7f7;
 `;
@@ -191,7 +359,7 @@ const Messages = styled.div`
   flex-direction: column;
   justify-content: flex-end;
   flex: 1;
-  overflow-y: auto;
+  overflow-y: scroll;
 `;
 const FooterChat = styled.div`
   width: 100%;

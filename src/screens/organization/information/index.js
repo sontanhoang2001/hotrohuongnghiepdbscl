@@ -43,6 +43,7 @@ import Information from './Information';
 import Posts from './Posts';
 import Faqs from './Faqs';
 import { uploadFile } from '../../../firebase/uploadConfig';
+import OrganizationChat from './OrganizationChat';
 
 //verification status
 const verificationStatus = {
@@ -273,32 +274,33 @@ function OrganizationProfile() {
             key: '4',
             disabled: organization?.VerifyOrganization?.status !== 1,
             children: (
-              <Row>
-                <Col span={24} md={12} className="mb-24">
-                  <Card
-                    bordered={false}
-                    title={<h6 className="font-semibold m-0">Tin nhắn</h6>}
-                    className="header-solid h-full"
-                    bodyStyle={{ paddingTop: 0, paddingBottom: 16 }}
-                  >
-                    <List
-                      itemLayout="horizontal"
-                      dataSource={data}
-                      split={false}
-                      className="conversations-list"
-                      renderItem={(item) => (
-                        <List.Item actions={[<Button type="link">REPLY</Button>]}>
-                          <List.Item.Meta
-                            avatar={<Avatar shape="square" size={48} src={item.avatar} />}
-                            title={item.title}
-                            description={item.description}
-                          />
-                        </List.Item>
-                      )}
-                    />
-                  </Card>
-                </Col>
-              </Row>
+              <OrganizationChat />
+              // <Row>
+              //   <Col span={24} md={12} className="mb-24">
+              //     <Card
+              //       bordered={false}
+              //       title={<h6 className="font-semibold m-0">Tin nhắn</h6>}
+              //       className="header-solid h-full"
+              //       bodyStyle={{ paddingTop: 0, paddingBottom: 16 }}
+              //     >
+              //       <List
+              //         itemLayout="horizontal"
+              //         dataSource={data}
+              //         split={false}
+              //         className="conversations-list"
+              //         renderItem={(item) => (
+              //           <List.Item actions={[<Button type="link">REPLY</Button>]}>
+              //             <List.Item.Meta
+              //               avatar={<Avatar shape="square" size={48} src={item.avatar} />}
+              //               title={item.title}
+              //               description={item.description}
+              //             />
+              //           </List.Item>
+              //         )}
+              //       />
+              //     </Card>
+              //   </Col>
+              // </Row>
             ),
           },
         ]}
@@ -348,8 +350,6 @@ function OrganizationProfile() {
           </Form>
         </Card>
       </Modal>
-
-     
     </>
   );
 }

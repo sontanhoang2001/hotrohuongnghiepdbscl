@@ -47,6 +47,7 @@ export const MessageContent = styled.div`
   width: -moz-fit-content;
   width: fit-content;
   max-width: 66%;
+  position:relative;
   box-shadow: 0 0 2rem rgba(0, 0, 0, 0.075), 0rem 1rem 1rem -1rem rgba(0, 0, 0, 0.1);
 `;
 export const YourMessageContent = styled.div`
@@ -58,6 +59,7 @@ export const YourMessageContent = styled.div`
   color: white;
   width: fit-content;
   max-width: 66%;
+  position:relative;
   box-shadow: 0 0 2rem rgba(0, 0, 0, 0.075), 0rem 1rem 1rem -1rem rgba(0, 0, 0, 0.1);
 `;
 
