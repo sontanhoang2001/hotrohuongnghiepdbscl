@@ -302,7 +302,25 @@ module.exports = {
             limit: size,
             order,
             model: Messages,
-            attributes: ['id', 'senderId', 'reciverId', 'content', 'type', 'status', 'chatId', 'createdAt'],
+            attributes: [
+              'id',
+              'senderId',
+              'reciverId',
+              'content',
+              'type',
+              'status',
+              'chatId',
+              'createdAt',
+              [
+                Sequelize.literal(`(
+              SELECT fullName
+              FROM user_detail AS UserDetail
+              WHERE
+              UserDetail.userId = Messages.senderId
+            )`),
+                'senderName',
+              ],
+            ],
           },
         ],
       });
