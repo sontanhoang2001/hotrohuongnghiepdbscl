@@ -266,6 +266,7 @@ module.exports = {
       });
 
       const chatExists = !!chat && chat.length > 0;
+      let total = 0;
       if (chatExists) {
         const chatId = chat[0].dataValues.id;
 
@@ -274,7 +275,7 @@ module.exports = {
           attributes: ['id'],
         });
 
-        count = 0;
+        total = count;
       }
 
       if (!chatExists) {
@@ -327,7 +328,7 @@ module.exports = {
       }
 
       const pagination = {
-        total: count,
+        total,
         size,
         data: chat,
       };
