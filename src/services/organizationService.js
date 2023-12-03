@@ -54,9 +54,12 @@ module.exports = {
       throw error; // Sau đó ném lỗi để xử lý ở phần gọi hàm
     }
   },
-  getAll: async (page, size, search, organizationTypeId, status, deleted) => {
+  getAll: async (page, size, search, organizationTypeId, status, deleted, orderData) => {
     try {
-      let order = [['createdAt', 'DESC']];
+      let order = [['id', 'DESC']];
+      if (orderData) {
+        order = [['id', orderData]];
+      }
       const where = {};
       if (search) {
         where.name = { [Op.like]: `%${search}%` };
