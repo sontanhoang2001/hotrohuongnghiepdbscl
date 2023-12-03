@@ -390,6 +390,7 @@ const FooterChat = styled.div`
   background: white;
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;
+  padding: 10px;
   span {
     height: 40px;
     padding: 0 15px;

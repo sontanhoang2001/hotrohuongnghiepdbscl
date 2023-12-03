@@ -180,14 +180,14 @@ function CLientFooter() {
                 fontSize: '18px',
               }}
             >
-              Địa chỉ liên hệ: số 8 đường Nguyễn Chánh,
+              Địa chỉ liên hệ: Số 8 đường Nguyễn Chánh,
             </p>
             <p
               style={{
                 fontSize: '18px',
               }}
             >
-              phường Phú Tứ, Quận Cái Răng, T.p Cần Thơ
+              Phường Phú Thứ, Quận Cái Răng, T.p Cần Thơ
             </p>
             <p
               style={{
@@ -208,6 +208,7 @@ function CLientFooter() {
           style={{ marginBottom: 20, color: `var(--text-white-color)`, textAlign: 'center' }}
         >
           <h2>Lưu ý: Mọi thông tin dùng để tham khảo!</h2>
+          <h2>Product by Phan Huu Kiet</h2>
         </Col>
       </Row>
     </Box>
