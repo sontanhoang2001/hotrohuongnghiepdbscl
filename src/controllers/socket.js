@@ -27,9 +27,12 @@ async function handleConnection(socket, io) {
       io.to(data.chatId).emit('newMessage', data);
 
       // Thông báo cho admin organization nếu có ng dùng nt
-      socket.on('notificationForOrganization', async (data) => {
-        console.log('Có tin nhắn mới', data);
-      });
+      const isStudent = data.isStudent || false;
+      if (isStudent) {
+        socket.on('notificationForOrganization', async (data) => {
+          console.log('Có tin nhắn mới', data);
+        });
+      }
     } else {
       const content = 'Gửi tin nhắn thất bại';
       console.log('Gửi tin nhắn thất bại: ', { ...data, content });
