@@ -4,15 +4,24 @@ const chatController = require('../controllers/chatController');
 async function handleConnection(socket, io) {
   console.log('New client connected' + socket.id);
 
+  socket.on('joinRoomOrg', async (msg) => {
+    const organizationId = msg.organizationId;
+
+    if (organizationId != null) {
+      socket.join(organizationId);
+    }
+  });
+
   socket.on('joinRoom', async (msg) => {
     const chatId = msg.chatId;
     const userId = msg.userId;
 
     const checkIsValidChatId = await chatController.isValidChatId(chatId);
     if (checkIsValidChatId) {
+      socket.join(chatId);
+
       console.log(`${userId} >>> Đã kết nối đến chatId: ${chatId}`);
       socket.emit('joinRoomStatus', { status: true, data: null, message: `Đã kết nối đến chatId: ${chatId}` });
-      socket.join(chatId);
     } else {
       socket.emit('joinRoomStatus', { status: false, data: null, message: `Đã kết nối đến chatId: ${chatId} thất bại` });
       console.log(`kết nối đến chatId ${chatId} thất bại`);
@@ -28,10 +37,8 @@ async function handleConnection(socket, io) {
 
       // Thông báo cho admin organization nếu có ng dùng nt
       const isStudent = data.isStudent || false;
-      if (isStudent) {
-        socket.on('notificationForOrganization', async (data) => {
-          console.log('Có tin nhắn mới', data);
-        });
+      if (isStudent && data.organizationId) {
+        io.to(data.organizationId).emit('notificationForOrganization', data);
       }
     } else {
       const content = 'Gửi tin nhắn thất bại';

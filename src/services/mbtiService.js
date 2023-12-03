@@ -56,7 +56,6 @@ module.exports = {
       const offset = (page - 1) * size;
 
       const { count } = await Question.findAndCountAll({
-        order,
         where,
         paranoid: false,
         offset,
@@ -64,7 +63,6 @@ module.exports = {
       });
 
       const { rows } = await Question.findAndCountAll({
-        order,
         where,
         paranoid: false,
         offset,
