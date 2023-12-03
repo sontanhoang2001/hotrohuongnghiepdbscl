@@ -141,22 +141,18 @@ function UserProfile() {
                 <p className="full-name">{getProfile?.UserDetail?.fullName}</p>
                 <p>
                   Giới tính:{' '}
-                  {getProfile?.UserDetail?.gender === 1 ? (
+                  {getProfile && getProfile.UserDetail.gender === 1 ? (
                     <span>
                       <ManOutlined style={{ color: `var(--primary-color)`, fontSize: `15px` }} />
                     </span>
-                  ) : getProfile?.UserDetail?.gender === 2 ? (
+                  ) : getProfile.UserDetail.gender === 2 ? (
                     <span>
                       <WomanOutlined
                         style={{ color: `var(--secondary-color)`, fontSize: `15px` }}
                       />
                     </span>
-                  ) : getProfile?.UserDetail?.gender === 0 ? (
-                    <img
-                      src="./images/lgbt.svg"
-                      alt="lgbt"
-                      style={{ width: `20px`, marginBottom: 0 }}
-                    />
+                  ) : getProfile.UserDetail.gender === 0 ? (
+                    <>🏳️‍🌈</>
                   ) : (
                     <span>undifine</span>
                   )}
