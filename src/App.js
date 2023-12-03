@@ -11,7 +11,7 @@ function App() {
     <div className="App">
       <Header />
       <Outlet />
-      {isLogin && ['ADMIN','ORGANIZATION'].includes(role) && <CustomerChatBox />}
+      {isLogin && ['STUDENT'].includes(role) && <CustomerChatBox />}
       <CLientFooter />
     </div>
   );

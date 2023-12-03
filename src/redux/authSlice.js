@@ -61,13 +61,8 @@ export const signinAsync = createAsyncThunk(
       const dataUser = {
         ...rs.data.data,
       };
-
       // console.log('>>> rs', rs.data.data);
       // console.log('>>> rs', dataUser);
-
-      localStorage.setItem('accessToken', rs.data.data.accessToken);
-      localStorage.setItem('userData', JSON.stringify(dataUser.userData));
-
       return dataUser;
     } catch (err) {
       if (err.response && err.response.data.message) {
@@ -200,10 +195,14 @@ export const authSlice = createSlice({
       .addCase(signinAsync.fulfilled, (state, { payload }) => {
         state.pending = false;
         state.data = payload.userData;
+        state.profile = payload.userData;
         state.authToken = payload.accessToken;
         state.isLogin = payload.userData.status === 1 ? true : false;
         state.role = payload.userData.Role.name || null;
         state.status = payload.userData.status;
+
+        localStorage.setItem('accessToken', payload.accessToken);
+        localStorage.setItem('userData', JSON.stringify(payload.userData));
       })
 
       .addCase(signinAsync.rejected, (state, { payload }) => {

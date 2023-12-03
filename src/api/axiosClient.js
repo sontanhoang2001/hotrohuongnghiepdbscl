@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { store } from '../app/store';
 // Set up default config for http requests here
 
 // Please have a look at here `https://github.com/axios/axios#request-
@@ -8,9 +9,9 @@ const axiosClient = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
 });
 
-const accessToken = window.localStorage?.getItem('accessToken');
 
 axiosClient.interceptors.request.use(async (config) => {
+  const accessToken = store.getState().auth.authToken;
   config.headers = {
     Authorization: `Bearer ${accessToken}`,
     Accept: 'application/json',

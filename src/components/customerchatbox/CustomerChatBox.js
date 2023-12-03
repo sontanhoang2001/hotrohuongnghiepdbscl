@@ -133,7 +133,7 @@ const CustomerChatBox = () => {
     if (message) {
       const msg = {
         content: message,
-        senderId: profile.id,
+        senderId: profile?.id,
         chatId: currentChatId,
         type: 1,
         // reciverId: currentOrgId || null,
@@ -200,7 +200,7 @@ const CustomerChatBox = () => {
     return () => {
       socketRef.current.disconnect();
     };
-  }, [currentChatId, dispatch, host, profile.id]);
+  }, [currentChatId, dispatch, host, profile?.id]);
 
   //Load more messages
   const chatBoxRef = useRef();
