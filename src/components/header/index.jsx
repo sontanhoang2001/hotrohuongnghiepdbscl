@@ -123,7 +123,7 @@ function Header() {
       <Nav>
         {/* logo image */}
         <div className="brand-logo">
-          <img src="./images/logo/logo.png" alt="home" onClick={() => navigate('/')} />
+          <img src={`../images/logo/logo.png`} alt="home" onClick={() => navigate('/')} />
         </div>
         <div className="top-nav">
           <div className="topbar">
@@ -312,6 +312,7 @@ const Nav = styled.header`
       height: 50px;
       background-color: var(--primary-color);
       ul {
+        height: 100%;
         list-style-type: none;
         margin: 0;
         padding: 0;

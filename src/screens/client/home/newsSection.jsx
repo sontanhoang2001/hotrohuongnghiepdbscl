@@ -1,35 +1,17 @@
 import React, { useEffect } from 'react';
-import Slider from 'react-slick';
 import styled from 'styled-components';
 import ImageCard from '../../../components/card/imageCard';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   getAllPublicPostsTemp,
   selectPostsPending,
-  selectPublicPosts,
   selectPublicPostsTempData,
 } from '../../../redux/postsSlice';
-import { Button, Card, Col, Row, Skeleton, Spin } from 'antd';
+import { Button, Col, Row, Spin } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
 import { DoubleRightOutlined } from '@ant-design/icons';
 
-const data = [
-  { image: 'istockphoto-1402360271-612x612.jpg', title: 'abc' },
-  { image: 'istockphoto-1402360271-612x612.jpg', title: 'abc' },
-  { image: 'istockphoto-1402360271-612x612.jpg', title: 'abc' },
-  { image: 'istockphoto-1402360271-612x612.jpg', title: 'abc' },
-  { image: 'istockphoto-1402360271-612x612.jpg', title: 'abc' },
-  { image: 'istockphoto-1402360271-612x612.jpg', title: 'abc' },
-];
-
 function NewsSection() {
-  const settings = {
-    slidesToShow: 3,
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 4000,
-    pauseOnHover: false,
-  };
   const navigate = useNavigate();
   // gọi redux
   const dispatch = useDispatch();
@@ -48,19 +30,36 @@ function NewsSection() {
           <h3>tin tức</h3>
         </Title>
         <Spin spinning={pendingState}>
-          <Row gutter={[16, 24]}>
+          <Row gutter={[32, 40]}>
             {getPostsTemp?.data.map((val, idx) => (
-              <Col key={idx} xs={24} sm={24} md={12} lg={6}>
+              <Col key={idx} span={24} md={12}>
                 <Link to={`/tin-tuc/${val.id}`} onClick={() => window.scrollTo(0, 0)}>
-                  <ImageCard src={val.thumbnail} title={val.title} />
+                  {/* <ImageCard src={val.thumbnail} title={val.title} /> */}
+                  <ImageCard
+                    src={`${val.thumbnail}`}
+                    title={val.title}
+                    description={
+                      <>
+                        <div
+                          style={{
+                            WebkitLineClamp: 3,
+                            WebkitBoxOrient: 'vertical',
+                            overflow: 'hidden',
+                            display: '-webkit-box',
+                          }}
+                          dangerouslySetInnerHTML={{ __html: val.content }}
+                        />
+                      </>
+                    }
+                  />
                 </Link>
               </Col>
             ))}
           </Row>
-          <Row justify={'end'} style={{ marginTop: 10 }}>
-            <Button type="link" onClick={() => navigate('/tin-tuc/')} style={{ fontSize: `14pt` }}>
+          <Row justify={'center'} style={{ marginTop: 30, marginRight: 10 }}>
+            <Button type="primary" onClick={() => navigate('/tin-tuc/')} size="large">
               Xem thêm
-              <DoubleRightOutlined />
+              <DoubleRightOutlined style={{ marginRight: 0 }} />
             </Button>
           </Row>
         </Spin>

@@ -17,7 +17,7 @@ const initialState = {
   total: 0,
   clientPosts: {
     page: 1,
-    size: 9,
+    size: 8,
     search: '',
     total: 0,
     postsCategoryId: null,

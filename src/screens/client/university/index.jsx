@@ -84,7 +84,11 @@ function Universities() {
                     setOpen(true);
                   }}
                 >
-                  <ImageCard src={`${val?.OrganizationDetail?.image}`} title={val?.name} />
+                  <ImageCard
+                    src={`${val?.OrganizationDetail?.image}`}
+                    title={val?.name}
+                    center={true}
+                  />
                 </div>
               </Col>
             ))}

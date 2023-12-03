@@ -111,14 +111,31 @@ function News() {
       </CategoryNewsStyled>
       <MarginTopContent>
         <Spin spinning={pendingState} size="large">
-          <Row gutter={[16, 24]}>
-            {getPosts?.data?.map((val, idx) => (
-              <Col key={idx} span={24} md={24} lg={12} xl={8}>
-                <Link to={`/tin-tuc/${val.id}`} onClick={() => window.scrollTo(0, 0)} replace>
-                  <ImageCard src={`${val?.thumbnail}`} title={val?.title} />
-                </Link>
-              </Col>
-            ))}
+          <Row gutter={[32, 40]}>
+            {getPosts &&
+              getPosts?.data?.map((val, idx) => (
+                <Col key={idx} span={24} lg={12}>
+                  <Link to={`/tin-tuc/${val.id}`} onClick={() => window.scrollTo(0, 0)} replace>
+                    <ImageCard
+                      src={`${val.thumbnail}`}
+                      title={val.title}
+                      description={
+                        <>
+                          <div
+                            style={{
+                              WebkitLineClamp: 3,
+                              WebkitBoxOrient: 'vertical',
+                              overflow: 'hidden',
+                              display: '-webkit-box',
+                            }}
+                            dangerouslySetInnerHTML={{ __html: val.content }}
+                          />
+                        </>
+                      }
+                    />
+                  </Link>
+                </Col>
+              ))}
           </Row>
         </Spin>
         {getPosts?.data?.length === 0 ? (

@@ -35,9 +35,14 @@ function ImageCard(props) {
             </p>
           </>
         ) : (
-          <Meta title={props.title} style={{ marginTop: 10, textAlign: 'center' }} />
+          <Meta
+            title={props.title}
+            style={{ marginTop: 10, textAlign: props.center ? 'center' : 'left' }}
+          />
         )}
-        <p style={{ marginTop: 10, textAlign: 'justify' }}>{props.description}</p>
+        <p className="description" style={{ marginTop: 10, textAlign: 'justify' }}>
+          {props.description}
+        </p>
       </Card>
     </SimpleCard>
   );
@@ -58,11 +63,18 @@ const SimpleCard = styled.div`
       opacity: 0.7;
       transform: scale(1.05);
     }
+    .description {
+      p,
+      span {
+        font-size: 13pt !important;
+      }
+    }
     .ant-card-meta {
       text-transform: capitalize;
       .ant-card-meta-detail {
         .ant-card-meta-title {
           white-space: inherit;
+          font-size: 14pt;
         }
       }
     }
