@@ -6,13 +6,9 @@ const AuthWrapper = ({ roles }) => {
   const { role, isLogin } = useSelector((state) => state.auth);
   const location = useLocation();
 
-  if (!isLogin && !roles?.some((r) => r === role))
-    return <Navigate to="/*" state={{ from: location }} replace />;
+  if (!isLogin) return <Navigate to="/dang-nhap" state={{ from: location }} replace />;
 
-  // if (!roles?.some((r) => r===role)) {
-
-  //     return <Navigate to="/" state={{ from: location }} replace />
-  // }
+  if (!roles.includes(role)) return <Navigate to="/*" state={{ from: location }} replace />;
 
   return <Outlet />;
 };

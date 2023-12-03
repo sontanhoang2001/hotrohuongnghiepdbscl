@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import authApi from '../api/auth';
 import { message } from 'antd';
+import { json } from 'react-router-dom';
 
 //gia tri mat dinh
 const userDatalocalStorage = window.localStorage.getItem('userData');
@@ -37,7 +38,7 @@ if (
 } else statusLogin = false;
 
 const initialState = {
-  authToken: null,
+  authToken: window.localStorage.getItem('accessToken'),
   data: parsedUserDatalocalStorage || null,
   profile: parsedUserDatalocalStorage || null,
   signupData: parsedSignupDatalocalStorage || null,

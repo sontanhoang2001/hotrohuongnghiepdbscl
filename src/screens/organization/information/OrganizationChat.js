@@ -17,6 +17,7 @@ import socketIOClient from 'socket.io-client';
 import { useRef } from 'react';
 import Search from 'antd/es/input/Search';
 import { debounce } from 'lodash';
+import audioNoti from '../../../assets/audios/messageNoti.mp3';
 
 const data = [
   {
@@ -105,7 +106,7 @@ const OrganizationChat = () => {
   const [selected, setSelected] = useState(null);
   const [message, setMessage] = useState('');
   const [sendingMessage, setsendingMessage] = useState(false);
-  const [searchText, setSearchText] = useState("");
+  const [searchText, setSearchText] = useState('');
 
   //Lấy danh sách messages
   const handleActive = ({ chatId, orgCurrentUserName, orgCurrentUserAvatar, orgCurrentUserId }) => {
@@ -133,13 +134,15 @@ const OrganizationChat = () => {
 
   //Lấy danh sách chats
   useEffect(() => {
-    dispatch(getAllOrgChats({ organizationId: organization.id, page: 1, size: 20, search: searchText }));
+    dispatch(
+      getAllOrgChats({ organizationId: organization.id, page: 1, size: 20, search: searchText }),
+    );
   }, [dispatch, organization.id, searchText]);
 
-  const handleSearch=(e)=>{
+  const handleSearch = (e) => {
     console.log(e.target.value);
     setSearchText(e.target.value);
-  }
+  };
 
   //Scroll to end on init
   useEffect(() => {
@@ -156,11 +159,31 @@ const OrganizationChat = () => {
     //    chatBoxRef.current.scrollTop += 500;
     //  });
   };
+  const handleReceiveMessage = (data) => {
+    if (data.senderId === orgCurrentUserId) playAudioNoti();
+    dispatch(pushOrgMessage(data));
+    scrollToBottom();
+    setsendingMessage(false);
+
+    console.log('Got data:', data);
+  };
+  const handlePingNewMessage = (data) => {
+    playAudioNoti();
+    dispatch(
+      getAllOrgChats({ organizationId: organization.id, page: 1, size: 20, search: searchText }),
+    );
+  };
+
+  //Play notification audio
+  const playAudioNoti = () => {
+    audioRef.current.play();
+  };
 
   //Chat
   // const handleChangeOrganization = (checked) => {};
   const socketRef = useRef();
   const messagesRef = useRef();
+  const audioRef = useRef();
   const scrollToBottom = () => {
     chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
   };
@@ -171,12 +194,14 @@ const OrganizationChat = () => {
     // socketRef.current.on("getId", (data) => {
     //   setId(data);
     // });
+    socketRef.current.emit('joinRoomOrg', { organizationId: organization.id });
 
     socketRef.current.on('newMessage', (dataGot) => {
-      dispatch(pushOrgMessage(dataGot));
-      scrollToBottom();
-      setsendingMessage(false);
-      console.log('Got data:', dataGot);
+      handleReceiveMessage(dataGot);
+    });
+    
+    socketRef.current.on('notificationForOrganization', (dataGot) => {
+      handlePingNewMessage(dataGot);
     });
 
     socketRef.current.on('joinRoomStatus', (status) => {
@@ -190,7 +215,9 @@ const OrganizationChat = () => {
     return () => {
       socketRef.current.disconnect();
     };
-  }, [dispatch, host, profile.id]);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   //Send message funtion
   const sendMessage = () => {
     if (message) {
@@ -208,6 +235,9 @@ const OrganizationChat = () => {
       setsendingMessage(true);
       setMessage('');
     }
+    setTimeout(() => {
+      if (sendMessage) setsendingMessage(false);
+    }, 3000);
   };
   //Send message when press enter
   const onEnterPress = (e) => {
@@ -224,7 +254,14 @@ const OrganizationChat = () => {
       {/* ===========Bắt đầu leftcontent========== */}
       <LeftContent>
         <LeftContentHeader>
-        <Input placeholder="Tìm Kiếm..." allowClear  onChange={debounce(handleSearch, 500)} style={{ width: '90%' }} size="large" loading={status==="fetchingMesssages"} />
+          <Input
+            placeholder="Tìm Kiếm..."
+            allowClear
+            onChange={debounce(handleSearch, 500)}
+            style={{ width: '90%' }}
+            size="large"
+            loading={status === 'fetchingChats'}
+          />
         </LeftContentHeader>
         <LeftContentList>
           {/* test in bằng mảng dữ liệu*/}
@@ -297,7 +334,7 @@ const OrganizationChat = () => {
             scrollableTarget="scrollableDiv"
           >
             <List
-              loading={status==="fetchingMesssages"}
+              loading={status === 'fetchingMesssages'}
               dataSource={orgMessages}
               renderItem={(mess, idx) =>
                 (mess.senderId === orgCurrentUserId && (
@@ -314,14 +351,15 @@ const OrganizationChat = () => {
             onChange={handleChange}
             value={message}
             placeholder="Nhập nội dung..."
-            style={{ height: 50,marginLeft:10 }}
+            style={{ height: 50, marginLeft: 10 }}
           />
           <span onClick={sendMessage} className="paper-plane" style={{ cursor: 'pointer' }}>
-            {((sendingMessage ) && <Spin />) || paperPlane}
+            {(sendingMessage && <Spin />) || paperPlane}
           </span>
         </FooterChat>
       </RightContent>
       {/* ===========Kết Thúc RightContent========== */}
+      <audio ref={audioRef} src={audioNoti}></audio>
     </ChatContainer>
   );
 };

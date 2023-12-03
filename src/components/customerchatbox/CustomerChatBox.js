@@ -26,6 +26,7 @@ import socketIOClient from 'socket.io-client';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { getAllPublicUniversityInfo } from '../../redux/universitySlice';
 import { debounce } from 'lodash';
+import audioNoti from '../../assets/audios/messageNoti.mp3';
 import { calculateNewValue } from '@testing-library/user-event/dist/utils';
 
 const filterOption = (input, option) =>
@@ -135,10 +136,11 @@ const CustomerChatBox = () => {
         content: message,
         senderId: profile?.id,
         chatId: currentChatId,
+        organizationId: currentOrgId,
         type: 1,
         // reciverId: currentOrgId || null,
         reciverId: null,
-        isStudent:true
+        isStudent: true,
       };
       socketRef.current.emit('chatMessage', msg);
       //socketRef.current.emit("sendDataClient", msg);
@@ -163,8 +165,24 @@ const CustomerChatBox = () => {
   // const handleChangeOrganization = (checked) => {};
   const socketRef = useRef();
   const messagesRef = useRef();
+  const audioRef = useRef();
+
+  //Play notification audio
+  const playAudioNoti = () => {
+    audioRef.current.play();
+  };
+
+  //Handle receive new message
+  const handleReceinewMessage = (dataGot) => {
+    dispatch(pushMessage(dataGot));
+    scrollToBottom();
+    setsendingMessage(false);
+    if (dataGot.senderId !== profile.id) playAudioNoti();
+    console.log('Got data:', dataGot);
+  };
 
   //Initialize socket io
+
   useEffect(() => {
     socketRef.current = socketIOClient.connect(host);
     console.log('host:', host);
@@ -173,10 +191,7 @@ const CustomerChatBox = () => {
     // });
 
     socketRef.current.on('newMessage', (dataGot) => {
-      dispatch(pushMessage(dataGot));
-      scrollToBottom();
-      setsendingMessage(false);
-      console.log('Got data:', dataGot);
+      handleReceinewMessage(dataGot);
     });
 
     socketRef.current.on('joinRoomStatus', (status) => {
@@ -200,7 +215,9 @@ const CustomerChatBox = () => {
     return () => {
       socketRef.current.disconnect();
     };
-  }, [currentChatId, dispatch, host, profile?.id]);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentChatId]);
 
   //Load more messages
   const chatBoxRef = useRef();
@@ -304,6 +321,7 @@ const CustomerChatBox = () => {
           </ChatBox>
         )}
       </Drawer>
+      <audio ref={audioRef} src={audioNoti}></audio>
     </>
   );
 };

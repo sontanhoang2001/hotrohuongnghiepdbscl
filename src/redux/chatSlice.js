@@ -188,7 +188,7 @@ const chatSlice = createSlice({
       })
       //Get all org chats
       .addCase(getAllOrgChats.pending, (state) => {
-        state.status = 'fetchingMesssages';
+        state.status = 'fetchingChats';
       })
       .addCase(getAllOrgChats.fulfilled, (state, { payload }) => {
         state.chats = payload.data.reverse();
