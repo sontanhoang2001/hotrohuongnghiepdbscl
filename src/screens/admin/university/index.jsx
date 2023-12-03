@@ -217,7 +217,7 @@ function University() {
       <div className="tabled">
         <Row gutter={[24, 0]}>
           <Col span={24}>
-            <Select
+            {/* <Select
               defaultValue="Tất cả"
               style={{
                 width: 200,
@@ -237,7 +237,7 @@ function University() {
                   value: '2',
                 },
               ]}
-            />
+            /> */}
           </Col>
           <Col xs="24" xl={24}>
             <Card bordered={false} className="criclebox tablespace mb-24" title="Danh sách tổ chức">
