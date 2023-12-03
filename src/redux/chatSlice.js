@@ -121,6 +121,9 @@ const chatSlice = createSlice({
     pushMessage: (state, { payload }) => {
       state.messages = [...state.messages, payload];
     },
+    pushOrgMessage: (state, { payload }) => {
+      state.orgMessages = [...state.orgMessages, payload];
+    },
     setCurrentOrgId: (state, { payload }) => {
       state.currentOrgId = payload;
     },
@@ -128,7 +131,7 @@ const chatSlice = createSlice({
       state.orgCurrentUserAvatar = payload.orgCurrentUserAvatar;
       state.orgCurrentUserName = payload.orgCurrentUserName;
       state.orgCurrentUserId = payload.orgCurrentUserId;
-
+      state.orgCurrentChatId=payload.chatId;
     },
   },
   extraReducers: (builder) => {
@@ -200,4 +203,4 @@ const chatSlice = createSlice({
 });
 
 export default chatSlice.reducer;
-export const { pushMessage, setCurrentOrgId,setCurrentOrgUserChatInfo } = chatSlice.actions;
+export const { pushMessage, setCurrentOrgId,setCurrentOrgUserChatInfo,pushOrgMessage } = chatSlice.actions;

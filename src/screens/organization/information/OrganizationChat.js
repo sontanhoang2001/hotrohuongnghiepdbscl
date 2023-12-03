@@ -1,18 +1,22 @@
 import React from 'react';
 import { MessageContent, YourMessageContent } from '../../../globalStyles';
 import styled from 'styled-components';
-import { ConfigProvider, Input, List } from 'antd';
-import { SearchOutlined, SmileOutlined } from '@ant-design/icons';
+import { Input, List, Spin } from 'antd';
+import { SearchOutlined } from '@ant-design/icons';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   getAllOrgChats,
   getMessageByChatId,
+  pushOrgMessage,
   setCurrentOrgUserChatInfo,
 } from '../../../redux/chatSlice';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import socketIOClient from 'socket.io-client';
 import { useRef } from 'react';
+import Search from 'antd/es/input/Search';
+import { debounce } from 'lodash';
 
 const data = [
   {
@@ -85,22 +89,57 @@ const OrganizationChat = () => {
   const host = apiHost.substring(0, apiHost.indexOf('/api'));
   const dispatch = useDispatch();
   //redux state
-  const { chats, orgCurrentChatId,currentOrgChatMessagesCount, orgMessages, orgCurrentUserAvatar, orgCurrentUserName,orgCurrentUserId} =
-    useSelector((state) => state.chat);
+  const {
+    chats,
+    status,
+    orgCurrentChatId,
+    currentOrgChatMessagesCount,
+    orgMessages,
+    orgCurrentUserAvatar,
+    orgCurrentUserName,
+    orgCurrentUserId,
+  } = useSelector((state) => state.chat);
   const { organization } = useSelector((state) => state.university);
+  const { profile } = useSelector((state) => state.auth);
 
   const [selected, setSelected] = useState(null);
+  const [message, setMessage] = useState('');
+  const [sendingMessage, setsendingMessage] = useState(false);
+  const [searchText, setSearchText] = useState("");
 
   //Lấy danh sách messages
-  const handleActive = ({ chatId, orgCurrentUserName, orgCurrentUserAvatar,orgCurrentUserId }) => {
-    dispatch(setCurrentOrgUserChatInfo({ chatId, orgCurrentUserName, orgCurrentUserAvatar,orgCurrentUserId }));
-    dispatch(getMessageByChatId({ chatId, beforeId: -1 }));    
+  const handleActive = ({ chatId, orgCurrentUserName, orgCurrentUserAvatar, orgCurrentUserId }) => {
+    //Join into first chat room
+    if (chatId !== null) {
+      const msg = {
+        userId: profile.id,
+        chatId: chatId,
+      };
+      console.log(msg);
+      socketRef.current?.emit('joinRoom', msg);
+    }
+    //set user info
+    dispatch(
+      setCurrentOrgUserChatInfo({
+        chatId,
+        orgCurrentUserName,
+        orgCurrentUserAvatar,
+        orgCurrentUserId,
+      }),
+    );
+    //get all chat id
+    dispatch(getMessageByChatId({ chatId, beforeId: -1 }));
   };
 
   //Lấy danh sách chats
   useEffect(() => {
-    dispatch(getAllOrgChats({ organizationId: organization.id, page: 1, size: 20, search: '' }));
-  }, [dispatch, organization.id]);
+    dispatch(getAllOrgChats({ organizationId: organization.id, page: 1, size: 20, search: searchText }));
+  }, [dispatch, organization.id, searchText]);
+
+  const handleSearch=(e)=>{
+    console.log(e.target.value);
+    setSearchText(e.target.value);
+  }
 
   //Scroll to end on init
   useEffect(() => {
@@ -110,20 +149,82 @@ const OrganizationChat = () => {
     });
   }, []);
 
-   //Load more messages
-   const chatBoxRef = useRef();
-   const loadMoreData = () => {
+  //Load more messages
+  const chatBoxRef = useRef();
+  const loadMoreData = () => {
     //  dispatch(loadMoreStudentMessageByChatId()).then(() => {
     //    chatBoxRef.current.scrollTop += 500;
     //  });
-   };
+  };
 
+  //Chat
+  // const handleChangeOrganization = (checked) => {};
+  const socketRef = useRef();
+  const messagesRef = useRef();
+  const scrollToBottom = () => {
+    chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
+  };
+  //Initialize socket io
+  useEffect(() => {
+    socketRef.current = socketIOClient.connect(host);
+    console.log('host:', host);
+    // socketRef.current.on("getId", (data) => {
+    //   setId(data);
+    // });
+
+    socketRef.current.on('newMessage', (dataGot) => {
+      dispatch(pushOrgMessage(dataGot));
+      scrollToBottom();
+      setsendingMessage(false);
+      console.log('Got data:', dataGot);
+    });
+
+    socketRef.current.on('joinRoomStatus', (status) => {
+      console.log(status);
+    });
+
+    socketRef.current.on('error', (er) => {
+      console.log('er', er);
+    });
+
+    return () => {
+      socketRef.current.disconnect();
+    };
+  }, [dispatch, host, profile.id]);
+  //Send message funtion
+  const sendMessage = () => {
+    if (message) {
+      const msg = {
+        content: message,
+        senderId: profile.id,
+        chatId: orgCurrentChatId,
+        type: 1,
+        // reciverId: currentOrgId || null,
+        reciverId: null,
+      };
+      socketRef.current.emit('chatMessage', msg);
+      console.log(msg, 'Mesage sent');
+      //socketRef.current.emit("sendDataClient", msg);
+      setsendingMessage(true);
+      setMessage('');
+    }
+  };
+  //Send message when press enter
+  const onEnterPress = (e) => {
+    if (e.keyCode === 13 && e.shiftKey === false) {
+      sendMessage();
+    }
+  };
+  //Handle change chat input
+  const handleChange = (e) => {
+    setMessage(e.target.value);
+  };
   return (
     <ChatContainer>
       {/* ===========Bắt đầu leftcontent========== */}
       <LeftContent>
         <LeftContentHeader>
-          <Input placeholder="Tìm Kiếm..." prefix={<SearchOutlined />} style={{ width: '80%' }} />
+        <Input placeholder="Tìm Kiếm..." allowClear  onChange={debounce(handleSearch, 500)} style={{ width: '90%' }} size="large" loading={status==="fetchingMesssages"} />
         </LeftContentHeader>
         <LeftContentList>
           {/* test in bằng mảng dữ liệu*/}
@@ -136,13 +237,16 @@ const OrganizationChat = () => {
                   chatId: chat.chatId,
                   orgCurrentUserName: chat.senderFullName,
                   orgCurrentUserAvatar: chat.senderAvatar,
-                  orgCurrentUserId:chat.senderId
+                  orgCurrentUserId: chat.senderId,
                 })
               }
             >
               <ChatAvatar
                 style={{
-                  backgroundImage: `url(${chat.senderAvatar??"https://img.freepik.com/free-psd/3d-illustration-human-avatar-profile_23-2150671142.jpg?size=626&ext=jpg"})`,
+                  backgroundImage: `url(${
+                    chat.senderAvatar ??
+                    'https://img.freepik.com/free-psd/3d-illustration-human-avatar-profile_23-2150671142.jpg?size=626&ext=jpg'
+                  })`,
                 }}
               >
                 <OnlineStatus></OnlineStatus>
@@ -162,8 +266,10 @@ const OrganizationChat = () => {
         <RightContentHeader>
           <RightChatAvatar
             style={{
-              backgroundImage:
-              `url(${orgCurrentUserAvatar??"https://img.freepik.com/free-psd/3d-illustration-human-avatar-profile_23-2150671142.jpg?size=626&ext=jpg"})`,
+              backgroundImage: `url(${
+                orgCurrentUserAvatar ??
+                'https://img.freepik.com/free-psd/3d-illustration-human-avatar-profile_23-2150671142.jpg?size=626&ext=jpg'
+              })`,
             }}
           ></RightChatAvatar>
           <Rightinfo>
@@ -172,46 +278,47 @@ const OrganizationChat = () => {
           </Rightinfo>
         </RightContentHeader>
         <div
-              id="scrollableDiv"
-              ref={chatBoxRef}
-              style={{
-                height: 500,
-                overflow: 'auto',
-                padding: '0 16px',
-                display: 'flex',
-                flexDirection: 'column-reverse',
-              }}
-            >
-              <InfiniteScroll
-                dataLength={orgMessages.length}
-                next={loadMoreData}
-                hasMore={orgMessages.length < currentOrgChatMessagesCount}
-                inverse={true}
-                scrollableTarget="scrollableDiv"
-              >
-              
-                  <List
-                    dataSource={orgMessages}
-                    renderItem={(mess, idx) =>
-                      (mess.senderId === orgCurrentUserId && (
-                        <MessageContent key={idx}>{mess.content}</MessageContent>
-                      )) || <YourMessageContent key={idx}>{mess.content}</YourMessageContent>
-                    }
-                  />
-                
-              </InfiniteScroll>
-            </div>
-        {/* <ChatBox>
-        {orgMessages.map((message)=>(
-            message.<MessageContent>Hey, man! What's up, Mr Stark?👋</MessageContent>||
-          <YourMessageContent>Kid, where'd you come from?</YourMessageContent>
-        ))}
-         
-        </ChatBox> */}
+          id="scrollableDiv"
+          ref={chatBoxRef}
+          style={{
+            height: 520,
+            overflow: 'auto',
+            padding: '0 16px',
+            display: 'flex',
+            justifyContent: 'flex-end',
+            flexDirection: 'column',
+          }}
+        >
+          <InfiniteScroll
+            dataLength={orgMessages.length}
+            next={loadMoreData}
+            hasMore={orgMessages.length < currentOrgChatMessagesCount}
+            inverse={true}
+            scrollableTarget="scrollableDiv"
+          >
+            <List
+              loading={status==="fetchingMesssages"}
+              dataSource={orgMessages}
+              renderItem={(mess, idx) =>
+                (mess.senderId === orgCurrentUserId && (
+                  <MessageContent key={idx}>{mess.content}</MessageContent>
+                )) || <YourMessageContent key={idx}>{mess.content}</YourMessageContent>
+              }
+            />
+          </InfiniteScroll>
+        </div>
         <FooterChat>
-          <span className="smile-face">{smileFace}</span>
-          <Input placeholder="Nhập nội dung..." style={{ height: 50 }} />
-          <span className="paper-plane"> {paperPlane}</span>
+          {/* <span className="smile-face">{smileFace}</span> */}
+          <Input
+            onKeyDown={onEnterPress}
+            onChange={handleChange}
+            value={message}
+            placeholder="Nhập nội dung..."
+            style={{ height: 50,marginLeft:10 }}
+          />
+          <span onClick={sendMessage} className="paper-plane" style={{ cursor: 'pointer' }}>
+            {((sendingMessage ) && <Spin />) || paperPlane}
+          </span>
         </FooterChat>
       </RightContent>
       {/* ===========Kết Thúc RightContent========== */}

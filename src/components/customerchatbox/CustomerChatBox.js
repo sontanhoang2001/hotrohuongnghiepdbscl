@@ -138,6 +138,7 @@ const CustomerChatBox = () => {
         type: 1,
         // reciverId: currentOrgId || null,
         reciverId: null,
+        isStudent:true
       };
       socketRef.current.emit('chatMessage', msg);
       //socketRef.current.emit("sendDataClient", msg);
@@ -288,13 +289,13 @@ const CustomerChatBox = () => {
             </div>
 
             <FooterChat>
-              <span className="smile-face">{smileFace}</span>
+              {/* <span className="smile-face">{smileFace}</span> */}
               <Input
                 placeholder="Nhập nội dung..."
                 onKeyDown={onEnterPress}
                 onChange={handleChange}
-                style={{ height: 50 }}
                 value={message}
+                style={{ height: 50 }}
               />
               <span onClick={sendMessage} className="paper-plane" style={{ cursor: 'pointer' }}>
                 {((sendingMessage || status === 'fetchingMesssages') && <Spin />) || paperPlane}

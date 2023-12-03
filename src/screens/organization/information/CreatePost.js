@@ -134,21 +134,22 @@ function CreatePost({ organizationId, setStep, currentPostId, backTolist }) {
   const [isEditing, setIsEditing] = useState(currentPostId !== null);
 
   useEffect(() => {
-    setTimeout(() => {
-      formRef.current?.setFieldsValue({
-        ...currentPost,
-        postsCategoryId: currentPost.PostsCategory?.id,
-        displayDate: dayjs(currentPost.displayDate, 'YYYY-MM-DD HH:mm[Z]'),
-        title: currentPost.title,
-      });
-      // console.log(currentPost.displayDate);
-      // console.log(dayjs(currentPost.displayDate,"YYYY-MM-DD HH:mm[Z]"));
-      setFileList([{ url: currentPost.thumbnail }]);
-      // Ensure the SunEditor is fully loaded before accessing its editor
-      if (sunEditorRef.current && sunEditorRef.current.editor) {
-        sunEditorRef.current.editor.core.setContents(currentPost.content);
-      }
-    }, 500);
+    
+      setTimeout(() => {
+        formRef.current?.setFieldsValue({
+          ...currentPost,
+          postsCategoryId: currentPost.PostsCategory?.id,
+          displayDate: currentPost.displayDate?dayjs(currentPost.displayDate, 'YYYY-MM-DD HH:mm[Z]'):dayjs(new Date()),
+          title: currentPost.title,
+        });
+        // console.log(currentPost.displayDate);
+        // console.log(dayjs(currentPost.displayDate,"YYYY-MM-DD HH:mm[Z]"));
+        setFileList([{ url: currentPost.thumbnail }]);
+        // Ensure the SunEditor is fully loaded before accessing its editor
+        if (sunEditorRef.current && sunEditorRef.current.editor) {
+          sunEditorRef.current.editor.core.setContents(currentPost.content);
+        }
+      }, 500);
   }, [currentPost]);
 
   //hàm submit form
