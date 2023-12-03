@@ -78,7 +78,6 @@ module.exports = {
           raw: true,
         });
         arrayChatId = listChatId.map((chat) => chat.id);
-
       }
 
       const latestMessages = await Messages.findAll({
@@ -106,6 +105,8 @@ module.exports = {
         raw: true,
         attributes: [
           'id',
+          'senderId',
+          'reciverId',
           'content',
           'type',
           'status',
