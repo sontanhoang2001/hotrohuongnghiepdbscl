@@ -15,6 +15,7 @@ const initialState = {
     total: 0,
     organizationType: 1,
     search: '',
+    order: 'asc',
   },
   organiztionPublic: {
     page: 1,
@@ -360,6 +361,7 @@ const universitySlice = createSlice({
           totl: payload.total,
           search: payload.search,
           type: payload.type,
+          order: payload.order,
         };
         state.organiztionPublic = {
           size: payload.size,

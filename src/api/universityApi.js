@@ -51,10 +51,10 @@ const universityApi = {
     return axiosService.get(url);
   },
   //client public api
-  getAllPublicUniversityInfo: ({ page, size, search, organizationType }) => {
+  getAllPublicUniversityInfo: ({ page, size, search, organizationType, order }) => {
     const url = `public/organization`;
     return axiosService.get(url, {
-      params: { page, size, search, organizationType },
+      params: { page, size, search, organizationType, order },
     });
   },
 
