@@ -21,6 +21,7 @@ module.exports = {
   getAll: async (organizationId, page, size, search, deleted) => {
     try {
       let paranoidBol = true;
+      let order = [['createdAt', 'DESC']];
 
       const where = {};
       if (organizationId) {
@@ -42,6 +43,7 @@ module.exports = {
       const offset = (page - 1) * size;
 
       const { rows, count } = await FAQs.findAndCountAll({
+        order,
         where,
         paranoid: paranoidBol,
         offset,
