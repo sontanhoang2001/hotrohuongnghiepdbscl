@@ -63,6 +63,7 @@ module.exports = {
   getChatMessagesCustomer: async (req, res) => {
     try {
       const userId = req.user.id;
+      
       const organizationId = req.query.organizationId && parseInt(req.query.organizationId);
       const beforeId = req.query.beforeId && parseInt(req.query.beforeId);
       const size = req.query.size && parseInt(req.query.size);

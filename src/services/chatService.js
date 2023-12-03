@@ -166,6 +166,11 @@ module.exports = {
         order = [['id', 'DESC']];
       }
 
+      const { count, rows } = await Messages.findAndCountAll({
+        where: { chatId },
+        attributes: ['id'],
+      });
+
       const chatData = await Chat.findAll({
         where: { id: chatId },
         attributes: ['id', 'status', 'userId', 'organizationId', 'createdAt'],
@@ -180,7 +185,13 @@ module.exports = {
         ],
       });
 
-      return chatData;
+      const pagination = {
+        total: count,
+        size,
+        data: chatData,
+      };
+
+      return pagination;
     } catch (error) {
       throw error;
     }
@@ -254,14 +265,18 @@ module.exports = {
         ],
       });
 
-      const chatId = chat[0].dataValues.id;
-
-      const { count, rows } = await Messages.findAndCountAll({
-        where: { chatId },
-        attributes: ['id'],
-      });
-
       const chatExists = !!chat && chat.length > 0;
+      if (chatExists) {
+        const chatId = chat[0].dataValues.id;
+
+        let { count, rows } = await Messages.findAndCountAll({
+          where: { chatId },
+          attributes: ['id'],
+        });
+
+        count = 0;
+      }
+
       if (!chatExists) {
         const createChat = await Chat.create({ status: 1, userId, organizationId });
         if (createChat) {
