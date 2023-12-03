@@ -12,9 +12,12 @@ const universityApi = {
     const url = `${pathname}?page=${params.page}&size=${params.size}&status=2`;
     return axiosService.get(url);
   },
-  getAllUniversity: (page, size) => {
-    const url = `${pathname}?page=${page}&size=${size}&organizationType=1`;
-    return axiosService.get(url);
+  getAllUniversity: (page, size, search, organizationType) => {
+    const url = `${pathname}`;
+    return axiosService.get(url, {
+      params: { page, size, search, organizationType },
+      paramsSerializer: qs.stringify,
+    });
   },
   deleteUniversity: (id) => {
     const url = `${pathname}/delete/${id}`;
@@ -52,7 +55,6 @@ const universityApi = {
     const url = `public/organization`;
     return axiosService.get(url, {
       params: { page, size, search, organizationType },
-      paramsSerializer: qs.stringify,
     });
   },
 
@@ -66,7 +68,7 @@ const universityApi = {
   },
   createOrganization: (data) => {
     const url = `${pathname}/add`;
-    return axiosService.post(url,data);
+    return axiosService.post(url, data);
   },
 };
 

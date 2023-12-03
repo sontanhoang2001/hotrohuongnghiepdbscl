@@ -9,6 +9,7 @@ import {
   Typography,
   Pagination,
   Popconfirm,
+  Select,
 } from 'antd';
 
 import { DeleteOutlined, EditOutlined, LockFilled } from '@ant-design/icons';
@@ -55,6 +56,7 @@ function University() {
           key: index.toString(),
           id: university.OrganizationDetail.id,
           name: university,
+          organizationName: university.OrganizationType.name,
           rank: university.OrganizationDetail.rank,
           url: university.OrganizationDetail.url,
           address: university.OrganizationDetail.address,
@@ -90,6 +92,16 @@ function University() {
               {/* <p>{university.OrganizationDetail.email}</p> */}
             </div>
           </Avatar.Group>
+        ),
+      },
+      {
+        title: 'Loại',
+        dataIndex: 'organizationName',
+        key: 'organizationName',
+        render: (record) => (
+          <div className="author-info">
+            <Title level={5}>{record}</Title>
+          </div>
         ),
       },
       {
@@ -180,21 +192,9 @@ function University() {
         width: 100,
         render: (record) => (
           <>
-            {/* <Button type="text">
-              <EditOutlined onClick={() => handleEdit(record.id)} style={{ color: 'green' }} />
-            </Button> */}
-            <Popconfirm
-              placement="leftTop"
-              title="Xác nhận xóa"
-              description="Xác nhận xóa tổ chức?"
-              okText="Xóa"
-              onConfirm={() => handleDelete(record.id)}
-              cancelText="Hủy"
-            >
-              <Button danger title="Khóa tổ chức">
-                <LockFilled />
-              </Button>
-            </Popconfirm>
+            <Button danger title="Khóa tổ chức">
+              <LockFilled />
+            </Button>
           </>
         ),
       },
@@ -206,11 +206,39 @@ function University() {
     const payload = { page, pageSize };
     dispatch(getAllUniversity(payload));
   };
+  //hàm filter theo loại tổ chức
+  const handleChangeOrganizationType = (value) => {
+    console.log(value);
+    dispatch(getAllUniversity({ page: 1, size: 10, organizationType: value, search: '' }));
+  };
 
   return (
     <>
       <div className="tabled">
         <Row gutter={[24, 0]}>
+          <Col span={24}>
+            <Select
+              defaultValue="Tất cả"
+              style={{
+                width: 200,
+              }}
+              onChange={handleChangeOrganizationType}
+              options={[
+                {
+                  label: 'Tất cả',
+                  value: '',
+                },
+                {
+                  label: 'University',
+                  value: '1',
+                },
+                {
+                  label: 'Company',
+                  value: '2',
+                },
+              ]}
+            />
+          </Col>
           <Col xs="24" xl={24}>
             <Card bordered={false} className="criclebox tablespace mb-24" title="Danh sách tổ chức">
               <div className="table-responsive">

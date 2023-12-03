@@ -103,9 +103,9 @@ export const getOneByOrganizationId = createAsyncThunk(
 // danh sách tổ chức
 export const getAllUniversity = createAsyncThunk(
   'university/getAllUniversity',
-  async ({ page, size }, { rejectWithValue }) => {
+  async (payload, { rejectWithValue }) => {
     try {
-      const rs = await universityApi.getAllUniversity(page, size);
+      const rs = await universityApi.getAllUniversity(payload);
       return rs.data.data;
     } catch (error) {
       if (error.response && error.response.data.message) {

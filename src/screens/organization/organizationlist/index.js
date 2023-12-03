@@ -245,7 +245,7 @@ function OrganizationList() {
   //hàm phan trang
   const handlePageChange = (page, pageSize) => {
     const payload = { page, pageSize };
-    dispatch(getAllUniversity(payload));
+    dispatch(getAllOrganizationsByUser(payload));
   };
   //upload image
   //file trong uoload

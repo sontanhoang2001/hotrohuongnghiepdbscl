@@ -241,7 +241,6 @@ function Header({
 
   return (
     <>
-     
       <Row gutter={[24, 0]}>
         <Col span={24} md={6}>
           <Breadcrumb
@@ -368,7 +367,7 @@ function Header({
             </div>
           </Drawer>
 
-          <Input className="header-search" placeholder="Tìm Kiếm..." prefix={<SearchOutlined />} />
+          {/* <Input className="header-search" placeholder="Tìm Kiếm..." prefix={<SearchOutlined />} /> */}
         </Col>
       </Row>
     </>
