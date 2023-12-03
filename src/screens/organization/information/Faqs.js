@@ -54,7 +54,7 @@ function Faqs({ organizationId }) {
   //gọi redux state
   const dispatch = useDispatch();
 
-  const { faqs,size,page,total,pending,faqsParams } = useSelector((state) => state.faqs);
+  const { faqs, size, page, total, pending, faqsParams } = useSelector((state) => state.faqs);
   //form
   // Filter `option.label` match the user type `input`
   const filterOption = (input, option) =>
@@ -68,16 +68,16 @@ function Faqs({ organizationId }) {
         let formData = { ...values, organizationId: organizationId };
         if (!isEditing) {
           //create
-          dispatch(createFaqs(formData)).then(()=>{
+          dispatch(createFaqs(formData)).then(() => {
             dispatch(getAllFAQS({ organizationId }));
           });
         } else {
           //update
-          dispatch(updateFaqs(formData)).then(()=>{
+          dispatch(updateFaqs(formData)).then(() => {
             dispatch(getAllFAQS({ organizationId }));
+            setIsOpenModal(false);
           });
         }
-        
       })
       .catch((errorInfo) => {
         console.log('Form validation failed:', errorInfo);
@@ -198,7 +198,7 @@ function Faqs({ organizationId }) {
   useEffect(() => {
     //gọi api thông qua redux
     dispatch(getAllFAQS({ organizationId }));
-  }, [dispatch, organizationId,faqsParams]);
+  }, [dispatch, organizationId, faqsParams]);
 
   //hàm phan trang
   const handlePageChange = (page, pageSize) => {

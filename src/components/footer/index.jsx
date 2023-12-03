@@ -240,7 +240,7 @@ const FooterBanner = styled.div`
     max-width: 100px;
   }
   .footer-brand-name {
-    width: 100%;
+    margin-left: 20px;
     h1 {
       color: var(--text-white-color);
       text-align: center;

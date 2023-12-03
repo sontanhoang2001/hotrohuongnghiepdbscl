@@ -59,7 +59,10 @@ function Mbti() {
           dispatch(addNewMbti(values));
         } else {
           //update
-          dispatch(updateMbti(values));
+          dispatch(updateMbti(values)).then(() => {
+            dispatch(getMbtiQuestion());
+            setIsOpenModal(false);
+          });
         }
       })
       .catch((errorInfo) => {

@@ -1,29 +1,17 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Card, Col, Radio, Row, Space, Spin, message, Form } from 'antd';
 import { InputOTP } from 'antd-input-otp';
 import { CloseOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
-import {
-  isOtp,
-  logout,
-  requestOtp,
-  selectIsOtp,
-  selectLoginData,
-  selectPending,
-  selectSignupData,
-  setIsSignup,
-  authOTP,
-} from '../../redux/authSlice';
+import { logout, requestOtp, selectIsOtp, selectLoginData, authOTP } from '../../redux/authSlice';
 import { auth, RecaptchaVerifier, signInWithPhoneNumber } from '../../firebase/config';
 
 function OtpLogin() {
   const [otpType, setOtpType] = useState('email');
-  const [phone, setPhone] = useState('');
   const [loadinpage, setloadinpage] = useState(false);
   const [result, setResult] = useState('');
-  const location = useLocation();
   const [form] = Form.useForm();
 
   const [beginSendOTP, setBeginSendOTP] = useState(false); //thay đối giá trị đóng mở của của sổ
@@ -32,10 +20,8 @@ function OtpLogin() {
   //gọi redux
   const dispatch = useDispatch();
 
-  const getSignupData = useSelector(selectSignupData); //lấy thông tin người dùng đăng ký trong local storage
   const getUserData = useSelector(selectLoginData); //lấy thông tin người dùng đăng ký trong local storage
 
-  let pending = useSelector(selectPending);
   const authOtpSuccess = useSelector(selectIsOtp);
 
   const handleSendOTP = () => {
@@ -51,7 +37,7 @@ function OtpLogin() {
     } else if (otpType === 'phone') {
       setBeginSendOTP(true);
 
-      let phoneNumber = `+84${getUserData.phone.substring(1)}`;
+      let phoneNumber = `+84${getUserData?.phone.substring(1)}`;
       // console.log('bắt đầu gửi OTP qua sđt: ', phoneNumber);
       setTimeout(() => {
         signin(phoneNumber);
@@ -187,7 +173,7 @@ function OtpLogin() {
                   <p>Otp sẽ được gửi qua :</p>
                   <Radio.Group onChange={(e) => setOtpType(e.target.value)} value={otpType}>
                     <Space direction="vertical">
-                      {getUserData.phone && (
+                      {getUserData.email && (
                         <Radio value={'email'}>
                           email:{' '}
                           <span style={{ color: `var(--secondary-color)` }}>

@@ -218,7 +218,8 @@ export const authSlice = createSlice({
       })
       .addCase(signupAsync.fulfilled, (state, { payload }) => {
         state.pending = false;
-        state.signupData = payload;
+        // state.signupData = payload;
+        state.data = payload;
         state.isSignup = true;
         state.authToken = payload.token;
         message.success('Đăng ký thành công', 3);

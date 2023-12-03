@@ -247,13 +247,13 @@ function SignUpV1() {
                       message: 'Độ dài sdt không quá 10 số',
                     },
                     {
-                      pattern: /^09\d{8}$/,
-                      message: 'Sai định dạng sđt',
+                      pattern: /^\d+$/,
+                      message: 'Số điện thoại phải là số',
                     },
                   ]}
                   className="no-star"
                 >
-                  <Input placeholder="Số Điện Thoại" style={{ height: 50 }} />
+                  <Input placeholder="0909090909" style={{ height: 50 }} />
                 </Form.Item>
                 {/* ----------------end phone---------------- */}
                 {/* ----------------begin gender---------------- */}
@@ -334,7 +334,10 @@ function SignUpV1() {
                   ]}
                 >
                   <Checkbox>
-                    Chấp nhận <Link to={`/dieu-khoan-dich-vu`}replace>Các điều khoản và Điều kiện</Link>
+                    Chấp nhận{' '}
+                    <Link to={`/dieu-khoan-dich-vu`} replace>
+                      Các điều khoản và Điều kiện
+                    </Link>
                   </Checkbox>
                 </Form.Item>
                 <Form.Item>

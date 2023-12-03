@@ -77,19 +77,29 @@ function Universities() {
         <Spin spinning={pendingState} size="large">
           <Row gutter={[16, 24]}>
             {getUniversity?.data?.map((val, idx) => (
-              <Col key={idx} xs={24} sm={24} md={12} lg={8}>
-                <div
+              <Col
+                key={idx}
+                xs={24}
+                sm={24}
+                md={12}
+                lg={8}
+                onClick={() => {
+                  setCardSelected(idx);
+                  setOpen(true);
+                }}
+              >
+                {/* <div
                   onClick={() => {
                     setCardSelected(idx);
                     setOpen(true);
                   }}
-                >
-                  <ImageCard
-                    src={`${val?.OrganizationDetail?.image}`}
-                    title={val?.name}
-                    center={true}
-                  />
-                </div>
+                > */}
+                <ImageCard
+                  src={`${val?.OrganizationDetail?.image}`}
+                  title={val?.name}
+                  center={true}
+                />
+                {/* </div> */}
               </Col>
             ))}
           </Row>

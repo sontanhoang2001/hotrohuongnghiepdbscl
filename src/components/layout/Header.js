@@ -241,7 +241,6 @@ function Header({
 
   return (
     <>
-     
       <Row gutter={[24, 0]}>
         <Col span={24} md={6}>
           <Breadcrumb
@@ -262,14 +261,14 @@ function Header({
           </div>
         </Col>
         <Col span={24} md={18} className="header-control">
-          <Badge size="small" count={4}>
+          {/* <Badge size="small" count={4}>
             <Dropdown menu={menu} trigger={['click']}>
               <a href="#pablo" className="ant-dropdown-link" onClick={(e) => e.preventDefault()}>
                 {bell}
               </a>
             </Dropdown>
-          </Badge>
-          <Button type="link" onClick={showDrawer}>
+          </Badge> */}
+          {/* <Button type="link" onClick={showDrawer}>
             {logsetting}
           </Button>
           <Button type="link" className="sidebar-toggler" onClick={() => onPress()}>
@@ -366,9 +365,9 @@ function Header({
                 </div>
               </div>
             </div>
-          </Drawer>
+          </Drawer> */}
 
-          <Input className="header-search" placeholder="Tìm Kiếm..." prefix={<SearchOutlined />} />
+          {/* <Input className="header-search" placeholder="Tìm Kiếm..." prefix={<SearchOutlined />} /> */}
         </Col>
       </Row>
     </>

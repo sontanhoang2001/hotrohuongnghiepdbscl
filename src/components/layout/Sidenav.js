@@ -162,7 +162,7 @@ function Sidenav({ color }) {
         <span className="icon">
           <BankOutlined />
         </span>
-        <span className="label">Danh sách tổ chức</span>
+        <span className="label">Tổ chức của bạn</span>
       </NavLink>,
       '2',
     ),
