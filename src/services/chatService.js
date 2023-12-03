@@ -254,7 +254,12 @@ module.exports = {
         ],
       });
 
-      // console.log('chat >>>', chat);
+      const chatId = chat[0].dataValues.id;
+
+      const { count, rows } = await Messages.findAndCountAll({
+        where: { chatId },
+        attributes: ['id'],
+      });
 
       const chatExists = !!chat && chat.length > 0;
       if (!chatExists) {
@@ -288,15 +293,31 @@ module.exports = {
               },
             ],
           });
-          return chat;
+
+          const chatId = chat[0].dataValues.id;
+
+          const { count, rows } = await Messages.findAndCountAll({
+            where: { chatId },
+            attributes: ['id'],
+          });
+
+          const pagination = {
+            total: count,
+            size,
+            data: chat,
+          };
+
+          return pagination;
         }
       }
 
-      // messages = chat[0].Messages.reverse();
+      const pagination = {
+        total: count,
+        size,
+        data: chat,
+      };
 
-      // console.log("messages", messages)
-
-      return chat;
+      return pagination;
     } catch (error) {
       throw error;
     }
