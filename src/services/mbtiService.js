@@ -42,6 +42,7 @@ module.exports = {
   },
   getAll: async (page, size, search, deleted) => {
     try {
+      let order = [['createdAt', 'DESC']];
       const where = {};
       if (search) {
         where.question = { [Op.like]: `%${search}%` };
@@ -55,6 +56,7 @@ module.exports = {
       const offset = (page - 1) * size;
 
       const { count } = await Question.findAndCountAll({
+        order,
         where,
         paranoid: false,
         offset,
@@ -62,6 +64,7 @@ module.exports = {
       });
 
       const { rows } = await Question.findAndCountAll({
+        order,
         where,
         paranoid: false,
         offset,

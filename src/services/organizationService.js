@@ -56,6 +56,7 @@ module.exports = {
   },
   getAll: async (page, size, search, organizationTypeId, status, deleted) => {
     try {
+      let order = [['createdAt', 'DESC']];
       const where = {};
       if (search) {
         where.name = { [Op.like]: `%${search}%` };
@@ -80,6 +81,7 @@ module.exports = {
       const offset = (page - 1) * size;
 
       const { count, rows } = await Organization.findAndCountAll({
+        order,
         where,
         paranoid: false,
         offset,

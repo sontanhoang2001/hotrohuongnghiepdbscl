@@ -14,6 +14,7 @@ module.exports = {
   },
   getAll: async (page, size, search, deleted) => {
     try {
+      let order = [['createdAt', 'DESC']];
       const where = {};
       if (search) {
         where.name = { [Op.like]: `%${search}%` };
@@ -27,6 +28,7 @@ module.exports = {
       const offset = (page - 1) * size;
 
       const { count, rows } = await PostsCategory.findAndCountAll({
+        order,
         where,
         paranoid: false,
         offset,

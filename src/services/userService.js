@@ -28,6 +28,7 @@ module.exports = {
   },
   getAll: async (page, size, search, disable) => {
     try {
+      let order = [['createdAt', 'DESC']];
       const where = {};
       
       if (disable) {
@@ -42,6 +43,7 @@ module.exports = {
       const offset = (page - 1) * size;
 
       const { count, rows } = await User.findAndCountAll({
+        order,
         where,
         paranoid: false,
         offset,

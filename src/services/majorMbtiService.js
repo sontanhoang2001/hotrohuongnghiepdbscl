@@ -20,6 +20,8 @@ module.exports = {
   },
   getAllMajorMbti: async (page, size, search, deleted, organizationId, mbtiId) => {
     try {
+      let order = [['createdAt', 'DESC']];
+
       const where = {};
       if (search) {
         where.majorName = { [Op.like]: `%${search}%` };
@@ -41,6 +43,7 @@ module.exports = {
       const offset = (page - 1) * size;
 
       const { count, rows } = await MajorMBTI.findAndCountAll({
+        order,
         where,
         paranoid: false,
         offset,
