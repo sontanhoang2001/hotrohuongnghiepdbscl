@@ -20,7 +20,7 @@ module.exports = {
     }
   },
 
-  getAllChats: async (userId, organizationId, page, size) => {
+  getAllChats: async (userId, organizationId, page, size, search) => {
     try {
       // Tính offset
       const offset = (page - 1) * size;
@@ -37,8 +37,49 @@ module.exports = {
         attributes: ['id'],
         raw: true,
       });
-      const arrayChatId = listChatId.map((chat) => chat.id);
-      console.log('arrayChatId', arrayChatId);
+      let arrayChatId = listChatId.map((chat) => chat.id);
+      // console.log('arrayChatId', arrayChatId);
+
+      // Tìm kiếm userId học sinh
+      if (search) {
+        const listSenderId = await Messages.findAll({
+          attributes: ['senderId'],
+          where: {
+            senderId: { [Op.in]: arrayChatId },
+            senderId: {
+              [Op.not]: userId,
+            },
+          },
+          group: ['senderId'],
+          raw: true,
+        });
+        const arraySenderId = listSenderId.map((message) => message.senderId);
+
+        const listUserId = await UserDetail.findAll({
+          attributes: ['userId'],
+          where: {
+            userId: { [Op.in]: arraySenderId },
+            fullName: { [Op.like]: `%${search}%` },
+          },
+          raw: true,
+        });
+        const arrayUserId = listUserId.map((user) => user.userId);
+
+        // Tìm chatId
+        const listChatId = await Chat.findAll({
+          attributes: ['id'],
+          where: {
+            userId: {
+              [Op.not]: userId,
+            },
+            userId: { [Op.in]: arrayUserId },
+            organizationId,
+          },
+          raw: true,
+        });
+        arrayChatId = listChatId.map((chat) => chat.id);
+
+      }
 
       const latestMessages = await Messages.findAll({
         order,
@@ -55,7 +96,7 @@ module.exports = {
         raw: true,
       });
       const arrayLatestMessageId = latestMessages.map((chat) => chat.latestChatId);
-      console.log('arrayLatestMessageId', arrayLatestMessageId);
+      // console.log('arrayLatestMessageId', arrayLatestMessageId);
 
       // Hiện thị thông tin đầy đủ của list Chat gần nhất
       const { count, rows } = await Messages.findAndCountAll({

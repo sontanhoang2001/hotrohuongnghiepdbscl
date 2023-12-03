@@ -19,14 +19,16 @@ module.exports = {
       const userId = req.user.id;
       const page = (req.query.page && parseInt(req.query.page)) || 1;
       const size = (req.query.size && parseInt(req.query.size)) || 10;
+      const search = req.query.search;
 
+      
       const organizationId = req.query.organizationId && parseInt(req.query.organizationId);
 
       if (isNaN(organizationId)) {
         return responseHelper.sendResponse.BAD_REQUEST(res, null, 'You must enter full parameter');
       }
 
-      const chatMessage = await chatService.getAllChats(userId, organizationId, page, size); // Gọi chức năng từ service
+      const chatMessage = await chatService.getAllChats(userId, organizationId, page, size, search); // Gọi chức năng từ service
       if (chatMessage) {
         return responseHelper.sendResponse.SUCCESS(res, chatMessage);
       }
