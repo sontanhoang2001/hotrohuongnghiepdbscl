@@ -57,7 +57,14 @@ function NewsSection() {
             ))}
           </Row>
           <Row justify={'center'} style={{ marginTop: 30, marginRight: 10 }}>
-            <Button type="primary" onClick={() => navigate('/tin-tuc/')} size="large">
+            <Button
+              type="primary"
+              onClick={() => {
+                window.scrollTo(0, 0);
+                navigate('/tin-tuc/');
+              }}
+              size="large"
+            >
               Xem thêm
               <DoubleRightOutlined style={{ marginRight: 0 }} />
             </Button>

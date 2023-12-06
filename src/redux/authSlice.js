@@ -152,7 +152,7 @@ export const changePasswordAsync = createAsyncThunk(
   'auth/changePassword',
   async (data, { rejectWithValue }) => {
     try {
-      const rs = await authApi.signin(data);
+      const rs = await authApi.changePassword(data);
       return rs.data.message;
     } catch (err) {
       if (err.response && err.response.data.message) {

@@ -138,7 +138,7 @@ function CLientFooter() {
             </FooterLink>
             <FooterLink>
               <NavLink to="trach-nghiem-tinh-cach" onClick={() => window.scrollTo(0, 0)}>
-                Phương Pháp trác nghiệm
+                Phương Pháp trắc nghiệm
               </NavLink>
             </FooterLink>
           </Col>

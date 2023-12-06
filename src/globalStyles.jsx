@@ -8,11 +8,9 @@ export const size = {
   xxl: '1600px',
 };
 export const ContainerStyled = styled.div`
-  --bs-gutter-x: 15rem;
-  --bs-gutter-y: 0;
   width: 100%;
-  padding-right: calc(var(--bs-gutter-x) * 0.5);
-  padding-left: calc(var(--bs-gutter-x) * 0.5);
+  padding-right: 5%;
+  padding-left: 5%;
   margin-right: auto;
   margin-left: auto;
   margin-top: 3%;
@@ -47,7 +45,7 @@ export const MessageContent = styled.div`
   width: -moz-fit-content;
   width: fit-content;
   max-width: 66%;
-  position:relative;
+  position: relative;
   box-shadow: 0 0 2rem rgba(0, 0, 0, 0.075), 0rem 1rem 1rem -1rem rgba(0, 0, 0, 0.1);
 `;
 export const YourMessageContent = styled.div`
@@ -59,7 +57,7 @@ export const YourMessageContent = styled.div`
   color: white;
   width: fit-content;
   max-width: 66%;
-  position:relative;
+  position: relative;
   box-shadow: 0 0 2rem rgba(0, 0, 0, 0.075), 0rem 1rem 1rem -1rem rgba(0, 0, 0, 0.1);
 `;
 

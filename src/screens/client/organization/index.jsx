@@ -6,7 +6,7 @@ import {
   getAllPublicUniversityInfo,
   selectUniversity,
   selectUniversityPending,
-  selectclientParams,
+  setParams,
 } from '../../../redux/universitySlice';
 
 import {
@@ -17,100 +17,100 @@ import {
   Title,
 } from '../../../globalStyles';
 import { debounce } from 'lodash';
-import viVN from 'antd/lib/locale/vi_VN';
+// import viVN from 'antd/lib/locale/vi_VN';
 
-function OrganiztionPublic() {
+function Universities() {
   const [open, setOpen] = useState(false);
   const [cardSelected, setCardSelected] = useState(0);
 
   //goi redux
   const dispatch = useDispatch();
-  const organiztionPublic = useSelector(selectclientParams);
+  const { organiztionPublic, organiztionPublicParams } = useSelector((state) => state.university);
 
-  const organiztio = useSelector(selectUniversity); //page 1 size 10 init value redux
+  const getUniversity = useSelector(selectUniversity); //page 1 size 10 init value redux
   const pendingState = useSelector(selectUniversityPending);
+
+  // reset params
+  useEffect(() => {
+    console.log('organiztionPublicParams', organiztionPublicParams);
+    dispatch(setParams({ ...organiztionPublicParams, page: 1 }));
+  }, []);
 
   useEffect(() => {
     //gọi api thông qua redux
-    dispatch(getAllPublicUniversityInfo({ ...organiztionPublic, organizationType: 2 }));
-  }, []);
-  console.log(organiztio);
+    // dispatch(getAllPublicUniversityInfo());
+    dispatch(getAllPublicUniversityInfo('Company'));
+  }, [dispatch, organiztionPublicParams]);
 
   //hàm bắt sự kiện phân trang và làm mới lại api
   const handlePageChange = (page, pageSize) => {
-    dispatch(
-      getAllPublicUniversityInfo({
-        ...organiztionPublic,
-        page: page,
-        size: pageSize,
-        organizationType: 2,
-      }),
-    );
+    dispatch(setParams({ page: page, size: pageSize }));
     window.scrollTo(0, 200);
-    // dispatch(getAllPublicUniversityInfo(clientParams));
   };
   //tìm kiếm
   const onSearchChange = debounce((e) => {
     if (e.target.value === '') {
-      dispatch(
-        getAllPublicUniversityInfo({
-          ...organiztionPublic,
-          search: e.target.value,
-          organizationType: 2,
-        }),
-      );
+      dispatch(setParams({ search: e.target.value }));
     }
   }, 500);
   const onSearch = (value) => {
-    dispatch(
-      getAllPublicUniversityInfo({ ...organiztionPublic, search: value, organizationType: 2 }),
-    );
+    dispatch(setParams({ search: value }));
   };
 
   return (
     <ContainerStyled>
       <Title>
-        <HeadingTitle>các trường đại học ĐBSCL</HeadingTitle>
+        <HeadingTitle>các doanh nghiệp</HeadingTitle>
         <div className="underline"></div>
       </Title>
       <SearchBox>
-        <ConfigProvider locale={viVN}>
-          <Input.Search
-            placeholder="Tìm kiếm..."
-            onSearch={onSearch}
-            onChange={onSearchChange}
-            enterButton={
-              <Button type="primary" style={{ height: 50 }}>
-                Tìm kiếm
-              </Button>
-            }
-            allowClear
-            style={{ height: 50 }}
-          />
-        </ConfigProvider>
+        {/* <ConfigProvider locale={viVN}> */}
+        <Input.Search
+          placeholder="Tìm kiếm..."
+          onSearch={onSearch}
+          onChange={onSearchChange}
+          enterButton={
+            <Button type="primary" style={{ height: 50 }}>
+              Tìm kiếm
+            </Button>
+          }
+          allowClear
+          style={{ height: 50 }}
+        />
+        {/* </ConfigProvider> */}
       </SearchBox>
       <MarginTopContent>
         <Spin spinning={pendingState} size="large">
           <Row gutter={[16, 24]}>
-            {organiztio?.data?.map((val, idx) => (
-              <Col key={idx} xs={24} sm={24} md={12} lg={8}>
-                <div
+            {getUniversity?.data?.map((val, idx) => (
+              <Col
+                key={idx}
+                xs={24}
+                sm={24}
+                md={12}
+                lg={8}
+                onClick={() => {
+                  setCardSelected(idx);
+                  setOpen(true);
+                }}
+              >
+                {/* <div
                   onClick={() => {
                     setCardSelected(idx);
                     setOpen(true);
                   }}
-                >
-                  <ImageCard
-                    src={`${val?.OrganizationDetail?.image}`}
-                    title={val?.name}
-                    center={true}
-                  />
-                </div>
+                > */}
+                <ImageCard
+                  src={`${val?.OrganizationDetail?.image}`}
+                  title={val?.name}
+                  center={true}
+                />
+                {/* </div> */}
               </Col>
             ))}
           </Row>
         </Spin>
-        {organiztio?.data?.length === 0 ? (
+        {getUniversity?.data?.length === 0 ? (
           <Empty
             description={
               <p style={{ fontSize: `14pt`, fontWeight: 600, textAlign: 'center' }}>
@@ -133,10 +133,10 @@ function OrganiztionPublic() {
             style={{ marginTop: 20, marginBottom: 20 }}
           />
         </Row>
-        {organiztio && organiztio?.data[cardSelected] && (
+        {getUniversity && getUniversity?.data[cardSelected] && (
           <Modal
             className="universities-modal"
-            title={organiztio?.data[cardSelected].name}
+            title={getUniversity?.data[cardSelected].name}
             centered
             open={open}
             onOk={() => setOpen(false)}
@@ -147,16 +147,16 @@ function OrganiztionPublic() {
             <div style={{ display: 'flex', justifyContent: 'center' }}>
               <img
                 style={{ width: '80%', objectFit: 'cover' }}
-                src={`${organiztio?.data[cardSelected].OrganizationDetail.image}`}
+                src={`${getUniversity?.data[cardSelected].OrganizationDetail.image}`}
                 alt=""
               />
             </div>
             <p style={{ marginTop: '3%' }}>
-              {organiztio?.data[cardSelected].OrganizationDetail.description}{' '}
+              {getUniversity?.data[cardSelected].OrganizationDetail.description}{' '}
               <Button type="link">
                 <a
                   target="_blank"
-                  href={organiztio?.data[cardSelected].OrganizationDetail.url}
+                  href={getUniversity?.data[cardSelected].OrganizationDetail.url}
                   rel="noopener noreferrer"
                 >
                   Xem thêm
@@ -170,4 +170,4 @@ function OrganiztionPublic() {
   );
 }
 
-export default OrganiztionPublic;
+export default Universities;

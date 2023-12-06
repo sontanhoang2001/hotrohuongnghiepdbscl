@@ -30,11 +30,12 @@ function Universities() {
   const getUniversity = useSelector(selectUniversity); //page 1 size 10 init value redux
   const pendingState = useSelector(selectUniversityPending);
 
-// reset params
+  // reset params
   useEffect(() => {
-    console.log("organiztionPublicParams",  organiztionPublicParams)
-    dispatch(setParams(organiztionPublicParams))
-  }, [])
+    console.log('organiztionPublicParams', organiztionPublicParams);
+    dispatch(setParams({ ...organiztionPublicParams, page: 1 }));
+    // dispatch(setParams(organiztionPublicParams))
+  }, []);
 
   useEffect(() => {
     //gọi api thông qua redux
