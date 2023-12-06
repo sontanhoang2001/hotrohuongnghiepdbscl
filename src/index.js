@@ -50,7 +50,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 //* Routes
-router(app, io);
+router(app);
 
 //* Starting the server
 server.listen(port, () => {
