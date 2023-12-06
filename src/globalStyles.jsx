@@ -1,3 +1,4 @@
+import { Modal } from 'antd';
 import styled from 'styled-components';
 export const size = {
   // xs: '576px',

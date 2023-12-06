@@ -206,3 +206,10 @@ code {
 .pb-5 {
   padding-bottom: 3rem;
 }
+
+.modalStyle .ant-modal-content {
+  padding: 2rem 4rem;
+  .ant-modal-header {
+    margin-bottom: 2rem !important;
+  }
+}
