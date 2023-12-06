@@ -69,12 +69,15 @@ const SimpleCard = styled.div`
         font-size: 13pt !important;
       }
     }
-    .ant-card-meta {
-      text-transform: capitalize;
-      .ant-card-meta-detail {
-        .ant-card-meta-title {
-          white-space: inherit;
-          font-size: 14pt;
+    .ant-card-body {
+      padding: 8px;
+      .ant-card-meta {
+        text-transform: capitalize;
+        .ant-card-meta-detail {
+          .ant-card-meta-title {
+            white-space: inherit;
+            font-size: 11pt;
+          }
         }
       }
     }
