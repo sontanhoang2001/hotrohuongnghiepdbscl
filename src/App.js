@@ -6,12 +6,12 @@ import { useSelector } from 'react-redux';
 import CustomerChatBox from './components/customerchatbox/CustomerChatBox';
 
 function App() {
-  const { isLogin, role,authToken } = useSelector((state) => state.auth);
+  const { isLogin, role, authToken } = useSelector((state) => state.auth);
   return (
     <div className="App">
       <Header />
       <Outlet />
-      {isLogin && ['STUDENT'].includes(role) && <CustomerChatBox />}
+      {/* {isLogin && ['STUDENT'].includes(role) && <CustomerChatBox />} */}
       <CLientFooter />
     </div>
   );

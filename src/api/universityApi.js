@@ -53,9 +53,14 @@ const universityApi = {
   //client public api
   getAllPublicUniversityInfo: ({ page, size, search, organizationType, order }) => {
     const url = `public/organization`;
+    console.log('organizationType', organizationType);
     return axiosService.get(url, {
       params: { page, size, search, organizationType, order },
     });
+  },
+  getAllSelectListUniversity: () => {
+    const url = `public/organization/selectList?organizationType=1`;
+    return axiosService.get(url);
   },
 
   getOneByOrganizationId: (id) => {

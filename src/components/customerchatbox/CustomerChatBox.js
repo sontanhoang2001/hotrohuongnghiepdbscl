@@ -24,7 +24,10 @@ import {
 } from '../../redux/chatSlice';
 import socketIOClient from 'socket.io-client';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { getAllPublicUniversityInfo } from '../../redux/universitySlice';
+import {
+  getAllPublicUniversityInfo,
+  getAllSelectListUniversity,
+} from '../../redux/universitySlice';
 import { debounce } from 'lodash';
 import audioNoti from '../../assets/audios/messageNoti.mp3';
 import { calculateNewValue } from '@testing-library/user-event/dist/utils';
@@ -84,7 +87,7 @@ const CustomerChatBox = () => {
     currentOrgAvt,
   } = useSelector((state) => state.chat);
   const { profile } = useSelector((state) => state.auth);
-  const { data: organizations } = useSelector((state) => state.university);
+  const { selectList } = useSelector((state) => state.university);
 
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState('');
@@ -108,14 +111,7 @@ const CustomerChatBox = () => {
     setOrgSearchValue(newValue);
   };
   useEffect(() => {
-    dispatch(
-      getAllPublicUniversityInfo({
-        page: 1,
-        size: 100,
-        search: orgSearchValue,
-        organizationType: 1,
-      }),
-    );
+    dispatch(getAllSelectListUniversity());
   }, [dispatch, orgSearchValue]);
 
   //Lấy danh sách tin nhắn
@@ -252,7 +248,7 @@ const CustomerChatBox = () => {
           onChange={handleChangeOrganization}
           filterOption={filterOption}
           onSearch={debounce(handleSearchChange, 500)}
-          options={organizations?.data?.map((org) => ({
+          options={selectList?.map((org) => ({
             label: org.name,
             value: org.id,
           }))}

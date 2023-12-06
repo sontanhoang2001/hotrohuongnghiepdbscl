@@ -25,14 +25,14 @@ function OrganiztionPublic() {
 
   //goi redux
   const dispatch = useDispatch();
-  const clientParams = useSelector(selectclientParams);
+  const organiztionPublic = useSelector(selectclientParams);
 
   const organiztio = useSelector(selectUniversity); //page 1 size 10 init value redux
   const pendingState = useSelector(selectUniversityPending);
 
   useEffect(() => {
     //gọi api thông qua redux
-    dispatch(getAllPublicUniversityInfo({ ...clientParams, organizationType: 2 }));
+    dispatch(getAllPublicUniversityInfo({ ...organiztionPublic, organizationType: 2 }));
   }, []);
   console.log(organiztio);
 
@@ -40,7 +40,7 @@ function OrganiztionPublic() {
   const handlePageChange = (page, pageSize) => {
     dispatch(
       getAllPublicUniversityInfo({
-        ...clientParams,
+        ...organiztionPublic,
         page: page,
         size: pageSize,
         organizationType: 2,
@@ -54,7 +54,7 @@ function OrganiztionPublic() {
     if (e.target.value === '') {
       dispatch(
         getAllPublicUniversityInfo({
-          ...clientParams,
+          ...organiztionPublic,
           search: e.target.value,
           organizationType: 2,
         }),
@@ -62,7 +62,9 @@ function OrganiztionPublic() {
     }
   }, 500);
   const onSearch = (value) => {
-    dispatch(getAllPublicUniversityInfo({ ...clientParams, search: value, organizationType: 2 }));
+    dispatch(
+      getAllPublicUniversityInfo({ ...organiztionPublic, search: value, organizationType: 2 }),
+    );
   };
 
   return (
@@ -121,9 +123,9 @@ function OrganiztionPublic() {
         )}
         <Row justify={'center'} style={{ marginTop: 20 }}>
           <Pagination
-            current={clientParams?.page}
-            pageSize={clientParams?.size}
-            total={clientParams?.total}
+            current={organiztionPublic?.page}
+            pageSize={organiztionPublic?.size}
+            total={organiztionPublic?.total}
             onChange={handlePageChange}
             showQuickJumper
             showSizeChanger

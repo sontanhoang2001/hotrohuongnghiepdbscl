@@ -5,24 +5,18 @@ import { notification } from 'antd/lib';
 // Tạo initialState cho slice
 const initialState = {
   data: null,
+  selectList: null,
   pending: false,
   page: 1,
   size: 10,
   total: 0,
-  clientParams: {
+  organiztionPublic: {
     page: 1,
     size: 9,
     total: 0,
     organizationType: 1,
     search: '',
     order: 'asc',
-  },
-  organiztionPublic: {
-    page: 1,
-    size: 9,
-    total: 0,
-    organizationType: 2,
-    search: '',
   },
   organizationParams: {
     page: 1,
@@ -174,6 +168,22 @@ export const getAllPublicUniversityInfo = createAsyncThunk(
   async (payload, { rejectWithValue }) => {
     try {
       const rs = await universityApi.getAllPublicUniversityInfo(payload);
+      return rs.data.data;
+    } catch (error) {
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      } else {
+        return rejectWithValue(error.message);
+      }
+    }
+  },
+);
+//Lấy thông tin list của các trường đại học cho select chat box
+export const getAllSelectListUniversity = createAsyncThunk(
+  'university/getAllSelectListUniversity',
+  async (payload, { rejectWithValue }) => {
+    try {
+      const rs = await universityApi.getAllSelectListUniversity(payload);
       return rs.data.data;
     } catch (error) {
       if (error.response && error.response.data.message) {
@@ -355,23 +365,27 @@ const universitySlice = createSlice({
       .addCase(getAllPublicUniversityInfo.fulfilled, (state, { payload }) => {
         state.pending = false;
         state.data = payload;
-        state.clientParams = {
-          size: payload.size,
-          page: payload.page,
-          totl: payload.total,
-          search: payload.search,
-          type: payload.type,
-          order: payload.order,
-        };
         state.organiztionPublic = {
           size: payload.size,
           page: payload.page,
-          totl: payload.total,
+          total: payload.total,
           search: payload.search,
-          type: payload.type,
+          organizationType: payload.organizationType,
+          order: payload.order,
         };
       })
       .addCase(getAllPublicUniversityInfo.rejected, (state, { payload }) => {
+        state.pending = false;
+      })
+      //slect list university
+      .addCase(getAllSelectListUniversity.pending, (state) => {
+        state.pending = true;
+      })
+      .addCase(getAllSelectListUniversity.fulfilled, (state, { payload }) => {
+        state.pending = false;
+        state.selectList = payload;
+      })
+      .addCase(getAllSelectListUniversity.rejected, (state, { payload }) => {
         state.pending = false;
       });
   },
@@ -382,6 +396,6 @@ export const selectUniversityPending = (state) => state.university.pending;
 export const selectUniversityToalRow = (state) => state.university.total;
 export const selectUniversityPage = (state) => state.university.page;
 export const selectUniversityPagesize = (state) => state.university.size;
-export const selectclientParams = (state) => state.university.clientParams;
+export const selectclientParams = (state) => state.university.organiztionPublic;
 
 export default universitySlice.reducer;

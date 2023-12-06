@@ -25,30 +25,38 @@ function Universities() {
 
   //goi redux
   const dispatch = useDispatch();
-  const clientParams = useSelector(selectclientParams);
+  const organiztionPublic = useSelector(selectclientParams);
 
   const getUniversity = useSelector(selectUniversity); //page 1 size 10 init value redux
   const pendingState = useSelector(selectUniversityPending);
 
   useEffect(() => {
     //gọi api thông qua redux
-    dispatch(getAllPublicUniversityInfo(clientParams));
+    dispatch(getAllPublicUniversityInfo({ ...organiztionPublic }));
   }, []);
+
+  useEffect(() => {
+    console.log('đ: ', getUniversity);
+  }, [getUniversity]);
+
+  useEffect(() => {
+    console.log('organiztionPublic check redux: ', organiztionPublic);
+  }, [organiztionPublic]);
 
   //hàm bắt sự kiện phân trang và làm mới lại api
   const handlePageChange = (page, pageSize) => {
-    dispatch(getAllPublicUniversityInfo({ ...clientParams, page: page, size: pageSize }));
+    console.log('organiztionPublic check ', organiztionPublic);
+    dispatch(getAllPublicUniversityInfo({ page: page, size: pageSize }));
     window.scrollTo(0, 200);
-    // dispatch(getAllPublicUniversityInfo(clientParams));
   };
   //tìm kiếm
   const onSearchChange = debounce((e) => {
     if (e.target.value === '') {
-      dispatch(getAllPublicUniversityInfo({ ...clientParams, search: e.target.value }));
+      dispatch(getAllPublicUniversityInfo({ ...organiztionPublic, search: e.target.value }));
     }
   }, 500);
   const onSearch = (value) => {
-    dispatch(getAllPublicUniversityInfo({ ...clientParams, search: value }));
+    dispatch(getAllPublicUniversityInfo({ ...organiztionPublic, search: value }));
   };
 
   return (
@@ -117,9 +125,9 @@ function Universities() {
         )}
         <Row justify={'center'} style={{ marginTop: 20 }}>
           <Pagination
-            current={clientParams?.page}
-            pageSize={clientParams?.size}
-            total={clientParams?.total}
+            current={organiztionPublic?.page}
+            pageSize={organiztionPublic?.size}
+            total={organiztionPublic?.total}
             onChange={handlePageChange}
             showQuickJumper
             showSizeChanger
