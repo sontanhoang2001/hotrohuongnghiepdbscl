@@ -14,7 +14,11 @@ const initialState = {
     page: 1,
     size: 9,
     total: 0,
-    organizationType: 1,
+  },
+  organiztionPublicParams: {
+    page: 1,
+    size: 9,
+    total: 0,
     search: '',
     order: 'asc',
   },
@@ -165,15 +169,20 @@ export const updateOrganization = createAsyncThunk(
 //Lấy thông tin public của các trường đại học
 export const getAllPublicUniversityInfo = createAsyncThunk(
   'university/getAllPublicUniversityInfo',
-  async (payload, { rejectWithValue }) => {
+  async (payload, thunkApi) => {
     try {
-      const rs = await universityApi.getAllPublicUniversityInfo(payload);
+      console.log('payloadne:', payload);
+      const organizationType = payload === 'university' ? 1 : 2;
+      const rs = await universityApi.getAllPublicUniversityInfo({
+        ...thunkApi.getState().university.organiztionPublicParams,
+        organizationType: organizationType,
+      });
       return rs.data.data;
     } catch (error) {
       if (error.response && error.response.data.message) {
-        return rejectWithValue(error.response.data.message);
+        return thunkApi.rejectWithValue(error.response.data.message);
       } else {
-        return rejectWithValue(error.message);
+        return thunkApi.rejectWithValue(error.message);
       }
     }
   },
@@ -221,10 +230,13 @@ const universitySlice = createSlice({
       state.currentVerification = state.verifications.find(
         (record) => record.id === action.payload,
       );
-      console.log(action.payload, state.currentVerification, state.verifications);
+      // console.log(action.payload, state.currentVerification, state.verifications);
     },
     setSize: (state, action) => {
       state.size = action.payload;
+    },
+    setParams: (state, action) => {
+      state.organiztionPublicParams = { ...state.organiztionPublicParams, ...action.payload };
     },
   },
 
@@ -369,9 +381,6 @@ const universitySlice = createSlice({
           size: payload.size,
           page: payload.page,
           total: payload.total,
-          search: payload.search,
-          organizationType: payload.organizationType,
-          order: payload.order,
         };
       })
       .addCase(getAllPublicUniversityInfo.rejected, (state, { payload }) => {
@@ -390,7 +399,8 @@ const universitySlice = createSlice({
       });
   },
 });
-export const { getLocalOrganizationsById, setSize } = universitySlice.actions;
+export const { getLocalOrganizationsById, setSize, setParams } = universitySlice.actions;
+
 export const selectUniversity = (state) => state.university.data;
 export const selectUniversityPending = (state) => state.university.pending;
 export const selectUniversityToalRow = (state) => state.university.total;

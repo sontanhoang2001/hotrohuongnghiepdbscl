@@ -6,7 +6,7 @@ import {
   getAllPublicUniversityInfo,
   selectUniversity,
   selectUniversityPending,
-  selectclientParams,
+  setParams,
 } from '../../../redux/universitySlice';
 
 import {
@@ -25,38 +25,35 @@ function Universities() {
 
   //goi redux
   const dispatch = useDispatch();
-  const organiztionPublic = useSelector(selectclientParams);
+  const { organiztionPublic, organiztionPublicParams } = useSelector((state) => state.university);
 
   const getUniversity = useSelector(selectUniversity); //page 1 size 10 init value redux
   const pendingState = useSelector(selectUniversityPending);
 
+// reset params
+  useEffect(() => {
+    console.log("organiztionPublicParams",  organiztionPublicParams)
+    dispatch(setParams(organiztionPublicParams))
+  }, [])
+
   useEffect(() => {
     //gọi api thông qua redux
-    dispatch(getAllPublicUniversityInfo({ ...organiztionPublic }));
-  }, []);
-
-  useEffect(() => {
-    console.log('đ: ', getUniversity);
-  }, [getUniversity]);
-
-  useEffect(() => {
-    console.log('organiztionPublic check redux: ', organiztionPublic);
-  }, [organiztionPublic]);
+    dispatch(getAllPublicUniversityInfo('university'));
+  }, [dispatch, organiztionPublicParams]);
 
   //hàm bắt sự kiện phân trang và làm mới lại api
   const handlePageChange = (page, pageSize) => {
-    console.log('organiztionPublic check ', organiztionPublic);
-    dispatch(getAllPublicUniversityInfo({ page: page, size: pageSize }));
+    dispatch(setParams({ page: page, size: pageSize }));
     window.scrollTo(0, 200);
   };
   //tìm kiếm
   const onSearchChange = debounce((e) => {
     if (e.target.value === '') {
-      dispatch(getAllPublicUniversityInfo({ ...organiztionPublic, search: e.target.value }));
+      dispatch(setParams({ search: e.target.value }));
     }
   }, 500);
   const onSearch = (value) => {
-    dispatch(getAllPublicUniversityInfo({ ...organiztionPublic, search: value }));
+    dispatch(setParams({ search: value }));
   };
 
   return (
