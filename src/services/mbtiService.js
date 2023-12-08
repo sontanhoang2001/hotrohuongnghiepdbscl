@@ -42,7 +42,7 @@ module.exports = {
   },
   getAll: async (page, size, search, deleted) => {
     try {
-      let order = [['id', 'DESC']];
+      let order = [['id', 'ASC']];
       const where = {};
       if (search) {
         where.question = { [Op.like]: `%${search}%` };
