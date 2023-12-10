@@ -20,8 +20,12 @@ const authApi = {
     return axiosClient.post(url, payload);
   },
   authChangeEmail: (payload) => {
-    const url = `/${pathname}/authChangeEmail`;
-    return axiosClient.post(url, payload);
+    const url = `/${pathname}/changeEmail`;
+    return axiosClient.patch(url, payload);
+  },
+  authChangePhone: (payload) => {
+    const url = `/${pathname}/changePhone`;
+    return axiosClient.patch(url, payload);
   },
   changePassword: (payload) => {
     const url = `/${pathname}/changePassword`;

@@ -1,4 +1,4 @@
-import { Card, Table, Button, Modal, Row, Col, Space, Radio, message, Form } from 'antd';
+import { Card, Table, Button, Modal, Row, Col, Space, Radio, message, Form, Input } from 'antd';
 import {
   HomeOutlined,
   MailOutlined,
@@ -12,26 +12,54 @@ import { format } from 'date-fns';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
-import { authOTP, isOtp, requestOtp, selectIsOtp, selectLoginData } from '../../../redux/authSlice';
+import {
+  authChangeEmailAsync,
+  authChangePhone,
+  authOTP,
+  changePasswordAsync,
+  isOtp,
+  requestOtp,
+  selectIsOtp,
+  selectLoginData,
+} from '../../../redux/authSlice';
 import { MarginTopContent } from '../../../globalStyles';
 import { useNavigate } from 'react-router-dom';
 import { getAllTestHistory, getTestHistoryById } from '../../../redux/mbtiSlice';
 import { auth, RecaptchaVerifier, signInWithPhoneNumber } from '../../../firebase/config';
 import { InputOTP } from 'antd-input-otp';
 
+const formItemLayout = {
+  labelCol: {
+    xs: {
+      span: 24,
+    },
+    sm: {
+      span: 6,
+    },
+  },
+  wrapperCol: {
+    xs: {
+      span: 24,
+    },
+    sm: {
+      span: 16,
+    },
+  },
+};
+
 function UserProfile() {
   const navigate = useNavigate();
   const [formattedDate, setFormattedDate] = useState();
   const [result, setResult] = useState('');
   const [otpType, setOtpType] = useState('email');
-  const [content, setContent] = useState(null);
-  const [selectedKey, setSeletedKey] = useState();
   const [form] = Form.useForm();
-
+  const [editPassword, setEditPassword] = useState(false);
+  const [formEidtValue, setFormEditValue] = useState({});
   //trạng thái đóng/ mở modal
   const [open, setOpen] = useState(false);
   const [open1, setOpen1] = useState(false);
   const [openOtp, setOpenOtp] = useState(false);
+  const [openEdit, setOpenEdit] = useState(false);
   const [beginSendOTP, setBeginSendOTP] = useState(false); //thay đối giá trị đóng mở của của sổ
 
   //gọi redux
@@ -44,7 +72,6 @@ function UserProfile() {
   // const dataHistory = useSelector(selectMbtiQuestions);
   const { role, status } = useSelector((state) => state.auth);
   const { pending, historyPargams, dataHistory, major } = useSelector((state) => state.mbti);
-  const [renderedHistoryMBTI, setRenderedHistoryMBT] = useState(false);
 
   useEffect(() => {
     dispatch(getAllTestHistory(historyPargams));
@@ -52,12 +79,6 @@ function UserProfile() {
     if (status === 0) {
       navigate('/404');
     }
-    //định dạng ngày sinh hiển thị
-    setFormattedDate(
-      getProfile?.UserDetail?.birthday
-        ? format(new Date(getProfile?.UserDetail.birthday), 'dd/MM/yyyy')
-        : 'dd/MM/yyyy',
-    );
     if (sentOtp) {
       setOpen(false);
       dispatch(isOtp(false));
@@ -65,17 +86,11 @@ function UserProfile() {
     }
   }, [dispatch, openOtp, open, sentOtp, getProfile]);
 
-  useEffect(() => {
-    // console.log(major);
-  }, [major]);
-
-  useEffect(() => {
-    if (!pending && major?.length) {
-      // Đã fetch xong data và component đã render
-      setRenderedHistoryMBT(true);
-    }
-    console.log();
-  }, [pending, dataHistory, major]);
+  // useEffect(() => {
+  //   if (authOtpSuccess === true) {
+  //     setOpenEdit(true);
+  //   }
+  // }, [authOtpSuccess]);
 
   const handleView = (id) => {
     setOpen1(true);
@@ -137,9 +152,6 @@ function UserProfile() {
       }, 5000);
     }
   };
-  const handelCancelOtp = () => {
-    console.log('abc');
-  };
 
   const signin = (phoneNumber) => {
     try {
@@ -187,7 +199,7 @@ function UserProfile() {
     });
   };
   //hàm sử lý khi người dùng submit
-  const handleFinish = (values) => {
+  const handleFinishOtp = (values) => {
     // The value will be array of string
     // Check the field if there is no value, or value is undefined/empty string
     const { otp } = values;
@@ -209,8 +221,6 @@ function UserProfile() {
     const otpString = otp.join('');
 
     // tạo giá trị request cho api
-
-    console.log('getUserData.id', getUserData?.id);
     if (getUserData.id) {
       if (otpType === 'email') {
         console.log('userId', getUserData?.id);
@@ -220,20 +230,45 @@ function UserProfile() {
           type: otpType,
           otpCode: otpString,
         };
+        setOpenOtp(false);
+        if (editPassword) {
+          dispatch(authOTP(formData)).then(() => {
+            setOpenOtp(false);
+          });
+        } else {
+          if (formEidtValue.newEmail !== '' && formEidtValue.newEmail !== getProfile?.email) {
+            setOpenOtp(false);
+            dispatch(authOTP(formData)).then(() => {
+              dispatch(authChangeEmailAsync(formEidtValue.newEmail));
+            });
 
-        dispatch(authOTP(formData));
+            dispatch(isOtp(false));
+          }
+        }
       } else if (otpType === 'phone') {
         const formData = {
           userId: getUserData?.id,
           type: otpType,
           otpCode: '',
         };
-
         // Update status active for user
         ValidateOtpByPhone(otpString)
           .then((result) => {
             if (result) {
-              dispatch(authOTP(formData));
+              if (editPassword) {
+                dispatch(authOTP(formData)).then(() => {
+                  setOpenOtp(false);
+                });
+              } else {
+                if (formEidtValue.newPhone !== '' && formEidtValue.newPhone !== getProfile?.phone) {
+                  setOpenOtp(false);
+                  dispatch(authOTP(formData)).then(() => {
+                    dispatch(authChangePhone(formEidtValue.newPhone));
+                  });
+
+                  dispatch(isOtp(false));
+                }
+              }
             }
           })
           .catch(() => {
@@ -243,6 +278,18 @@ function UserProfile() {
     }
   };
 
+  const handleFinishChangePassWord = (value) => {
+    dispatch(changePasswordAsync(value)).then(() => {
+      setOpenEdit(false);
+      setEditPassword(false);
+    });
+  };
+  const handleFinishEdit = (value) => {
+    setFormEditValue(value);
+    setOpenEdit(false);
+    setOpenOtp(true);
+  };
+
   return (
     <MarginTopContent className="container">
       <Row gutter={[16, 16]} justify="center">
@@ -250,7 +297,7 @@ function UserProfile() {
           <Card>
             <ProfileHeader>
               {getProfile?.UserDetail.avatar && getProfile?.UserDetail.avatar != null ? (
-                <img src={getProfile?.UserDetail.avatar} alt="avatar" />
+                <img src={getProfile.UserDetail.avatar} alt="avatar" />
               ) : (
                 <img src="./images/pngegg.png" alt="avatar" />
               )}
@@ -330,12 +377,27 @@ function UserProfile() {
               </Row>
               <Row gutter={[16, 16]} style={{ marginTop: 20 }}>
                 <Col span={12}>
-                  <Button type="primary" danger block>
+                  <Button
+                    type="primary"
+                    danger
+                    block
+                    onClick={() => {
+                      setOpenOtp(true);
+                      setEditPassword(true);
+                    }}
+                  >
                     Đổi mật khẩu
                   </Button>
                 </Col>
                 <Col span={12}>
-                  <Button type="primary" block>
+                  <Button
+                    type="primary"
+                    block
+                    onClick={() => {
+                      setOpenEdit(true);
+                      setEditPassword(false);
+                    }}
+                  >
                     Cập nhật thông tin
                   </Button>
                 </Col>
@@ -359,74 +421,75 @@ function UserProfile() {
           </Card>
         </Col>
       </Row>
-      {/* modal edit */}
       {/* xác thực otp */}
-      <Modal centered open={openOtp} onCancel={() => setOpenOtp(false)} footer={null}>
+      <Modal
+        centered
+        open={openOtp}
+        onCancel={() => {
+          setOpenOtp(false);
+          setBeginSendOTP(false);
+        }}
+        footer={null}
+      >
         {beginSendOTP === false ? (
-          <Card style={{ boxShadow: `rgba(0, 0, 0, 0.24) 0px 3px 8px` }}>
-            <div className="box">
-              <h3 className="box-title">Xác thực OTP</h3>
-              <div className="group-btn-send-otp">
-                <Space direction="vertical" size="middle">
-                  <p>Otp sẽ được gửi qua :</p>
-                  <Radio.Group onChange={(e) => setOtpType(e.target.value)} value={otpType}>
-                    <Space direction="vertical">
-                      {getUserData.email && (
-                        <Radio value={'email'}>
-                          email:{' '}
-                          <span style={{ color: `var(--secondary-color)` }}>
-                            {getUserData.email}
-                          </span>
-                        </Radio>
-                      )}
-                      {getUserData.phone && (
-                        <Radio value={'phone'}>
-                          số điện thoại:{' '}
-                          <span style={{ color: `var(--secondary-color)` }}>
-                            {getUserData.phone}
-                          </span>
-                        </Radio>
-                      )}
-                    </Space>
-                  </Radio.Group>
-                </Space>
-                <Row gutter={[16, 16]} style={{ marginTop: '1rem' }}>
-                  <Col span={24}>
-                    <Button
-                      type="primary"
-                      disabled={!getUserData?.email}
-                      block
-                      onClick={() => handleSendOTP()}
-                    >
-                      Nhận mã xác thực
-                    </Button>
-                  </Col>
-                </Row>
-
-                <Button type="primary" block danger onClick={() => handelCancelOtp()}>
-                  Huỷ
-                </Button>
-              </div>
-            </div>
-          </Card>
-        ) : (
           <div className="box">
-            <div className="box-header">
-              <Button
-                type="link"
-                shape="round"
-                className="close-btn"
-                onClick={() => setBeginSendOTP(!beginSendOTP)}
-              >
-                <CloseOutlined />
-              </Button>
+            <h3 className="box-title">Xác thực OTP</h3>
+            <div className="group-btn-send-otp">
+              <Space direction="vertical" size="middle">
+                <p>Otp sẽ được gửi qua :</p>
+                <Radio.Group onChange={(e) => setOtpType(e.target.value)} value={otpType}>
+                  <Space direction="vertical">
+                    {getUserData.email && (
+                      <Radio value={'email'}>
+                        email:{' '}
+                        <span style={{ color: `var(--secondary-color)` }}>{getUserData.email}</span>
+                      </Radio>
+                    )}
+                    {getUserData.phone && (
+                      <Radio value={'phone'}>
+                        số điện thoại:{' '}
+                        <span style={{ color: `var(--secondary-color)` }}>{getUserData.phone}</span>
+                      </Radio>
+                    )}
+                  </Space>
+                </Radio.Group>
+              </Space>
+              <Row gutter={[16, 8]} style={{ marginTop: '1rem' }}>
+                <Col span={24}>
+                  <Button
+                    type="primary"
+                    disabled={!getUserData?.email}
+                    block
+                    onClick={() => handleSendOTP()}
+                  >
+                    Nhận mã xác thực
+                  </Button>
+                </Col>
+                <Col span={24}>
+                  <Button
+                    type="primary"
+                    block
+                    danger
+                    onClick={() => {
+                      setOpenOtp(false);
+                      setBeginSendOTP(false);
+                    }}
+                  >
+                    Huỷ
+                  </Button>
+                </Col>
+              </Row>
             </div>
-            {/* <RequestOtp type={otpType} userId={userId} sentOtp={sentOtp} phone={phone} /> */}
+          </div>
+        ) : (
+          <div className="box" style={{ padding: 20 }}>
             <div>
               <main>
                 <section className="request-otp-box">
-                  <h2 className="otp-title">nhập mã xác nhận</h2>
-                  <Form form={form} onFinish={handleFinish}>
+                  <h2 className="otp-title" style={{ marginBottom: 20 }}>
+                    Nhập mã xác nhận
+                  </h2>
+                  <Form form={form} onFinish={handleFinishOtp}>
                     <Form.Item
                       name="otp"
                       className="center-error-message"
@@ -447,17 +510,8 @@ function UserProfile() {
           </div>
         )}
       </Modal>
-
-      <Modal
-        title={`Đổi ${selectedKey}`}
-        centered
-        open={open}
-        onCancel={() => setOpen(false)}
-        footer={null}
-      >
-        {content}
-      </Modal>
       {/*  */}
+      {/*Hiển thị kết quả */}
       <Modal
         title={'Kết quả'}
         centered
@@ -485,6 +539,157 @@ function UserProfile() {
               </ul>
             </div>
           </>
+        )}
+      </Modal>
+      {/* */}
+      {/* modal edit */}
+      <Modal
+        title={<>{(editPassword && 'Đổi mật khẩu') || 'Cập nhật thông tin'}</>}
+        centered
+        open={openEdit}
+        onCancel={() => {
+          setOpenEdit(false);
+          setEditPassword(false);
+        }}
+        footer={null}
+        width={500}
+        style={{ overflowY: 'auto' }}
+      >
+        {editPassword ? (
+          <Form
+            {...formItemLayout}
+            form={form}
+            initialValues={{
+              oldPassword: '',
+              newPassword: '',
+            }}
+            onFinish={handleFinishChangePassWord}
+          >
+            {/* ----------------begin old password---------------- */}
+            <Form.Item
+              name="oldPassword"
+              label="Mật Khẩu Cũ"
+              rules={[
+                {
+                  required: true,
+                  message: 'bạn chưa nhập mật khẩu',
+                },
+                {
+                  max: 40,
+                  message: 'mật khẩu không quá 40 ký tự',
+                },
+              ]}
+              hasFeedback
+            >
+              <Input.Password />
+            </Form.Item>
+            {/* ----------------end old password---------------- */}
+            {/* ----------------begin new password---------------- */}
+            <Form.Item
+              name="newPassword"
+              label="Mật Khẩu Mới"
+              rules={[
+                {
+                  required: true,
+                  message: 'bạn chưa nhập mật khẩu',
+                },
+                {
+                  max: 40,
+                  message: 'mật khẩu không quá 40 ký tự',
+                },
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    if (!value || getFieldValue('oldPassword') !== value) {
+                      return Promise.resolve(); // Mật khẩu mới không trùng với mật khẩu cũ
+                    }
+                    return Promise.reject(new Error('Mật khẩu mới không thể giống mật khẩu cũ'));
+                  },
+                }),
+              ]}
+              hasFeedback
+            >
+              <Input.Password />
+            </Form.Item>
+            {/* ----------------end new password---------------- */}
+            <Form.Item noStyle>
+              <Button block htmlType="submit" type="primary">
+                Ok
+              </Button>
+            </Form.Item>
+          </Form>
+        ) : (
+          // form cập nhật thông tin
+          <Form
+            {...formItemLayout}
+            form={form}
+            initialValues={{
+              newEmail: getProfile?.email,
+              newPhone: getProfile?.phone,
+            }}
+            onFinish={handleFinishEdit}
+          >
+            {/* ----------------begin newEmail---------------- */}
+            <Form.Item
+              name="newEmail"
+              label="Email mới"
+              rules={[
+                {
+                  type: 'email',
+                  message: 'Email của không hợp lệ',
+                },
+                {
+                  max: 255,
+                  message: 'email không quá 255 ký tự',
+                },
+                // ({ getFieldValue }) => ({
+                //   validator(_, value) {
+                //     if (!value || getFieldValue('oldEmail') !== value) {
+                //       return Promise.resolve(); // Mật khẩu mới không trùng với mật khẩu cũ
+                //     }
+                //     return Promise.reject(new Error('Email mới không thể giống Email hiện tại'));
+                //   },
+                // }),
+              ]}
+            >
+              <Input />
+            </Form.Item>
+            {/* ----------------end newEmail---------------- */}
+            {/* ----------------begin newPhone---------------- */}
+            <Form.Item
+              name="newPhone"
+              label="SĐT mới"
+              rules={[
+                {
+                  min: 10,
+                  message: 'Sđt chưa đủ 10 số',
+                },
+                {
+                  max: 10,
+                  message: 'Độ dài sdt không quá 10 số',
+                },
+                {
+                  pattern: /^\d+$/,
+                  message: 'Số điện thoại phải là số',
+                },
+                // ({ getFieldValue }) => ({
+                //   validator(_, value) {
+                //     if (!value || getFieldValue('oldPhone') !== value) {
+                //       return Promise.resolve(); // Mật khẩu mới không trùng với mật khẩu cũ
+                //     }
+                //     return Promise.reject(new Error('SĐT mới không thể giống SĐT hiện tại'));
+                //   },
+                // }),
+              ]}
+            >
+              <Input />
+            </Form.Item>
+            {/* ----------------end newPhone---------------- */}
+            <Form.Item noStyle>
+              <Button block htmlType="submit" type="primary">
+                Ok
+              </Button>
+            </Form.Item>
+          </Form>
         )}
       </Modal>
     </MarginTopContent>

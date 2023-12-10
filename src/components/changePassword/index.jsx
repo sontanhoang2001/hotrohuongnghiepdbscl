@@ -31,7 +31,6 @@ function ChangePassword() {
   //gọi redux
   const dispatch = useDispatch();
 
-  useEffect(() => {}, []);
   const handleFinish = (value) => {
     dispatch(changePasswordAsync(value));
   };

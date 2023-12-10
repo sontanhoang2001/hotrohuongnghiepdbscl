@@ -76,7 +76,7 @@ function Universities() {
   return (
     <ContainerStyled>
       <Title>
-        <HeadingTitle>các trường đại học ĐBSCL</HeadingTitle>
+        <HeadingTitle>các trường đại học</HeadingTitle>
         <div className="underline"></div>
       </Title>
       <SearchBox>

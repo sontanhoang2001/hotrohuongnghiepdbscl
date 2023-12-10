@@ -130,12 +130,28 @@ export const authOTP = createAsyncThunk(
     }
   },
 );
-// tạo một Redux Thunk, bất đồng bộ được sử dụng xác thực otp người dùng
+// tạo một Redux Thunk, đổi email
 export const authChangeEmailAsync = createAsyncThunk(
   'auth/authChangeEmail',
-  async (data, { rejectWithValue }) => {
+  async (payload, { rejectWithValue }) => {
     try {
-      const rs = await authApi.authChangeEmail(data);
+      const rs = await authApi.authChangeEmail({ newEmail: payload });
+      return rs.data.message;
+    } catch (err) {
+      if (err.response && err.response.data.message) {
+        throw rejectWithValue(err.response.data.message);
+      } else {
+        throw rejectWithValue(err.message);
+      }
+    }
+  },
+);
+// tạo một Redux Thunk, đổi số điện thoại
+export const authChangePhone = createAsyncThunk(
+  'auth/authChangePhone',
+  async (payload, { rejectWithValue }) => {
+    try {
+      const rs = await authApi.authChangePhone({ newPhone: payload });
       return rs.data.message;
     } catch (err) {
       if (err.response && err.response.data.message) {
@@ -150,9 +166,9 @@ export const authChangeEmailAsync = createAsyncThunk(
 // tạo một Redux Thunk, bất đồng bộ được sử dụng để đổi mật khẩu người dùng
 export const changePasswordAsync = createAsyncThunk(
   'auth/changePassword',
-  async (data, { rejectWithValue }) => {
+  async (payload, { rejectWithValue }) => {
     try {
-      const rs = await authApi.changePassword(data);
+      const rs = await authApi.changePassword(payload);
       return rs.data.message;
     } catch (err) {
       if (err.response && err.response.data.message) {
@@ -267,9 +283,24 @@ export const authSlice = createSlice({
       .addCase(authChangeEmailAsync.fulfilled, (state, { payload }) => {
         state.pending = false;
         state.otp = true;
-        message.success('Mã otp đã gửi đến mail của bạn', 3);
+        message.success('Đổi Email thành công');
       })
       .addCase(authChangeEmailAsync.rejected, (state, { payload }) => {
+        state.pending = false;
+        state.error = payload;
+        state.otp = false;
+        message.error(payload, 3);
+      })
+      //trạng thái của authChangePhone pending - fulfilled - rejected
+      .addCase(authChangePhone.pending, (state, { payload }) => {
+        state.pending = true;
+        state.error = null;
+      })
+      .addCase(authChangePhone.fulfilled, (state, { payload }) => {
+        state.pending = false;
+        state.otp = true;
+      })
+      .addCase(authChangePhone.rejected, (state, { payload }) => {
         state.pending = false;
         state.error = payload;
         state.otp = false;
@@ -282,6 +313,7 @@ export const authSlice = createSlice({
       })
       .addCase(changePasswordAsync.fulfilled, (state, { payload }) => {
         state.pending = false;
+        state.otp = true;
         message.success('Đổi mật khẩu thành công', 3);
       })
       .addCase(changePasswordAsync.rejected, (state, { payload }) => {
