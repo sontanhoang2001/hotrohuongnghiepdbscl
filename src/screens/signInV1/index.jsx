@@ -5,11 +5,12 @@ import signinbg from '../../assets/images/img-signin.jpg';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectLoginData, selectPending, signinAsync } from '../../redux/authSlice';
 import Header from '../../components/header';
+import CLientFooter from '../../components/footer';
 function onChange(checked) {
   // console.log(`switch to ${checked}`);
 }
 const { Title } = Typography;
-const { Footer, Content } = Layout;
+const { Content } = Layout;
 const template = [
   <svg
     data-v-4ebdc598=""
@@ -96,7 +97,8 @@ function SignInV1() {
         <Header />
         <Content className="signin">
           <Row gutter={[24, 0]} justify="space-around">
-            <Col xs={{ span: 24, offset: 0 }} lg={{ span: 6, offset: 2 }} md={{ span: 12 }}>
+            {/* <Col xs={{ span: 24, offset: 0 }} lg={{ span: 6, offset: 2 }} md={{ span: 12 }}> */}
+            <Col xs={{ span: 24 }} md={{ span: 12 }} lg={{ span: 9 }} xl={{ span: 8 }}>
               <Title className="mb-15">Đăng Nhập</Title>
               <Title className="font-regular text-muted" level={5}>
                 Nhập Email và mật khẩu để đăng nhập
@@ -163,7 +165,7 @@ function SignInV1() {
                 </Form>
               </Spin>
             </Col>
-            <Col
+            {/* <Col
               className="sign-img"
               style={{ padding: 12 }}
               xs={{ span: 24 }}
@@ -171,12 +173,13 @@ function SignInV1() {
               md={{ span: 12 }}
             >
               <img src={signinbg} alt="" />
-            </Col>
+            </Col> */}
           </Row>
         </Content>
-        <Footer>
+        {/* <Footer>
           <p className="copyright">Copyright © 2023 by Phan Huu Kiet</p>
-        </Footer>
+        </Footer> */}
+        <CLientFooter />
       </Layout>
     </>
   );

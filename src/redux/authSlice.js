@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import authApi from '../api/auth';
-import { message } from 'antd';
+import { message, notification } from 'antd';
 import { json } from 'react-router-dom';
 
 //gia tri mat dinh
@@ -283,12 +283,13 @@ export const authSlice = createSlice({
       .addCase(authChangeEmailAsync.fulfilled, (state, { payload }) => {
         state.pending = false;
         state.otp = true;
-        message.success('Đổi Email thành công');
+        notification.success({ message: 'Đổi số email thành công' });
       })
       .addCase(authChangeEmailAsync.rejected, (state, { payload }) => {
         state.pending = false;
         state.error = payload;
         state.otp = false;
+        state.profile = { ...state.profile, email: payload };
         message.error(payload, 3);
       })
       //trạng thái của authChangePhone pending - fulfilled - rejected
@@ -299,11 +300,13 @@ export const authSlice = createSlice({
       .addCase(authChangePhone.fulfilled, (state, { payload }) => {
         state.pending = false;
         state.otp = true;
+        notification.success({ message: 'Đổi số điện thoại thành công' });
       })
       .addCase(authChangePhone.rejected, (state, { payload }) => {
         state.pending = false;
         state.error = payload;
         state.otp = false;
+        state.profile = { ...state.profile, phone: payload };
         message.error(payload, 3);
       })
       //trạng thái của changePasswordAsync pending - fulfilled - rejected
@@ -314,7 +317,7 @@ export const authSlice = createSlice({
       .addCase(changePasswordAsync.fulfilled, (state, { payload }) => {
         state.pending = false;
         state.otp = true;
-        message.success('Đổi mật khẩu thành công', 3);
+        notification.success({ message: 'Đổi mật khẩu thành công' });
       })
       .addCase(changePasswordAsync.rejected, (state, { payload }) => {
         state.pending = false;

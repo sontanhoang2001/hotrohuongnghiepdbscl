@@ -1,4 +1,19 @@
-import { Card, Table, Button, Modal, Row, Col, Space, Radio, message, Form, Input } from 'antd';
+import {
+  Card,
+  Table,
+  Button,
+  Modal,
+  Row,
+  Col,
+  Space,
+  Radio,
+  message,
+  Form,
+  Input,
+  Select,
+  Upload,
+  Cascader,
+} from 'antd';
 import {
   HomeOutlined,
   MailOutlined,
@@ -6,7 +21,7 @@ import {
   EyeOutlined,
   ManOutlined,
   WomanOutlined,
-  CloseOutlined,
+  PlusOutlined,
 } from '@ant-design/icons';
 import { format } from 'date-fns';
 import React, { useEffect, useState } from 'react';
@@ -18,6 +33,7 @@ import {
   authOTP,
   changePasswordAsync,
   isOtp,
+  logout,
   requestOtp,
   selectIsOtp,
   selectLoginData,
@@ -27,6 +43,10 @@ import { useNavigate } from 'react-router-dom';
 import { getAllTestHistory, getTestHistoryById } from '../../../redux/mbtiSlice';
 import { auth, RecaptchaVerifier, signInWithPhoneNumber } from '../../../firebase/config';
 import { InputOTP } from 'antd-input-otp';
+import { getUserProfile, updateUser } from '../../../redux/userSlice';
+import { uploadFile } from '../../../firebase/uploadConfig';
+import ProvincesOpenApi from '../../../api/province';
+import TextArea from 'antd/es/input/TextArea';
 
 const formItemLayout = {
   labelCol: {
@@ -46,7 +66,30 @@ const formItemLayout = {
     },
   },
 };
-
+const residences = await ProvincesOpenApi();
+const getBase64 = (file) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
+const beforeUpload = (file) => {
+  const isImage =
+    file.type === 'image/jpeg' ||
+    file.type === 'image/png' ||
+    file.type === 'image/jpg' ||
+    file.type === 'image/raw' ||
+    file.type === 'image/tiff ';
+  if (!isImage) {
+    message.error('Chỉ có thể tải lên jpeg/png/jpg/raw/tiff file!', 3);
+  }
+  const isLt2M = file.size / 1024 / 1024 <= 10;
+  if (!isLt2M) {
+    message.error('File không vượt quá 10MB', 3);
+  }
+  return (isImage && isLt2M) || Upload.LIST_IGNORE;
+};
 function UserProfile() {
   const navigate = useNavigate();
   const [formattedDate, setFormattedDate] = useState();
@@ -55,6 +98,8 @@ function UserProfile() {
   const [form] = Form.useForm();
   const [editPassword, setEditPassword] = useState(false);
   const [formEidtValue, setFormEditValue] = useState({});
+  const [openEditProfile, setOpenEditProfile] = useState(false);
+
   //trạng thái đóng/ mở modal
   const [open, setOpen] = useState(false);
   const [open1, setOpen1] = useState(false);
@@ -70,27 +115,23 @@ function UserProfile() {
   const authOtpSuccess = useSelector(selectIsOtp);
 
   // const dataHistory = useSelector(selectMbtiQuestions);
-  const { role, status } = useSelector((state) => state.auth);
-  const { pending, historyPargams, dataHistory, major } = useSelector((state) => state.mbti);
+  const { data, pending: userPending } = useSelector((state) => state.user);
+  const {
+    pending: mbtiPending,
+    historyPargams,
+    dataHistory,
+    major,
+  } = useSelector((state) => state.mbti);
 
   useEffect(() => {
+    dispatch(getUserProfile());
     dispatch(getAllTestHistory(historyPargams));
     dispatch(getTestHistoryById(1));
-    if (status === 0) {
-      navigate('/404');
-    }
-    if (sentOtp) {
-      setOpen(false);
-      dispatch(isOtp(false));
-      setOpenOtp(true);
-    }
+    // if (sentOtp) {
+    //   setOpen(false);
+    //   dispatch(isOtp(false));
+    // }
   }, [dispatch, openOtp, open, sentOtp, getProfile]);
-
-  // useEffect(() => {
-  //   if (authOtpSuccess === true) {
-  //     setOpenEdit(true);
-  //   }
-  // }, [authOtpSuccess]);
 
   const handleView = (id) => {
     setOpen1(true);
@@ -234,12 +275,14 @@ function UserProfile() {
         if (editPassword) {
           dispatch(authOTP(formData)).then(() => {
             setOpenOtp(false);
+            setOpenEdit(true);
           });
         } else {
-          if (formEidtValue.newEmail !== '' && formEidtValue.newEmail !== getProfile?.email) {
+          if (formEidtValue.newEmail !== '' && formEidtValue.newEmail !== data?.email) {
             setOpenOtp(false);
             dispatch(authOTP(formData)).then(() => {
               dispatch(authChangeEmailAsync(formEidtValue.newEmail));
+              dispatch(getUserProfile());
             });
 
             dispatch(isOtp(false));
@@ -258,12 +301,14 @@ function UserProfile() {
               if (editPassword) {
                 dispatch(authOTP(formData)).then(() => {
                   setOpenOtp(false);
+                  setOpenEdit(true);
                 });
               } else {
-                if (formEidtValue.newPhone !== '' && formEidtValue.newPhone !== getProfile?.phone) {
+                if (formEidtValue.newPhone !== '' && formEidtValue.newPhone !== data?.phone) {
                   setOpenOtp(false);
                   dispatch(authOTP(formData)).then(() => {
                     dispatch(authChangePhone(formEidtValue.newPhone));
+                    dispatch(getUserProfile());
                   });
 
                   dispatch(isOtp(false));
@@ -278,16 +323,92 @@ function UserProfile() {
     }
   };
 
+  //hàm đổi mật khẩu
   const handleFinishChangePassWord = (value) => {
+    setOpenOtp(false);
     dispatch(changePasswordAsync(value)).then(() => {
       setOpenEdit(false);
       setEditPassword(false);
+      dispatch(isOtp(false));
+      setTimeout(() => {
+        navigate('/dang-nhap');
+        dispatch(logout());
+      }, 300);
     });
   };
+  const handleEditMailnPhone = () => {
+    form.current?.resetFields();
+    setOpenEdit(true);
+    setEditPassword(false);
+  };
+  //hàm đổi thông tin đăng nhập
   const handleFinishEdit = (value) => {
     setFormEditValue(value);
     setOpenEdit(false);
     setOpenOtp(true);
+  };
+  //customUpload tải hình ảnh
+  const customUpload = ({ onError, onSuccess, file }) => {
+    uploadFile(file)
+      .then((imgUrl) => {
+        onSuccess(null, imgUrl);
+        form.current?.setFieldsValue({
+          avatar: imgUrl,
+        });
+        // console.log('uploaded', imgUrl);
+      })
+      .catch((err) => {
+        onError({ message: err.message });
+      });
+  };
+
+  //upload avatar và preview
+  const [fileList, setFileList] = useState([]);
+  // useEffect(() => {
+  //   setFileList([data?.UserDetail?.avatar]);
+  // }, [data]);
+  useEffect(() => {
+    if (data?.UserDetail) {
+      setFileList([{ url: data?.UserDetail?.avatar }]);
+    }
+  }, [data]);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewImage, setPreviewImage] = useState('');
+  const [previewTitle, setPreviewTitle] = useState('');
+  const filter = (inputValue, path) =>
+    path.some((option) => option.label.toLowerCase().indexOf(inputValue.toLowerCase()) > -1);
+  //file trong uoload
+  const handleChangeUpload = ({ fileList: newFileList }) => setFileList(newFileList);
+  const uploadButton = (
+    <div>
+      <PlusOutlined />
+      <div
+        style={{
+          marginTop: 8,
+        }}
+      >
+        Tải lên
+      </div>
+    </div>
+  );
+  //huỷ preview
+  const handleCancel = () => setPreviewOpen(false);
+  //hàm preview
+  const handlePreview = async (file) => {
+    if (!file.url && !file.preview) {
+      file.preview = await getBase64(file.originFileObj);
+    }
+    setPreviewImage(file.url || file.preview);
+    setPreviewOpen(true);
+    setPreviewTitle(file.name || file.url.substring(file.url.lastIndexOf('/') + 1));
+  };
+
+  const handleUpdateProfile = (value) => {
+    console.log(value);
+    dispatch(updateUser(value)).then(() => {
+      dispatch(getUserProfile());
+      setOpenEditProfile(false);
+    });
   };
 
   return (
@@ -296,113 +417,132 @@ function UserProfile() {
         <Col xs={20} sm={20} md={20} lg={10}>
           <Card>
             <ProfileHeader>
-              {getProfile?.UserDetail.avatar && getProfile?.UserDetail.avatar != null ? (
-                <img src={getProfile.UserDetail.avatar} alt="avatar" />
-              ) : (
-                <img src="./images/pngegg.png" alt="avatar" />
-              )}
-
-              {/* <h4>{getInfo?.fullName}</h4> */}
-
-              <div className="text-header">
-                <p className="full-name">{getProfile?.UserDetail?.fullName}</p>
-                <p>
-                  Giới tính:{' '}
-                  {getProfile && getProfile.UserDetail.gender === 1 ? (
-                    <span>
-                      <ManOutlined style={{ color: `var(--primary-color)`, fontSize: `15px` }} />
-                    </span>
-                  ) : getProfile.UserDetail.gender === 2 ? (
-                    <span>
-                      <WomanOutlined
-                        style={{ color: `var(--secondary-color)`, fontSize: `15px` }}
-                      />
-                    </span>
-                  ) : getProfile.UserDetail.gender === 0 ? (
-                    <>🏳️‍🌈</>
+              {data?.UserDetail && (
+                <>
+                  {data.UserDetail.avatar ? (
+                    <img src={data.UserDetail.avatar} alt="avatar" />
                   ) : (
-                    <span>undifine</span>
+                    <img src="./images/pngegg.png" alt="avatar" />
                   )}
-                </p>
-              </div>
+                  <div className="text-header">
+                    <p className="full-name">{data.UserDetail.fullName}</p>
+                    <p>
+                      Giới tính:{' '}
+                      {data.UserDetail.gender === 1 ? (
+                        <span>
+                          <ManOutlined
+                            style={{ color: 'var(--primary-color)', fontSize: '15px' }}
+                          />
+                        </span>
+                      ) : data.UserDetail.gender === 2 ? (
+                        <span>
+                          <WomanOutlined
+                            style={{ color: 'var(--secondary-color)', fontSize: '15px' }}
+                          />
+                        </span>
+                      ) : data.UserDetail.gender === 0 ? (
+                        <>🏳️‍🌈</>
+                      ) : (
+                        <span>undefined</span>
+                      )}
+                    </p>
+                  </div>
+                </>
+              )}
             </ProfileHeader>
-            <hr
-              style={{
-                border: `1px solid transparent`,
-                borderColor: 'rgb(217, 217, 217)',
-                marginTop: 20,
-              }}
-            />
-            <BodyContent>
-              <Row style={{ marginTop: 20 }}>
-                <Col span={24}>
-                  <p>
-                    <PhoneOutlined
-                      className="profile-icon"
-                      style={{ color: 'var(--primary-color)' }}
-                    />{' '}
-                    - Điện Thoại
-                  </p>
-                  <p className="underline">{getProfile?.phone}</p>
-                </Col>
-                <Col></Col>
-              </Row>
-              <Row style={{ marginTop: 20 }}>
-                <Col span={24}>
-                  <p>
-                    <MailOutlined
-                      className="profile-icon"
-                      style={{ color: 'var(--primary-color)' }}
-                    />{' '}
-                    - E-Mail
-                  </p>
-                  <p className="underline">{getProfile?.email}</p>
-                </Col>
-              </Row>
-              <Row style={{ marginTop: 20 }}>
-                <Col span={24}>
-                  <p>
-                    <HomeOutlined
-                      className="profile-icon"
-                      style={{ color: 'var(--primary-color)' }}
-                    />{' '}
-                    - Địa chỉ
-                  </p>
 
-                  <p></p>
-                  <p className="underline">
-                    {getProfile?.UserDetail?.address}, {getProfile?.UserDetail?.addressDetail}
-                  </p>
-                </Col>
-              </Row>
-              <Row gutter={[16, 16]} style={{ marginTop: 20 }}>
-                <Col span={12}>
-                  <Button
-                    type="primary"
-                    danger
-                    block
-                    onClick={() => {
-                      setOpenOtp(true);
-                      setEditPassword(true);
-                    }}
-                  >
-                    Đổi mật khẩu
-                  </Button>
-                </Col>
-                <Col span={12}>
-                  <Button
-                    type="primary"
-                    block
-                    onClick={() => {
-                      setOpenEdit(true);
-                      setEditPassword(false);
-                    }}
-                  >
-                    Cập nhật thông tin
-                  </Button>
-                </Col>
-              </Row>
-            </BodyContent>
+            {data && data.UserDetail && (
+              <BodyContent>
+                <Row style={{ marginTop: 20 }}>
+                  <Col span={24}>
+                    <p>
+                      <PhoneOutlined
+                        className="profile-icon"
+                        style={{ color: 'var(--primary-color)' }}
+                      />{' '}
+                      - Điện Thoại
+                    </p>
+                    <p className="underline">{data.phone}</p>
+                  </Col>
+                </Row>
+                <Row style={{ marginTop: 20 }}>
+                  <Col span={24}>
+                    <p>
+                      <MailOutlined
+                        className="profile-icon"
+                        style={{ color: 'var(--primary-color)' }}
+                      />{' '}
+                      - E-Mail
+                    </p>
+                    <p className="underline">{data.email}</p>
+                  </Col>
+                </Row>
+                <Row style={{ marginTop: 20 }}>
+                  <Col span={24}>
+                    <p>
+                      <HomeOutlined
+                        className="profile-icon"
+                        style={{ color: 'var(--primary-color)' }}
+                      />{' '}
+                      - Địa chỉ
+                    </p>
+                    <p className="underline">{data.UserDetail.address}</p>
+                  </Col>
+                </Row>
+                <Row style={{ marginTop: 20 }}>
+                  <Col span={24}>
+                    <p>
+                      <HomeOutlined
+                        className="profile-icon"
+                        style={{ color: 'var(--primary-color)' }}
+                      />{' '}
+                      - Địa chỉ chi tiết
+                    </p>
+                    <p className="underline">{data.UserDetail.addressDetail}</p>
+                  </Col>
+                </Row>
+                <Row gutter={[16, 16]} style={{ marginTop: 20 }}>
+                  <Col span={12}>
+                    <Button
+                      type="primary"
+                      danger
+                      block
+                      onClick={() => {
+                        setOpenOtp(true);
+                        setEditPassword(true);
+                      }}
+                      style={{ whiteSpace: 'inherit', height: 50 }}
+                    >
+                      Đổi mật khẩu
+                    </Button>
+                  </Col>
+                  <Col span={12}>
+                    <Button
+                      type="primary"
+                      block
+                      onClick={() => {
+                        handleEditMailnPhone();
+                      }}
+                      style={{ whiteSpace: 'inherit', height: 50 }}
+                    >
+                      Cập nhật thông tin đăng nhập
+                    </Button>
+                  </Col>
+                  <Col span={24}>
+                    <Button
+                      type="primary"
+                      block
+                      onClick={() => {
+                        setOpenEditProfile(true);
+                      }}
+                      style={{ whiteSpace: 'inherit', height: 50 }}
+                    >
+                      Cập nhật thông tin
+                    </Button>
+                  </Col>
+                </Row>
+              </BodyContent>
+            )}
           </Card>
         </Col>
         <Col xs={20} sm={20} md={20} lg={10}>
@@ -413,7 +553,7 @@ function UserProfile() {
             </HistoryHeader>
 
             <Table
-              loading={pending}
+              loading={mbtiPending}
               dataSource={dataHistory?.data}
               columns={columns}
               pagination={false}
@@ -428,6 +568,7 @@ function UserProfile() {
         onCancel={() => {
           setOpenOtp(false);
           setBeginSendOTP(false);
+          dispatch(isOtp(false));
         }}
         footer={null}
       >
@@ -439,16 +580,15 @@ function UserProfile() {
                 <p>Otp sẽ được gửi qua :</p>
                 <Radio.Group onChange={(e) => setOtpType(e.target.value)} value={otpType}>
                   <Space direction="vertical">
-                    {getUserData.email && (
+                    {data?.email && (
                       <Radio value={'email'}>
-                        email:{' '}
-                        <span style={{ color: `var(--secondary-color)` }}>{getUserData.email}</span>
+                        email: <span style={{ color: `var(--secondary-color)` }}>{data.email}</span>
                       </Radio>
                     )}
-                    {getUserData.phone && (
+                    {data?.phone && (
                       <Radio value={'phone'}>
                         số điện thoại:{' '}
-                        <span style={{ color: `var(--secondary-color)` }}>{getUserData.phone}</span>
+                        <span style={{ color: `var(--secondary-color)` }}>{data.phone}</span>
                       </Radio>
                     )}
                   </Space>
@@ -458,9 +598,12 @@ function UserProfile() {
                 <Col span={24}>
                   <Button
                     type="primary"
-                    disabled={!getUserData?.email}
+                    disabled={!data?.email}
                     block
-                    onClick={() => handleSendOTP()}
+                    onClick={() => {
+                      handleSendOTP();
+                      form.current?.resetFields();
+                    }}
                   >
                     Nhận mã xác thực
                   </Button>
@@ -542,9 +685,9 @@ function UserProfile() {
         )}
       </Modal>
       {/* */}
-      {/* modal edit */}
+      {/* modal edit thông tin đăng nhập*/}
       <Modal
-        title={<>{(editPassword && 'Đổi mật khẩu') || 'Cập nhật thông tin'}</>}
+        title={<>{(editPassword && 'Đổi mật khẩu') || 'Cập nhật thông tin đăng nhập'}</>}
         centered
         open={openEdit}
         onCancel={() => {
@@ -613,7 +756,7 @@ function UserProfile() {
             {/* ----------------end new password---------------- */}
             <Form.Item noStyle>
               <Button block htmlType="submit" type="primary">
-                Ok
+                Đồng ý
               </Button>
             </Form.Item>
           </Form>
@@ -623,8 +766,8 @@ function UserProfile() {
             {...formItemLayout}
             form={form}
             initialValues={{
-              newEmail: getProfile?.email,
-              newPhone: getProfile?.phone,
+              newEmail: data?.email,
+              newPhone: data?.phone,
             }}
             onFinish={handleFinishEdit}
           >
@@ -641,14 +784,6 @@ function UserProfile() {
                   max: 255,
                   message: 'email không quá 255 ký tự',
                 },
-                // ({ getFieldValue }) => ({
-                //   validator(_, value) {
-                //     if (!value || getFieldValue('oldEmail') !== value) {
-                //       return Promise.resolve(); // Mật khẩu mới không trùng với mật khẩu cũ
-                //     }
-                //     return Promise.reject(new Error('Email mới không thể giống Email hiện tại'));
-                //   },
-                // }),
               ]}
             >
               <Input />
@@ -671,14 +806,6 @@ function UserProfile() {
                   pattern: /^\d+$/,
                   message: 'Số điện thoại phải là số',
                 },
-                // ({ getFieldValue }) => ({
-                //   validator(_, value) {
-                //     if (!value || getFieldValue('oldPhone') !== value) {
-                //       return Promise.resolve(); // Mật khẩu mới không trùng với mật khẩu cũ
-                //     }
-                //     return Promise.reject(new Error('SĐT mới không thể giống SĐT hiện tại'));
-                //   },
-                // }),
               ]}
             >
               <Input />
@@ -686,11 +813,171 @@ function UserProfile() {
             {/* ----------------end newPhone---------------- */}
             <Form.Item noStyle>
               <Button block htmlType="submit" type="primary">
-                Ok
+                Đồng ý
               </Button>
             </Form.Item>
           </Form>
         )}
+      </Modal>
+      {/*  */}
+      {/* modal edit thông tin*/}
+      <Modal
+        title={<>{(editPassword && 'Đổi mật khẩu') || 'Cập nhật thông tin đăng nhập'}</>}
+        open={openEditProfile}
+        centered
+        onCancel={() => {
+          setOpenEditProfile(false);
+        }}
+        footer={null}
+        width={500}
+        style={{ overflowY: 'auto' }}
+      >
+        {data?.UserDetail && (
+          <Form
+            {...formItemLayout}
+            initialValues={{
+              fullName: `${data.UserDetail.fullName}`,
+              gender: `${data.UserDetail.gender}`,
+              birthday: `${data.UserDetail.birthday}`,
+              address: `${data.UserDetail.address}`,
+              avatar: `${data.UserDetail.avatar}`,
+              addressDetail: `${data.UserDetail.addressDetail}`,
+            }}
+            onFinish={handleUpdateProfile}
+          >
+            {/* ----------------begin birthday---------------- */}
+            <Form.Item name="birthday">
+              <Input style={{ height: 50, display: 'none' }} />
+            </Form.Item>
+            {/* ----------------end birthday---------------- */}
+            {/* ----------------begin fullName---------------- */}
+            <Form.Item
+              name="fullName"
+              label="Họ và Tên"
+              rules={[
+                {
+                  required: true,
+                  message: 'Chưa nhập họ và tên',
+                },
+                {
+                  max: 255,
+                  message: 'Độ dài họ và tên không quá 255 ký tự ',
+                },
+              ]}
+            >
+              <Input style={{ height: 50 }} />
+            </Form.Item>
+            {/* ----------------end fullName---------------- */}
+            {/* ----------------begin gender---------------- */}
+            <Form.Item
+              name="gender"
+              label="Giói tính"
+              rules={[
+                {
+                  required: true,
+                  message: 'Chưa chọn giới tính',
+                },
+              ]}
+            >
+              <Select
+                options={[
+                  {
+                    value: '1',
+                    label: 'Nam',
+                  },
+                  {
+                    value: '2',
+                    label: 'Nữ',
+                  },
+                  {
+                    value: '0',
+                    label: 'Khác',
+                  },
+                ]}
+                style={{ height: 50 }}
+              />
+            </Form.Item>
+            {/* ----------------end gender---------------- */}
+            {/* ----------------begin avatar---------------- */}
+            <Form.Item
+              name="avatar"
+              label="Ảnh đại diện"
+              rules={[
+                {
+                  required: true,
+                  message: 'Chưa chọn hình',
+                },
+              ]}
+            >
+              <AvatarUploadStyled>
+                <Upload
+                  listType="picture-card"
+                  fileList={fileList}
+                  onPreview={handlePreview}
+                  onChange={handleChangeUpload}
+                  beforeUpload={beforeUpload}
+                  accept=".jpeg,.png,.jpg,.raw,.tiff"
+                  maxCount={1}
+                  style={{ width: 200, height: 200 }}
+                  customRequest={customUpload}
+                >
+                  {fileList.length >= 1 ? null : uploadButton}
+                </Upload>
+              </AvatarUploadStyled>
+            </Form.Item>
+            {/* ----------------end avatar---------------- */}
+            {/* ----------------begin address---------------- */}
+            <Form.Item
+              name="address"
+              label="Địa chỉ"
+              rules={[
+                {
+                  // type: 'array',
+                  required: true,
+                  message: 'Hãy nhập địa chỉ của bạn',
+                },
+              ]}
+            >
+              <Cascader
+                options={residences}
+                showSearch={{
+                  filter,
+                }}
+                style={{ height: 50 }}
+              />
+            </Form.Item>
+            {/* ----------------end address---------------- */}
+            {/* ----------------begin addressDetail---------------- */}
+            <Form.Item
+              name="addressDetail"
+              label="Chi tiết địa chỉ"
+              rules={[
+                {
+                  required: true,
+                  message: 'Hãy nhập địa chỉ của bạn',
+                },
+              ]}
+            >
+              <TextArea rows={4} maxLength={500} />
+            </Form.Item>
+            {/* ----------------end addressDetail---------------- */}
+            <Form.Item noStyle>
+              <Button block htmlType="submit" type="primary">
+                Đồng ý
+              </Button>
+            </Form.Item>
+          </Form>
+        )}
+      </Modal>
+      {/* preview avtar */}
+      <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
+        <img
+          alt="preview"
+          style={{
+            width: '100%',
+          }}
+          src={previewImage}
+        />
       </Modal>
     </MarginTopContent>
   );
@@ -752,6 +1039,28 @@ const ViewIconStyled = styled.div`
     svg {
       width: 20px !important;
       font-size: 20px !important;
+    }
+  }
+`;
+
+const AvatarUploadStyled = styled.div`
+  .ant-upload-select,
+  .ant-upload-list-item-container {
+    width: 200px !important;
+    height: 200px !important;
+
+    .ant-upload-list-item {
+      .ant-upload-list-item-actions {
+        /* a {
+          span,
+          .anticon .anticon-eye {
+            width: 30px;
+            svg {
+              font-size: 40px;
+            }
+          }
+        } */
+      }
     }
   }
 `;

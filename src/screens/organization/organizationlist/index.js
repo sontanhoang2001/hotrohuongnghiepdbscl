@@ -338,7 +338,7 @@ function OrganizationList() {
             </Button>
           </Col>
           <Col xs="24" xl={24}>
-            <Card bordered={false} className="criclebox tablespace mb-24" title="Tốc chức của bạn">
+            <Card bordered={false} className="criclebox tablespace mb-24" title="Tố chức của bạn">
               <div className="table-responsive">
                 <Table
                   bordered={true}

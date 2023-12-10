@@ -14,6 +14,14 @@ const userApi = {
     const url = `${pathname}/restore/${id}`;
     return axiosService.post(url);
   },
+  updateUser: (payload) => {
+    const url = `${pathname}/edit`;
+    return axiosService.patch(url, payload);
+  },
+  getUserProfile: () => {
+    const url = `${pathname}/profile`;
+    return axiosService.get(url);
+  },
 };
 
 export default userApi;
