@@ -1,52 +1,112 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import {
   Row,
   Col,
   Card,
   Button,
-  List,
   Descriptions,
   Avatar,
   Radio,
-  Switch,
   Upload,
   message,
+  Dropdown,
+  Form,
+  Modal,
+  Space,
+  Input,
+  Select,
+  Cascader,
 } from 'antd';
 
-import {
-  FacebookOutlined,
-  TwitterOutlined,
-  InstagramOutlined,
-  VerticalAlignTopOutlined,
-} from '@ant-design/icons';
+import { PlusOutlined, WomanOutlined, ManOutlined } from '@ant-design/icons';
 
 import BgProfile from '../../../assets/images/bg-profile.jpg';
-import profilavatar from '../../../assets/images/face-1.jpg';
-import convesionImg from '../../../assets/images/face-3.jpg';
-import convesionImg2 from '../../../assets/images/face-4.jpg';
-import convesionImg3 from '../../../assets/images/face-5.jpeg';
-import convesionImg4 from '../../../assets/images/face-6.jpeg';
-import convesionImg5 from '../../../assets/images/face-2.jpg';
-import project1 from '../../../assets/images/home-decor-1.jpeg';
-import project2 from '../../../assets/images/home-decor-2.jpeg';
-import project3 from '../../../assets/images/home-decor-3.jpeg';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectIsOtp, selectLoginData } from '../../../redux/authSlice';
+import {
+  authChangeEmailAsync,
+  authChangePhone,
+  authOTP,
+  changePasswordAsync,
+  isOtp,
+  logout,
+  requestOtp,
+} from '../../../redux/authSlice';
+import { getUserProfile, updateUser } from '../../../redux/userSlice';
+import { useNavigate } from 'react-router-dom';
+import { auth, RecaptchaVerifier, signInWithPhoneNumber } from '../../../firebase/config';
+import { uploadFile } from '../../../firebase/uploadConfig';
+import { InputOTP } from 'antd-input-otp';
+import ProvincesOpenApi from '../../../api/province';
+import styled from 'styled-components';
+import TextArea from 'antd/es/input/TextArea';
 
+const formItemLayout = {
+  labelCol: {
+    xs: {
+      span: 24,
+    },
+    sm: {
+      span: 6,
+    },
+  },
+  wrapperCol: {
+    xs: {
+      span: 24,
+    },
+    sm: {
+      span: 16,
+    },
+  },
+};
+const residences = await ProvincesOpenApi();
+const getBase64 = (file) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
+const beforeUpload = (file) => {
+  const isImage =
+    file.type === 'image/jpeg' ||
+    file.type === 'image/png' ||
+    file.type === 'image/jpg' ||
+    file.type === 'image/raw' ||
+    file.type === 'image/tiff ';
+  if (!isImage) {
+    message.error('Chỉ có thể tải lên jpeg/png/jpg/raw/tiff file!', 3);
+  }
+  const isLt2M = file.size / 1024 / 1024 <= 10;
+  if (!isLt2M) {
+    message.error('File không vượt quá 10MB', 3);
+  }
+  return (isImage && isLt2M) || Upload.LIST_IGNORE;
+};
 function Profile() {
+  const navigate = useNavigate();
+  const [result, setResult] = useState('');
+  const [otpType, setOtpType] = useState('email');
+  const [form] = Form.useForm();
+  const [editPassword, setEditPassword] = useState(false);
+  const [formEidtValue, setFormEditValue] = useState({});
+  const [openEditProfile, setOpenEditProfile] = useState(false);
   const [imageURL, setImageURL] = useState(false);
-  const [, setLoading] = useState(false);
+  const formRef = React.useRef(null);
+  //trạng thái đóng/ mở modal
+  const [open, setOpen] = useState(false);
+  const [open1, setOpen1] = useState(false);
+  const [openOtp, setOpenOtp] = useState(false);
+  const [openEdit, setOpenEdit] = useState(false);
+  const [beginSendOTP, setBeginSendOTP] = useState(false); //thay đối giá trị đóng mở của của sổ
   //gọi redux
-  const sentOtp = useSelector(selectIsOtp);
   const dispatch = useDispatch();
-  const getProfile = useSelector(selectLoginData);
-  const { role, status } = useSelector((state) => state.auth);
 
-  // useEffect(() => {
-  //   console.log(getProfile);
-  //   console.log(getProfile.UserDetail);
-  // }, [getProfile]);
+  const { data, pending: userPending } = useSelector((state) => state.user);
+
+  useEffect(() => {
+    dispatch(getUserProfile());
+  }, []);
 
   const roleName = [
     {
@@ -60,36 +120,18 @@ function Profile() {
     },
   ];
 
-  const getBase64 = (img, callback) => {
-    const reader = new FileReader();
-    reader.addEventListener('load', () => callback(reader.result));
-    reader.readAsDataURL(img);
-  };
-
-  const beforeUpload = (file) => {
-    const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
-    if (!isJpgOrPng) {
-      message.error('You can only upload JPG/PNG file!');
-    }
-    const isLt2M = file.size / 1024 / 1024 < 2;
-    if (!isLt2M) {
-      message.error('Image must smaller than 2MB!');
-    }
-    return isJpgOrPng && isLt2M;
-  };
-
-  const handleChange = (info) => {
-    if (info.file.status === 'uploading') {
-      setLoading(false);
-      return;
-    }
-    if (info.file.status === 'done') {
-      getBase64(info.file.originFileObj, (imageUrl) => {
-        setLoading(false);
-        setImageURL(false);
-      });
-    }
-  };
+  // const handleChange = (info) => {
+  //   if (info.file.status === 'uploading') {
+  //     setLoading(false);
+  //     return;
+  //   }
+  //   if (info.file.status === 'done') {
+  //     getBase64(info.file.originFileObj, (imageUrl) => {
+  //       setLoading(false);
+  //       setImageURL(false);
+  //     });
+  //   }
+  // };
 
   const pencil = [
     <svg
@@ -111,62 +153,270 @@ function Profile() {
     </svg>,
   ];
 
+  const items = [
+    {
+      key: '1',
+      label: (
+        <div
+          onClick={() => {
+            setOpenEditProfile(true);
+          }}
+        >
+          Cập nhật thông tin
+        </div>
+      ),
+    },
+    {
+      key: '2',
+      label: <div onClick={() => handleEditMailnPhone()}>Cập nhật thông tin đăng nhập</div>,
+    },
+    {
+      key: '3',
+      label: (
+        <div
+          onClick={() => {
+            setOpenOtp(true);
+            setEditPassword(true);
+          }}
+        >
+          Đổi mật khẩu
+        </div>
+      ),
+    },
+  ];
+
+  const handleSendOTP = () => {
+    if (otpType === 'email') {
+      setBeginSendOTP(true);
+      const requestData = {
+        userId: data?.id,
+        type: otpType,
+      };
+
+      dispatch(requestOtp(requestData));
+    } else if (otpType === 'phone') {
+      setBeginSendOTP(true);
+
+      let phoneNumber = `+84${data?.phone.substring(1)}`;
+
+      setTimeout(() => {
+        signin(phoneNumber);
+      }, 5000);
+    }
+  };
+
+  const signin = (phoneNumber) => {
+    try {
+      if (phoneNumber === '') return;
+
+      let verify = new RecaptchaVerifier(auth, 'recaptcha-container', {
+        size: 'invisible',
+      });
+
+      signInWithPhoneNumber(auth, phoneNumber, verify)
+        .then((result) => {
+          setResult(result);
+        })
+        .catch((err) => {
+          console.log('error o trong', err);
+
+          console.log(err);
+        });
+    } catch (error) {
+      console.log('error', error);
+      console.log('hết hạn');
+      message.error('Gửi mã xác thực OTP đã hết hạn!', 3);
+    }
+  };
+
+  //hàm xác thựcn otp bằng số điện thoại
+  const ValidateOtpByPhone = (otp) => {
+    if (otp.length < 6) {
+      message.error('Bạn chưa nhập đủ mã OTP', 3);
+    }
+
+    if (otp === null) return;
+
+    return new Promise((resolve, reject) => {
+      return result
+        .confirm(otp)
+        .then((result) => {
+          resolve(result);
+        })
+        .catch((err) => {
+          // console.log('Incorrect code');
+          reject(err);
+        });
+    });
+  };
+  //hàm sử lý khi người dùng submit
+  const handleFinishOtp = (values) => {
+    // The value will be array of string
+    // Check the field if there is no value, or value is undefined/empty string
+    const { otp } = values;
+
+    //kiểm tra otp có đúng định dạng hay không
+    //khác undefined
+    //khác chuỗi rỗng
+    //khác null
+    if (!otp || otp.includes(undefined) || otp.includes('')) {
+      return form.setFields([
+        {
+          name: 'otp',
+          errors: ['mã xác nhận không hợp lệ!!!'],
+        },
+      ]);
+    }
+
+    //chuyển đổi mảng otp sang chuỗi
+    const otpString = otp.join('');
+
+    // tạo giá trị request cho api
+    if (data?.id) {
+      if (otpType === 'email') {
+        const formData = {
+          userId: data?.id,
+          type: otpType,
+          otpCode: otpString,
+        };
+        setOpenOtp(false);
+        if (editPassword) {
+          dispatch(authOTP(formData)).then(() => {
+            setOpenOtp(false);
+            setOpenEdit(true);
+          });
+        } else {
+          if (formEidtValue.newEmail !== '' && formEidtValue.newEmail !== data?.email) {
+            setOpenOtp(false);
+            dispatch(authOTP(formData)).then(() => {
+              dispatch(authChangeEmailAsync(formEidtValue.newEmail));
+              dispatch(getUserProfile());
+            });
+
+            dispatch(isOtp(false));
+          }
+        }
+      } else if (otpType === 'phone') {
+        const formData = {
+          userId: data?.id,
+          type: otpType,
+          otpCode: '',
+        };
+        // Update status active for user
+        ValidateOtpByPhone(otpString)
+          .then((result) => {
+            if (result) {
+              if (editPassword) {
+                dispatch(authOTP(formData)).then(() => {
+                  setOpenOtp(false);
+                  setOpenEdit(true);
+                });
+              } else {
+                if (formEidtValue.newPhone !== '' && formEidtValue.newPhone !== data?.phone) {
+                  setOpenOtp(false);
+                  dispatch(authOTP(formData)).then(() => {
+                    dispatch(authChangePhone(formEidtValue.newPhone));
+                    dispatch(getUserProfile());
+                  });
+
+                  dispatch(isOtp(false));
+                }
+              }
+            }
+          })
+          .catch(() => {
+            message.error('Xác thực OTP thất bại!', 3);
+          });
+      }
+    }
+  };
+
+  //hàm đổi mật khẩu
+  const handleFinishChangePassWord = (value) => {
+    setOpenOtp(false);
+    dispatch(changePasswordAsync(value)).then(() => {
+      setOpenEdit(false);
+      setEditPassword(false);
+      dispatch(isOtp(false));
+      setTimeout(() => {
+        navigate('/dang-nhap');
+        dispatch(logout());
+      }, 300);
+    });
+  };
+  const handleEditMailnPhone = () => {
+    form.current?.resetFields();
+    setOpenEdit(true);
+    setEditPassword(false);
+  };
+  //hàm đổi thông tin đăng nhập
+  const handleFinishEdit = (value) => {
+    setFormEditValue(value);
+    setOpenEdit(false);
+    setOpenOtp(true);
+  };
+  //customUpload tải hình ảnh
+  //customUpload tải hình ảnh
+  const customUpload = ({ onError, onSuccess, file }) => {
+    uploadFile(file)
+      .then((imgUrl) => {
+        onSuccess(null, imgUrl);
+        formRef.current?.setFieldsValue({
+          avatar: imgUrl,
+        });
+      })
+      .catch((err) => {
+        onError({ message: err.message });
+      });
+  };
+
+  //upload avatar và preview
+  const [fileList, setFileList] = useState([]);
+  // useEffect(() => {
+  //   setFileList([data?.UserDetail?.avatar]);
+  // }, [data]);
+  useEffect(() => {
+    if (data?.UserDetail) {
+      setFileList([{ url: data?.UserDetail?.avatar }]);
+    }
+  }, [data]);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewImage, setPreviewImage] = useState('');
+  const [previewTitle, setPreviewTitle] = useState('');
+  const filter = (inputValue, path) =>
+    path.some((option) => option.label.toLowerCase().indexOf(inputValue.toLowerCase()) > -1);
+  //file trong uoload
+  const handleChangeUpload = ({ fileList: newFileList }) => setFileList(newFileList);
   const uploadButton = (
-    <div className="ant-upload-text font-semibold text-dark">
-      {<VerticalAlignTopOutlined style={{ width: 20, color: '#000' }} />}
-      <div>Upload New Project</div>
+    <div>
+      <PlusOutlined />
+      <div
+        style={{
+          marginTop: 8,
+        }}
+      >
+        Tải lên
+      </div>
     </div>
   );
+  //huỷ preview
+  const handleCancel = () => setPreviewOpen(false);
+  //hàm preview
+  const handlePreview = async (file) => {
+    if (!file.url && !file.preview) {
+      file.preview = await getBase64(file.originFileObj);
+    }
+    setPreviewImage(file.url || file.preview);
+    setPreviewOpen(true);
+    setPreviewTitle(file.name || file.url.substring(file.url.lastIndexOf('/') + 1));
+  };
 
-  const data = [
-    {
-      title: 'Sophie B.',
-      avatar: convesionImg,
-      description: 'Hi! I need more information…',
-    },
-    {
-      title: 'Anne Marie',
-      avatar: convesionImg2,
-      description: 'Awesome work, can you…',
-    },
-    {
-      title: 'Ivan',
-      avatar: convesionImg3,
-      description: 'About files I can…',
-    },
-    {
-      title: 'Peterson',
-      avatar: convesionImg4,
-      description: 'Have a great afternoon…',
-    },
-    {
-      title: 'Nick Daniel',
-      avatar: convesionImg5,
-      description: 'Hi! I need more information…',
-    },
-  ];
-
-  const project = [
-    {
-      img: project1,
-      titlesub: 'Project #1',
-      title: 'Modern',
-      disciption: 'As Uber works through a huge amount of internal management turmoil.',
-    },
-    {
-      img: project2,
-      titlesub: 'Project #2',
-      title: 'Scandinavian',
-      disciption: 'Music is something that every person has his or her own specific opinion about.',
-    },
-    {
-      img: project3,
-      titlesub: 'Project #3',
-      title: 'Minimalist',
-      disciption:
-        'Different people have different taste, and various types of music, Zimbali Resort',
-    },
-  ];
+  const handleUpdateProfile = (value) => {
+    dispatch(updateUser(value)).then(() => {
+      dispatch(getUserProfile());
+      setOpenEditProfile(false);
+    });
+  };
 
   return (
     <>
@@ -179,16 +429,16 @@ function Profile() {
           <Row justify="space-between" align="middle" gutter={[24, 0]}>
             <Col span={24} md={12} className="col-info">
               <Avatar.Group>
-                {getProfile?.UserDetail?.avatar ? (
-                  <Avatar size={74} shape="square" src={getProfile?.UserDetail?.avatar} />
+                {data?.UserDetail?.avatar ? (
+                  <Avatar size={74} shape="square" src={data?.UserDetail?.avatar} />
                 ) : (
                   // <img src={getProfile?.UserDetail.avatar} alt="avatar" />
                   <img src="./images/pngegg.png" alt="avatar" />
                 )}
 
                 <div className="avatar-info">
-                  <h4 className="font-semibold m-0">{getProfile?.UserDetail?.fullName}</h4>
-                  <p>{getProfile?.email}</p>
+                  <h4 className="font-semibold m-0">{data?.UserDetail?.fullName}</h4>
+                  <p>{data?.email}</p>
                 </div>
               </Avatar.Group>
             </Col>
@@ -202,7 +452,16 @@ function Profile() {
             bordered={false}
             title={<h6 className="font-semibold m-0">Thông tin cá nhân</h6>}
             className="header-solid h-full card-profile-information"
-            extra={<Button type="link">{pencil}</Button>}
+            extra={
+              <Dropdown
+                menu={{
+                  items,
+                }}
+                placement="bottomRight"
+              >
+                <Button type="link">{pencil}</Button>
+              </Dropdown>
+            }
             bodyStyle={{ paddingTop: 0, paddingBottom: 16 }}
           >
             {/* <p className="text-dark">
@@ -212,52 +471,452 @@ function Profile() {
               is creating an illusion of equality).{' '}
             </p> */}
             <hr style={{}} />
-            <Descriptions>
-              <Descriptions.Item label="Họ và Tên" span={3}>
-                {getProfile?.UserDetail?.fullName}
-              </Descriptions.Item>
-              <Descriptions.Item label="SĐT" span={3}>
-                {getProfile?.phone}
 
-                {/* {getProfile?.phone} */}
-              </Descriptions.Item>
-              <Descriptions.Item label="Email" span={3}>
-                {getProfile?.email}
-              </Descriptions.Item>
-              <Descriptions.Item label="Địa chỉ" span={3}>
-                {getProfile?.UserDetail?.address}, {getProfile?.UserDetail?.addressDetail}
-                {/* {getProfile?.UserDetail?.address}, {getProfile?.UserDetail?.addressDetail} */}
-              </Descriptions.Item>
-            </Descriptions>
+            {data?.UserDetail && (
+              <Descriptions lo>
+                <Descriptions.Item label="Họ và Tên" span={3}>
+                  {data.UserDetail.fullName}
+                </Descriptions.Item>
+                <Descriptions.Item label="Giới tính" span={3}>
+                  {data.UserDetail.gender === 1 ? (
+                    <span>
+                      <ManOutlined style={{ color: 'var(--primary-color)', fontSize: '15px' }} />
+                    </span>
+                  ) : data.UserDetail.gender === 2 ? (
+                    <span>
+                      <WomanOutlined
+                        style={{ color: 'var(--secondary-color)', fontSize: '15px' }}
+                      />
+                    </span>
+                  ) : data.UserDetail.gender === 0 ? (
+                    <>🏳️‍🌈</>
+                  ) : (
+                    <span>undefined</span>
+                  )}
+                </Descriptions.Item>
+                <Descriptions.Item label="SĐT" span={3}>
+                  {data.phone}
+                </Descriptions.Item>
+                <Descriptions.Item label="Email" span={3}>
+                  {data.email}
+                </Descriptions.Item>
+                <Descriptions.Item label="Địa chỉ" span={3}>
+                  {data.UserDetail.address}
+                </Descriptions.Item>
+                <Descriptions.Item label="Chi tiết địa chỉ" span={3}>
+                  {data.UserDetail.addressDetail}
+                </Descriptions.Item>
+              </Descriptions>
+            )}
           </Card>
         </Col>
-        {/* <Col span={24} md={12} className="mb-24">
-          <Card
-            bordered={false}
-            title={<h6 className="font-semibold m-0">Conversations</h6>}
-            className="header-solid h-full"
-            bodyStyle={{ paddingTop: 0, paddingBottom: 16 }}
-          >
-            <List
-              itemLayout="horizontal"
-              dataSource={data}
-              split={false}
-              className="conversations-list"
-              renderItem={(item) => (
-                <List.Item actions={[<Button type="link">REPLY</Button>]}>
-                  <List.Item.Meta
-                    avatar={<Avatar shape="square" size={48} src={item.avatar} />}
-                    title={item.title}
-                    description={item.description}
-                  />
-                </List.Item>
-              )}
-            />
-          </Card>
-        </Col> */}
       </Row>
+      {/* xác thực otp */}
+      <Modal
+        centered
+        open={openOtp}
+        onCancel={() => {
+          setOpenOtp(false);
+          setBeginSendOTP(false);
+          dispatch(isOtp(false));
+        }}
+        footer={null}
+      >
+        {beginSendOTP === false ? (
+          <div className="box">
+            <h3 className="box-title">Xác thực OTP</h3>
+            <div className="group-btn-send-otp">
+              <Space direction="vertical" size="middle">
+                <p>Otp sẽ được gửi qua :</p>
+                <Radio.Group onChange={(e) => setOtpType(e.target.value)} value={otpType}>
+                  <Space direction="vertical">
+                    {data?.email && (
+                      <Radio value={'email'}>
+                        email: <span style={{ color: `var(--secondary-color)` }}>{data.email}</span>
+                      </Radio>
+                    )}
+                    {data?.phone && (
+                      <Radio value={'phone'}>
+                        số điện thoại:{' '}
+                        <span style={{ color: `var(--secondary-color)` }}>{data.phone}</span>
+                      </Radio>
+                    )}
+                  </Space>
+                </Radio.Group>
+              </Space>
+              <Row gutter={[16, 8]} style={{ marginTop: '1rem' }}>
+                <Col span={24}>
+                  <Button
+                    type="primary"
+                    disabled={!data?.email}
+                    block
+                    onClick={() => {
+                      handleSendOTP();
+                      form.current?.resetFields();
+                    }}
+                  >
+                    Nhận mã xác thực
+                  </Button>
+                </Col>
+                <Col span={24}>
+                  <Button
+                    type="primary"
+                    block
+                    danger
+                    onClick={() => {
+                      setOpenOtp(false);
+                      setBeginSendOTP(false);
+                    }}
+                  >
+                    Huỷ
+                  </Button>
+                </Col>
+              </Row>
+            </div>
+          </div>
+        ) : (
+          <div className="box" style={{ padding: 20 }}>
+            <div>
+              <main>
+                <section className="request-otp-box">
+                  <h2 className="otp-title" style={{ marginBottom: 20 }}>
+                    Nhập mã xác nhận
+                  </h2>
+                  <Form form={form} onFinish={handleFinishOtp}>
+                    <Form.Item
+                      name="otp"
+                      className="center-error-message"
+                      rules={[{ validator: async () => Promise.resolve() }]}
+                    >
+                      <InputOTP name="otp" autoFocus inputType="numeric" length={6} />
+                    </Form.Item>
+                    <div id="recaptcha-container"></div>
+                    <Form.Item noStyle>
+                      <Button block htmlType="submit" type="primary" className="otp-send-btn">
+                        Gửi
+                      </Button>
+                    </Form.Item>
+                  </Form>
+                </section>
+              </main>
+            </div>
+          </div>
+        )}
+      </Modal>
+      {/*  */}
+      {/* modal edit thông tin đăng nhập*/}
+      <Modal
+        title={<>{(editPassword && 'Đổi mật khẩu') || 'Cập nhật thông tin đăng nhập'}</>}
+        centered
+        open={openEdit}
+        onCancel={() => {
+          setOpenEdit(false);
+          setEditPassword(false);
+        }}
+        footer={null}
+        width={500}
+        style={{ overflowY: 'auto' }}
+      >
+        {editPassword ? (
+          <Form
+            {...formItemLayout}
+            form={form}
+            initialValues={{
+              oldPassword: '',
+              newPassword: '',
+            }}
+            onFinish={handleFinishChangePassWord}
+          >
+            {/* ----------------begin old password---------------- */}
+            <Form.Item
+              name="oldPassword"
+              label="Mật Khẩu Cũ"
+              rules={[
+                {
+                  required: true,
+                  message: 'bạn chưa nhập mật khẩu',
+                },
+                {
+                  max: 40,
+                  message: 'mật khẩu không quá 40 ký tự',
+                },
+              ]}
+              hasFeedback
+            >
+              <Input.Password />
+            </Form.Item>
+            {/* ----------------end old password---------------- */}
+            {/* ----------------begin new password---------------- */}
+            <Form.Item
+              name="newPassword"
+              label="Mật Khẩu Mới"
+              rules={[
+                {
+                  required: true,
+                  message: 'bạn chưa nhập mật khẩu',
+                },
+                {
+                  max: 40,
+                  message: 'mật khẩu không quá 40 ký tự',
+                },
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    if (!value || getFieldValue('oldPassword') !== value) {
+                      return Promise.resolve(); // Mật khẩu mới không trùng với mật khẩu cũ
+                    }
+                    return Promise.reject(new Error('Mật khẩu mới không thể giống mật khẩu cũ'));
+                  },
+                }),
+              ]}
+              hasFeedback
+            >
+              <Input.Password />
+            </Form.Item>
+            {/* ----------------end new password---------------- */}
+            <Form.Item noStyle>
+              <Button block htmlType="submit" type="primary">
+                Đồng ý
+              </Button>
+            </Form.Item>
+          </Form>
+        ) : (
+          // form cập nhật thông tin
+          <Form
+            {...formItemLayout}
+            form={form}
+            initialValues={{
+              newEmail: data?.email,
+              newPhone: data?.phone,
+            }}
+            onFinish={handleFinishEdit}
+          >
+            {/* ----------------begin newEmail---------------- */}
+            <Form.Item
+              name="newEmail"
+              label="Email mới"
+              rules={[
+                {
+                  type: 'email',
+                  message: 'Email của không hợp lệ',
+                },
+                {
+                  max: 255,
+                  message: 'email không quá 255 ký tự',
+                },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+            {/* ----------------end newEmail---------------- */}
+            {/* ----------------begin newPhone---------------- */}
+            <Form.Item
+              name="newPhone"
+              label="SĐT mới"
+              rules={[
+                {
+                  min: 10,
+                  message: 'Sđt chưa đủ 10 số',
+                },
+                {
+                  max: 10,
+                  message: 'Độ dài sdt không quá 10 số',
+                },
+                {
+                  pattern: /^\d+$/,
+                  message: 'Số điện thoại phải là số',
+                },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+            {/* ----------------end newPhone---------------- */}
+            <Form.Item noStyle>
+              <Button block htmlType="submit" type="primary">
+                Đồng ý
+              </Button>
+            </Form.Item>
+          </Form>
+        )}
+      </Modal>
+      {/*  */}
+      {/* modal edit thông tin*/}
+      <Modal
+        title={<>{(editPassword && 'Đổi mật khẩu') || 'Cập nhật thông tin đăng nhập'}</>}
+        open={openEditProfile}
+        centered
+        onCancel={() => {
+          setOpenEditProfile(false);
+        }}
+        footer={null}
+        width={500}
+        style={{ overflowY: 'auto' }}
+      >
+        {data?.UserDetail && (
+          <Form
+            {...formItemLayout}
+            initialValues={{
+              fullName: `${data.UserDetail.fullName}`,
+              gender: `${data.UserDetail.gender}`,
+              birthday: `${data.UserDetail.birthday}`,
+              address: `${data.UserDetail.address}`,
+              addressDetail: `${data.UserDetail.addressDetail}`,
+            }}
+            ref={formRef}
+            onFinish={handleUpdateProfile}
+          >
+            {/* ----------------begin birthday---------------- */}
+            <Form.Item hidden name="birthday">
+              <Input style={{ height: 50, display: 'none' }} />
+            </Form.Item>
+            {/* ----------------end birthday---------------- */}
+            {/* ----------------begin fullName---------------- */}
+            <Form.Item
+              name="fullName"
+              label="Họ và Tên"
+              rules={[
+                {
+                  required: true,
+                  message: 'Chưa nhập họ và tên',
+                },
+                {
+                  max: 255,
+                  message: 'Độ dài họ và tên không quá 255 ký tự ',
+                },
+              ]}
+            >
+              <Input style={{ height: 50 }} />
+            </Form.Item>
+            {/* ----------------end fullName---------------- */}
+            {/* ----------------begin gender---------------- */}
+            <Form.Item
+              name="gender"
+              label="Giới tính"
+              rules={[
+                {
+                  required: true,
+                  message: 'Chưa chọn giới tính',
+                },
+              ]}
+            >
+              <Select
+                options={[
+                  {
+                    value: '1',
+                    label: 'Nam',
+                  },
+                  {
+                    value: '2',
+                    label: 'Nữ',
+                  },
+                  {
+                    value: '0',
+                    label: 'Khác',
+                  },
+                ]}
+                style={{ height: 50 }}
+              />
+            </Form.Item>
+            {/* ----------------end gender---------------- */}
+            {/* ----------------begin avatar---------------- */}
+            <Form.Item
+              name="uploadAvatar"
+              label="Ảnh đại diện"
+              rules={[
+                {
+                  required: true,
+                  message: 'Chưa chọn hình',
+                },
+              ]}
+            >
+              <AvatarUploadStyled>
+                <Upload
+                  listType="picture-card"
+                  fileList={fileList}
+                  onPreview={handlePreview}
+                  onChange={handleChangeUpload}
+                  beforeUpload={beforeUpload}
+                  accept=".jpeg,.png,.jpg,.raw,.tiff"
+                  maxCount={1}
+                  style={{ width: 200, height: 200 }}
+                  customRequest={customUpload}
+                >
+                  {fileList.length >= 1 ? null : uploadButton}
+                </Upload>
+              </AvatarUploadStyled>
+            </Form.Item>
+            <Form.Item hidden name={'avatar'}>
+              <Input hidden />
+            </Form.Item>
+            {/* ----------------end avatar---------------- */}
+            {/* ----------------begin address---------------- */}
+            <Form.Item
+              name="address"
+              label="Địa chỉ"
+              rules={[
+                {
+                  // type: 'array',
+                  required: true,
+                  message: 'Hãy nhập địa chỉ của bạn',
+                },
+              ]}
+            >
+              <Cascader
+                options={residences}
+                showSearch={{
+                  filter,
+                }}
+                style={{ height: 50 }}
+              />
+            </Form.Item>
+            {/* ----------------end address---------------- */}
+            {/* ----------------begin addressDetail---------------- */}
+            <Form.Item
+              name="addressDetail"
+              label="Chi tiết địa chỉ"
+              rules={[
+                {
+                  required: true,
+                  message: 'Hãy nhập địa chỉ của bạn',
+                },
+              ]}
+            >
+              <TextArea rows={4} maxLength={500} />
+            </Form.Item>
+            {/* ----------------end addressDetail---------------- */}
+            <Form.Item noStyle>
+              <Button block htmlType="submit" type="primary">
+                Đồng ý
+              </Button>
+            </Form.Item>
+          </Form>
+        )}
+      </Modal>
+      {/* preview avtar */}
+      <Modal open={previewOpen} footer={null} onCancel={handleCancel}>
+        <img
+          alt="preview"
+          style={{
+            width: '100%',
+            marginTop: 30,
+          }}
+          src={previewImage}
+        />
+      </Modal>
     </>
   );
 }
+
+const AvatarUploadStyled = styled.div`
+  .ant-upload-select,
+  .ant-upload-list-item-container {
+    width: 200px !important;
+    height: 200px !important;
+
+    .ant-upload-list-item {
+      .ant-upload-list-item-actions {
+      }
+    }
+  }
+`;
 
 export default Profile;

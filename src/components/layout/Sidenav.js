@@ -78,7 +78,7 @@ function Sidenav({ color }) {
       '1',
     ),
     getItem(
-      <NavLink to="/admin/danh-sach-truong-hoc">
+      <NavLink to="/admin/danh-sach-to-chuc">
         <span className="icon">
           <BankOutlined />
         </span>
