@@ -189,7 +189,7 @@ function Universities() {
               </Space>
             </List.Item>
 
-            <Divider orientation="left">Tuyển dụng</Divider>
+            <Divider orientation="left">Tuyển Sinh</Divider>
             <Typography.Text>
               Xem thông tin tuyển sinh <b>{getUniversity?.data[cardSelected].name}</b>
             </Typography.Text>
@@ -199,7 +199,7 @@ function Universities() {
                 href={getUniversity?.data[cardSelected].OrganizationDetail.url}
                 rel="noopener noreferrer"
               >
-               {'=> Tại đây'}
+                {'=> Tại đây'}
               </a>
             </Button>
           </Modal>

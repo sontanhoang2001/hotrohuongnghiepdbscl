@@ -508,6 +508,7 @@ function UserProfile() {
                         setOpenOtp(true);
                         setEditPassword(true);
                         setBeginSendOTP(false);
+                        form.resetFields();
                       }}
                       style={{ whiteSpace: 'inherit', height: 50 }}
                     >
@@ -520,6 +521,7 @@ function UserProfile() {
                       block
                       onClick={() => {
                         handleEditMailnPhone();
+                        form.resetFields();
                       }}
                       style={{ whiteSpace: 'inherit', height: 50 }}
                     >

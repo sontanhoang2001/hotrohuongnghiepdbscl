@@ -1,4 +1,18 @@
-import { Button, Col, ConfigProvider, Empty, Input, Modal, Pagination, Row, Spin } from 'antd';
+import {
+  Button,
+  Col,
+  Divider,
+  Empty,
+  Input,
+  List,
+  Modal,
+  Pagination,
+  Row,
+  Space,
+  Spin,
+  Typography,
+} from 'antd';
+import { CompassOutlined, PhoneOutlined, MailOutlined } from '@ant-design/icons';
 import React, { useEffect, useState } from 'react';
 import ImageCard from '../../../components/card/imageCard';
 import { useDispatch, useSelector } from 'react-redux';
@@ -135,8 +149,8 @@ function Universities() {
         </Row>
         {getUniversity && getUniversity?.data[cardSelected] && (
           <Modal
-            className="universities-modal"
-            title={getUniversity?.data[cardSelected].name}
+            className="modalStyle"
+            title={<div style={{ fontSize: '18px' }}>{getUniversity?.data[cardSelected].name}</div>}
             centered
             open={open}
             onOk={() => setOpen(false)}
@@ -146,23 +160,46 @@ function Universities() {
           >
             <div style={{ display: 'flex', justifyContent: 'center' }}>
               <img
-                style={{ width: '80%', objectFit: 'cover' }}
+                style={{ width: '55%', objectFit: 'cover' }}
                 src={`${getUniversity?.data[cardSelected].OrganizationDetail.image}`}
                 alt=""
               />
             </div>
+            <Divider orientation="left">Giới thiệu</Divider>
             <p style={{ marginTop: '3%' }}>
               {getUniversity?.data[cardSelected].OrganizationDetail.description}{' '}
-              <Button type="link">
-                <a
-                  target="_blank"
-                  href={getUniversity?.data[cardSelected].OrganizationDetail.url}
-                  rel="noopener noreferrer"
-                >
-                  Xem thêm
-                </a>
-              </Button>
             </p>
+
+            <Divider orientation="left">Mọi chi tiết xin liên hệ</Divider>
+
+            <List.Item>
+              <Space direction="vertical">
+                <Typography.Text>
+                  <CompassOutlined />{' '}
+                  {getUniversity?.data[cardSelected].OrganizationDetail?.address}
+                </Typography.Text>
+                <Typography.Text>
+                  <PhoneOutlined /> {getUniversity?.data[cardSelected].OrganizationDetail?.phone}
+                </Typography.Text>
+                <Typography.Text>
+                  <MailOutlined /> {getUniversity?.data[cardSelected].OrganizationDetail?.email}
+                </Typography.Text>
+              </Space>
+            </List.Item>
+
+            <Divider orientation="left">Trang Web</Divider>
+            <Typography.Text>
+              Xem thông tin tuyển dụng <b>{getUniversity?.data[cardSelected].name}</b>
+            </Typography.Text>
+            <Button type="link">
+              <a
+                target="_blank"
+                href={getUniversity?.data[cardSelected].OrganizationDetail.url}
+                rel="noopener noreferrer"
+              >
+                {'=> Tại đây'}
+              </a>
+            </Button>
           </Modal>
         )}
       </MarginTopContent>

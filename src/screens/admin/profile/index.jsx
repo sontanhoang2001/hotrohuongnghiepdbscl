@@ -168,7 +168,16 @@ function Profile() {
     },
     {
       key: '2',
-      label: <div onClick={() => handleEditMailnPhone()}>Cập nhật thông tin đăng nhập</div>,
+      label: (
+        <div
+          onClick={() => {
+            handleEditMailnPhone();
+            form.resetFields();
+          }}
+        >
+          Cập nhật thông tin đăng nhập
+        </div>
+      ),
     },
     {
       key: '3',
@@ -178,6 +187,7 @@ function Profile() {
             setOpenOtp(true);
             setEditPassword(true);
             setBeginSendOTP(false);
+            form.resetFields();
           }}
         >
           Đổi mật khẩu
