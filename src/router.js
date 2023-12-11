@@ -14,6 +14,7 @@ const PostsCategoryRouters = require('./routes/postsCategory.routes');
 const chatRouters = require('./routes/chat.routes');
 
 const Public = require('./routes/public.routes');
+const Dashboard = require('./routes/dashboard.routes.js');
 
 
 // const swaggerUi = require('swagger-ui-express');
@@ -34,6 +35,7 @@ const router = (app) => {
     app.use('/api/v1/chat', chatRouters);
 
     app.use('/api/v1/public', Public);
+    app.use('/api/v1/dashboard', Dashboard);
 
     // app.use('/api-docs', swaggerUi.serve);
     // app.get('/api-docs', swaggerUi.setup(swaggerDocument));
