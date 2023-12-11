@@ -23,16 +23,16 @@ function LineChart() {
       <div className="linechart">
         <div>
           <Title level={5}>Người dùng đang hoạt động</Title>
-          <Paragraph className="lastweek">
+          {/* <Paragraph className="lastweek">
           so với tuần trước <span className="bnb2">+30%</span>
-          </Paragraph>
+          </Paragraph> */}
         </div>
-        <div className="sales">
+        {/* <div className="sales">
           <ul>
             <li>{<MinusOutlined />} Traffic</li>
             <li>{<MinusOutlined />} Tương tác</li>
           </ul>
-        </div>
+        </div> */}
       </div>
 
       <ReactApexChart
