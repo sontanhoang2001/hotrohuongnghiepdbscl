@@ -1,16 +1,17 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import dashboardApi from '../api/dashboard';
-import { notification } from 'antd';
 
 const initialState = {
-  data: null
+  data: null,
+  pending: false
 };
 
 export const getCountAll = createAsyncThunk(
   'dashboard/getCountAll',
-  async (payload, { rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
-      const rs = await dashboardApi.getCountAll();
+      const rs = await dashboardApi.getAll();
+
       return rs.data.data;
     } catch (error) {
       if (error.response && error.response.data.message) {
@@ -41,6 +42,5 @@ export const dashboardSlice = createSlice({
   },
 });
 
-export const selectUser = (state) => state.user;
-
+export const selectDashboard = (state) => state.dashboard;
 export default dashboardSlice.reducer;

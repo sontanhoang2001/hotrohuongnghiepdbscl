@@ -1,5 +1,12 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { getCountAll, selectDashboard } from '../../../redux/dashboardSlice';
+
+import Calendar from 'react-calendar';
+import Clock from 'react-clock';
+
+import 'react-calendar/dist/Calendar.css';
+import 'react-clock/dist/Clock.css';
 
 import {
   Card,
@@ -13,6 +20,7 @@ import {
   Button,
   Timeline,
   Radio,
+  Spin,
 } from 'antd';
 import { ToTopOutlined, MenuUnfoldOutlined, RightOutlined } from '@ant-design/icons';
 import Paragraph from 'antd/lib/typography/Paragraph';
@@ -31,8 +39,29 @@ import team2 from '../../../assets/images/team-2.jpg';
 import team3 from '../../../assets/images/team-3.jpg';
 import team4 from '../../../assets/images/team-4.jpg';
 import card from '../../../assets/images/info-card-1.jpg';
+import { set } from 'lodash';
 
 function Dashboard() {
+  const dispatch = useDispatch();
+  const dashboard = useSelector(selectDashboard).data;
+  const pending = useSelector(selectDashboard).pending;
+
+  const [valueCalender, setValueCalender] = useState(new Date());
+
+  const [valueClock, setValueClock] = useState(new Date());
+
+  useEffect(() => {
+    const interval = setInterval(() => setValueClock(new Date()), 1000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
+
+  useEffect(() => {
+    dispatch(getCountAll());
+  }, []);
+
   const { Title, Text } = Typography;
 
   const onChange = (e) => console.log(`radio checked:${e.target.value}`);
@@ -124,38 +153,6 @@ function Dashboard() {
         fill="#fff"
       ></path>
     </svg>,
-  ]; 
-
-  
-  const count = [
-    {
-      today: 'Tổng người dùng',
-      title: '995,200',
-      persent: '+30%',
-      icon: profile,
-      bnb: 'bnb2',
-    },
-    {
-      today: 'Tổng trường học',
-      title: '340',
-      persent: '+30%',
-      icon: dollor,
-      bnb: 'bnb2',
-    },
-    {
-      today: 'Tổng Cty/doanh nghiệp',
-      title: '250',
-      persent: '-20%',
-      icon: heart,
-      bnb: 'redtext',
-    },
-    {
-      today: 'Tổng số yêu cầu tổ chức',
-      title: '130',
-      persent: '10%',
-      icon: cart,
-      bnb: 'bnb2',
-    },
   ];
 
   const list = [
@@ -321,45 +318,90 @@ function Dashboard() {
     },
   };
 
-  return (
-    <>
-      <div className="layout-content">
-        <Row className="rowgap-vbox" gutter={[24, 0]}>
-          {count.map((c, index) => (
-            <Col key={index} xs={24} sm={24} md={12} lg={6} xl={6} className="mb-24">
-              <Card bordered={false} className="criclebox ">
-                <div className="number">
-                  <Row align="middle" gutter={[24, 0]}>
-                    <Col xs={18}>
-                      <span>{c.today}</span>
-                      <Title level={3}>
-                        {c.title} <small className={c.bnb}>{c.persent}</small>
-                      </Title>
-                    </Col>
-                    <Col xs={6}>
-                      <div className="icon-box">{c.icon}</div>
-                    </Col>
-                  </Row>
-                </div>
-              </Card>
-            </Col>
-          ))}
-        </Row>
+  const [count, setCount] = useState([]);
+  useEffect(() => {
+    if (dashboard) {
+      console.log('dashboard:', dashboard);
+      setCount([
+        {
+          today: 'Tổng người dùng',
+          title: dashboard.user,
+          // persent: '+30%',
+          icon: profile,
+          bnb: 'bnb2',
+        },
+        {
+          today: 'Tổng trường học',
+          title: dashboard.university,
+          // persent: '+30%',
+          icon: dollor,
+          bnb: 'bnb2',
+        },
+        {
+          today: 'Tổng doanh nghiệp',
+          title: dashboard.company,
+          // persent: '-20%',
+          icon: heart,
+          bnb: 'redtext',
+        },
+        {
+          today: 'Tổng yêu cầu xác thực',
+          title: dashboard.verifyOrganization,
+          // persent: '10%',
+          icon: cart,
+          bnb: 'bnb2',
+        },
+      ]);
+    }
+  }, [dispatch, dashboard]);
 
-        <Row gutter={[24, 0]}>
-          {/* <Col xs={24} sm={24} md={12} lg={12} xl={10} className="mb-24">
+  return (
+    <Spin spinning={pending}>
+      <>
+        <div className="layout-content">
+          <Row className="rowgap-vbox" gutter={[24, 0]}>
+            {count?.map((c, index) => (
+              <Col key={index} xs={24} sm={24} md={12} lg={6} xl={6} className="mb-24">
+                <Card bordered={false} className="criclebox">
+                  <div className="number">
+                    <Row align="middle" gutter={[24, 0]}>
+                      <Col xs={18}>
+                        <span>{c.today}</span>
+                        <Title level={3}>
+                          {c.title} <small className={c.bnb}>{c.persent}</small>
+                        </Title>
+                      </Col>
+                      <Col xs={6}>
+                        <div className="icon-box">{c.icon}</div>
+                      </Col>
+                    </Row>
+                  </div>
+                </Card>
+              </Col>
+            ))}
+          </Row>
+
+          <Row gutter={[24, 0]}>
+            <Col xs={24} sm={24} md={12} lg={12} xl={10} className="mb-24">
+              <Calendar onChange={(value) => setValueCalender(value)} value={valueCalender} />
+            </Col>
+            <Col xs={24} sm={24} md={12} lg={12} xl={14} className="mb-24">
+              <Clock value={valueClock} size={250} renderNumbers={true} />
+            </Col>
+
+            {/* <Col xs={24} sm={24} md={12} lg={12} xl={10} className="mb-24">
             <Card bordered={false} className="criclebox h-full">
               <Echart />
             </Card>
           </Col> */}
-          <Col xs={24} sm={24} md={12} lg={12} xl={14} className="mb-24">
+            {/* <Col xs={24} sm={24} md={12} lg={12} xl={14} className="mb-24">
             <Card bordered={false} className="criclebox h-full">
               <LineChart />
             </Card>
-          </Col>
-        </Row>
+          </Col> */}
+          </Row>
 
-        {/* <Row gutter={[24, 0]}>
+          {/* <Row gutter={[24, 0]}>
           <Col xs={24} sm={24} md={12} lg={12} xl={16} className="mb-24">
             <Card bordered={false} className="criclebox cardbody h-full">
               <div className="project-ant">
@@ -493,8 +535,9 @@ function Dashboard() {
             </Card>
           </Col>
         </Row> */}
-      </div>
-    </>
+        </div>
+      </>
+    </Spin>
   );
 }
 

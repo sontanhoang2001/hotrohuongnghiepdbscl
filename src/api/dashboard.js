@@ -4,9 +4,9 @@ const BASE_URL = `${process.env.REACT_APP_API_URL}`;
 const pathname = 'dashboard';
 
 const dashboardApi = {
-  getAll: async (payload) => {
-    const url = `${BASE_URL}/api/${pathname}/countAll`;
-    const rs = await axiosClient.get(url, payload);
+  getAll: async () => {
+    const url = `${BASE_URL}/${pathname}/countAll`;
+    const rs = await axiosClient.get(url);
     return rs;
   },
 };
