@@ -80,9 +80,10 @@ function OrganizationProfile() {
       .then((values) => {
         //update
         const formValues = {
-          fileAttached: 'https://blog.hocexcel.online/wp-content/uploads/2018/02/1-2.png',
+          ...values,
           organizationId: organization.id,
         };
+        console.log(formValues);
 
         dispatch(updateVerificationStatus(formValues)).then(() => {
           dispatch(getOneByOrganizationId(id));

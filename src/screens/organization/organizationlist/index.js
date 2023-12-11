@@ -292,7 +292,7 @@ function OrganizationList() {
       .then((values) => {
         //create
         const formValues = { ...values, userId: profile.id };
-        // console.log(formValues);
+        console.log(formValues);
         dispatch(createOrganizationAsync(formValues)).then(() => {
           dispatch(getAllOrganizationsByUser({ page, size }));
           setOpenUpdateForm(false);
