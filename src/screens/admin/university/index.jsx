@@ -12,12 +12,13 @@ import {
   Select,
 } from 'antd';
 
-import { DeleteOutlined, EditOutlined, LockFilled } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, LockFilled, UndoOutlined } from '@ant-design/icons';
 
 import {
   deleteOrganization,
   deleteUniversity,
   getAllUniversity,
+  restoreOrganization,
   selectUniversity,
   selectUniversityPage,
   selectUniversityPagesize,
@@ -32,9 +33,7 @@ const { Title } = Typography;
 function University() {
   //goi redux
   const dispatch = useDispatch();
-  const page = useSelector(selectUniversityPage);
-  const size = useSelector(selectUniversityPagesize);
-  const Totalpage = useSelector(selectUniversityToalRow);
+  const { size, page, total } = useSelector((state) => state.university);
   const getUniversity = useSelector(selectUniversity);
   const pendingState = useSelector(selectUniversityPending);
 
@@ -42,7 +41,7 @@ function University() {
     const payload = { page, size };
     //gọi api thông qua redux
     dispatch(getAllUniversity(payload));
-  }, []);
+  }, [dispatch, page, size]);
 
   const convertedData = useMemo(
     () =>
@@ -60,6 +59,7 @@ function University() {
           lat: university.OrganizationDetail.lat,
           long: university.OrganizationDetail.long,
           description: university.OrganizationDetail.description,
+          deletedAt: university.deletedAt,
         };
       }),
     [getUniversity],
@@ -99,16 +99,16 @@ function University() {
           </div>
         ),
       },
-      {
-        title: 'Rank',
-        dataIndex: 'rank',
-        key: 'rank',
-        render: (record) => (
-          <div className="author-info">
-            <Title level={5}>{record}</Title>
-          </div>
-        ),
-      },
+      // {
+      //   title: 'Rank',
+      //   dataIndex: 'rank',
+      //   key: 'rank',
+      //   render: (record) => (
+      //     <div className="author-info">
+      //       <Title level={5}>{record}</Title>
+      //     </div>
+      //   ),
+      // },
       {
         title: 'Địa chỉ',
         dataIndex: 'address',
@@ -187,18 +187,56 @@ function University() {
         width: 100,
         render: (record) => (
           <>
-            <Button danger title="Khóa tổ chức">
-              <LockFilled />
-            </Button>
+            {record.deletedAt === null && (
+              <Popconfirm
+                placement="leftTop"
+                title="Xác nhận xóa"
+                okText="Xóa"
+                onConfirm={() => handleDelete(record.id)}
+                cancelText="Hủy"
+              >
+                <Button danger>
+                  <DeleteOutlined />
+                </Button>
+              </Popconfirm>
+            )}
+            {record.deletedAt !== null && (
+              <Popconfirm
+                placement="leftTop"
+                title="Xác nhận khôi phục"
+                okText="Khôi phục"
+                onConfirm={() => handleRestore(record.id)}
+                cancelText="Hủy"
+              >
+                <Button danger>
+                  <UndoOutlined />
+                </Button>
+              </Popconfirm>
+            )}
           </>
         ),
       },
     ],
     [],
   );
+
+  //hàm bắt event delete
+  const handleDelete = (id) => {
+    console.log(id);
+    dispatch(deleteOrganization(id)).then(() => {
+      dispatch(getAllUniversity({ page, size }));
+    });
+  };
+  //restore
+  const handleRestore = (id) => {
+    dispatch(restoreOrganization(id)).then(() => {
+      dispatch(getAllUniversity({ page, size }));
+    });
+  };
+
   //hàm phan trang
   const handlePageChange = (page, pageSize) => {
-    const payload = { page, pageSize };
+    const payload = { page, size: pageSize };
     dispatch(getAllUniversity(payload));
   };
   //hàm filter theo loại tổ chức
@@ -249,7 +287,7 @@ function University() {
               <Pagination
                 current={page}
                 pageSize={size}
-                total={Totalpage}
+                total={total}
                 onChange={handlePageChange}
                 showQuickJumper
                 showSizeChanger

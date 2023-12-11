@@ -53,10 +53,10 @@ export const getAllOrganizationVerification = createAsyncThunk(
 // danh sách tổ chức đang quản lý
 export const getAllOrganizationsByUser = createAsyncThunk(
   'university/getAllOrganizationsByUser',
-  async (_, { rejectWithValue }) => {
+  async (params, { rejectWithValue }) => {
     try {
-      const rs = await universityApi.getAllOrganizationsByUser();
-      console.log(rs.data.data);
+      const rs = await universityApi.getAllOrganizationsByUser(params);
+   
       return rs.data.data;
     } catch (error) {
       if (error.response && error.response.data.message) {
@@ -123,6 +123,18 @@ export const deleteOrganization = createAsyncThunk(
   async (id, { rejectWithValue }) => {
     try {
       const rs = await universityApi.deleteUniversity(id);
+      return rs.data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  },
+);
+// khôi phục tổ chức
+export const restoreOrganization = createAsyncThunk(
+  'university/restoreOrganization',
+  async (id, { rejectWithValue }) => {
+    try {
+      const rs = await universityApi.restoreUniversity(id);
       return rs.data;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -341,6 +353,18 @@ const universitySlice = createSlice({
         notification.success({ message: payload.message, duration: 3 });
       })
       .addCase(deleteOrganization.rejected, (state, { payload }) => {
+        state.pending = false;
+      })
+      //restore
+      .addCase(restoreOrganization.pending, (state) => {
+        state.pending = true;
+      })
+      .addCase(restoreOrganization.fulfilled, (state, { payload }) => {
+        state.pending = false;
+
+        notification.success({ message: payload.message, duration: 3 });
+      })
+      .addCase(restoreOrganization.rejected, (state, { payload }) => {
         state.pending = false;
       })
       //update
