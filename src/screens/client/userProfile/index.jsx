@@ -837,6 +837,7 @@ function UserProfile() {
               gender: `${data.UserDetail.gender}`,
               birthday: `${data.UserDetail.birthday}`,
               address: `${data.UserDetail.address}`,
+              uploadAvatar: `${data.UserDetail.avatar}`,
               addressDetail: `${data.UserDetail.addressDetail}`,
             }}
             ref={formRef}

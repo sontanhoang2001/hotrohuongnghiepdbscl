@@ -822,16 +822,7 @@ function Profile() {
             </Form.Item>
             {/* ----------------end gender---------------- */}
             {/* ----------------begin avatar---------------- */}
-            <Form.Item
-              name="uploadAvatar"
-              label="Ảnh đại diện"
-              rules={[
-                {
-                  required: true,
-                  message: 'Chưa chọn hình',
-                },
-              ]}
-            >
+            <Form.Item name="uploadAvatar" label="Ảnh đại diện">
               <AvatarUploadStyled>
                 <Upload
                   listType="picture-card"
