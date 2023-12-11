@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import userApi from '../api/userApi';
+import dashboardApi from '../api/dashboard';
 import { notification } from 'antd';
 
 const initialState = {
@@ -10,7 +10,7 @@ export const getCountAll = createAsyncThunk(
   'dashboard/getCountAll',
   async (payload, { rejectWithValue }) => {
     try {
-      const rs = await userApi.getCountAll();
+      const rs = await dashboardApi.getCountAll();
       return rs.data.data;
     } catch (error) {
       if (error.response && error.response.data.message) {
@@ -22,7 +22,7 @@ export const getCountAll = createAsyncThunk(
   },
 );
 
-export const userSlice = createSlice({
+export const dashboardSlice = createSlice({
   name: 'dashboard',
   initialState,
   extraReducers: (builder) => {
@@ -43,4 +43,4 @@ export const userSlice = createSlice({
 
 export const selectUser = (state) => state.user;
 
-export default userSlice.reducer;
+export default dashboardSlice.reducer;
