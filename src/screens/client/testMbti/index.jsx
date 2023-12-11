@@ -262,14 +262,14 @@ function TestMbti() {
 
     const result = personality?.find((p) => p.name === mbtiType);
     setMbtiResult(result);
-    const mbtiResult_id = result.id;
+    // const mbtiResult_id = result.id;
+    console.log('result', result.id);
 
     // setMbtiResult(personality?.find((detail) => detail?.name === mbtiType));
 
-    dispatch(getMajorMBTIById(mbtiResult_id));
-    console.log(personalityById);
+    dispatch(getMajorMBTIById(result.id));
     if (isLogin) {
-      dispatch(storeTestHistory(mbtiResult.id));
+      dispatch(storeTestHistory(result.id));
     }
     // dispatch(getTestHistoryById(mbtiResult.id));
     setCompleted(true);
