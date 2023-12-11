@@ -272,16 +272,16 @@ function UserProfile() {
             setOpenEdit(true);
           });
         } else {
+          dispatch(authOTP(formData));
+          setOpenOtp(false);
           if (formEidtValue.newEmail !== '' && formEidtValue.newEmail !== data?.email) {
-            setOpenOtp(false);
-            dispatch(authOTP(formData)).then(() => {
-              dispatch(authChangeEmailAsync(formEidtValue.newEmail)).then(() => {
-                dispatch(getUserProfile());
-              });
-            });
-
-            dispatch(isOtp(false));
+            dispatch(authChangeEmailAsync(formEidtValue.newEmail));
           }
+          if (formEidtValue.newPhone !== '' && formEidtValue.newPhone !== data?.phone) {
+            dispatch(authChangePhone(formEidtValue.newPhone));
+          }
+          dispatch(getUserProfile());
+          dispatch(isOtp(false));
         }
       } else if (otpType === 'phone') {
         const formData = {
@@ -299,17 +299,16 @@ function UserProfile() {
                   setOpenEdit(true);
                 });
               } else {
-                if (formEidtValue.newPhone !== '' && formEidtValue.newPhone !== data?.phone) {
-                  setOpenOtp(false);
-                  dispatch(authOTP(formData)).then(() => {
-                    dispatch(authChangePhone(formEidtValue.newPhone)).then(() => {
-                      dispatch(getUserProfile());
-                    });
-                    // dispatch(getUserProfile());
-                  });
-
-                  dispatch(isOtp(false));
+                dispatch(authOTP(formData));
+                setOpenOtp(false);
+                if (formEidtValue.newEmail !== '' && formEidtValue.newEmail !== data?.email) {
+                  dispatch(authChangeEmailAsync(formEidtValue.newEmail));
                 }
+                if (formEidtValue.newPhone !== '' && formEidtValue.newPhone !== data?.phone) {
+                  dispatch(authChangePhone(formEidtValue.newPhone));
+                }
+                dispatch(getUserProfile());
+                dispatch(isOtp(false));
               }
             }
           })
@@ -533,6 +532,7 @@ function UserProfile() {
                         onClick={() => {
                           handleEditMailnPhone();
                           form.resetFields();
+                          setBeginSendOTP(false);
                         }}
                         style={{ whiteSpace: 'inherit', height: 50 }}
                       >
