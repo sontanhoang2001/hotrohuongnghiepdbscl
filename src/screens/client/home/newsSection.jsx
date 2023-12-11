@@ -87,6 +87,7 @@ const Title = styled.div`
     font-weight: 500;
     text-transform: uppercase;
     margin: 5px;
+    padding-left: 5px;
   }
 `;
 export default NewsSection;

@@ -9,6 +9,7 @@ import faqsReducer from '../redux/faqsSlice';
 import postsReducer from '../redux/postsSlice';
 import chatReducer from '../redux/chatSlice';
 import majorMbtiReducer from '../redux/majorMbtiSlice';
+import dashboardReducer from '../redux/dashboardSlice';
 
 export const store = configureStore({
   reducer: {
@@ -22,6 +23,6 @@ export const store = configureStore({
     posts: postsReducer,
     chat:chatReducer,
     majorMbti: majorMbtiReducer,
+    dashboard: dashboardReducer
   },
-  
 });

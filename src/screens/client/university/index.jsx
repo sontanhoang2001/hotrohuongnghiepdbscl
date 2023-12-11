@@ -170,15 +170,6 @@ function Universities() {
             <Divider orientation="left">Giới thiệu</Divider>
             <p style={{ marginTop: '3%' }}>
               {getUniversity?.data[cardSelected].OrganizationDetail.description}{' '}
-              <Button type="link">
-                <a
-                  target="_blank"
-                  href={getUniversity?.data[cardSelected].OrganizationDetail.url}
-                  rel="noopener noreferrer"
-                >
-                  Xem thêm
-                </a>
-              </Button>
             </p>
 
             <Divider orientation="left">Mọi chi tiết xin liên hệ</Divider>
@@ -197,6 +188,20 @@ function Universities() {
                 </Typography.Text>
               </Space>
             </List.Item>
+
+            <Divider orientation="left">Tuyển dụng</Divider>
+            <Typography.Text>
+              Xem thông tin tuyển sinh <b>{getUniversity?.data[cardSelected].name}</b>
+            </Typography.Text>
+            <Button type="link">
+              <a
+                target="_blank"
+                href={getUniversity?.data[cardSelected].OrganizationDetail.url}
+                rel="noopener noreferrer"
+              >
+               {'=> Tại đây'}
+              </a>
+            </Button>
           </Modal>
         )}
       </MarginTopContent>

@@ -274,8 +274,9 @@ function UserProfile() {
           if (formEidtValue.newEmail !== '' && formEidtValue.newEmail !== data?.email) {
             setOpenOtp(false);
             dispatch(authOTP(formData)).then(() => {
-              dispatch(authChangeEmailAsync(formEidtValue.newEmail));
-              dispatch(getUserProfile());
+              dispatch(authChangeEmailAsync(formEidtValue.newEmail)).then(() => {
+                dispatch(getUserProfile());
+              });
             });
 
             dispatch(isOtp(false));
@@ -300,8 +301,10 @@ function UserProfile() {
                 if (formEidtValue.newPhone !== '' && formEidtValue.newPhone !== data?.phone) {
                   setOpenOtp(false);
                   dispatch(authOTP(formData)).then(() => {
-                    dispatch(authChangePhone(formEidtValue.newPhone));
-                    dispatch(getUserProfile());
+                    dispatch(authChangePhone(formEidtValue.newPhone)).then(() => {
+                      dispatch(getUserProfile());
+                    });
+                    // dispatch(getUserProfile());
                   });
 
                   dispatch(isOtp(false));
@@ -331,7 +334,7 @@ function UserProfile() {
   };
 
   const handleEditMailnPhone = () => {
-    form.current?.resetFields();
+    formRef.current?.resetFields();
     setOpenEdit(true);
     setEditPassword(false);
   };
@@ -504,6 +507,7 @@ function UserProfile() {
                       onClick={() => {
                         setOpenOtp(true);
                         setEditPassword(true);
+                        setBeginSendOTP(false);
                       }}
                       style={{ whiteSpace: 'inherit', height: 50 }}
                     >
@@ -596,7 +600,6 @@ function UserProfile() {
                     block
                     onClick={() => {
                       handleSendOTP();
-                      form.current?.resetFields();
                     }}
                   >
                     Nhận mã xác thực
@@ -834,6 +837,7 @@ function UserProfile() {
               gender: `${data.UserDetail.gender}`,
               birthday: `${data.UserDetail.birthday}`,
               address: `${data.UserDetail.address}`,
+              uploadAvatar: `${data.UserDetail.avatar}`,
               addressDetail: `${data.UserDetail.addressDetail}`,
             }}
             ref={formRef}
