@@ -470,7 +470,7 @@ const ShowResult = styled.div`
   .result-image {
     text-align: center;
     img {
-      width: 400px;
+      width: 500px;
       object-fit: cover;
 
       margin-bottom: 30px;
@@ -505,6 +505,7 @@ const SuggestContent = styled.div`
     a {
       text-decoration: none;
       color: inherit;
+      font-size: 1.4rem;
     }
   }
   span:nth-child(odd) {
