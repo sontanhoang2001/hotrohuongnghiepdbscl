@@ -357,5 +357,5 @@ export const selectPublicPostsTempData = (state) => state.posts.tempData;
 export const selectClientPosts = (state) => state.posts.clientPosts;
 export const selectPostsPending = (state) => state.posts.pending;
 
-export const { clearCurrentPost, setPostParams ,setTempData} = postsSlice.actions;
+export const { clearCurrentPost, setPostParams, setTempData } = postsSlice.actions;
 export default postsSlice.reducer;

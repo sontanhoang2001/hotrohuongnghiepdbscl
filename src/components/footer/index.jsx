@@ -121,7 +121,12 @@ function CLientFooter() {
       <FooterContainer>
         <Row gutter={[24, 16]}>
           <Col xs={12} sm={12} md={12} lg={7} className="footer-col">
-            <FooterBanner>
+            <FooterBanner
+              onClick={() => {
+                navigate('/');
+                window.scrollTo(0, 0);
+              }}
+            >
               <img src="../images/logo/logo.png" alt="Trung Tâm Hướng Nghiệp ĐBSCL" />
               <div className="footer-brand-name">
                 <h1>Trung Tâm</h1>
@@ -139,6 +144,11 @@ function CLientFooter() {
             <FooterLink>
               <NavLink to="trach-nghiem-tinh-cach" onClick={() => window.scrollTo(0, 0)}>
                 Phương Pháp trắc nghiệm
+              </NavLink>
+            </FooterLink>
+            <FooterLink>
+              <NavLink to="tin-tuc" onClick={() => window.scrollTo(0, 0)}>
+                Tin Tức
               </NavLink>
             </FooterLink>
           </Col>
@@ -237,6 +247,7 @@ const FooterBanner = styled.div`
   display: flex;
   justify-content: flex-start;
   align-items: center;
+  cursor: pointer;
   img {
     max-width: 100px;
   }

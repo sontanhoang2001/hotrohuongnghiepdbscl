@@ -428,9 +428,12 @@ function Profile() {
   const handleUpdateProfile = (value) => {
     const { uploadAvatar, ...formvalue } = value;
     console.log(value);
-    //chuyển đổi giá trị submit from tại address từ mảng sang chuổi
-    const addressString = formvalue.address.join(', ');
-    formvalue.address = addressString;
+
+    if (data?.UserDetail?.address !== value.address) {
+      //chuyển đổi giá trị submit from tại address từ mảng sang chuổi
+      const addressString = formvalue.address.join(', ');
+      formvalue.address = addressString;
+    }
     const payload = formvalue;
     console.log(payload);
     dispatch(updateUser(payload)).then(() => {

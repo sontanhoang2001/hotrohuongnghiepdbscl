@@ -318,6 +318,7 @@ function OrganizationProfile() {
         open={openVerifyForm}
         onOk={handleVerifySubmitForm}
         onCancel={() => setOpenVerifyForm(false)}
+        width={600}
       >
         <Card style={{ margin: 0, padding: 0 }} loading={pending}>
           <Form wrapperCol={{ span: 16 }} labelCol={{ span: 8 }} ref={verifyFormRef}>

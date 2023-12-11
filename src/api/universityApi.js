@@ -12,7 +12,7 @@ const universityApi = {
     const url = `${pathname}?page=${params.page}&size=${params.size}&status=2`;
     return axiosService.get(url);
   },
-  getAllUniversity: ({page, size, search, organizationType}) => {
+  getAllUniversity: ({ page, size, search, organizationType }) => {
     const url = `${pathname}`;
     return axiosService.get(url, {
       params: { page, size, search, organizationType },
@@ -52,13 +52,11 @@ const universityApi = {
   },
   getAllOrganizationsByUser: (params) => {
     const url = `${pathname}/getAllByUser`;
-    console.log(params);
-    return axiosService.get(url,{params:new URLSearchParams(Object.entries(params))});
+    return axiosService.get(url, { params: new URLSearchParams(Object.entries(params)) });
   },
   //client public api
   getAllPublicUniversityInfo: ({ page, size, search, organizationType, order }) => {
     const url = `public/organization`;
-    console.log('organizationType', organizationType);
     return axiosService.get(url, {
       params: { page, size, search, organizationType, order },
     });

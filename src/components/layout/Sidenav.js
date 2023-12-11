@@ -151,13 +151,6 @@ function Sidenav({ color }) {
 
   const orgItems = [
     getItem(
-      <NavLink to="/organization/dashboard">
-        <span className="icon">{dashboard}</span>
-        <span className="label">Dashboard</span>
-      </NavLink>,
-      '1',
-    ),
-    getItem(
       <NavLink to="/organization" end>
         <span className="icon">
           <BankOutlined />
@@ -192,13 +185,6 @@ function Sidenav({ color }) {
     ),
   ];
   const adviserItems = [
-    getItem(
-      <NavLink to="/admin/dashboard" end>
-        <span className="icon">{dashboard}</span>
-        <span className="label">Dashboard</span>
-      </NavLink>,
-      '1',
-    ),
     getItem(
       <NavLink to="/organization">
         <span className="icon">

@@ -263,7 +263,6 @@ function TestMbti() {
     const result = personality?.find((p) => p.name === mbtiType);
     setMbtiResult(result);
     // const mbtiResult_id = result.id;
-    console.log('result', result.id);
 
     // setMbtiResult(personality?.find((detail) => detail?.name === mbtiType));
 
