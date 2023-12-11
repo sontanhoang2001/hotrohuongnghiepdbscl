@@ -177,6 +177,7 @@ function Profile() {
           onClick={() => {
             setOpenOtp(true);
             setEditPassword(true);
+            setBeginSendOTP(false);
           }}
         >
           Đổi mật khẩu
@@ -272,7 +273,7 @@ function Profile() {
     const otpString = otp.join('');
 
     // tạo giá trị request cho api
-    if (data?.id) {
+    if (data.id) {
       if (otpType === 'email') {
         const formData = {
           userId: data?.id,
@@ -289,8 +290,9 @@ function Profile() {
           if (formEidtValue.newEmail !== '' && formEidtValue.newEmail !== data?.email) {
             setOpenOtp(false);
             dispatch(authOTP(formData)).then(() => {
-              dispatch(authChangeEmailAsync(formEidtValue.newEmail));
-              dispatch(getUserProfile());
+              dispatch(authChangeEmailAsync(formEidtValue.newEmail)).then(() => {
+                dispatch(getUserProfile());
+              });
             });
 
             dispatch(isOtp(false));
@@ -315,8 +317,10 @@ function Profile() {
                 if (formEidtValue.newPhone !== '' && formEidtValue.newPhone !== data?.phone) {
                   setOpenOtp(false);
                   dispatch(authOTP(formData)).then(() => {
-                    dispatch(authChangePhone(formEidtValue.newPhone));
-                    dispatch(getUserProfile());
+                    dispatch(authChangePhone(formEidtValue.newPhone)).then(() => {
+                      dispatch(getUserProfile());
+                    });
+                    // dispatch(getUserProfile());
                   });
 
                   dispatch(isOtp(false));
