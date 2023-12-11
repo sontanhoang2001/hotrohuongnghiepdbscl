@@ -360,7 +360,7 @@ function TestMbti() {
             {personalityById && personalityById ? (
               <ShowResult>
                 <Row gutter={[16, 16]} justify={'center'}>
-                  <Col span={16}>
+                  <Col xs={{ span: 22 }} lg={{ span: 16 }}>
                     <h3 className="result-title">kết quả của bạn</h3>
                     <div className="result-image">
                       <img src={`${personalityById.image}`} alt="mbtitype" />
