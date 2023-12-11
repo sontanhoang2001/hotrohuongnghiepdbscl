@@ -10,6 +10,7 @@ import {
 import { Button, Col, Row, Spin } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
 import { DoubleRightOutlined } from '@ant-design/icons';
+import { format } from 'date-fns';
 
 function NewsSection() {
   const navigate = useNavigate();
@@ -40,6 +41,7 @@ function NewsSection() {
                     title={val.title}
                     description={
                       <>
+                        <p>Ngày đăng: {format(new Date(val.displayDate), 'dd/MM/yyyy')}</p>
                         <div
                           style={{
                             WebkitLineClamp: 3,

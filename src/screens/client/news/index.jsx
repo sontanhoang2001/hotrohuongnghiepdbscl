@@ -23,6 +23,7 @@ import {
 import { debounce } from 'lodash';
 import viVN from 'antd/lib/locale/vi_VN';
 import styled from 'styled-components';
+import { format } from 'date-fns';
 
 function News() {
   // goi redux
@@ -121,6 +122,7 @@ function News() {
                       title={val.title}
                       description={
                         <>
+                          <p>Ngày đăng: {format(new Date(val.displayDate), 'dd/MM/yyyy')}</p>
                           <div
                             style={{
                               WebkitLineClamp: 3,

@@ -14,6 +14,7 @@ import {
 } from '../../../redux/postsSlice';
 import { useEffect } from 'react';
 import ImageCard from '../../../components/card/imageCard';
+import { format } from 'date-fns';
 
 function NewsDetail() {
   // ----------
@@ -97,6 +98,7 @@ function NewsDetail() {
                         title={val.title}
                         description={
                           <>
+                            <p>Ngày đăng: {format(new Date(val.displayDate), 'dd/MM/yyyy')}</p>
                             <div
                               style={{
                                 WebkitLineClamp: 3,
