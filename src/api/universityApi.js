@@ -62,7 +62,7 @@ const universityApi = {
     });
   },
   getAllSelectListUniversity: () => {
-    const url = `public/organization/selectList?organizationType=1`;
+    const url = `public/organization/selectList`;
     return axiosService.get(url);
   },
 
