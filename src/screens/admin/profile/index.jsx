@@ -426,7 +426,14 @@ function Profile() {
   };
 
   const handleUpdateProfile = (value) => {
-    dispatch(updateUser(value)).then(() => {
+    const { uploadAvatar, ...formvalue } = value;
+    console.log(value);
+    //chuyển đổi giá trị submit from tại address từ mảng sang chuổi
+    const addressString = formvalue.address.join(', ');
+    formvalue.address = addressString;
+    const payload = formvalue;
+    console.log(payload);
+    dispatch(updateUser(payload)).then(() => {
       dispatch(getUserProfile());
       setOpenEditProfile(false);
     });
@@ -707,7 +714,7 @@ function Profile() {
             {/* ----------------begin newEmail---------------- */}
             <Form.Item
               name="newEmail"
-              label="Email mới"
+              label="Email"
               rules={[
                 {
                   type: 'email',
@@ -725,7 +732,7 @@ function Profile() {
             {/* ----------------begin newPhone---------------- */}
             <Form.Item
               name="newPhone"
-              label="SĐT mới"
+              label="SĐT"
               rules={[
                 {
                   min: 10,
@@ -774,6 +781,7 @@ function Profile() {
               birthday: `${data.UserDetail.birthday}`,
               address: `${data.UserDetail.address}`,
               addressDetail: `${data.UserDetail.addressDetail}`,
+              avatar: `${data.UserDetail.avatar}`,
             }}
             ref={formRef}
             onFinish={handleUpdateProfile}

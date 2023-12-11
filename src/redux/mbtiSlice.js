@@ -186,6 +186,7 @@ export const getMajorMBTIById = createAsyncThunk(
   async (payload, { rejectWithValue }) => {
     try {
       const rs = await mbtiApi.getMajorMBTIById(payload);
+      // console.log(rs.data.data);
       return rs.data.data;
     } catch (error) {
       if (error.response && error.response.data.message) {
