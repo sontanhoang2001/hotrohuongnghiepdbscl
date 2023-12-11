@@ -267,7 +267,7 @@ export const authSlice = createSlice({
       .addCase(authOTP.fulfilled, (state, { payload }) => {
         state.pending = false;
         state.otp = true;
-        message.success(payload, 3);
+        message.success('Xác thực thành công', 3);
       })
       .addCase(authOTP.rejected, (state, { payload }) => {
         state.pending = false;

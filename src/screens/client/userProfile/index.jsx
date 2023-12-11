@@ -13,6 +13,7 @@ import {
   Select,
   Upload,
   Cascader,
+  Spin,
 } from 'antd';
 import {
   HomeOutlined,
@@ -271,16 +272,16 @@ function UserProfile() {
             setOpenEdit(true);
           });
         } else {
+          dispatch(authOTP(formData));
+          setOpenOtp(false);
           if (formEidtValue.newEmail !== '' && formEidtValue.newEmail !== data?.email) {
-            setOpenOtp(false);
-            dispatch(authOTP(formData)).then(() => {
-              dispatch(authChangeEmailAsync(formEidtValue.newEmail)).then(() => {
-                dispatch(getUserProfile());
-              });
-            });
-
-            dispatch(isOtp(false));
+            dispatch(authChangeEmailAsync(formEidtValue.newEmail));
           }
+          if (formEidtValue.newPhone !== '' && formEidtValue.newPhone !== data?.phone) {
+            dispatch(authChangePhone(formEidtValue.newPhone));
+          }
+          dispatch(getUserProfile());
+          dispatch(isOtp(false));
         }
       } else if (otpType === 'phone') {
         const formData = {
@@ -298,17 +299,16 @@ function UserProfile() {
                   setOpenEdit(true);
                 });
               } else {
-                if (formEidtValue.newPhone !== '' && formEidtValue.newPhone !== data?.phone) {
-                  setOpenOtp(false);
-                  dispatch(authOTP(formData)).then(() => {
-                    dispatch(authChangePhone(formEidtValue.newPhone)).then(() => {
-                      dispatch(getUserProfile());
-                    });
-                    // dispatch(getUserProfile());
-                  });
-
-                  dispatch(isOtp(false));
+                dispatch(authOTP(formData));
+                setOpenOtp(false);
+                if (formEidtValue.newEmail !== '' && formEidtValue.newEmail !== data?.email) {
+                  dispatch(authChangeEmailAsync(formEidtValue.newEmail));
                 }
+                if (formEidtValue.newPhone !== '' && formEidtValue.newPhone !== data?.phone) {
+                  dispatch(authChangePhone(formEidtValue.newPhone));
+                }
+                dispatch(getUserProfile());
+                dispatch(isOtp(false));
               }
             }
           })
@@ -403,9 +403,12 @@ function UserProfile() {
   const handleUpdateProfile = (value) => {
     const { uploadAvatar, ...formvalue } = value;
     console.log(value);
-    //chuyển đổi giá trị submit from tại address từ mảng sang chuổi
-    const addressString = formvalue.address.join(', ');
-    formvalue.address = addressString;
+
+    if (data?.UserDetail?.address !== value.address) {
+      //chuyển đổi giá trị submit from tại address từ mảng sang chuổi
+      const addressString = formvalue.address.join(', ');
+      formvalue.address = addressString;
+    }
     const payload = formvalue;
     console.log(payload);
     dispatch(updateUser(payload)).then(() => {
@@ -418,138 +421,141 @@ function UserProfile() {
     <MarginTopContent className="container">
       <Row gutter={[16, 16]} justify="center">
         <Col xs={20} sm={20} md={20} lg={10}>
-          <Card>
-            <ProfileHeader>
-              {data?.UserDetail && (
-                <>
-                  {data.UserDetail.avatar ? (
-                    <img src={data.UserDetail.avatar} alt="avatar" />
-                  ) : (
-                    <img src="./images/pngegg.png" alt="avatar" />
-                  )}
-                  <div className="text-header">
-                    <p className="full-name">{data.UserDetail.fullName}</p>
-                    <p>
-                      Giới tính:{' '}
-                      {data.UserDetail.gender === 1 ? (
-                        <span>
-                          <ManOutlined
-                            style={{ color: 'var(--primary-color)', fontSize: '15px' }}
-                          />
-                        </span>
-                      ) : data.UserDetail.gender === 2 ? (
-                        <span>
-                          <WomanOutlined
-                            style={{ color: 'var(--secondary-color)', fontSize: '15px' }}
-                          />
-                        </span>
-                      ) : data.UserDetail.gender === 0 ? (
-                        <>🏳️‍🌈</>
-                      ) : (
-                        <span>undefined</span>
-                      )}
-                    </p>
-                  </div>
-                </>
-              )}
-            </ProfileHeader>
+          <Spin spinning={userPending}>
+            <Card>
+              <ProfileHeader>
+                {data?.UserDetail && (
+                  <>
+                    {data.UserDetail.avatar ? (
+                      <img src={data.UserDetail.avatar} alt="avatar" />
+                    ) : (
+                      <img src="./images/pngegg.png" alt="avatar" />
+                    )}
+                    <div className="text-header">
+                      <p className="full-name">{data.UserDetail.fullName}</p>
+                      <p>
+                        Giới tính:{' '}
+                        {data.UserDetail.gender === 1 ? (
+                          <span>
+                            <ManOutlined
+                              style={{ color: 'var(--primary-color)', fontSize: '15px' }}
+                            />
+                          </span>
+                        ) : data.UserDetail.gender === 2 ? (
+                          <span>
+                            <WomanOutlined
+                              style={{ color: 'var(--secondary-color)', fontSize: '15px' }}
+                            />
+                          </span>
+                        ) : data.UserDetail.gender === 0 ? (
+                          <>🏳️‍🌈</>
+                        ) : (
+                          <span>undefined</span>
+                        )}
+                      </p>
+                    </div>
+                  </>
+                )}
+              </ProfileHeader>
 
-            {data && data.UserDetail && (
-              <BodyContent>
-                <Row style={{ marginTop: 20 }}>
-                  <Col span={24}>
-                    <p>
-                      <PhoneOutlined
-                        className="profile-icon"
-                        style={{ color: 'var(--primary-color)' }}
-                      />{' '}
-                      - Điện Thoại
-                    </p>
-                    <p className="underline">{data.phone}</p>
-                  </Col>
-                </Row>
-                <Row style={{ marginTop: 20 }}>
-                  <Col span={24}>
-                    <p>
-                      <MailOutlined
-                        className="profile-icon"
-                        style={{ color: 'var(--primary-color)' }}
-                      />{' '}
-                      - E-Mail
-                    </p>
-                    <p className="underline">{data.email}</p>
-                  </Col>
-                </Row>
-                <Row style={{ marginTop: 20 }}>
-                  <Col span={24}>
-                    <p>
-                      <HomeOutlined
-                        className="profile-icon"
-                        style={{ color: 'var(--primary-color)' }}
-                      />{' '}
-                      - Địa chỉ
-                    </p>
-                    <p className="underline">{data.UserDetail.address}</p>
-                  </Col>
-                </Row>
-                <Row style={{ marginTop: 20 }}>
-                  <Col span={24}>
-                    <p>
-                      <HomeOutlined
-                        className="profile-icon"
-                        style={{ color: 'var(--primary-color)' }}
-                      />{' '}
-                      - Địa chỉ chi tiết
-                    </p>
-                    <p className="underline">{data.UserDetail.addressDetail}</p>
-                  </Col>
-                </Row>
-                <Row gutter={[16, 16]} style={{ marginTop: 20 }}>
-                  <Col span={12}>
-                    <Button
-                      type="primary"
-                      danger
-                      block
-                      onClick={() => {
-                        setOpenOtp(true);
-                        setEditPassword(true);
-                        setBeginSendOTP(false);
-                        form.resetFields();
-                      }}
-                      style={{ whiteSpace: 'inherit', height: 50 }}
-                    >
-                      Đổi mật khẩu
-                    </Button>
-                  </Col>
-                  <Col span={12}>
-                    <Button
-                      type="primary"
-                      block
-                      onClick={() => {
-                        handleEditMailnPhone();
-                        form.resetFields();
-                      }}
-                      style={{ whiteSpace: 'inherit', height: 50 }}
-                    >
-                      Cập nhật thông tin đăng nhập
-                    </Button>
-                  </Col>
-                  <Col span={24}>
-                    <Button
-                      type="primary"
-                      block
-                      onClick={() => {
-                        setOpenEditProfile(true);
-                      }}
-                      style={{ whiteSpace: 'inherit', height: 50 }}
-                    >
-                      Cập nhật thông tin
-                    </Button>
-                  </Col>
-                </Row>
-              </BodyContent>
-            )}
-          </Card>
+              {data && data.UserDetail && (
+                <BodyContent>
+                  <Row style={{ marginTop: 20 }}>
+                    <Col span={24}>
+                      <p>
+                        <PhoneOutlined
+                          className="profile-icon"
+                          style={{ color: 'var(--primary-color)' }}
+                        />{' '}
+                        - Điện Thoại
+                      </p>
+                      <p className="underline">{data.phone}</p>
+                    </Col>
+                  </Row>
+                  <Row style={{ marginTop: 20 }}>
+                    <Col span={24}>
+                      <p>
+                        <MailOutlined
+                          className="profile-icon"
+                          style={{ color: 'var(--primary-color)' }}
+                        />{' '}
+                        - E-Mail
+                      </p>
+                      <p className="underline">{data.email}</p>
+                    </Col>
+                  </Row>
+                  <Row style={{ marginTop: 20 }}>
+                    <Col span={24}>
+                      <p>
+                        <HomeOutlined
+                          className="profile-icon"
+                          style={{ color: 'var(--primary-color)' }}
+                        />{' '}
+                        - Địa chỉ
+                      </p>
+                      <p className="underline">{data.UserDetail.address}</p>
+                    </Col>
+                  </Row>
+                  <Row style={{ marginTop: 20 }}>
+                    <Col span={24}>
+                      <p>
+                        <HomeOutlined
+                          className="profile-icon"
+                          style={{ color: 'var(--primary-color)' }}
+                        />{' '}
+                        - Địa chỉ chi tiết
+                      </p>
+                      <p className="underline">{data.UserDetail.addressDetail}</p>
+                    </Col>
+                  </Row>
+                  <Row gutter={[16, 16]} style={{ marginTop: 20 }}>
+                    <Col span={12}>
+                      <Button
+                        type="primary"
+                        danger
+                        block
+                        onClick={() => {
+                          setOpenOtp(true);
+                          setEditPassword(true);
+                          setBeginSendOTP(false);
+                          form.resetFields();
+                        }}
+                        style={{ whiteSpace: 'inherit', height: 50 }}
+                      >
+                        Đổi mật khẩu
+                      </Button>
+                    </Col>
+                    <Col span={12}>
+                      <Button
+                        type="primary"
+                        block
+                        onClick={() => {
+                          handleEditMailnPhone();
+                          form.resetFields();
+                          setBeginSendOTP(false);
+                        }}
+                        style={{ whiteSpace: 'inherit', height: 50 }}
+                      >
+                        Cập nhật thông tin đăng nhập
+                      </Button>
+                    </Col>
+                    <Col span={24}>
+                      <Button
+                        type="primary"
+                        block
+                        onClick={() => {
+                          setOpenEditProfile(true);
+                        }}
+                        style={{ whiteSpace: 'inherit', height: 50 }}
+                      >
+                        Cập nhật thông tin
+                      </Button>
+                    </Col>
+                  </Row>
+                </BodyContent>
+              )}
+            </Card>
+          </Spin>
         </Col>
         <Col xs={20} sm={20} md={20} lg={10}>
           <Card>

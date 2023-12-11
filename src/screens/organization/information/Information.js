@@ -99,6 +99,11 @@ const Information = () => {
   const [previewTitle, setPreviewTitle] = useState('');
   const [fileList, setFileList] = useState([]);
 
+  useEffect(() => {
+    if (organization?.OrganizationDetail) {
+      setFileList([{ url: organization?.OrganizationDetail.image }]);
+    }
+  }, [organization]);
   const handleChangeUpload = ({ fileList: newFileList }) => setFileList(newFileList);
   const uploadButton = (
     <div>
@@ -135,8 +140,6 @@ const Information = () => {
     setPreviewOpen(true);
     setPreviewTitle(file.name || file.url.substring(file.url.lastIndexOf('/') + 1));
   };
-
-
 
   //Form cập nhật thông tin tổ chức
   const [openUpdateForm, setOpenUpdateForm] = useState(false);
@@ -237,7 +240,7 @@ const Information = () => {
         title={<p style={{ textAlign: 'center', margin: 0 }}>Cập nhật thông tin tổ chức</p>}
         okText="Lưu"
         centered
-        width={1000}
+        width={1400}
         style={{ height: 'auto' }}
         bodyStyle={{ overflowY: 'scroll' }}
         open={openUpdateForm}

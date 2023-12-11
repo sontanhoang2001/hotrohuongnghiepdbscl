@@ -140,7 +140,7 @@ export const userSlice = createSlice({
       .addCase(updateUser.fulfilled, (state, { payload }) => {
         state.pending = false;
         state.data = payload;
-        notification.success('cập nhật thông tin thành công');
+        notification.success({ message: 'Đã cập nhật thành công' });
       })
       .addCase(updateUser.rejected, (state, { payload }) => {
         state.pending = false;

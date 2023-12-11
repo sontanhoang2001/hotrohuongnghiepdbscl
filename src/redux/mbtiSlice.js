@@ -134,7 +134,6 @@ export const getGetAllpersonality = createAsyncThunk(
 export const storeTestHistory = createAsyncThunk(
   'mbti/storeTestHistory',
   async (payload, { rejectWithValue }) => {
-    console.log('payload', payload);
     try {
       const rs = await mbtiApi.storeTestHistory(payload);
       return rs.data; // Đảm bảo kiểm tra API response và chọn dữ liệu cần thiết

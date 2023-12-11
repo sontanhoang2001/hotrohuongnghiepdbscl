@@ -304,11 +304,7 @@ function Faqs() {
             />
           </Col>
           <Col xs="24" xl={24}>
-            <Card
-              bordered={false}
-              className="criclebox tablespace mb-24"
-              title="Danh sách câu hỏi thường gặp"
-            >
+            <Card bordered={false} className="criclebox tablespace mb-24" title="Gợi ý ngành nghề">
               <div className="table-responsive">
                 <Table
                   bordered={true}

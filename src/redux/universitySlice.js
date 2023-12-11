@@ -57,7 +57,7 @@ export const getAllOrganizationsByUser = createAsyncThunk(
   async (params, { rejectWithValue }) => {
     try {
       const rs = await universityApi.getAllOrganizationsByUser(params);
-   
+
       return rs.data.data;
     } catch (error) {
       if (error.response && error.response.data.message) {
@@ -184,7 +184,6 @@ export const getAllPublicUniversityInfo = createAsyncThunk(
   'university/getAllPublicUniversityInfo',
   async (payload, thunkApi) => {
     try {
-      console.log('payloadne:', payload);
       const organizationType = payload === 'university' ? 1 : 2;
       const rs = await universityApi.getAllPublicUniversityInfo({
         ...thunkApi.getState().university.organiztionPublicParams,
@@ -389,13 +388,11 @@ const universitySlice = createSlice({
       })
       .addCase(createOrganizationAsync.fulfilled, (state, { payload }) => {
         state.pending = false;
-        console.log(payload);
+
         notification.success({ message: 'Tạo tổ chức thành công', duration: 3 });
       })
       .addCase(createOrganizationAsync.rejected, (state, { payload }) => {
         state.pending = false;
-        console.log(payload.message);
-
         notification.error({ message: payload, duration: 3 });
       }) //all public University
       .addCase(getAllPublicUniversityInfo.pending, (state) => {

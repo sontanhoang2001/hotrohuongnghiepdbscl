@@ -263,7 +263,6 @@ function TestMbti() {
     const result = personality?.find((p) => p.name === mbtiType);
     setMbtiResult(result);
     // const mbtiResult_id = result.id;
-    console.log('result', result.id);
 
     // setMbtiResult(personality?.find((detail) => detail?.name === mbtiType));
 
@@ -361,9 +360,11 @@ function TestMbti() {
             {personalityById && personalityById ? (
               <ShowResult>
                 <Row gutter={[16, 16]} justify={'center'}>
-                  <Col span={16}>
+                  <Col xs={{ span: 22 }} lg={{ span: 16 }}>
                     <h3 className="result-title">kết quả của bạn</h3>
-                    <img src={`${personalityById.image}`} alt="mbtitype" />
+                    <div className="result-image">
+                      <img src={`${personalityById.image}`} alt="mbtitype" />
+                    </div>
                     <div className="mbti-description">
                       <h3 style={{ color: 'var(--primary-color)' }}>{personalityById.name}</h3>
                       <h3>{mbtiResult.label}</h3>
@@ -452,12 +453,7 @@ const ControllBtn = styled.div`
   }
 `;
 const ShowResult = styled.div`
-  /* display: flex;
-  flex-direction: column; */
   transition: 2s ease-in;
-  /* width: 400px; */
-  /* margin-left: auto;
-  margin-right: auto; */
   margin-top: 40px;
 
   .result-title {
@@ -469,16 +465,22 @@ const ShowResult = styled.div`
     text-transform: capitalize;
     text-align: center;
     margin-top: 5px;
+    font-size: 1.6rem;
   }
-  img {
-    /* width: 300px; */
-    object-fit: cover;
-    margin-left: auto;
-    margin-right: auto;
+  .result-image {
+    text-align: center;
+    img {
+      width: 500px;
+      object-fit: cover;
+
+      margin-bottom: 30px;
+    }
   }
+
   .mbti-description {
     p {
       text-align: justify;
+      font-size: 1.5rem;
     }
   }
 `;
@@ -503,6 +505,7 @@ const SuggestContent = styled.div`
     a {
       text-decoration: none;
       color: inherit;
+      font-size: 1.4rem;
     }
   }
   span:nth-child(odd) {

@@ -48,7 +48,6 @@ function Universities() {
 
   // reset params
   useEffect(() => {
-    console.log('organiztionPublicParams', organiztionPublicParams);
     dispatch(setParams({ ...organiztionPublicParams, page: 1 }));
     // dispatch(setParams(organiztionPublicParams))
   }, []);

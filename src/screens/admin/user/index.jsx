@@ -183,13 +183,13 @@ function User() {
 
     {
       key: 'action',
-      fixed:'right',
+      fixed: 'right',
       render: (record) => (
         <>
           <div className="author-info">
-            <Button type="text">
+            {/* <Button type="text">
               <EditOutlined onClick={() => handleEdit(record.id)} style={{ color: 'green' }} />
-            </Button>
+            </Button> */}
             {record.deletedAt === null && (
               <Button type="text" danger onClick={() => handleDelete(record.id)}>
                 <DeleteOutlined />
