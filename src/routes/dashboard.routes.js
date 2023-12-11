@@ -13,4 +13,5 @@ const { countAll } = require('../controllers/dashboardController.js');
 // Dashboard
 router.get('/countAll', middleware.verifyToken, middleware.checkRole([Roles.ADMIN]), countAll);
 
+
 module.exports = router;

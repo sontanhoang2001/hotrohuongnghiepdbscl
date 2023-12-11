@@ -54,7 +54,7 @@ module.exports = {
       throw error; // Sau đó ném lỗi để xử lý ở phần gọi hàm
     }
   },
-  getAll: async (page, size, search, organizationTypeId, status, deleted, orderData) => {
+  getAll: async (page, size, search, organizationTypeId, status, deleted, orderData, isPublic) => {
     try {
       let order = [['id', 'DESC']];
       if (orderData) {
@@ -83,10 +83,15 @@ module.exports = {
       // Tính offset
       const offset = (page - 1) * size;
 
+      let paranoid = false;
+      if (isPublic == true) {
+        paranoid = true;
+      }
+
       const { count, rows } = await Organization.findAndCountAll({
         order,
         where,
-        paranoid: false,
+        paranoid,
         offset,
         limit: size,
         attributes: ['id', 'name', 'deletedAt'],

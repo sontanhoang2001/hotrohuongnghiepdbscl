@@ -44,8 +44,9 @@ module.exports = {
       let status = parseInt(req.query.status);
       let deleted = req.query.deleted;
       let order = req.query.order;
+      let isPublic = true;
 
-      const listUniversity = await organizationService.getAll(page, size, search, organizationTypeId, status, deleted, order); // Gọi chức năng từ service
+      const listUniversity = await organizationService.getAll(page, size, search, organizationTypeId, status, deleted, order, isPublic); // Gọi chức năng từ service
       if (listUniversity) {
         return responseHelper.sendResponse.SUCCESS(res, listUniversity);
       }
@@ -322,8 +323,9 @@ module.exports = {
       let status = 1;
       let deleted = false;
       let order = req.query.order;
+      let isPublic = true;
 
-      const listUniversity = await organizationService.getAll(page, size, search, organizationTypeId, status, deleted, order); // Gọi chức năng từ service
+      const listUniversity = await organizationService.getAll(page, size, search, organizationTypeId, status, deleted, order, isPublic); // Gọi chức năng từ service
       if (listUniversity) {
         return responseHelper.sendResponse.SUCCESS(res, listUniversity);
       }

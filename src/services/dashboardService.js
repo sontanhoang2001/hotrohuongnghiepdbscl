@@ -2,9 +2,8 @@ const User = require('../models').User;
 const Organization = require('../models').Organization;
 const VerifyOrganization = require('../models').VerifyOrganization;
 
-
 const sequelize = require('../database/connection_database');
-const { Op } = require('sequelize');
+const { Op, Sequelize } = require('sequelize');
 
 module.exports = {
   getAll: async () => {
@@ -33,15 +32,14 @@ module.exports = {
             [Op.eq]: 2,
           },
         },
-        attributes: ['id']
+        attributes: ['id'],
       });
-      
 
       const data = {
         user: user.count,
         university: university.count,
         company: company.count,
-        verifyOrganization: verifyOrganization.count
+        verifyOrganization: verifyOrganization.count,
       };
 
       return data;
