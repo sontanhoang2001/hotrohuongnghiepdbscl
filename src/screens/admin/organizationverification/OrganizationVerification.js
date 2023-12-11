@@ -195,7 +195,7 @@ const OrganizationVerification = () => {
   useEffect(() => {
     //gọi api thông qua redux
     dispatch(getAllOrganizationVerification());
-  }, [dispatch, page, size, total,organizationParams]);
+  }, [dispatch, page, size, total, organizationParams]);
 
   const convertedData = useMemo(
     () =>
@@ -244,7 +244,11 @@ const OrganizationVerification = () => {
             />
           </Col>
           <Col xs="24" xl={24}>
-            <Card bordered={false} className="criclebox tablespace mb-24" title="Danh sách tổ chức">
+            <Card
+              bordered={false}
+              className="criclebox tablespace mb-24"
+              title="Danh sách yêu cầu xác thực"
+            >
               <div className="table-responsive">
                 <Table
                   bordered={true}
