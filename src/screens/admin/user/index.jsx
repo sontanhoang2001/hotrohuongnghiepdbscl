@@ -180,29 +180,29 @@ function User() {
       ),
     },
 
-    // {
-    //   key: 'action',
-    //   fixed:'right',
-    //   render: (record) => (
-    //     <>
-    //       <div className="author-info">
-    //         <Button type="text">
-    //           <EditOutlined onClick={() => handleEdit(record.id)} style={{ color: 'green' }} />
-    //         </Button>
-    //         {record.deletedAt === null && (
-    //           <Button type="text" danger onClick={() => handleDelete(record.id)}>
-    //             <DeleteOutlined />
-    //           </Button>
-    //         )}
-    //         {record.deletedAt !== null && (
-    //           <Button type="text" onClick={() => handleRestore(record.id)}>
-    //             <UndoOutlined />
-    //           </Button>
-    //         )}
-    //       </div>
-    //     </>
-    //   ),
-    // },
+    {
+      key: 'action',
+      fixed:'right',
+      render: (record) => (
+        <>
+          <div className="author-info">
+            <Button type="text">
+              <EditOutlined onClick={() => handleEdit(record.id)} style={{ color: 'green' }} />
+            </Button>
+            {record.deletedAt === null && (
+              <Button type="text" danger onClick={() => handleDelete(record.id)}>
+                <DeleteOutlined />
+              </Button>
+            )}
+            {record.deletedAt !== null && (
+              <Button type="text" onClick={() => handleRestore(record.id)}>
+                <UndoOutlined />
+              </Button>
+            )}
+          </div>
+        </>
+      ),
+    },
   ];
 
   useEffect(() => {

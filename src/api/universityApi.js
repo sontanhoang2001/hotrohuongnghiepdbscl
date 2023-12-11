@@ -12,7 +12,7 @@ const universityApi = {
     const url = `${pathname}?page=${params.page}&size=${params.size}&status=2`;
     return axiosService.get(url);
   },
-  getAllUniversity: (page, size, search, organizationType) => {
+  getAllUniversity: ({page, size, search, organizationType}) => {
     const url = `${pathname}`;
     return axiosService.get(url, {
       params: { page, size, search, organizationType },
@@ -22,6 +22,10 @@ const universityApi = {
   deleteUniversity: (id) => {
     const url = `${pathname}/delete/${id}`;
     return axiosService.delete(url);
+  },
+  restoreUniversity: (id) => {
+    const url = `${pathname}/restore/${id}`;
+    return axiosService.post(url);
   },
   getOrganizationById: (id) => {
     const url = `${pathname}/id/${id}`;
@@ -46,9 +50,10 @@ const universityApi = {
     const url = `${pathname}/reqToVerifyOrganization`;
     return axiosService.patch(url, data);
   },
-  getAllOrganizationsByUser: () => {
-    const url = `${pathname}/getAllByUser?page=1&size=100&order=asc`;
-    return axiosService.get(url);
+  getAllOrganizationsByUser: (params) => {
+    const url = `${pathname}/getAllByUser`;
+    console.log(params);
+    return axiosService.get(url,{params:new URLSearchParams(Object.entries(params))});
   },
   //client public api
   getAllPublicUniversityInfo: ({ page, size, search, organizationType, order }) => {

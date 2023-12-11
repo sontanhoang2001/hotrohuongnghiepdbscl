@@ -7,7 +7,6 @@ import {
   Avatar,
   Typography,
   Pagination,
-  Popconfirm,
   Form,
   Input,
   Upload,
@@ -16,20 +15,12 @@ import {
   Select,
 } from 'antd';
 
-import { InfoCircleFilled, LockFilled, PlusCircleFilled, PlusOutlined } from '@ant-design/icons';
+import { InfoCircleFilled, PlusCircleFilled, PlusOutlined } from '@ant-design/icons';
 
 import {
   createOrganizationAsync,
-  deleteOrganization,
   getAllOrganizationsByUser,
-  getAllUniversity,
-  getOneByOrganizationId,
-  selectUniversity,
-  selectUniversityPage,
-  selectUniversityPagesize,
   selectUniversityPending,
-  selectUniversityToalRow,
-  updateOrganization,
 } from '../../../redux/universitySlice';
 import { useDispatch, useSelector } from 'react-redux';
 import React, { useEffect, useMemo, useState } from 'react';
@@ -68,13 +59,7 @@ const filterOption = (input, option) =>
 
 function OrganizationList() {
   //hàm bắt event edit
-  const handleEdit = (id) => {
-    console.log(id);
-  };
   //hàm bắt event delete
-  const handleDelete = (id) => {
-    dispatch(deleteOrganization(id));
-  };
   //định dạng cột hiển thị
   const columns = useMemo(
     () => [
@@ -102,16 +87,16 @@ function OrganizationList() {
         key: 'emil',
       },
 
-      {
-        title: 'Rank',
-        dataIndex: 'rank',
-        key: 'rank',
-        render: (record) => (
-          <div className="author-info">
-            <Title level={5}>{record}</Title>
-          </div>
-        ),
-      },
+      // {
+      //   title: 'Rank',
+      //   dataIndex: 'rank',
+      //   key: 'rank',
+      //   render: (record) => (
+      //     <div className="author-info">
+      //       <Title level={5}>{record}</Title>
+      //     </div>
+      //   ),
+      // },
       {
         title: 'Địa chỉ',
         dataIndex: 'address',
@@ -204,30 +189,30 @@ function OrganizationList() {
 
   //goi redux
   const dispatch = useDispatch();
-  const { joinedOrganizations, organization, pending } = useSelector((state) => state.university);
+  const { joinedOrganizations, page, size, total, pending } = useSelector(
+    (state) => state.university,
+  );
   const { profile } = useSelector((state) => state.auth);
-  const page = useSelector(selectUniversityPage);
-  const size = useSelector(selectUniversityPagesize);
-  const Totalpage = useSelector(selectUniversityToalRow);
-  const getUniversity = useSelector(selectUniversity);
+
   const pendingState = useSelector(selectUniversityPending);
 
+  /* eslint-disable */
   useEffect(() => {
     //gọi api thông qua redux
-    dispatch(getAllOrganizationsByUser());
-  }, []);
+    dispatch(getAllOrganizationsByUser({ page, size }));
+  }, [dispatch]);
+  /* eslint-enable */
 
   const convertedData = useMemo(
     () =>
       joinedOrganizations?.map((university, index) => {
-        // console.log(university);
+    
         return {
           key: index.toString(),
           id: university?.id,
-
-          image: university.OrganizationDetail.image,
-          demo: university.OrganizationDetail,
-          email: university.OrganizationDetail.email,
+          image: university?.OrganizationDetail?.image,
+          demo: university?.OrganizationDetail,
+          email: university?.OrganizationDetail?.email,
           name: university?.name,
           rank: university?.OrganizationDetail?.rank,
           url: university?.OrganizationDetail?.url,
@@ -244,8 +229,7 @@ function OrganizationList() {
 
   //hàm phan trang
   const handlePageChange = (page, pageSize) => {
-    const payload = { page, pageSize };
-    dispatch(getAllOrganizationsByUser(payload));
+    dispatch(getAllOrganizationsByUser({ page, size: pageSize }));
   };
   //upload image
   //file trong uoload
@@ -310,7 +294,7 @@ function OrganizationList() {
         const formValues = { ...values, userId: profile.id };
         // console.log(formValues);
         dispatch(createOrganizationAsync(formValues)).then(() => {
-          dispatch(getAllOrganizationsByUser());
+          dispatch(getAllOrganizationsByUser({ page, size }));
           setOpenUpdateForm(false);
         });
       })
@@ -352,7 +336,7 @@ function OrganizationList() {
               <Pagination
                 current={page}
                 pageSize={size}
-                total={Totalpage}
+                total={total}
                 onChange={handlePageChange}
                 showQuickJumper
                 showSizeChanger
@@ -379,7 +363,7 @@ function OrganizationList() {
         <Card style={{ margin: 0, padding: 0 }} loading={pending}>
           <Form wrapperCol={{ span: 20 }} labelCol={{ span: 4 }} ref={formRef}>
             <Row gutter={[18, 20]}>
-              <Col span={12}>
+              <Col span={24}>
                 <Form.Item
                   label="Loại tổ chức"
                   name="organizationTypeId"
@@ -396,17 +380,17 @@ function OrganizationList() {
                   />
                 </Form.Item>
               </Col>
-              <Col span={12}>
+              <Col span={24}>
                 <Form.Item
                   label="Tên tổ chức"
                   name="name"
                   rules={[{ required: true, message: 'Nhập tên tổ chức!' }]}
                 >
-                  <Input placeholder="Tên tổ chức" />
+                  <Input size='large' placeholder="Tên tổ chức" />
                 </Form.Item>
               </Col>
 
-              <Col span={12}>
+              <Col span={24}>
                 <Form.Item name={'uploadThumbnail'} label="Ảnh đại diện">
                   <Upload
                     listType="picture-card"
@@ -423,7 +407,7 @@ function OrganizationList() {
                 </Form.Item>
               </Col>
 
-              <Col span={12}>
+              <Col span={24}>
                 <Form.Item
                   label="Ảnh đại diện"
                   name="image"
@@ -432,7 +416,7 @@ function OrganizationList() {
                   <Input rows={2} placeholder="Ảnh đại diện" />
                 </Form.Item>
               </Col>
-              <Col span={12}>
+              <Col span={24}>
                 <Form.Item
                   label="Khu vực"
                   name="province"
@@ -441,7 +425,7 @@ function OrganizationList() {
                   <Input placeholder="Khu vực" />
                 </Form.Item>
               </Col>
-              <Col span={12}>
+              <Col span={24}>
                 {' '}
                 <Form.Item
                   label="Địa chỉ"
@@ -451,7 +435,7 @@ function OrganizationList() {
                   <Input placeholder="Địa chỉ" />
                 </Form.Item>
               </Col>
-              <Col span={12}>
+              <Col span={24}>
                 <Form.Item
                   label="Email"
                   name="email"
@@ -460,7 +444,7 @@ function OrganizationList() {
                   <Input placeholder="Email" />
                 </Form.Item>
               </Col>
-              <Col span={12}>
+              <Col span={24}>
                 <Form.Item
                   label="Số điện thoại"
                   name="phone"
@@ -482,7 +466,7 @@ function OrganizationList() {
                   <Input placeholder="Số điện thoại" />
                 </Form.Item>
               </Col>
-              <Col span={12}>
+              <Col span={24}>
                 {' '}
                 <Form.Item
                   label="Trang web"

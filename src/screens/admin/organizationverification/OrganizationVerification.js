@@ -82,16 +82,16 @@ const OrganizationVerification = () => {
           </Avatar.Group>
         ),
       },
-      {
-        title: 'Rank',
-        dataIndex: 'rank',
-        key: 'rank',
-        render: (record) => (
-          <div className="author-info">
-            <Title level={5}>{record}</Title>
-          </div>
-        ),
-      },
+      // {
+      //   title: 'Rank',
+      //   dataIndex: 'rank',
+      //   key: 'rank',
+      //   render: (record) => (
+      //     <div className="author-info">
+      //       <Title level={5}>{record}</Title>
+      //     </div>
+      //   ),
+      // },
       {
         title: 'Địa chỉ',
         dataIndex: 'address',
@@ -249,7 +249,7 @@ const OrganizationVerification = () => {
       <Modal
         confirmLoading={pendingState}
         title={<p style={{ textAlign: 'center', margin: 0 }}>Chi tiết yêu cầu xác thực</p>}
-        
+        onCancel={()=>setOpenProcess(false)}
         centered    
         style={{ maxHeight: '80vh',width:'auto', overflowY: 'auto' }}
         open={openProcess}
