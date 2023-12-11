@@ -92,14 +92,13 @@ const beforeUpload = (file) => {
 };
 function UserProfile() {
   const navigate = useNavigate();
-  const [formattedDate, setFormattedDate] = useState();
   const [result, setResult] = useState('');
   const [otpType, setOtpType] = useState('email');
   const [form] = Form.useForm();
   const [editPassword, setEditPassword] = useState(false);
   const [formEidtValue, setFormEditValue] = useState({});
   const [openEditProfile, setOpenEditProfile] = useState(false);
-
+  const formRef = React.useRef(null);
   //trạng thái đóng/ mở modal
   const [open, setOpen] = useState(false);
   const [open1, setOpen1] = useState(false);
@@ -110,8 +109,6 @@ function UserProfile() {
   //gọi redux
   const sentOtp = useSelector(selectIsOtp);
   const dispatch = useDispatch();
-  const getProfile = useSelector(selectLoginData);
-  const getUserData = useSelector(selectLoginData); //lấy thông tin người dùng đăng ký trong local storage
   const authOtpSuccess = useSelector(selectIsOtp);
 
   // const dataHistory = useSelector(selectMbtiQuestions);
@@ -131,11 +128,10 @@ function UserProfile() {
     //   setOpen(false);
     //   dispatch(isOtp(false));
     // }
-  }, [dispatch, openOtp, open, sentOtp, getProfile]);
+  }, [dispatch, openOtp, open, sentOtp]);
 
   const handleView = (id) => {
     setOpen1(true);
-    console.log('select History id', id);
     dispatch(getTestHistoryById(id));
   };
   const columns = [
@@ -176,9 +172,8 @@ function UserProfile() {
   const handleSendOTP = () => {
     if (otpType === 'email') {
       setBeginSendOTP(true);
-      // console.log('send email...');
       const requestData = {
-        userId: getUserData.id,
+        userId: data?.id,
         type: otpType,
       };
 
@@ -186,7 +181,7 @@ function UserProfile() {
     } else if (otpType === 'phone') {
       setBeginSendOTP(true);
 
-      let phoneNumber = `+84${getUserData?.phone.substring(1)}`;
+      let phoneNumber = `+84${data?.phone.substring(1)}`;
       // console.log('bắt đầu gửi OTP qua sđt: ', phoneNumber);
       setTimeout(() => {
         signin(phoneNumber);
@@ -262,12 +257,10 @@ function UserProfile() {
     const otpString = otp.join('');
 
     // tạo giá trị request cho api
-    if (getUserData.id) {
+    if (data.id) {
       if (otpType === 'email') {
-        console.log('userId', getUserData?.id);
-
         const formData = {
-          userId: getUserData?.id,
+          userId: data?.id,
           type: otpType,
           otpCode: otpString,
         };
@@ -290,7 +283,7 @@ function UserProfile() {
         }
       } else if (otpType === 'phone') {
         const formData = {
-          userId: getUserData?.id,
+          userId: data?.id,
           type: otpType,
           otpCode: '',
         };
@@ -336,6 +329,7 @@ function UserProfile() {
       }, 300);
     });
   };
+
   const handleEditMailnPhone = () => {
     form.current?.resetFields();
     setOpenEdit(true);
@@ -352,7 +346,7 @@ function UserProfile() {
     uploadFile(file)
       .then((imgUrl) => {
         onSuccess(null, imgUrl);
-        form.current?.setFieldsValue({
+        formRef.current?.setFieldsValue({
           avatar: imgUrl,
         });
         // console.log('uploaded', imgUrl);
@@ -404,7 +398,7 @@ function UserProfile() {
   };
 
   const handleUpdateProfile = (value) => {
-    console.log(value);
+    const { uploadAvatar, ...formvalue } = value;
     dispatch(updateUser(value)).then(() => {
       dispatch(getUserProfile());
       setOpenEditProfile(false);
@@ -840,13 +834,13 @@ function UserProfile() {
               gender: `${data.UserDetail.gender}`,
               birthday: `${data.UserDetail.birthday}`,
               address: `${data.UserDetail.address}`,
-              avatar: `${data.UserDetail.avatar}`,
               addressDetail: `${data.UserDetail.addressDetail}`,
             }}
+            ref={formRef}
             onFinish={handleUpdateProfile}
           >
             {/* ----------------begin birthday---------------- */}
-            <Form.Item name="birthday">
+            <Form.Item hidden name="birthday">
               <Input style={{ height: 50, display: 'none' }} />
             </Form.Item>
             {/* ----------------end birthday---------------- */}
@@ -871,7 +865,7 @@ function UserProfile() {
             {/* ----------------begin gender---------------- */}
             <Form.Item
               name="gender"
-              label="Giói tính"
+              label="Giới tính"
               rules={[
                 {
                   required: true,
@@ -900,7 +894,7 @@ function UserProfile() {
             {/* ----------------end gender---------------- */}
             {/* ----------------begin avatar---------------- */}
             <Form.Item
-              name="avatar"
+              name="uploadAvatar"
               label="Ảnh đại diện"
               rules={[
                 {
@@ -924,6 +918,9 @@ function UserProfile() {
                   {fileList.length >= 1 ? null : uploadButton}
                 </Upload>
               </AvatarUploadStyled>
+            </Form.Item>
+            <Form.Item hidden name={'avatar'}>
+              <Input hidden />
             </Form.Item>
             {/* ----------------end avatar---------------- */}
             {/* ----------------begin address---------------- */}
@@ -970,11 +967,12 @@ function UserProfile() {
         )}
       </Modal>
       {/* preview avtar */}
-      <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
+      <Modal open={previewOpen} footer={null} onCancel={handleCancel}>
         <img
           alt="preview"
           style={{
             width: '100%',
+            marginTop: 30,
           }}
           src={previewImage}
         />
@@ -1051,15 +1049,6 @@ const AvatarUploadStyled = styled.div`
 
     .ant-upload-list-item {
       .ant-upload-list-item-actions {
-        /* a {
-          span,
-          .anticon .anticon-eye {
-            width: 30px;
-            svg {
-              font-size: 40px;
-            }
-          }
-        } */
       }
     }
   }

@@ -92,7 +92,7 @@ function Router() {
             <Route index element={<Dashboard />} />
             <Route path="xac-minh" element={<VerifyOrganization />} />
             {/* <Route index element={<Dashboard />} /> */}
-            <Route path="danh-sach-truong-hoc" element={<University />} />
+            <Route path="danh-sach-to-chuc" element={<University />} />
             <Route path="verification-requests" element={<OrganizationVerification />} />
             <Route path="danh-sach-nguoi-dung" element={<User />} />
             <Route path="danh-sach-cau-hoi" element={<Mbti />} />

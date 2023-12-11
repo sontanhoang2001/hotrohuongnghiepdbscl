@@ -14,7 +14,14 @@ import {
   updateVerificationStatusByAdmin,
 } from '../../../redux/universitySlice';
 import Title from 'antd/es/typography/Title';
-import { CheckCircleFilled, CloseOutlined, DownloadOutlined, EyeFilled, LockFilled, SettingOutlined } from '@ant-design/icons';
+import {
+  CheckCircleFilled,
+  CloseOutlined,
+  DownloadOutlined,
+  EyeFilled,
+  LockFilled,
+  SettingOutlined,
+} from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -22,7 +29,7 @@ import { Link } from 'react-router-dom';
 const OrganizationVerification = () => {
   //goi redux
   const dispatch = useDispatch();
-  const { verifications,currentVerification } = useSelector((state) => state.university);
+  const { verifications, currentVerification } = useSelector((state) => state.university);
   const page = useSelector(selectUniversityPage);
   const size = useSelector(selectUniversityPagesize);
   const Totalpage = useSelector(selectUniversityToalRow);
@@ -33,27 +40,28 @@ const OrganizationVerification = () => {
   const [accepting, setAccepting] = useState(false);
   const acceptRequest = () => {
     setAccepting(true);
-    dispatch(updateVerificationStatusByAdmin({status:1,organizationId:currentVerification.id}));
+    dispatch(
+      updateVerificationStatusByAdmin({ status: 1, organizationId: currentVerification.id }),
+    );
     dispatch(getAllOrganizationVerification());
     setAccepting(false);
     setOpenProcess(false);
-
   };
   const [rejecting, setRejecting] = useState(false);
   const rejectRequest = () => {
     setRejecting(true);
-    dispatch(updateVerificationStatusByAdmin({status:0,organizationId:currentVerification.id}))
-    .then(()=>{
+    dispatch(
+      updateVerificationStatusByAdmin({ status: 0, organizationId: currentVerification.id }),
+    ).then(() => {
       dispatch(getAllOrganizationVerification());
       setRejecting(false);
       setOpenProcess(false);
     });
-    
   };
 
-  //hàm bắt event process  
+  //hàm bắt event process
   const handleProcess = (id) => {
-    dispatch(getLocalOrganizationsById(id));   
+    dispatch(getLocalOrganizationsById(id));
     setOpenProcess(true);
   };
 
@@ -216,11 +224,7 @@ const OrganizationVerification = () => {
       <div className="tabled">
         <Row gutter={[24, 0]}>
           <Col xs="24" xl={24}>
-            <Card
-              bordered={false}
-              className="criclebox tablespace mb-24"
-              title="Danh sách trường học"
-            >
+            <Card bordered={false} className="criclebox tablespace mb-24" title="Danh sách tổ chức">
               <div className="table-responsive">
                 <Table
                   bordered={true}
@@ -249,23 +253,36 @@ const OrganizationVerification = () => {
       <Modal
         confirmLoading={pendingState}
         title={<p style={{ textAlign: 'center', margin: 0 }}>Chi tiết yêu cầu xác thực</p>}
-        
-        centered    
-        style={{ maxHeight: '80vh',width:'auto', overflowY: 'auto' }}
+        centered
+        style={{ maxHeight: '80vh', width: 'auto', overflowY: 'auto' }}
         open={openProcess}
-        footer={<>      
-          <Button key="1" onClick={()=>setOpenProcess(false)} >
-            Hủy
-          </Button>
-          <Button loading={rejecting} key="2" danger onClick={rejectRequest} icon={<CloseOutlined />} type="primary">
-            Từ chối
-          </Button>
-          <Button key="3" loading={accepting} onClick={acceptRequest} icon={<CheckCircleFilled/>} style={{ background: "green", borderColor: "white" }} type="primary">
-            Chấp nhận
-          </Button>
-        
-        </>}
-
+        footer={
+          <>
+            <Button key="1" onClick={() => setOpenProcess(false)}>
+              Hủy
+            </Button>
+            <Button
+              loading={rejecting}
+              key="2"
+              danger
+              onClick={rejectRequest}
+              icon={<CloseOutlined />}
+              type="primary"
+            >
+              Từ chối
+            </Button>
+            <Button
+              key="3"
+              loading={accepting}
+              onClick={acceptRequest}
+              icon={<CheckCircleFilled />}
+              style={{ background: 'green', borderColor: 'white' }}
+              type="primary"
+            >
+              Chấp nhận
+            </Button>
+          </>
+        }
       >
         <Card style={{ margin: 0, padding: 0 }} loading={pendingState}>
           <Link to={currentVerification?.VerifyOrganization?.fileAttached} target="_blank" download>
