@@ -11,6 +11,8 @@ import {
   Input,
   Select,
   Popconfirm,
+  Space,
+  notification,
 } from 'antd';
 
 import { DeleteOutlined, EditOutlined, PlusCircleFilled, UndoOutlined } from '@ant-design/icons';
@@ -35,8 +37,13 @@ import {
 } from '../../../redux/universitySlice';
 import majorMbtiApi from '../../../api/majorMbtiApi';
 import { debounce } from 'lodash';
+import universityApi from '../../../api/universityApi';
 
 const { Title } = Typography;
+// Filter `option.label` match the user type `input`
+const filterOption = (input, option) =>
+  (option?.label ?? '').toLowerCase().includes(input.toLowerCase());
+
 
 function Faqs() {
   //gọi redux state
@@ -80,6 +87,28 @@ function Faqs() {
   const [isEditing, setIsEditing] = useState(false);
   const [processId, setProcessId] = useState(0);
   const [isOpenModal, setIsOpenModal] = useState(false);
+
+  //get university select
+  const [universitySelect, setUniversitySelect] = useState([]);
+  const [searchUniversity, setSearchUniversity] = useState('');
+  useEffect(() => {
+    universityApi
+      .getAllPublicUniversityInfo({
+        size: 10,
+        page: 1,
+        search: searchUniversity,
+        organizationType: 1,
+      })
+      .then((rs) => {
+        setUniversitySelect(rs.data.data.data.map(uni=>({value:uni.id,label:uni.name})));
+        // console.log(rs.data.data.data);
+      })
+      .catch((err) => {
+        notification.error({ message: 'Lấy danh sách trường thất bại' });
+      });
+  }, [searchUniversity]);
+  //get university select
+
   const handleEdit = (id) => {
     setProcessId(id);
     majorMbtiApi
@@ -121,10 +150,6 @@ function Faqs() {
     dispatch(getAllPublicUniversityInfo(clientParams));
     dispatch(getGetAllpersonality());
   }, [dispatch]);
-  // useEffect(() => {
-  //   //gọi api thông qua redux
-  //   console.log(mbtiParams);
-  // }, [mbtiParams]);
 
   const convertDataSource =
     data?.map((item) => ({
@@ -136,6 +161,7 @@ function Faqs() {
       mbtiName: item.MBTI?.name,
       deletedAt: item.deletedAt,
     })) || [];
+
   const selectOrganization =
     getUniversity?.data?.map((item) => ({
       value: item.id,
@@ -270,9 +296,11 @@ function Faqs() {
             <Search
               placeholder="Tìm kiếm câu hỏi"
               onSearch={onSearch}
-              onChange={onSearchChange}
-              enterButton="Tìm"
-              allowClear
+              enterButton={
+                <Button style={{ height: '2.5rem' }} type="primary">
+                  Tìm kiếm
+                </Button>
+              }
             />
           </Col>
           <Col xs="24" xl={24}>
@@ -337,18 +365,21 @@ function Faqs() {
               <Input placeholder="link.com.vn" />
             </Form.Item>
             <Form.Item
-              label="Tổ chức"
+              label="Trường đại học"
               name="organizationId"
               rules={[
                 {
                   required: true,
-                  message: 'Chưa chọn tổ chức',
+                  message: 'Chưa chọn trường',
                 },
               ]}
             >
               <Select
-                placeholder="Chọn tổ chức"
-                options={selectOrganization}
+                showSearch
+                onSearch={debounce((value) => setSearchUniversity(value),300)}
+                placeholder="Chọn trường đại học"
+                options={universitySelect}
+                filterOption={filterOption}
                 allowClear
                 style={{ height: 40 }}
               />

@@ -9,7 +9,7 @@ const universityApi = {
     return axiosService.patch(url, data);
   },
   getVerificationRequests: (params) => {
-    const url = `${pathname}?page=${params.page}&size=${params.size}&status=2`;
+    const url = `${pathname}?page=${params.page}&size=${params.size}&status=2&search=${params.search}`;
     return axiosService.get(url);
   },
   getAllUniversity: ({ page, size, search, organizationType }) => {

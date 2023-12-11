@@ -26,6 +26,7 @@ const initialState = {
     page: 1,
     size: 10,
     total: 0,
+    search:'',
   },
   currentVerification: {},
   verifications: [],
@@ -249,6 +250,9 @@ const universitySlice = createSlice({
     setParams: (state, action) => {
       state.organiztionPublicParams = { ...state.organiztionPublicParams, ...action.payload };
     },
+    setOrganizationParams:(state,action)=>{
+      state.organizationParams={...state.organizationParams,...action.payload};
+    }
   },
 
   extraReducers: (builder) => {
@@ -420,7 +424,7 @@ const universitySlice = createSlice({
       });
   },
 });
-export const { getLocalOrganizationsById, setSize, setParams } = universitySlice.actions;
+export const { getLocalOrganizationsById, setSize, setParams,setOrganizationParams } = universitySlice.actions;
 
 export const selectUniversity = (state) => state.university.data;
 export const selectUniversityPending = (state) => state.university.pending;

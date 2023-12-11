@@ -13,9 +13,9 @@ const initialState = {
 //get all
 export const getAllUserAsync = createAsyncThunk(
   'user/getAllUser',
-  async ({ page, size }, { rejectWithValue }) => {
+  async (params, { rejectWithValue }) => {
     try {
-      const rs = await userApi.getAllUser(page, size);
+      const rs = await userApi.getAllUser(params);
       return rs.data.data;
     } catch (error) {
       if (error.response && error.response.data.message) {
