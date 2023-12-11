@@ -19,7 +19,7 @@ module.exports = {
     try {
       const user = req.body;
       if (!user.email || !user.password || !user.fullName || !user.address || !user.gender || !user.roleId) {
-        return responseHelper.sendResponse.BAD_REQUEST(res, null, 'Fields cannot be empty');
+        return responseHelper.sendResponse.BAD_REQUEST(res, null, 'Trường dữ liệu không được bỏ trống');
       }
       if (user.roleId == 1) {
         return responseHelper.sendResponse.BAD_REQUEST(res, null);
@@ -28,24 +28,24 @@ module.exports = {
       // Kiểm tra email đúng định dạng
       const checkEmailValid = await validateHelper.validateEmail(user.email);
       if (!checkEmailValid) {
-        return responseHelper.sendResponse.BAD_REQUEST(res, null, 'Email is invalid');
+        return responseHelper.sendResponse.BAD_REQUEST(res, null, 'Email Không họp lệ');
       }
       // Kiểm tra email có tồn tại
       const checkExistingUserByEmail = await authService.existingUserByEmail(user.email);
       if (checkExistingUserByEmail) {
-        return responseHelper.sendResponse.CONFLICT(res, null, 'Email already exists');
+        return responseHelper.sendResponse.CONFLICT(res, null, 'Email đã tồn tại');
       }
 
       // Kiểm tra email đúng định dạng
       if (user.phone && user.phone != '') {
         const checkPhoneValid = await validateHelper.validatePhoneNumber(user.phone);
         if (!checkPhoneValid) {
-          return responseHelper.sendResponse.BAD_REQUEST(res, null, 'Phone is invalid');
+          return responseHelper.sendResponse.BAD_REQUEST(res, null, 'Số điện thoại không họp lệ');
         }
         // Kiểm tra phone có tồn tại
         const checkExistingUserByPhone = await authService.existingUserByPhone(user.phone);
         if (checkExistingUserByPhone) {
-          return responseHelper.sendResponse.CONFLICT(res, null, 'Phone already exists');
+          return responseHelper.sendResponse.CONFLICT(res, null, 'Số điện thoại đã tồn tại');
         }
       }
 
@@ -132,10 +132,10 @@ module.exports = {
             }
 
             // Gửi phản hồi thành công nếu email đã được gửi
-            return responseHelper.sendResponse.SUCCESS(res, null, 'OTP email sent successfully');
+            return responseHelper.sendResponse.SUCCESS(res, null, 'Gửi OTP qua email thành công');
           } else {
             // Gửi phản hồi lỗi nếu có vấn đề khi gửi email
-            return responseHelper.sendResponse.SERVER_ERROR(res, null, 'Failed to send OTP');
+            return responseHelper.sendResponse.SERVER_ERROR(res, null, 'Gửi OTP thất bại');
           }
         }
       } else {
@@ -183,7 +183,7 @@ module.exports = {
       const username = user.username;
 
       if (!user.username || !user.password) {
-        return responseHelper.sendResponse.BAD_REQUEST(res, null, 'Fields cannot be empty');
+        return responseHelper.sendResponse.BAD_REQUEST(res, null, 'Trường dữ liệu không được bỏ trống');
       }
 
       const result = await authService.loginUser(username);
@@ -234,7 +234,7 @@ module.exports = {
     try {
       const user = req.body;
       if (!user.email && !user.phone) {
-        return responseHelper.sendResponse.BAD_REQUEST(res, null, 'Fields cannot be empty');
+        return responseHelper.sendResponse.BAD_REQUEST(res, null, 'Trường dữ liệu không được bỏ trống');
       }
 
       let result = await authService.loginUserBySocialNetwork(user);
@@ -338,7 +338,7 @@ module.exports = {
       const user = req.body;
 
       if (!user.oldPassword || !user.newPassword) {
-        return responseHelper.sendResponse.BAD_REQUEST(res, null, 'Fields cannot be empty');
+        return responseHelper.sendResponse.BAD_REQUEST(res, null, 'Trường dữ liệu không được bỏ trống');
       }
       if (user.oldPassword === user.newPassword) {
         return responseHelper.sendResponse.BAD_REQUEST(
@@ -381,7 +381,7 @@ module.exports = {
       const reqData = req.body;
 
       if (!reqData.newEmail) {
-        return responseHelper.sendResponse.BAD_REQUEST(res, null, 'Fields cannot be empty');
+        return responseHelper.sendResponse.BAD_REQUEST(res, null, 'Trường dữ liệu không được bỏ trống');
       }
 
       const checkExistingUserByEmail = await authService.existingUserByEmail(reqData.newEmail);
@@ -390,7 +390,7 @@ module.exports = {
       }
 
       if (!reqData.password) {
-        return responseHelper.sendResponse.BAD_REQUEST(res, null, 'Fields cannot be empty');
+        return responseHelper.sendResponse.BAD_REQUEST(res, null, 'Trường dữ liệu không được bỏ trống');
       }
 
       // gọi service user để lấy ra thông tin của user theo Id
@@ -468,7 +468,7 @@ module.exports = {
       const reqData = req.body;
 
       if (!reqData.newPhone) {
-        return responseHelper.sendResponse.BAD_REQUEST(res, null, 'Fields cannot be empty');
+        return responseHelper.sendResponse.BAD_REQUEST(res, null, 'Trường dữ liệu không được bỏ trống');
       }
 
       const checkExistingUserByPhone = await authService.existingUserByPhone(reqData.newPhone);
@@ -477,7 +477,7 @@ module.exports = {
       }
 
       if (!reqData.password) {
-        return responseHelper.sendResponse.BAD_REQUEST(res, null, 'Fields cannot be empty');
+        return responseHelper.sendResponse.BAD_REQUEST(res, null, 'Trường dữ liệu không được bỏ trống');
       }
 
       // gọi service user để lấy ra thông tin của user theo Id
@@ -504,7 +504,7 @@ module.exports = {
       const user = req.body;
 
       if (!user.newEmail) {
-        return responseHelper.sendResponse.BAD_REQUEST(res, null, 'Fields cannot be empty');
+        return responseHelper.sendResponse.BAD_REQUEST(res, null, 'Trường dữ liệu không được bỏ trống');
       }
 
       // Kiểm tra password khớp?
@@ -524,7 +524,7 @@ module.exports = {
       const user = req.body;
 
       if (!user.newPhone) {
-        return responseHelper.sendResponse.BAD_REQUEST(res, null, 'Fields cannot be empty');
+        return responseHelper.sendResponse.BAD_REQUEST(res, null, 'Trường dữ liệu không được bỏ trống');
       }
 
       // Kiểm tra password khớp?
