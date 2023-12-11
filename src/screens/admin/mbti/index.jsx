@@ -13,6 +13,7 @@ import {
   Select,
   Popconfirm,
   notification,
+  Space,
 } from 'antd';
 
 import {
@@ -270,7 +271,16 @@ function Mbti() {
             </Button>
           </Col>
           <Col span={16}>
-            <Search placeholder="Tìm kiếm câu hỏi" onSearch={onSearch} enterButton="Tìm" />
+          <Search
+              placeholder="Tìm kiếm câu hỏi"
+              onSearch={onSearch}           
+              enterButton={
+                <Button style={{ height: '2.5rem' }} type="primary">
+                  Tìm kiếm
+                </Button>
+              }
+            />
+            
           </Col>
           <Col xs="24" xl={24}>
             <Card bordered={false} className="criclebox tablespace mb-24" title="Danh sách câu hỏi">

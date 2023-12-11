@@ -10,6 +10,7 @@ import {
   selectUniversityPagesize,
   selectUniversityPending,
   selectUniversityToalRow,
+  setOrganizationParams,
   updateVerificationStatus,
   updateVerificationStatusByAdmin,
 } from '../../../redux/universitySlice';
@@ -25,11 +26,14 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import Search from 'antd/es/input/Search';
 
 const OrganizationVerification = () => {
   //goi redux
   const dispatch = useDispatch();
-  const { verifications, currentVerification } = useSelector((state) => state.university);
+  const { verifications, currentVerification, organizationParams, total } = useSelector(
+    (state) => state.university,
+  );
   const page = useSelector(selectUniversityPage);
   const size = useSelector(selectUniversityPagesize);
   const Totalpage = useSelector(selectUniversityToalRow);
@@ -191,7 +195,7 @@ const OrganizationVerification = () => {
   useEffect(() => {
     //gọi api thông qua redux
     dispatch(getAllOrganizationVerification());
-  }, [dispatch, page, size]);
+  }, [dispatch, page, size, total,organizationParams]);
 
   const convertedData = useMemo(
     () =>
@@ -215,14 +219,30 @@ const OrganizationVerification = () => {
 
   //hàm phan trang
   const handlePageChange = (page, pageSize) => {
-    const payload = { page, pageSize };
+    const payload = { page, size: pageSize };
     dispatch(getAllOrganizationVerification(payload));
+  };
+
+  //onSearch
+  const onSearch = (value) => {
+    dispatch(setOrganizationParams({ search: value, page: 1 }));
   };
 
   return (
     <>
       <div className="tabled">
-        <Row gutter={[24, 0]}>
+        <Row gutter={[24, 18]}>
+          <Col span={16} offset={8}>
+            <Search
+              placeholder="Tìm kiếm tổ chức"
+              onSearch={onSearch}
+              enterButton={
+                <Button style={{ height: '2.5rem' }} type="primary">
+                  Tìm kiếm
+                </Button>
+              }
+            />
+          </Col>
           <Col xs="24" xl={24}>
             <Card bordered={false} className="criclebox tablespace mb-24" title="Danh sách tổ chức">
               <div className="table-responsive">
@@ -253,9 +273,9 @@ const OrganizationVerification = () => {
       <Modal
         confirmLoading={pendingState}
         title={<p style={{ textAlign: 'center', margin: 0 }}>Chi tiết yêu cầu xác thực</p>}
-        onCancel={()=>setOpenProcess(false)}
-        centered    
-        style={{ maxHeight: '80vh',width:'auto', overflowY: 'auto' }}
+        onCancel={() => setOpenProcess(false)}
+        centered
+        style={{ maxHeight: '80vh', width: 'auto', overflowY: 'auto' }}
         open={openProcess}
         footer={
           <>

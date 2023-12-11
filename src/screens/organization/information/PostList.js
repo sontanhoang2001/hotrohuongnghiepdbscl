@@ -11,13 +11,16 @@ import {
   Input,
   Select,
   Image,
+  Popconfirm,
 } from 'antd';
 
 import {
+  DeleteOutlined,
   EditOutlined,
   MinusCircleOutlined,
   PlusCircleFilled,
   PlusCircleOutlined,
+  UndoOutlined,
 } from '@ant-design/icons';
 
 import { useDispatch, useSelector } from 'react-redux';
@@ -26,7 +29,7 @@ import { addNewMbti, getMbtiQuestion, setParams, updateMbti } from '../../../red
 import React from 'react';
 import TextArea from 'antd/es/input/TextArea';
 import Search from 'antd/es/input/Search';
-import { getAllPosts, setPostParams } from '../../../redux/postsSlice';
+import { deletePost, getAllPosts, restorePost, setPostParams } from '../../../redux/postsSlice';
 
 const { Title } = Typography;
 
@@ -51,6 +54,18 @@ function PostList({ setStep, organizationId, dispatchEdit, dispatchCreate }) {
         console.log('Form validation failed:', errorInfo);
       });
   };
+  //delete
+  const handleDelete=(id)=>{
+    dispatch(deletePost({id,organizationId})).then(() => {
+      dispatch(setPostParams({ search: postsParams.search }));
+    });
+  }
+  //restore
+  const handleRestore=(id)=>{
+    dispatch(restorePost({id,organizationId})).then(() => {
+      dispatch(setPostParams({ search: postsParams.search }));
+    });
+  }
 
   //editing
   const [isEditing, setIsEditing] = useState(false);
@@ -140,17 +155,32 @@ function PostList({ setStep, organizationId, dispatchEdit, dispatchCreate }) {
             <Button type="text" onClick={() => handleEdit(record.id)}>
               <EditOutlined style={{ color: 'green' }} />
             </Button>
-            {/* <Popconfirm
-              placement="leftTop"
-              title="Xác nhận xóa"
-              okText="Xóa"
-              onConfirm={() => handleDelete(mbti.id)}
-              cancelText="Hủy"
-            >
-              <Button danger>
-                <DeleteOutlined />
-              </Button>
-            </Popconfirm> */}
+            {record.deletedAt === null && (
+              <Popconfirm
+                placement="leftTop"
+                title="Xác nhận xóa"
+                okText="Xóa"
+                onConfirm={() => handleDelete(record.id)}
+                cancelText="Hủy"
+              >
+                <Button danger>
+                  <DeleteOutlined />
+                </Button>
+              </Popconfirm>
+            )}
+            {record.deletedAt !== null && (
+              <Popconfirm
+                placement="leftTop"
+                title="Xác nhận khôi phục"
+                okText="Khôi phục"
+                onConfirm={() => handleRestore(record.id)}
+                cancelText="Hủy"
+              >
+                <Button success>
+                  <UndoOutlined />
+                </Button>
+              </Popconfirm>
+            )}
           </div>
         ),
       },

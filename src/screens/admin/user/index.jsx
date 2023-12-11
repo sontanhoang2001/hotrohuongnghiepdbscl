@@ -15,6 +15,7 @@ import {
   selectUserTotalRow,
 } from '../../../redux/userSlice';
 import dayjs from 'dayjs';
+import Search from 'antd/es/input/Search';
 
 const { Title } = Typography;
 
@@ -227,14 +228,30 @@ function User() {
   });
   //hàm phan trang
   const handlePageChange = (page, pageSize) => {
-    const payload = { page, size: 7 };
+    const payload = { page, size: pageSize };
     dispatch(getAllUserAsync(payload));
   };
+
+    //onSearch
+    const onSearch = (value) => {
+      dispatch(getAllUserAsync({ search: value, page: 1,size }));
+    };
 
   return (
     <>
       <div className="tabled">
-        <Row gutter={[24, 0]}>
+        <Row gutter={[24, 18]}>
+        <Col span={16} offset={8}>
+            <Search
+              placeholder="Tìm kiếm người dùng"
+              onSearch={onSearch}
+              enterButton={
+                <Button style={{ height: '2.5rem' }} type="primary">
+                  Tìm kiếm
+                </Button>
+              }
+            />
+          </Col>
           <Col xs="24" xl={24}>
             <Card
               bordered={false}

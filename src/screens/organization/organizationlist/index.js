@@ -28,6 +28,7 @@ import { Link } from 'react-router-dom';
 import TextArea from 'antd/es/input/TextArea';
 import { uploadFile } from '../../../firebase/uploadConfig';
 import universityApi from '../../../api/universityApi';
+import Search from 'antd/es/input/Search';
 
 const { Title } = Typography;
 const getBase64 = (file) =>
@@ -303,6 +304,12 @@ function OrganizationList() {
       });
   };
 
+   //search
+   const onSearch = (value) => {
+    const payload = { page:1, size,search:value};
+    dispatch(getAllOrganizationsByUser(payload));
+  };
+
   return (
     <>
       <div className="tabled">
@@ -321,6 +328,17 @@ function OrganizationList() {
               &nbsp; Tạo tổ chức mới
             </Button>
           </Col>
+          <Col span={16} >
+              <Search
+                placeholder="Tìm kiếm tổ chức"
+                onSearch={onSearch}
+                enterButton={
+                  <Button style={{ height: '2.5rem' }} type="primary">
+                    Tìm kiếm
+                  </Button>
+                }
+              />
+            </Col>
           <Col xs="24" xl={24}>
             <Card bordered={false} className="criclebox tablespace mb-24" title="Tố chức của bạn">
               <div className="table-responsive">

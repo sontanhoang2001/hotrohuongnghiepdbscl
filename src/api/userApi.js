@@ -2,9 +2,9 @@ import axiosService from './axiosClient';
 
 const pathname = 'users';
 const userApi = {
-  getAllUser: (page, size) => {
-    const url = `${pathname}?page=${page}&size=${size}`;
-    return axiosService.get(url);
+  getAllUser: (params) => {
+    const url = `${pathname}`;
+    return axiosService.get(url,{params:new URLSearchParams(Object.entries(params))});
   },
   deleteUser: (id) => {
     const url = `${pathname}/delete/${id}`;

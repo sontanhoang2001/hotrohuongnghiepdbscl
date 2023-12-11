@@ -27,6 +27,7 @@ import {
 } from '../../../redux/universitySlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useMemo } from 'react';
+import Search from 'antd/es/input/Search';
 
 const { Title } = Typography;
 
@@ -245,11 +246,17 @@ function University() {
     dispatch(getAllUniversity({ page: 1, size: 10, organizationType: value, search: '' }));
   };
 
+  //search
+  const onSearch = (value) => {
+    const payload = { page, size,search:value};
+    dispatch(getAllUniversity(payload));
+  };
+
   return (
     <>
       <div className="tabled">
-        <Row gutter={[24, 0]}>
-          <Col span={24}>
+        <Row gutter={[24, 18]}>
+          
             {/* <Select
               defaultValue="Tất cả"
               style={{
@@ -271,7 +278,19 @@ function University() {
                 },
               ]}
             /> */}
-          </Col>
+
+            <Col span={16} offset={8}>
+              <Search
+                placeholder="Tìm kiếm tổ chức"
+                onSearch={onSearch}
+                enterButton={
+                  <Button style={{ height: '2.5rem' }} type="primary">
+                    Tìm kiếm
+                  </Button>
+                }
+              />
+            </Col>
+        
           <Col xs="24" xl={24}>
             <Card bordered={false} className="criclebox tablespace mb-24" title="Danh sách tổ chức">
               <div className="table-responsive">
