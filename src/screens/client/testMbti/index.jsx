@@ -470,7 +470,7 @@ const ShowResult = styled.div`
   .result-image {
     text-align: center;
     img {
-      width: 60%;
+      width: 400px;
       object-fit: cover;
 
       margin-bottom: 30px;
